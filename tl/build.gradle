@@ -1,22 +1,19 @@
 apply plugin: 'java'
 apply plugin: 'kotlin'
-apply plugin: 'maven'
 
 sourceCompatibility = '1.7'
 targetCompatibility = '1.7'
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    api 'io.reactivex.rxjava2:rxjava:2.2.21'
 
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'io.reactivex.rxjava2:rxjava:2.1.4'
-
-    testCompile 'org.testng:testng:6.9.10'
-    testCompile 'org.reflections:reflections:0.9.10'
-    testCompile 'org.apache.commons:commons-lang3:3.4'
-    testCompile 'com.google.code.gson:gson:2.7'
-    testCompile 'commons-io:commons-io:2.5'
-    testCompile 'commons-codec:commons-codec:1.10'
+    testImplementation 'org.testng:testng:6.9.10'
+    testImplementation 'org.reflections:reflections:0.9.10'
+    testImplementation 'org.apache.commons:commons-lang3:3.4'
+    testImplementation 'com.google.code.gson:gson:2.7'
+    testImplementation 'commons-io:commons-io:2.5'
+    testImplementation 'commons-codec:commons-codec:1.10'
 }
 
 test {
@@ -39,6 +36,6 @@ task fatJar(type: Jar) {
                    "Implementation-Version": version)
     }
     baseName = "kotlogram-$project.name"
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    from { configurations.Implementation.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }

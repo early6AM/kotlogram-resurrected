@@ -2,8 +2,8 @@ package com.github.badoualy.telegram.mtproto
 
 import com.github.badoualy.telegram.mtproto.log.LogTag
 import com.github.badoualy.telegram.mtproto.log.Logger
+import io.reactivex.Maybe
 import io.reactivex.Observable
-import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
@@ -49,7 +49,7 @@ class MTBuffer<T>(var bufferSize: Int,
             Observable.just(id)
                     .delay(bufferTimeout, bufferTimeoutUnit)
                     .observeOn(Schedulers.computation())
-                    .flatMapMaybe { get(it).takeIf { it.isNotEmpty() }.toMaybe() }
+                    .flatMapMaybe { get(it).takeIf { it.isNotEmpty() }?.let { Maybe.just(it) } ?: Maybe.empty() }
                     .subscribe(subject)
         }
 

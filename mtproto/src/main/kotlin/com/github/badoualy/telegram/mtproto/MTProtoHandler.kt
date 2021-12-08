@@ -30,7 +30,6 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.rxkotlin.toObservable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -426,7 +425,7 @@ class MTProtoHandler {
         }
 
         logger.debug("result: $resultObject")
-        return resultObject.toMaybe()
+        return resultObject?.let { Maybe.just(it) } ?: Maybe.empty()
     }
 
     /**

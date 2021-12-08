@@ -27,10 +27,8 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.rxkotlin.toMaybe
 import io.reactivex.rxkotlin.zipWith
 import io.reactivex.schedulers.Schedulers
-import java.io.OutputStream
 import java.lang.Math.ceil
 import java.util.concurrent.TimeUnit
 
@@ -380,7 +378,7 @@ class TelegramClientImpl internal constructor(override val app: TelegramApp,
                 cachedHandler?.apply { logger.debug(tag, "Using cached handler") }
             }.switchIfEmpty(Single.defer {
                 // No cached handler, check for existing key
-                authKeyMap[dcId].toMaybe()
+                (authKeyMap[dcId]?.let { Maybe.just(it) } ?: Maybe.empty())
                         .flatMap { createExportedHandler(dcId, it).toMaybe() }
                         // If nothing, create a new exported handler
                         .switchIfEmpty(Single.defer { createExportedHandler(dcId) })

@@ -2,16 +2,14 @@ apply plugin: 'java'
 apply plugin: 'kotlin'
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.2.3'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.2.3'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.2.3'
 
-    compile 'com.fasterxml.jackson.core:jackson-core:2.2.3'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.2.3'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.2.3'
-
-//    compile 'com.squareup:javapoet:1.9.0'
-    compile 'com.squareup:kotlinpoet:0.5.0'
+//    implementation 'com.squareup:javapoet:1.9.0'
+    implementation 'com.squareup:kotlinpoet:0.5.0'
 }
 
 /*task fatJar(type: Jar) {
