@@ -25,7 +25,7 @@ class TLMessageEditData() : TLObject() {
         this.caption = caption
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(caption, 1)
     }
@@ -61,6 +61,6 @@ class TLMessageEditData() : TLObject() {
                 && caption == other.caption
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x26b5dde6.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x26b5dde6
     }
 }

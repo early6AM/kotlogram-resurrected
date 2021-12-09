@@ -20,6 +20,6 @@ class TLPageBlockUnsupported : TLAbsPageBlock() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x13567e8a.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x13567e8a
     }
 }

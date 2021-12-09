@@ -56,6 +56,6 @@ class TLInlineBotSwitchPM() : TLObject() {
                 && startParam == other.startParam
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3c20629f.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3c20629f
     }
 }

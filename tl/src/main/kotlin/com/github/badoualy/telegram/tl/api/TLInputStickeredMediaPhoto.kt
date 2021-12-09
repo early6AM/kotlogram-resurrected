@@ -47,6 +47,6 @@ class TLInputStickeredMediaPhoto() : TLAbsInputStickeredMedia() {
         return id == other.id
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x4a992157.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x4a992157
     }
 }

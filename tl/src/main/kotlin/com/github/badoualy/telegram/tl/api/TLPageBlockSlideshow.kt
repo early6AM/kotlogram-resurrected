@@ -7,7 +7,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * pageBlockSlideshow#130c8963
+ * pageBlockSlideshow#31f9590
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -15,13 +15,13 @@ import java.io.IOException
 class TLPageBlockSlideshow() : TLAbsPageBlock() {
     var items: TLObjectVector<TLAbsPageBlock> = TLObjectVector()
 
-    var caption: TLAbsRichText = TLTextEmpty()
+    var caption: TLPageCaption = TLPageCaption()
 
-    private val _constructor: String = "pageBlockSlideshow#130c8963"
+    private val _constructor: String = "pageBlockSlideshow#31f9590"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(items: TLObjectVector<TLAbsPageBlock>, caption: TLAbsRichText) : this() {
+    constructor(items: TLObjectVector<TLAbsPageBlock>, caption: TLPageCaption) : this() {
         this.items = items
         this.caption = caption
     }
@@ -35,7 +35,7 @@ class TLPageBlockSlideshow() : TLAbsPageBlock() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         items = readTLVector<TLAbsPageBlock>()
-        caption = readTLObject<TLAbsRichText>()
+        caption = readTLObject<TLPageCaption>(TLPageCaption::class, TLPageCaption.CONSTRUCTOR_ID)
     }
 
     override fun computeSerializedSize(): Int {
@@ -55,6 +55,6 @@ class TLPageBlockSlideshow() : TLAbsPageBlock() {
                 && caption == other.caption
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x130c8963.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x31f9590
     }
 }

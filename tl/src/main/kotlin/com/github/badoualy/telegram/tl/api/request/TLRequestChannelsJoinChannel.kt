@@ -49,6 +49,6 @@ class TLRequestChannelsJoinChannel() : TLMethod<TLAbsUpdates>() {
         return channel == other.channel
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x24b524c5.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x24b524c5
     }
 }

@@ -4,6 +4,7 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLBool
+import com.github.badoualy.telegram.tl.core.TLLongVector
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
@@ -18,31 +19,41 @@ class TLRequestAccountUnregisterDevice() : TLMethod<TLBool>() {
 
     var token: String = ""
 
-    private val _constructor: String = "account.unregisterDevice#65c55b40"
+    var otherUids: TLLongVector = TLLongVector()
+
+    private val _constructor: String = "account.unregisterDevice#6a0d3206"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(tokenType: Int, token: String) : this() {
+    constructor(
+            tokenType: Int,
+            token: String,
+            otherUids: TLLongVector
+    ) : this() {
         this.tokenType = tokenType
         this.token = token
+        this.otherUids = otherUids
     }
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
         writeInt(tokenType)
         writeString(token)
+        writeTLVector(otherUids)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         tokenType = readInt()
         token = readString()
+        otherUids = readTLLongVector()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += computeTLStringSerializedSize(token)
+        size += otherUids.computeSerializedSize()
         return size
     }
 
@@ -54,8 +65,9 @@ class TLRequestAccountUnregisterDevice() : TLMethod<TLBool>() {
 
         return tokenType == other.tokenType
                 && token == other.token
+                && otherUids == other.otherUids
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x65c55b40.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x6a0d3206
     }
 }

@@ -48,6 +48,6 @@ class TLUpdateNewStickerSet() : TLAbsUpdate() {
         return stickerset == other.stickerset
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x688a30aa.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x688a30aa
     }
 }

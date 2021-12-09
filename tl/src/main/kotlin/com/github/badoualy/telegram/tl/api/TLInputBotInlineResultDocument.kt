@@ -46,7 +46,7 @@ class TLInputBotInlineResultDocument() : TLAbsInputBotInlineResult() {
         this.sendMessage = sendMessage
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(title, 2)
         updateFlags(description, 4)

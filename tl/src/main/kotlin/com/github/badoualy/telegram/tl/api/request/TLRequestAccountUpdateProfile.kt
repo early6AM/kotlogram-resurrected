@@ -34,7 +34,7 @@ class TLRequestAccountUpdateProfile() : TLMethod<TLAbsUser>() {
         this.about = about
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(firstName, 1)
         updateFlags(lastName, 2)
@@ -82,6 +82,6 @@ class TLRequestAccountUpdateProfile() : TLMethod<TLAbsUser>() {
                 && about == other.about
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x78515775.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x78515775
     }
 }

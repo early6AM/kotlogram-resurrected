@@ -57,7 +57,7 @@ class TLBotResults() : TLObject() {
         this.users = users
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(gallery, 1)
         updateFlags(nextOffset, 2)

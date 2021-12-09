@@ -55,6 +55,6 @@ class TLInputGameID() : TLAbsInputGame() {
                 && accessHash == other.accessHash
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x32c3e77.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x32c3e77
     }
 }

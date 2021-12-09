@@ -52,6 +52,6 @@ class TLRequestContactsImportContacts() : TLMethod<TLImportedContacts>() {
         return contacts == other.contacts
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x2c800be5.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x2c800be5
     }
 }

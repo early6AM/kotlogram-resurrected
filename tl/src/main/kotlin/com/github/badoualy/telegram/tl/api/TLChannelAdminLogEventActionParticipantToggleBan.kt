@@ -12,9 +12,9 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLChannelAdminLogEventActionParticipantToggleBan() : TLAbsChannelAdminLogEventAction() {
-    var prevParticipant: TLAbsChannelParticipant = TLChannelParticipantCreator()
+    var prevParticipant: TLAbsChannelParticipant = TLChannelParticipantLeft()
 
-    var newParticipant: TLAbsChannelParticipant = TLChannelParticipantCreator()
+    var newParticipant: TLAbsChannelParticipant = TLChannelParticipantLeft()
 
     private val _constructor: String = "channelAdminLogEventActionParticipantToggleBan#e6d83d7e"
 

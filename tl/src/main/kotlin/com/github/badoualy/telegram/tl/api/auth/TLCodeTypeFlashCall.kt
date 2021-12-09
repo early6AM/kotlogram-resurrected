@@ -20,6 +20,6 @@ class TLCodeTypeFlashCall : TLAbsCodeType() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x226ccefb.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x226ccefb
     }
 }

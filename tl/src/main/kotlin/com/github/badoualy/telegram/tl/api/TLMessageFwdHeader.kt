@@ -9,46 +9,67 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * messageFwdHeader#fadff4ac
+ * messageFwdHeader#5f777dce
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLMessageFwdHeader() : TLObject() {
-    var fromId: Int? = null
+    @Transient
+    var imported: Boolean = false
+
+    var fromId: TLAbsPeer? = null
+
+    var fromName: String? = null
 
     var date: Int = 0
-
-    var channelId: Int? = null
 
     var channelPost: Int? = null
 
     var postAuthor: String? = null
 
-    private val _constructor: String = "messageFwdHeader#fadff4ac"
+    var savedFromPeer: TLAbsPeer? = null
+
+    var savedFromMsgId: Int? = null
+
+    var psaType: String? = null
+
+    private val _constructor: String = "messageFwdHeader#5f777dce"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
-            fromId: Int?,
+            imported: Boolean,
+            fromId: TLAbsPeer?,
+            fromName: String?,
             date: Int,
-            channelId: Int?,
             channelPost: Int?,
-            postAuthor: String?
+            postAuthor: String?,
+            savedFromPeer: TLAbsPeer?,
+            savedFromMsgId: Int?,
+            psaType: String?
     ) : this() {
+        this.imported = imported
         this.fromId = fromId
+        this.fromName = fromName
         this.date = date
-        this.channelId = channelId
         this.channelPost = channelPost
         this.postAuthor = postAuthor
+        this.savedFromPeer = savedFromPeer
+        this.savedFromMsgId = savedFromMsgId
+        this.psaType = psaType
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
+        updateFlags(imported, 128)
         updateFlags(fromId, 1)
-        updateFlags(channelId, 2)
+        updateFlags(fromName, 32)
         updateFlags(channelPost, 4)
         updateFlags(postAuthor, 8)
+        updateFlags(savedFromPeer, 16)
+        updateFlags(savedFromMsgId, 16)
+        updateFlags(psaType, 64)
     }
 
     @Throws(IOException::class)
@@ -56,21 +77,28 @@ class TLMessageFwdHeader() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(fromId, 1) { writeInt(it) }
+        doIfMask(fromId, 1) { writeTLObject(it) }
+        doIfMask(fromName, 32) { writeString(it) }
         writeInt(date)
-        doIfMask(channelId, 2) { writeInt(it) }
         doIfMask(channelPost, 4) { writeInt(it) }
         doIfMask(postAuthor, 8) { writeString(it) }
+        doIfMask(savedFromPeer, 16) { writeTLObject(it) }
+        doIfMask(savedFromMsgId, 16) { writeInt(it) }
+        doIfMask(psaType, 64) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        fromId = readIfMask(1) { readInt() }
+        imported = isMask(128)
+        fromId = readIfMask(1) { readTLObject<TLAbsPeer>() }
+        fromName = readIfMask(32) { readString() }
         date = readInt()
-        channelId = readIfMask(2) { readInt() }
         channelPost = readIfMask(4) { readInt() }
         postAuthor = readIfMask(8) { readString() }
+        savedFromPeer = readIfMask(16) { readTLObject<TLAbsPeer>() }
+        savedFromMsgId = readIfMask(16) { readInt() }
+        psaType = readIfMask(64) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -78,11 +106,14 @@ class TLMessageFwdHeader() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(fromId, 1) { SIZE_INT32 }
+        size += getIntIfMask(fromId, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(fromName, 32) { computeTLStringSerializedSize(it) }
         size += SIZE_INT32
-        size += getIntIfMask(channelId, 2) { SIZE_INT32 }
         size += getIntIfMask(channelPost, 4) { SIZE_INT32 }
         size += getIntIfMask(postAuthor, 8) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(savedFromPeer, 16) { it.computeSerializedSize() }
+        size += getIntIfMask(savedFromMsgId, 16) { SIZE_INT32 }
+        size += getIntIfMask(psaType, 64) { computeTLStringSerializedSize(it) }
         return size
     }
 
@@ -93,13 +124,17 @@ class TLMessageFwdHeader() : TLObject() {
         if (other === this) return true
 
         return _flags == other._flags
+                && imported == other.imported
                 && fromId == other.fromId
+                && fromName == other.fromName
                 && date == other.date
-                && channelId == other.channelId
                 && channelPost == other.channelPost
                 && postAuthor == other.postAuthor
+                && savedFromPeer == other.savedFromPeer
+                && savedFromMsgId == other.savedFromMsgId
+                && psaType == other.psaType
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xfadff4ac.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x5f777dce
     }
 }

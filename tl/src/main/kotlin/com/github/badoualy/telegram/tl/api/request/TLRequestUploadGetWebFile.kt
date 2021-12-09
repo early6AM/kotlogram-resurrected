@@ -2,6 +2,7 @@ package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.api.TLAbsInputWebFileLocation
 import com.github.badoualy.telegram.tl.api.TLInputWebFileLocation
 import com.github.badoualy.telegram.tl.api.upload.TLWebFile
 import com.github.badoualy.telegram.tl.core.TLMethod
@@ -14,7 +15,7 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLRequestUploadGetWebFile() : TLMethod<TLWebFile>() {
-    var location: TLInputWebFileLocation = TLInputWebFileLocation()
+    var location: TLAbsInputWebFileLocation = TLInputWebFileLocation()
 
     var offset: Int = 0
 
@@ -25,7 +26,7 @@ class TLRequestUploadGetWebFile() : TLMethod<TLWebFile>() {
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
-            location: TLInputWebFileLocation,
+            location: TLAbsInputWebFileLocation,
             offset: Int,
             limit: Int
     ) : this() {
@@ -46,7 +47,7 @@ class TLRequestUploadGetWebFile() : TLMethod<TLWebFile>() {
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        location = readTLObject<TLInputWebFileLocation>(TLInputWebFileLocation::class, TLInputWebFileLocation.CONSTRUCTOR_ID)
+        location = readTLObject<TLAbsInputWebFileLocation>()
         offset = readInt()
         limit = readInt()
     }
@@ -70,6 +71,6 @@ class TLRequestUploadGetWebFile() : TLMethod<TLWebFile>() {
                 && limit == other.limit
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x24e6818d.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x24e6818d
     }
 }

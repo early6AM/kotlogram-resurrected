@@ -8,7 +8,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * updateShortSentMessage#11f1331c
+ * updateShortSentMessage#9015e101
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -29,7 +29,9 @@ class TLUpdateShortSentMessage() : TLAbsUpdates() {
 
     var entities: TLObjectVector<TLAbsMessageEntity>? = TLObjectVector()
 
-    private val _constructor: String = "updateShortSentMessage#11f1331c"
+    var ttlPeriod: Int? = null
+
+    private val _constructor: String = "updateShortSentMessage#9015e101"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -40,7 +42,8 @@ class TLUpdateShortSentMessage() : TLAbsUpdates() {
             ptsCount: Int,
             date: Int,
             media: TLAbsMessageMedia?,
-            entities: TLObjectVector<TLAbsMessageEntity>?
+            entities: TLObjectVector<TLAbsMessageEntity>?,
+            ttlPeriod: Int?
     ) : this() {
         this.out = out
         this.id = id
@@ -49,13 +52,15 @@ class TLUpdateShortSentMessage() : TLAbsUpdates() {
         this.date = date
         this.media = media
         this.entities = entities
+        this.ttlPeriod = ttlPeriod
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(out, 2)
         updateFlags(media, 512)
         updateFlags(entities, 128)
+        updateFlags(ttlPeriod, 33554432)
     }
 
     @Throws(IOException::class)
@@ -69,6 +74,7 @@ class TLUpdateShortSentMessage() : TLAbsUpdates() {
         writeInt(date)
         doIfMask(media, 512) { writeTLObject(it) }
         doIfMask(entities, 128) { writeTLVector(it) }
+        doIfMask(ttlPeriod, 33554432) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -81,6 +87,7 @@ class TLUpdateShortSentMessage() : TLAbsUpdates() {
         date = readInt()
         media = readIfMask(512) { readTLObject<TLAbsMessageMedia>() }
         entities = readIfMask(128) { readTLVector<TLAbsMessageEntity>() }
+        ttlPeriod = readIfMask(33554432) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -94,6 +101,7 @@ class TLUpdateShortSentMessage() : TLAbsUpdates() {
         size += SIZE_INT32
         size += getIntIfMask(media, 512) { it.computeSerializedSize() }
         size += getIntIfMask(entities, 128) { it.computeSerializedSize() }
+        size += getIntIfMask(ttlPeriod, 33554432) { SIZE_INT32 }
         return size
     }
 
@@ -111,8 +119,9 @@ class TLUpdateShortSentMessage() : TLAbsUpdates() {
                 && date == other.date
                 && media == other.media
                 && entities == other.entities
+                && ttlPeriod == other.ttlPeriod
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x11f1331c.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x9015e101.toInt()
     }
 }

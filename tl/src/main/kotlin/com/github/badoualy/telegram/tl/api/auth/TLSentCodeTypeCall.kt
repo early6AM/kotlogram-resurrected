@@ -48,6 +48,6 @@ class TLSentCodeTypeCall() : TLAbsSentCodeType() {
         return length == other.length
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x5353e5a7.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x5353e5a7
     }
 }

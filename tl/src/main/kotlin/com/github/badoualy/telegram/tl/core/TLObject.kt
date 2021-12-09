@@ -115,7 +115,7 @@ abstract class TLObject : Serializable {
      * @return not null asserted value
      */
     @Throws(NullPointerException::class)
-    inline protected fun <T> ensureNotNull(value: T?): T =
+    protected inline fun <T> ensureNotNull(value: T?): T =
             value ?: throw NullPointerException(
                     "Attempt to serialize null field. value: $value, flags: $_flags)")
 
@@ -124,7 +124,7 @@ abstract class TLObject : Serializable {
      * @param value if true, the flags will set the bitmask to 1, else 0
      * @param maskValue bitmask to update
      */
-    inline protected fun updateFlags(value: Boolean, maskValue: Int) {
+    protected inline fun updateFlags(value: Boolean, maskValue: Int) {
         _flags = if (value) _flags.or(maskValue) else _flags.and(maskValue.inv())
     }
 
@@ -133,13 +133,13 @@ abstract class TLObject : Serializable {
      * @param value if not null, the flags will set the bitmask to 1, else 0
      * @param maskValue bitmask to update
      */
-    inline protected fun updateFlags(value: Any?, maskValue: Int) = updateFlags(value != null,
+    protected inline fun updateFlags(value: Any?, maskValue: Int) = updateFlags(value != null,
                                                                                 maskValue)
 
     /**
      * @return true if the bitmask is true (all bits to 1) on the flags
      */
-    inline protected fun isMask(maskValue: Int) = (_flags and maskValue) != 0
+    protected inline fun isMask(maskValue: Int) = (_flags and maskValue) != 0
 
     /**
      * Execute the given function is the mask is true
@@ -147,7 +147,7 @@ abstract class TLObject : Serializable {
      * @param provider function to execute if the bitmask is true
      * @return return value from provider if the bitmask is true, null otherwise
      */
-    inline protected fun <reified T> readIfMask(maskValue: Int, provider: () -> T): T? =
+    protected inline fun <reified T> readIfMask(maskValue: Int, provider: () -> T): T? =
             if (isMask(maskValue)) provider.invoke() else null
 
     /**
@@ -156,7 +156,7 @@ abstract class TLObject : Serializable {
      * @param maskValue bitmask to check
      * @param action function to execute if the bitmask is true
      */
-    inline protected fun <reified T> doIfMask(value: T?, maskValue: Int, action: (T) -> Unit) {
+    protected inline fun <reified T> doIfMask(value: T?, maskValue: Int, action: (T) -> Unit) {
         if (isMask(maskValue)) action.invoke(ensureNotNull(value))
     }
 
@@ -167,6 +167,6 @@ abstract class TLObject : Serializable {
      * @param provider function to execute if the bitmask is true
      * @return return value from provider if the bitmask is true, 0 otherwise
      */
-    inline protected fun <reified T> getIntIfMask(value: T?, maskValue: Int, provider: (T) -> Int) =
+    protected inline fun <reified T> getIntIfMask(value: T?, maskValue: Int, provider: (T) -> Int) =
             if (isMask(maskValue)) provider.invoke(ensureNotNull(value)) else 0
 }

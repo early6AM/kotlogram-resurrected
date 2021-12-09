@@ -2,30 +2,31 @@ package com.github.badoualy.telegram.tl.api
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * chatParticipants#3f460fed
+ * chatParticipants#3cbc93f8
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLChatParticipants() : TLAbsChatParticipants() {
-    override var chatId: Int = 0
+    override var chatId: Long = 0L
 
     var participants: TLObjectVector<TLAbsChatParticipant> = TLObjectVector()
 
     var version: Int = 0
 
-    private val _constructor: String = "chatParticipants#3f460fed"
+    private val _constructor: String = "chatParticipants#3cbc93f8"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
-            chatId: Int,
+            chatId: Long,
             participants: TLObjectVector<TLAbsChatParticipant>,
             version: Int
     ) : this() {
@@ -36,21 +37,21 @@ class TLChatParticipants() : TLAbsChatParticipants() {
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
-        writeInt(chatId)
+        writeLong(chatId)
         writeTLVector(participants)
         writeInt(version)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        chatId = readInt()
+        chatId = readLong()
         participants = readTLVector<TLAbsChatParticipant>()
         version = readInt()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += participants.computeSerializedSize()
         size += SIZE_INT32
         return size
@@ -67,6 +68,6 @@ class TLChatParticipants() : TLAbsChatParticipants() {
                 && version == other.version
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3f460fed.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3cbc93f8
     }
 }

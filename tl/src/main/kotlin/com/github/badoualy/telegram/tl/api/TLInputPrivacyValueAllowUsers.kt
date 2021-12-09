@@ -48,6 +48,6 @@ class TLInputPrivacyValueAllowUsers() : TLAbsInputPrivacyRule() {
         return users == other.users
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x131cc67f.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x131cc67f
     }
 }

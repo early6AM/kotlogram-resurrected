@@ -48,6 +48,6 @@ class TLDifferenceTooLong() : TLAbsDifference() {
         return pts == other.pts
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x4afe8f6d.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x4afe8f6d
     }
 }

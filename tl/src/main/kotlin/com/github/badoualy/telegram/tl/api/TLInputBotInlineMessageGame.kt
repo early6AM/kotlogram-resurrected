@@ -23,7 +23,7 @@ class TLInputBotInlineMessageGame() : TLAbsInputBotInlineMessage() {
         this.replyMarkup = replyMarkup
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(replyMarkup, 4)
     }
@@ -61,6 +61,6 @@ class TLInputBotInlineMessageGame() : TLAbsInputBotInlineMessage() {
                 && replyMarkup == other.replyMarkup
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x4b425864.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x4b425864
     }
 }

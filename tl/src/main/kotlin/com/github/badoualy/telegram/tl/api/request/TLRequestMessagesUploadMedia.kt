@@ -1,7 +1,11 @@
 package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
-import com.github.badoualy.telegram.tl.api.*
+import com.github.badoualy.telegram.tl.api.TLAbsInputMedia
+import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
+import com.github.badoualy.telegram.tl.api.TLAbsMessageMedia
+import com.github.badoualy.telegram.tl.api.TLInputMediaEmpty
+import com.github.badoualy.telegram.tl.api.TLInputPeerEmpty
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
@@ -54,6 +58,6 @@ class TLRequestMessagesUploadMedia() : TLMethod<TLAbsMessageMedia>() {
                 && media == other.media
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x519bc2b1.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x519bc2b1
     }
 }

@@ -20,6 +20,6 @@ class TLInputChatPhotoEmpty : TLAbsInputChatPhoto() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x1ca48f57.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x1ca48f57
     }
 }

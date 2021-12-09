@@ -20,6 +20,6 @@ class TLCodeTypeCall : TLAbsCodeType() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x741cd3e3.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x741cd3e3
     }
 }

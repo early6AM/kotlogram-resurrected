@@ -48,6 +48,6 @@ class TLDocumentEmpty() : TLAbsDocument() {
         return id == other.id
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x36f8c871.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x36f8c871
     }
 }

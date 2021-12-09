@@ -43,6 +43,7 @@ internal fun deserializeParameter(fieldTlType: TLType, fieldType: TypeName): Str
         "int" -> "readTLIntVector()"
         "long" -> "readTLLongVector()"
         "string" -> "readTLStringVector()"
+        "bytes" ->  "readTLBytesVector()"
         else -> "readTLVector<%T>()"
     }
     is TLTypeRaw -> when (fieldTlType.name) {

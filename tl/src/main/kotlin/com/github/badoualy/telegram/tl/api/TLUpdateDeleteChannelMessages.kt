@@ -2,19 +2,20 @@ package com.github.badoualy.telegram.tl.api
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.core.TLIntVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * updateDeleteChannelMessages#c37521c9
+ * updateDeleteChannelMessages#c32d5b12
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLUpdateDeleteChannelMessages() : TLAbsUpdate() {
-    var channelId: Int = 0
+    var channelId: Long = 0L
 
     var messages: TLIntVector = TLIntVector()
 
@@ -22,12 +23,12 @@ class TLUpdateDeleteChannelMessages() : TLAbsUpdate() {
 
     var ptsCount: Int = 0
 
-    private val _constructor: String = "updateDeleteChannelMessages#c37521c9"
+    private val _constructor: String = "updateDeleteChannelMessages#c32d5b12"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
-            channelId: Int,
+            channelId: Long,
             messages: TLIntVector,
             pts: Int,
             ptsCount: Int
@@ -40,7 +41,7 @@ class TLUpdateDeleteChannelMessages() : TLAbsUpdate() {
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
-        writeInt(channelId)
+        writeLong(channelId)
         writeTLVector(messages)
         writeInt(pts)
         writeInt(ptsCount)
@@ -48,7 +49,7 @@ class TLUpdateDeleteChannelMessages() : TLAbsUpdate() {
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        channelId = readInt()
+        channelId = readLong()
         messages = readTLIntVector()
         pts = readInt()
         ptsCount = readInt()
@@ -56,7 +57,7 @@ class TLUpdateDeleteChannelMessages() : TLAbsUpdate() {
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += messages.computeSerializedSize()
         size += SIZE_INT32
         size += SIZE_INT32
@@ -75,6 +76,6 @@ class TLUpdateDeleteChannelMessages() : TLAbsUpdate() {
                 && ptsCount == other.ptsCount
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xc37521c9.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xc32d5b12.toInt()
     }
 }

@@ -26,6 +26,9 @@ class TLRequestMessagesSendInlineBotResult() : TLMethod<TLAbsUpdates>() {
     @Transient
     var clearDraft: Boolean = false
 
+    @Transient
+    var hideVia: Boolean = false
+
     var peer: TLAbsInputPeer = TLInputPeerEmpty()
 
     var replyToMsgId: Int? = null
@@ -36,7 +39,9 @@ class TLRequestMessagesSendInlineBotResult() : TLMethod<TLAbsUpdates>() {
 
     var id: String = ""
 
-    private val _constructor: String = "messages.sendInlineBotResult#b16e06fe"
+    var scheduleDate: Int? = null
+
+    private val _constructor: String = "messages.sendInlineBotResult#220815b0"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -44,28 +49,34 @@ class TLRequestMessagesSendInlineBotResult() : TLMethod<TLAbsUpdates>() {
             silent: Boolean,
             background: Boolean,
             clearDraft: Boolean,
+            hideVia: Boolean,
             peer: TLAbsInputPeer,
             replyToMsgId: Int?,
             randomId: Long,
             queryId: Long,
-            id: String
+            id: String,
+            scheduleDate: Int?
     ) : this() {
         this.silent = silent
         this.background = background
         this.clearDraft = clearDraft
+        this.hideVia = hideVia
         this.peer = peer
         this.replyToMsgId = replyToMsgId
         this.randomId = randomId
         this.queryId = queryId
         this.id = id
+        this.scheduleDate = scheduleDate
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(silent, 32)
         updateFlags(background, 64)
         updateFlags(clearDraft, 128)
+        updateFlags(hideVia, 2048)
         updateFlags(replyToMsgId, 1)
+        updateFlags(scheduleDate, 1024)
     }
 
     @Throws(IOException::class)
@@ -78,6 +89,7 @@ class TLRequestMessagesSendInlineBotResult() : TLMethod<TLAbsUpdates>() {
         writeLong(randomId)
         writeLong(queryId)
         writeString(id)
+        doIfMask(scheduleDate, 1024) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -86,11 +98,13 @@ class TLRequestMessagesSendInlineBotResult() : TLMethod<TLAbsUpdates>() {
         silent = isMask(32)
         background = isMask(64)
         clearDraft = isMask(128)
+        hideVia = isMask(2048)
         peer = readTLObject<TLAbsInputPeer>()
         replyToMsgId = readIfMask(1) { readInt() }
         randomId = readLong()
         queryId = readLong()
         id = readString()
+        scheduleDate = readIfMask(1024) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -103,6 +117,7 @@ class TLRequestMessagesSendInlineBotResult() : TLMethod<TLAbsUpdates>() {
         size += SIZE_INT64
         size += SIZE_INT64
         size += computeTLStringSerializedSize(id)
+        size += getIntIfMask(scheduleDate, 1024) { SIZE_INT32 }
         return size
     }
 
@@ -116,13 +131,15 @@ class TLRequestMessagesSendInlineBotResult() : TLMethod<TLAbsUpdates>() {
                 && silent == other.silent
                 && background == other.background
                 && clearDraft == other.clearDraft
+                && hideVia == other.hideVia
                 && peer == other.peer
                 && replyToMsgId == other.replyToMsgId
                 && randomId == other.randomId
                 && queryId == other.queryId
                 && id == other.id
+                && scheduleDate == other.scheduleDate
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xb16e06fe.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x220815b0
     }
 }

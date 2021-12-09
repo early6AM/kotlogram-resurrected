@@ -1,56 +1,56 @@
 package com.github.badoualy.telegram.tl.api
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
-import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * updateChatUserTyping#9a65ea1f
+ * updateChatUserTyping#83487af0
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLUpdateChatUserTyping() : TLAbsUpdate() {
-    var chatId: Int = 0
+    var chatId: Long = 0L
 
-    var userId: Int = 0
+    var fromId: TLAbsPeer = TLPeerChat()
 
-    var action: TLAbsSendMessageAction = TLSendMessageRecordVideoAction()
+    var action: TLAbsSendMessageAction = TLSendMessageChooseStickerAction()
 
-    private val _constructor: String = "updateChatUserTyping#9a65ea1f"
+    private val _constructor: String = "updateChatUserTyping#83487af0"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
-            chatId: Int,
-            userId: Int,
+            chatId: Long,
+            fromId: TLAbsPeer,
             action: TLAbsSendMessageAction
     ) : this() {
         this.chatId = chatId
-        this.userId = userId
+        this.fromId = fromId
         this.action = action
     }
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
-        writeInt(chatId)
-        writeInt(userId)
+        writeLong(chatId)
+        writeTLObject(fromId)
         writeTLObject(action)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        chatId = readInt()
-        userId = readInt()
+        chatId = readLong()
+        fromId = readTLObject<TLAbsPeer>()
         action = readTLObject<TLAbsSendMessageAction>()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
-        size += SIZE_INT32
-        size += SIZE_INT32
+        size += SIZE_INT64
+        size += fromId.computeSerializedSize()
         size += action.computeSerializedSize()
         return size
     }
@@ -62,10 +62,10 @@ class TLUpdateChatUserTyping() : TLAbsUpdate() {
         if (other === this) return true
 
         return chatId == other.chatId
-                && userId == other.userId
+                && fromId == other.fromId
                 && action == other.action
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x9a65ea1f.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x83487af0.toInt()
     }
 }

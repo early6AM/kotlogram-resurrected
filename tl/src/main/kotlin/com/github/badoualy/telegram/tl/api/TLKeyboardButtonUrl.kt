@@ -55,6 +55,6 @@ class TLKeyboardButtonUrl() : TLAbsKeyboardButton() {
                 && url == other.url
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x258aff05.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x258aff05
     }
 }

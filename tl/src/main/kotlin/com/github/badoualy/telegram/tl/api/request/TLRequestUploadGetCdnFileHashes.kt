@@ -3,7 +3,7 @@ package com.github.badoualy.telegram.tl.api.request
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
-import com.github.badoualy.telegram.tl.api.TLCdnFileHash
+import com.github.badoualy.telegram.tl.api.TLFileHash
 import com.github.badoualy.telegram.tl.core.TLBytes
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.core.TLObjectVector
@@ -15,12 +15,12 @@ import java.io.IOException
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
-class TLRequestUploadGetCdnFileHashes() : TLMethod<TLObjectVector<TLCdnFileHash>>() {
+class TLRequestUploadGetCdnFileHashes() : TLMethod<TLObjectVector<TLFileHash>>() {
     var fileToken: TLBytes = TLBytes.EMPTY
 
     var offset: Int = 0
 
-    private val _constructor: String = "upload.getCdnFileHashes#f715c87b"
+    private val _constructor: String = "upload.getCdnFileHashes#4da54231"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -30,7 +30,7 @@ class TLRequestUploadGetCdnFileHashes() : TLMethod<TLObjectVector<TLCdnFileHash>
     }
 
     @Throws(IOException::class)
-    override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLObjectVector<TLCdnFileHash> = tlDeserializer.readTLVector<TLCdnFileHash>()
+    override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLObjectVector<TLFileHash> = tlDeserializer.readTLVector<TLFileHash>()
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
@@ -61,6 +61,6 @@ class TLRequestUploadGetCdnFileHashes() : TLMethod<TLObjectVector<TLCdnFileHash>
                 && offset == other.offset
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xf715c87b.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x4da54231
     }
 }

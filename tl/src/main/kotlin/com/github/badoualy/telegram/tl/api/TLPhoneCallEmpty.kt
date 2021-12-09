@@ -48,6 +48,6 @@ class TLPhoneCallEmpty() : TLAbsPhoneCall() {
         return id == other.id
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x5366c915.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x5366c915
     }
 }

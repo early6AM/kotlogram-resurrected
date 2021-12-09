@@ -2,7 +2,9 @@ package com.github.badoualy.telegram.tl.api
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
+import com.github.badoualy.telegram.tl.core.TLLongVector
 import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
@@ -10,7 +12,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * invoice#c30aa358
+ * invoice#cd886e0
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -34,11 +36,21 @@ class TLInvoice() : TLObject() {
     @Transient
     var flexible: Boolean = false
 
+    @Transient
+    var phoneToProvider: Boolean = false
+
+    @Transient
+    var emailToProvider: Boolean = false
+
     var currency: String = ""
 
     var prices: TLObjectVector<TLLabeledPrice> = TLObjectVector()
 
-    private val _constructor: String = "invoice#c30aa358"
+    var maxTipAmount: Long? = null
+
+    var suggestedTipAmounts: TLLongVector? = null
+
+    private val _constructor: String = "invoice#cd886e0"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -49,8 +61,12 @@ class TLInvoice() : TLObject() {
             emailRequested: Boolean,
             shippingAddressRequested: Boolean,
             flexible: Boolean,
+            phoneToProvider: Boolean,
+            emailToProvider: Boolean,
             currency: String,
-            prices: TLObjectVector<TLLabeledPrice>
+            prices: TLObjectVector<TLLabeledPrice>,
+            maxTipAmount: Long?,
+            suggestedTipAmounts: TLLongVector?
     ) : this() {
         this.test = test
         this.nameRequested = nameRequested
@@ -58,11 +74,15 @@ class TLInvoice() : TLObject() {
         this.emailRequested = emailRequested
         this.shippingAddressRequested = shippingAddressRequested
         this.flexible = flexible
+        this.phoneToProvider = phoneToProvider
+        this.emailToProvider = emailToProvider
         this.currency = currency
         this.prices = prices
+        this.maxTipAmount = maxTipAmount
+        this.suggestedTipAmounts = suggestedTipAmounts
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(test, 1)
         updateFlags(nameRequested, 2)
@@ -70,6 +90,10 @@ class TLInvoice() : TLObject() {
         updateFlags(emailRequested, 8)
         updateFlags(shippingAddressRequested, 16)
         updateFlags(flexible, 32)
+        updateFlags(phoneToProvider, 64)
+        updateFlags(emailToProvider, 128)
+        updateFlags(maxTipAmount, 256)
+        updateFlags(suggestedTipAmounts, 256)
     }
 
     @Throws(IOException::class)
@@ -79,6 +103,8 @@ class TLInvoice() : TLObject() {
         writeInt(_flags)
         writeString(currency)
         writeTLVector(prices)
+        doIfMask(maxTipAmount, 256) { writeLong(it) }
+        doIfMask(suggestedTipAmounts, 256) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
@@ -90,8 +116,12 @@ class TLInvoice() : TLObject() {
         emailRequested = isMask(8)
         shippingAddressRequested = isMask(16)
         flexible = isMask(32)
+        phoneToProvider = isMask(64)
+        emailToProvider = isMask(128)
         currency = readString()
         prices = readTLVector<TLLabeledPrice>()
+        maxTipAmount = readIfMask(256) { readLong() }
+        suggestedTipAmounts = readIfMask(256) { readTLLongVector() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -101,6 +131,8 @@ class TLInvoice() : TLObject() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(currency)
         size += prices.computeSerializedSize()
+        size += getIntIfMask(maxTipAmount, 256) { SIZE_INT64 }
+        size += getIntIfMask(suggestedTipAmounts, 256) { it.computeSerializedSize() }
         return size
     }
 
@@ -117,10 +149,14 @@ class TLInvoice() : TLObject() {
                 && emailRequested == other.emailRequested
                 && shippingAddressRequested == other.shippingAddressRequested
                 && flexible == other.flexible
+                && phoneToProvider == other.phoneToProvider
+                && emailToProvider == other.emailToProvider
                 && currency == other.currency
                 && prices == other.prices
+                && maxTipAmount == other.maxTipAmount
+                && suggestedTipAmounts == other.suggestedTipAmounts
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xc30aa358.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xcd886e0
     }
 }

@@ -1,14 +1,14 @@
 package com.github.badoualy.telegram.tl.api
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
-import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * messageMediaContact#5e7d2f39
+ * messageMediaContact#70322949
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -20,9 +20,11 @@ class TLMessageMediaContact() : TLAbsMessageMedia() {
 
     var lastName: String = ""
 
-    var userId: Int = 0
+    var vcard: String = ""
 
-    private val _constructor: String = "messageMediaContact#5e7d2f39"
+    var userId: Long = 0L
+
+    private val _constructor: String = "messageMediaContact#70322949"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -30,11 +32,13 @@ class TLMessageMediaContact() : TLAbsMessageMedia() {
             phoneNumber: String,
             firstName: String,
             lastName: String,
-            userId: Int
+            vcard: String,
+            userId: Long
     ) : this() {
         this.phoneNumber = phoneNumber
         this.firstName = firstName
         this.lastName = lastName
+        this.vcard = vcard
         this.userId = userId
     }
 
@@ -43,7 +47,8 @@ class TLMessageMediaContact() : TLAbsMessageMedia() {
         writeString(phoneNumber)
         writeString(firstName)
         writeString(lastName)
-        writeInt(userId)
+        writeString(vcard)
+        writeLong(userId)
     }
 
     @Throws(IOException::class)
@@ -51,7 +56,8 @@ class TLMessageMediaContact() : TLAbsMessageMedia() {
         phoneNumber = readString()
         firstName = readString()
         lastName = readString()
-        userId = readInt()
+        vcard = readString()
+        userId = readLong()
     }
 
     override fun computeSerializedSize(): Int {
@@ -59,7 +65,8 @@ class TLMessageMediaContact() : TLAbsMessageMedia() {
         size += computeTLStringSerializedSize(phoneNumber)
         size += computeTLStringSerializedSize(firstName)
         size += computeTLStringSerializedSize(lastName)
-        size += SIZE_INT32
+        size += computeTLStringSerializedSize(vcard)
+        size += SIZE_INT64
         return size
     }
 
@@ -72,9 +79,10 @@ class TLMessageMediaContact() : TLAbsMessageMedia() {
         return phoneNumber == other.phoneNumber
                 && firstName == other.firstName
                 && lastName == other.lastName
+                && vcard == other.vcard
                 && userId == other.userId
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x5e7d2f39.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x70322949
     }
 }

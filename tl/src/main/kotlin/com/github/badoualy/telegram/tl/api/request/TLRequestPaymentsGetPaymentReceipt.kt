@@ -2,6 +2,8 @@ package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
+import com.github.badoualy.telegram.tl.api.TLInputPeerEmpty
 import com.github.badoualy.telegram.tl.api.payments.TLPaymentReceipt
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
@@ -13,13 +15,16 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLRequestPaymentsGetPaymentReceipt() : TLMethod<TLPaymentReceipt>() {
+    var peer: TLAbsInputPeer = TLInputPeerEmpty()
+
     var msgId: Int = 0
 
-    private val _constructor: String = "payments.getPaymentReceipt#a092a980"
+    private val _constructor: String = "payments.getPaymentReceipt#2478d1cc"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(msgId: Int) : this() {
+    constructor(peer: TLAbsInputPeer, msgId: Int) : this() {
+        this.peer = peer
         this.msgId = msgId
     }
 
@@ -28,16 +33,19 @@ class TLRequestPaymentsGetPaymentReceipt() : TLMethod<TLPaymentReceipt>() {
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
+        writeTLObject(peer)
         writeInt(msgId)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
+        peer = readTLObject<TLAbsInputPeer>()
         msgId = readInt()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
+        size += peer.computeSerializedSize()
         size += SIZE_INT32
         return size
     }
@@ -48,9 +56,10 @@ class TLRequestPaymentsGetPaymentReceipt() : TLMethod<TLPaymentReceipt>() {
         if (other !is TLRequestPaymentsGetPaymentReceipt) return false
         if (other === this) return true
 
-        return msgId == other.msgId
+        return peer == other.peer
+                && msgId == other.msgId
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xa092a980.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x2478d1cc
     }
 }

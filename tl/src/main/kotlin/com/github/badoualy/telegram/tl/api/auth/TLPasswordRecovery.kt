@@ -49,6 +49,6 @@ class TLPasswordRecovery() : TLObject() {
         return emailPattern == other.emailPattern
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x137948a5.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x137948a5
     }
 }

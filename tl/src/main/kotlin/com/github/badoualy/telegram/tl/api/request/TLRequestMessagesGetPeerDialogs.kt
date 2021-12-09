@@ -1,7 +1,7 @@
 package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
-import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
+import com.github.badoualy.telegram.tl.api.TLAbsInputDialogPeer
 import com.github.badoualy.telegram.tl.api.messages.TLPeerDialogs
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.core.TLObjectVector
@@ -14,13 +14,13 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLRequestMessagesGetPeerDialogs() : TLMethod<TLPeerDialogs>() {
-    var peers: TLObjectVector<TLAbsInputPeer> = TLObjectVector()
+    var peers: TLObjectVector<TLAbsInputDialogPeer> = TLObjectVector()
 
-    private val _constructor: String = "messages.getPeerDialogs#2d9776b9"
+    private val _constructor: String = "messages.getPeerDialogs#e470bcfd"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(peers: TLObjectVector<TLAbsInputPeer>) : this() {
+    constructor(peers: TLObjectVector<TLAbsInputDialogPeer>) : this() {
         this.peers = peers
     }
 
@@ -34,7 +34,7 @@ class TLRequestMessagesGetPeerDialogs() : TLMethod<TLPeerDialogs>() {
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        peers = readTLVector<TLAbsInputPeer>()
+        peers = readTLVector<TLAbsInputDialogPeer>()
     }
 
     override fun computeSerializedSize(): Int {
@@ -52,6 +52,6 @@ class TLRequestMessagesGetPeerDialogs() : TLMethod<TLPeerDialogs>() {
         return peers == other.peers
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x2d9776b9.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xe470bcfd.toInt()
     }
 }

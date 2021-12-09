@@ -6,7 +6,6 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLBytes
-import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
@@ -17,14 +16,14 @@ import java.io.IOException
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
-class TLPhoneConnection() : TLObject() {
-    var id: Long = 0L
+class TLPhoneConnection() : TLAbsPhoneConnection() {
+    override var id: Long = 0L
 
-    var ip: String = ""
+    override var ip: String = ""
 
-    var ipv6: String = ""
+    override var ipv6: String = ""
 
-    var port: Int = 0
+    override var port: Int = 0
 
     var peerTag: TLBytes = TLBytes.EMPTY
 

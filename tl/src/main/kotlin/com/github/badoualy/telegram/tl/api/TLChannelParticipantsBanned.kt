@@ -48,6 +48,6 @@ class TLChannelParticipantsBanned() : TLAbsChannelParticipantsFilter() {
         return q == other.q
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x1427a5e1.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x1427a5e1
     }
 }

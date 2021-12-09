@@ -46,7 +46,7 @@ class TLRequestUpdatesGetChannelDifference() : TLMethod<TLAbsChannelDifference>(
         this.limit = limit
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(force, 1)
     }
@@ -98,6 +98,6 @@ class TLRequestUpdatesGetChannelDifference() : TLMethod<TLAbsChannelDifference>(
                 && limit == other.limit
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3173d78.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3173d78
     }
 }

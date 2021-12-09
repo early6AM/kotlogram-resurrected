@@ -48,6 +48,6 @@ class TLTextConcat() : TLAbsRichText() {
         return texts == other.texts
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x7e6260d7.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x7e6260d7
     }
 }

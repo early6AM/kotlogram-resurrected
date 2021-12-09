@@ -8,7 +8,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * exportedMessageLink#1f486803
+ * exportedMessageLink#5dab1af4
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -16,27 +16,33 @@ import java.io.IOException
 class TLExportedMessageLink() : TLObject() {
     var link: String = ""
 
-    private val _constructor: String = "exportedMessageLink#1f486803"
+    var html: String = ""
+
+    private val _constructor: String = "exportedMessageLink#5dab1af4"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(link: String) : this() {
+    constructor(link: String, html: String) : this() {
         this.link = link
+        this.html = html
     }
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
         writeString(link)
+        writeString(html)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         link = readString()
+        html = readString()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
         size += computeTLStringSerializedSize(link)
+        size += computeTLStringSerializedSize(html)
         return size
     }
 
@@ -47,8 +53,9 @@ class TLExportedMessageLink() : TLObject() {
         if (other === this) return true
 
         return link == other.link
+                && html == other.html
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x1f486803.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x5dab1af4
     }
 }

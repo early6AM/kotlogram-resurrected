@@ -9,7 +9,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * chatInvite#db74f558
+ * chatInvite#dfc2f58e
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -29,13 +29,13 @@ class TLChatInvite() : TLAbsChatInvite() {
 
     var title: String = ""
 
-    var photo: TLAbsChatPhoto = TLChatPhotoEmpty()
+    var photo: TLAbsPhoto = TLPhotoEmpty()
 
     var participantsCount: Int = 0
 
     var participants: TLObjectVector<TLAbsUser>? = TLObjectVector()
 
-    private val _constructor: String = "chatInvite#db74f558"
+    private val _constructor: String = "chatInvite#dfc2f58e"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -45,7 +45,7 @@ class TLChatInvite() : TLAbsChatInvite() {
             _public: Boolean,
             megagroup: Boolean,
             title: String,
-            photo: TLAbsChatPhoto,
+            photo: TLAbsPhoto,
             participantsCount: Int,
             participants: TLObjectVector<TLAbsUser>?
     ) : this() {
@@ -59,7 +59,7 @@ class TLChatInvite() : TLAbsChatInvite() {
         this.participants = participants
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(channel, 1)
         updateFlags(broadcast, 2)
@@ -87,7 +87,7 @@ class TLChatInvite() : TLAbsChatInvite() {
         _public = isMask(4)
         megagroup = isMask(8)
         title = readString()
-        photo = readTLObject<TLAbsChatPhoto>()
+        photo = readTLObject<TLAbsPhoto>()
         participantsCount = readInt()
         participants = readIfMask(16) { readTLVector<TLAbsUser>() }
     }
@@ -121,6 +121,6 @@ class TLChatInvite() : TLAbsChatInvite() {
                 && participants == other.participants
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xdb74f558.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xdfc2f58e.toInt()
     }
 }

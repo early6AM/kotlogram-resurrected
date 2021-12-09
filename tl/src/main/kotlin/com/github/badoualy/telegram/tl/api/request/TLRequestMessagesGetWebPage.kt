@@ -56,6 +56,6 @@ class TLRequestMessagesGetWebPage() : TLMethod<TLAbsWebPage>() {
                 && hash == other.hash
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x32ca8f91.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x32ca8f91
     }
 }

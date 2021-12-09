@@ -4,9 +4,16 @@ import com.github.badoualy.telegram.tl.core.TLObject
 
 /**
  * Abstraction level for the following constructors:
- * * [inputDocumentFileLocation#430f0724][TLInputDocumentFileLocation]
+ * * [inputDocumentFileLocation#bad07584][TLInputDocumentFileLocation]
  * * [inputEncryptedFileLocation#f5235d55][TLInputEncryptedFileLocation]
- * * [inputFileLocation#14637196][TLInputFileLocation]
+ * * [inputFileLocation#dfdaabe1][TLInputFileLocation]
+ * * [inputGroupCallStream#598a92a][TLInputGroupCallStream]
+ * * [inputPeerPhotoFileLocation#37257e99][TLInputPeerPhotoFileLocation]
+ * * [inputPhotoFileLocation#40181ffe][TLInputPhotoFileLocation]
+ * * [inputPhotoLegacyFileLocation#d83466f3][TLInputPhotoLegacyFileLocation]
+ * * [inputSecureFileLocation#cbc7ee28][TLInputSecureFileLocation]
+ * * [inputStickerSetThumb#9d84f3db][TLInputStickerSetThumb]
+ * * [inputTakeoutFileLocation#29be5899][TLInputTakeoutFileLocation]
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>

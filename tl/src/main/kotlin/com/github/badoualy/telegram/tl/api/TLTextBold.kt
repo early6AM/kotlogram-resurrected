@@ -47,6 +47,6 @@ class TLTextBold() : TLAbsRichText() {
         return text == other.text
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x6724abc4.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x6724abc4
     }
 }

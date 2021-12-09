@@ -2,13 +2,14 @@ package com.github.badoualy.telegram.tl.api
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * highScore#58fffcd0
+ * highScore#73a379eb
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -16,17 +17,17 @@ import java.io.IOException
 class TLHighScore() : TLObject() {
     var pos: Int = 0
 
-    var userId: Int = 0
+    var userId: Long = 0L
 
     var score: Int = 0
 
-    private val _constructor: String = "highScore#58fffcd0"
+    private val _constructor: String = "highScore#73a379eb"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             pos: Int,
-            userId: Int,
+            userId: Long,
             score: Int
     ) : this() {
         this.pos = pos
@@ -37,21 +38,21 @@ class TLHighScore() : TLObject() {
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
         writeInt(pos)
-        writeInt(userId)
+        writeLong(userId)
         writeInt(score)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         pos = readInt()
-        userId = readInt()
+        userId = readLong()
         score = readInt()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += SIZE_INT32
         return size
     }
@@ -67,6 +68,6 @@ class TLHighScore() : TLObject() {
                 && score == other.score
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x58fffcd0.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x73a379eb
     }
 }

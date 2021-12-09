@@ -5,9 +5,11 @@ import com.github.badoualy.telegram.tl.core.TLObject
 /**
  * Abstraction level for the following constructors:
  * * [inputPrivacyValueAllowAll#184b35ce][TLInputPrivacyValueAllowAll]
+ * * [inputPrivacyValueAllowChatParticipants#840649cf][TLInputPrivacyValueAllowChatParticipants]
  * * [inputPrivacyValueAllowContacts#d09e07b][TLInputPrivacyValueAllowContacts]
  * * [inputPrivacyValueAllowUsers#131cc67f][TLInputPrivacyValueAllowUsers]
  * * [inputPrivacyValueDisallowAll#d66b66c9][TLInputPrivacyValueDisallowAll]
+ * * [inputPrivacyValueDisallowChatParticipants#e94f0f86][TLInputPrivacyValueDisallowChatParticipants]
  * * [inputPrivacyValueDisallowContacts#ba52007][TLInputPrivacyValueDisallowContacts]
  * * [inputPrivacyValueDisallowUsers#90110467][TLInputPrivacyValueDisallowUsers]
  *

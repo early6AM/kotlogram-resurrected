@@ -39,7 +39,7 @@ class TLDocumentAttributeSticker() : TLAbsDocumentAttribute() {
         this.maskCoords = maskCoords
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(mask, 2)
         updateFlags(maskCoords, 1)
@@ -88,6 +88,6 @@ class TLDocumentAttributeSticker() : TLAbsDocumentAttribute() {
                 && maskCoords == other.maskCoords
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x6319d612.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x6319d612
     }
 }

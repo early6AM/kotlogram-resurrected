@@ -20,6 +20,6 @@ class TLPrivacyKeyChatInvite : TLAbsPrivacyKey() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x500e6dfa.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x500e6dfa
     }
 }

@@ -26,6 +26,6 @@ class TLRequestPaymentsGetSavedInfo : TLMethod<TLSavedInfo>() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x227d824b.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x227d824b
     }
 }

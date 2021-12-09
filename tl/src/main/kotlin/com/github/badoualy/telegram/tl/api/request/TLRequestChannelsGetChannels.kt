@@ -49,6 +49,6 @@ class TLRequestChannelsGetChannels() : TLMethod<TLAbsChats>() {
         return id == other.id
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xa7f6bbb.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xa7f6bbb
     }
 }

@@ -20,6 +20,6 @@ class TLSendMessageGeoLocationAction : TLAbsSendMessageAction() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x176f8ba1.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x176f8ba1
     }
 }

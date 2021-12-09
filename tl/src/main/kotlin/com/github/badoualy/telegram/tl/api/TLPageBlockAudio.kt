@@ -7,7 +7,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * pageBlockAudio#31b81a7f
+ * pageBlockAudio#804361ea
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -15,13 +15,13 @@ import java.io.IOException
 class TLPageBlockAudio() : TLAbsPageBlock() {
     var audioId: Long = 0L
 
-    var caption: TLAbsRichText = TLTextEmpty()
+    var caption: TLPageCaption = TLPageCaption()
 
-    private val _constructor: String = "pageBlockAudio#31b81a7f"
+    private val _constructor: String = "pageBlockAudio#804361ea"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(audioId: Long, caption: TLAbsRichText) : this() {
+    constructor(audioId: Long, caption: TLPageCaption) : this() {
         this.audioId = audioId
         this.caption = caption
     }
@@ -35,7 +35,7 @@ class TLPageBlockAudio() : TLAbsPageBlock() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         audioId = readLong()
-        caption = readTLObject<TLAbsRichText>()
+        caption = readTLObject<TLPageCaption>(TLPageCaption::class, TLPageCaption.CONSTRUCTOR_ID)
     }
 
     override fun computeSerializedSize(): Int {
@@ -55,6 +55,6 @@ class TLPageBlockAudio() : TLAbsPageBlock() {
                 && caption == other.caption
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x31b81a7f.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x804361ea.toInt()
     }
 }

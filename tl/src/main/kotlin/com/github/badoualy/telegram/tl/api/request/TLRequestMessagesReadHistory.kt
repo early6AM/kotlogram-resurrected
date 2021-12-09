@@ -60,6 +60,6 @@ class TLRequestMessagesReadHistory() : TLMethod<TLAffectedMessages>() {
                 && maxId == other.maxId
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xe306d3a.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xe306d3a
     }
 }

@@ -11,7 +11,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * updateInlineBotCallbackQuery#f9d27a5a
+ * updateInlineBotCallbackQuery#691e9052
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -19,9 +19,9 @@ import java.io.IOException
 class TLUpdateInlineBotCallbackQuery() : TLAbsUpdate() {
     var queryId: Long = 0L
 
-    var userId: Int = 0
+    var userId: Long = 0L
 
-    var msgId: TLInputBotInlineMessageID = TLInputBotInlineMessageID()
+    var msgId: TLAbsInputBotInlineMessageID = TLInputBotInlineMessageID()
 
     var chatInstance: Long = 0L
 
@@ -29,14 +29,14 @@ class TLUpdateInlineBotCallbackQuery() : TLAbsUpdate() {
 
     var gameShortName: String? = null
 
-    private val _constructor: String = "updateInlineBotCallbackQuery#f9d27a5a"
+    private val _constructor: String = "updateInlineBotCallbackQuery#691e9052"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             queryId: Long,
-            userId: Int,
-            msgId: TLInputBotInlineMessageID,
+            userId: Long,
+            msgId: TLAbsInputBotInlineMessageID,
             chatInstance: Long,
             data: TLBytes?,
             gameShortName: String?
@@ -49,7 +49,7 @@ class TLUpdateInlineBotCallbackQuery() : TLAbsUpdate() {
         this.gameShortName = gameShortName
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(data, 1)
         updateFlags(gameShortName, 2)
@@ -61,7 +61,7 @@ class TLUpdateInlineBotCallbackQuery() : TLAbsUpdate() {
 
         writeInt(_flags)
         writeLong(queryId)
-        writeInt(userId)
+        writeLong(userId)
         writeTLObject(msgId)
         writeLong(chatInstance)
         doIfMask(data, 1) { writeTLBytes(it) }
@@ -72,8 +72,8 @@ class TLUpdateInlineBotCallbackQuery() : TLAbsUpdate() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         queryId = readLong()
-        userId = readInt()
-        msgId = readTLObject<TLInputBotInlineMessageID>(TLInputBotInlineMessageID::class, TLInputBotInlineMessageID.CONSTRUCTOR_ID)
+        userId = readLong()
+        msgId = readTLObject<TLAbsInputBotInlineMessageID>()
         chatInstance = readLong()
         data = readIfMask(1) { readTLBytes() }
         gameShortName = readIfMask(2) { readString() }
@@ -85,7 +85,7 @@ class TLUpdateInlineBotCallbackQuery() : TLAbsUpdate() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT64
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += msgId.computeSerializedSize()
         size += SIZE_INT64
         size += getIntIfMask(data, 1) { computeTLBytesSerializedSize(it) }
@@ -108,6 +108,6 @@ class TLUpdateInlineBotCallbackQuery() : TLAbsUpdate() {
                 && gameShortName == other.gameShortName
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xf9d27a5a.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x691e9052
     }
 }

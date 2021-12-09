@@ -4,12 +4,13 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
+import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * user#2e13f4c3
+ * user#3ff6ecb0
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -48,7 +49,19 @@ class TLUser() : TLAbsUser() {
     @Transient
     var botInlineGeo: Boolean = false
 
-    override var id: Int = 0
+    @Transient
+    var support: Boolean = false
+
+    @Transient
+    var scam: Boolean = false
+
+    @Transient
+    var applyMinPhoto: Boolean = false
+
+    @Transient
+    var fake: Boolean = false
+
+    override var id: Long = 0L
 
     var accessHash: Long? = null
 
@@ -66,13 +79,13 @@ class TLUser() : TLAbsUser() {
 
     var botInfoVersion: Int? = null
 
-    var restrictionReason: String? = null
+    var restrictionReason: TLObjectVector<TLRestrictionReason>? = TLObjectVector()
 
     var botInlinePlaceholder: String? = null
 
     var langCode: String? = null
 
-    private val _constructor: String = "user#2e13f4c3"
+    private val _constructor: String = "user#3ff6ecb0"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -88,7 +101,11 @@ class TLUser() : TLAbsUser() {
             restricted: Boolean,
             min: Boolean,
             botInlineGeo: Boolean,
-            id: Int,
+            support: Boolean,
+            scam: Boolean,
+            applyMinPhoto: Boolean,
+            fake: Boolean,
+            id: Long,
             accessHash: Long?,
             firstName: String?,
             lastName: String?,
@@ -97,7 +114,7 @@ class TLUser() : TLAbsUser() {
             photo: TLAbsUserProfilePhoto?,
             status: TLAbsUserStatus?,
             botInfoVersion: Int?,
-            restrictionReason: String?,
+            restrictionReason: TLObjectVector<TLRestrictionReason>?,
             botInlinePlaceholder: String?,
             langCode: String?
     ) : this() {
@@ -112,6 +129,10 @@ class TLUser() : TLAbsUser() {
         this.restricted = restricted
         this.min = min
         this.botInlineGeo = botInlineGeo
+        this.support = support
+        this.scam = scam
+        this.applyMinPhoto = applyMinPhoto
+        this.fake = fake
         this.id = id
         this.accessHash = accessHash
         this.firstName = firstName
@@ -126,7 +147,7 @@ class TLUser() : TLAbsUser() {
         this.langCode = langCode
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(self, 1024)
         updateFlags(contact, 2048)
@@ -139,6 +160,10 @@ class TLUser() : TLAbsUser() {
         updateFlags(restricted, 262144)
         updateFlags(min, 1048576)
         updateFlags(botInlineGeo, 2097152)
+        updateFlags(support, 8388608)
+        updateFlags(scam, 16777216)
+        updateFlags(applyMinPhoto, 33554432)
+        updateFlags(fake, 67108864)
         updateFlags(accessHash, 1)
         updateFlags(firstName, 2)
         updateFlags(lastName, 4)
@@ -161,7 +186,7 @@ class TLUser() : TLAbsUser() {
         computeFlags()
 
         writeInt(_flags)
-        writeInt(id)
+        writeLong(id)
         doIfMask(accessHash, 1) { writeLong(it) }
         doIfMask(firstName, 2) { writeString(it) }
         doIfMask(lastName, 4) { writeString(it) }
@@ -170,7 +195,7 @@ class TLUser() : TLAbsUser() {
         doIfMask(photo, 32) { writeTLObject(it) }
         doIfMask(status, 64) { writeTLObject(it) }
         doIfMask(botInfoVersion, 16384) { writeInt(it) }
-        doIfMask(restrictionReason, 262144) { writeString(it) }
+        doIfMask(restrictionReason, 262144) { writeTLVector(it) }
         doIfMask(botInlinePlaceholder, 524288) { writeString(it) }
         doIfMask(langCode, 4194304) { writeString(it) }
     }
@@ -189,7 +214,11 @@ class TLUser() : TLAbsUser() {
         restricted = isMask(262144)
         min = isMask(1048576)
         botInlineGeo = isMask(2097152)
-        id = readInt()
+        support = isMask(8388608)
+        scam = isMask(16777216)
+        applyMinPhoto = isMask(33554432)
+        fake = isMask(67108864)
+        id = readLong()
         accessHash = readIfMask(1) { readLong() }
         firstName = readIfMask(2) { readString() }
         lastName = readIfMask(4) { readString() }
@@ -198,7 +227,7 @@ class TLUser() : TLAbsUser() {
         photo = readIfMask(32) { readTLObject<TLAbsUserProfilePhoto>() }
         status = readIfMask(64) { readTLObject<TLAbsUserStatus>() }
         botInfoVersion = readIfMask(16384) { readInt() }
-        restrictionReason = readIfMask(262144) { readString() }
+        restrictionReason = readIfMask(262144) { readTLVector<TLRestrictionReason>() }
         botInlinePlaceholder = readIfMask(524288) { readString() }
         langCode = readIfMask(4194304) { readString() }
     }
@@ -208,7 +237,7 @@ class TLUser() : TLAbsUser() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += getIntIfMask(accessHash, 1) { SIZE_INT64 }
         size += getIntIfMask(firstName, 2) { computeTLStringSerializedSize(it) }
         size += getIntIfMask(lastName, 4) { computeTLStringSerializedSize(it) }
@@ -217,7 +246,7 @@ class TLUser() : TLAbsUser() {
         size += getIntIfMask(photo, 32) { it.computeSerializedSize() }
         size += getIntIfMask(status, 64) { it.computeSerializedSize() }
         size += getIntIfMask(botInfoVersion, 16384) { SIZE_INT32 }
-        size += getIntIfMask(restrictionReason, 262144) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(restrictionReason, 262144) { it.computeSerializedSize() }
         size += getIntIfMask(botInlinePlaceholder, 524288) { computeTLStringSerializedSize(it) }
         size += getIntIfMask(langCode, 4194304) { computeTLStringSerializedSize(it) }
         return size
@@ -241,6 +270,10 @@ class TLUser() : TLAbsUser() {
                 && restricted == other.restricted
                 && min == other.min
                 && botInlineGeo == other.botInlineGeo
+                && support == other.support
+                && scam == other.scam
+                && applyMinPhoto == other.applyMinPhoto
+                && fake == other.fake
                 && id == other.id
                 && accessHash == other.accessHash
                 && firstName == other.firstName
@@ -255,6 +288,6 @@ class TLUser() : TLAbsUser() {
                 && langCode == other.langCode
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x2e13f4c3.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3ff6ecb0
     }
 }

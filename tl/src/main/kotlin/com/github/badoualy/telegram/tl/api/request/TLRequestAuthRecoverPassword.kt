@@ -1,8 +1,10 @@
 package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
-import com.github.badoualy.telegram.tl.api.auth.TLAuthorization
+import com.github.badoualy.telegram.tl.api.account.TLPasswordInputSettings
+import com.github.badoualy.telegram.tl.api.auth.TLAbsAuthorization
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
@@ -12,33 +14,48 @@ import java.io.IOException
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
-class TLRequestAuthRecoverPassword() : TLMethod<TLAuthorization>() {
+class TLRequestAuthRecoverPassword() : TLMethod<TLAbsAuthorization>() {
     var code: String = ""
 
-    private val _constructor: String = "auth.recoverPassword#4ea56e92"
+    var newSettings: TLPasswordInputSettings? = null
+
+    private val _constructor: String = "auth.recoverPassword#37096c70"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(code: String) : this() {
+    constructor(code: String, newSettings: TLPasswordInputSettings?) : this() {
         this.code = code
+        this.newSettings = newSettings
+    }
+
+    override fun computeFlags() {
+        _flags = 0
+        updateFlags(newSettings, 1)
     }
 
     @Throws(IOException::class)
-    override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLAuthorization = tlDeserializer.readTLObject(TLAuthorization::class, TLAuthorization.CONSTRUCTOR_ID)
-
-    @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
+        computeFlags()
+
+        writeInt(_flags)
         writeString(code)
+        doIfMask(newSettings, 1) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
+        _flags = readInt()
         code = readString()
+        newSettings = readIfMask(1) { readTLObject<TLPasswordInputSettings>(TLPasswordInputSettings::class, TLPasswordInputSettings.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
+        computeFlags()
+
         var size = SIZE_CONSTRUCTOR_ID
+        size += SIZE_INT32
         size += computeTLStringSerializedSize(code)
+        size += getIntIfMask(newSettings, 1) { it.computeSerializedSize() }
         return size
     }
 
@@ -48,9 +65,11 @@ class TLRequestAuthRecoverPassword() : TLMethod<TLAuthorization>() {
         if (other !is TLRequestAuthRecoverPassword) return false
         if (other === this) return true
 
-        return code == other.code
+        return _flags == other._flags
+                && code == other.code
+                && newSettings == other.newSettings
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x4ea56e92.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x37096c70
     }
 }

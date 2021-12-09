@@ -2,45 +2,46 @@ package com.github.badoualy.telegram.tl.api
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * channelParticipant#15ebac1d
+ * channelParticipant#c00c07c0
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLChannelParticipant() : TLAbsChannelParticipant() {
-    override var userId: Int = 0
+    var userId: Long = 0L
 
     var date: Int = 0
 
-    private val _constructor: String = "channelParticipant#15ebac1d"
+    private val _constructor: String = "channelParticipant#c00c07c0"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(userId: Int, date: Int) : this() {
+    constructor(userId: Long, date: Int) : this() {
         this.userId = userId
         this.date = date
     }
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
-        writeInt(userId)
+        writeLong(userId)
         writeInt(date)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        userId = readInt()
+        userId = readLong()
         date = readInt()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += SIZE_INT32
         return size
     }
@@ -55,6 +56,6 @@ class TLChannelParticipant() : TLAbsChannelParticipant() {
                 && date == other.date
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x15ebac1d.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xc00c07c0.toInt()
     }
 }

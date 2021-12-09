@@ -20,6 +20,6 @@ class TLTopPeerCategoryChannels : TLAbsTopPeerCategory() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x161d9628.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x161d9628
     }
 }

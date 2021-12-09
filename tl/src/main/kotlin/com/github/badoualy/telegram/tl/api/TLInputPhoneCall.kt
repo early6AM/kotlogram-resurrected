@@ -56,6 +56,6 @@ class TLInputPhoneCall() : TLObject() {
                 && accessHash == other.accessHash
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x1e36fded.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x1e36fded
     }
 }

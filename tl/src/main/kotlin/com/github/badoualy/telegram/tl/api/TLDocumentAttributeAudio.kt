@@ -45,7 +45,7 @@ class TLDocumentAttributeAudio() : TLAbsDocumentAttribute() {
         this.waveform = waveform
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(voice, 1024)
         updateFlags(title, 1)

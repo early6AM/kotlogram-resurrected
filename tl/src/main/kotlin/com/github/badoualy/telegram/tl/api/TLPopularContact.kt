@@ -57,6 +57,6 @@ class TLPopularContact() : TLObject() {
                 && importers == other.importers
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x5ce14175.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x5ce14175
     }
 }

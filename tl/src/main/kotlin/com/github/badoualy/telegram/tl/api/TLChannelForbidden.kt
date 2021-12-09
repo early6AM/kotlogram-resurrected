@@ -9,7 +9,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * channelForbidden#289da732
+ * channelForbidden#17d493d5
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -21,7 +21,7 @@ class TLChannelForbidden() : TLAbsChat() {
     @Transient
     var megagroup: Boolean = false
 
-    override var id: Int = 0
+    override var id: Long = 0L
 
     var accessHash: Long = 0L
 
@@ -29,14 +29,14 @@ class TLChannelForbidden() : TLAbsChat() {
 
     var untilDate: Int? = null
 
-    private val _constructor: String = "channelForbidden#289da732"
+    private val _constructor: String = "channelForbidden#17d493d5"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             broadcast: Boolean,
             megagroup: Boolean,
-            id: Int,
+            id: Long,
             accessHash: Long,
             title: String,
             untilDate: Int?
@@ -49,7 +49,7 @@ class TLChannelForbidden() : TLAbsChat() {
         this.untilDate = untilDate
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(broadcast, 32)
         updateFlags(megagroup, 256)
@@ -61,7 +61,7 @@ class TLChannelForbidden() : TLAbsChat() {
         computeFlags()
 
         writeInt(_flags)
-        writeInt(id)
+        writeLong(id)
         writeLong(accessHash)
         writeString(title)
         doIfMask(untilDate, 65536) { writeInt(it) }
@@ -72,7 +72,7 @@ class TLChannelForbidden() : TLAbsChat() {
         _flags = readInt()
         broadcast = isMask(32)
         megagroup = isMask(256)
-        id = readInt()
+        id = readLong()
         accessHash = readLong()
         title = readString()
         untilDate = readIfMask(65536) { readInt() }
@@ -83,7 +83,7 @@ class TLChannelForbidden() : TLAbsChat() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += SIZE_INT64
         size += computeTLStringSerializedSize(title)
         size += getIntIfMask(untilDate, 65536) { SIZE_INT32 }
@@ -105,6 +105,6 @@ class TLChannelForbidden() : TLAbsChat() {
                 && untilDate == other.untilDate
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x289da732.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x17d493d5
     }
 }

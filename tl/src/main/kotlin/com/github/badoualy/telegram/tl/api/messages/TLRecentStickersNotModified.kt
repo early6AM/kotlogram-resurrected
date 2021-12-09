@@ -20,6 +20,6 @@ class TLRecentStickersNotModified : TLAbsRecentStickers() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xb17f890.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xb17f890
     }
 }

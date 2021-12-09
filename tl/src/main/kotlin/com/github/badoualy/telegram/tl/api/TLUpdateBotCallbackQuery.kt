@@ -11,7 +11,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * updateBotCallbackQuery#e73547e1
+ * updateBotCallbackQuery#b9cfc48d
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -19,9 +19,9 @@ import java.io.IOException
 class TLUpdateBotCallbackQuery() : TLAbsUpdate() {
     var queryId: Long = 0L
 
-    var userId: Int = 0
+    var userId: Long = 0L
 
-    var peer: TLAbsPeer = TLPeerUser()
+    var peer: TLAbsPeer = TLPeerChat()
 
     var msgId: Int = 0
 
@@ -31,13 +31,13 @@ class TLUpdateBotCallbackQuery() : TLAbsUpdate() {
 
     var gameShortName: String? = null
 
-    private val _constructor: String = "updateBotCallbackQuery#e73547e1"
+    private val _constructor: String = "updateBotCallbackQuery#b9cfc48d"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             queryId: Long,
-            userId: Int,
+            userId: Long,
             peer: TLAbsPeer,
             msgId: Int,
             chatInstance: Long,
@@ -53,7 +53,7 @@ class TLUpdateBotCallbackQuery() : TLAbsUpdate() {
         this.gameShortName = gameShortName
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(data, 1)
         updateFlags(gameShortName, 2)
@@ -65,7 +65,7 @@ class TLUpdateBotCallbackQuery() : TLAbsUpdate() {
 
         writeInt(_flags)
         writeLong(queryId)
-        writeInt(userId)
+        writeLong(userId)
         writeTLObject(peer)
         writeInt(msgId)
         writeLong(chatInstance)
@@ -77,7 +77,7 @@ class TLUpdateBotCallbackQuery() : TLAbsUpdate() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         queryId = readLong()
-        userId = readInt()
+        userId = readLong()
         peer = readTLObject<TLAbsPeer>()
         msgId = readInt()
         chatInstance = readLong()
@@ -91,7 +91,7 @@ class TLUpdateBotCallbackQuery() : TLAbsUpdate() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT64
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += peer.computeSerializedSize()
         size += SIZE_INT32
         size += SIZE_INT64
@@ -116,6 +116,6 @@ class TLUpdateBotCallbackQuery() : TLAbsUpdate() {
                 && gameShortName == other.gameShortName
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xe73547e1.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xb9cfc48d.toInt()
     }
 }

@@ -56,6 +56,6 @@ class TLMessageRange() : TLObject() {
                 && maxId == other.maxId
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xae30253.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xae30253
     }
 }

@@ -1,7 +1,11 @@
 package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
-import com.github.badoualy.telegram.tl.api.*
+import com.github.badoualy.telegram.tl.api.TLAbsInputChannel
+import com.github.badoualy.telegram.tl.api.TLAbsInputChatPhoto
+import com.github.badoualy.telegram.tl.api.TLAbsUpdates
+import com.github.badoualy.telegram.tl.api.TLInputChannelEmpty
+import com.github.badoualy.telegram.tl.api.TLInputChatPhotoEmpty
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer

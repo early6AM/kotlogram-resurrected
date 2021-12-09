@@ -4,7 +4,11 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
-import com.github.badoualy.telegram.tl.api.*
+import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
+import com.github.badoualy.telegram.tl.api.TLAbsMessageEntity
+import com.github.badoualy.telegram.tl.api.TLAbsReplyMarkup
+import com.github.badoualy.telegram.tl.api.TLAbsUpdates
+import com.github.badoualy.telegram.tl.api.TLInputPeerEmpty
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
@@ -40,7 +44,9 @@ class TLRequestMessagesSendMessage() : TLMethod<TLAbsUpdates>() {
 
     var entities: TLObjectVector<TLAbsMessageEntity>? = TLObjectVector()
 
-    private val _constructor: String = "messages.sendMessage#fa88427a"
+    var scheduleDate: Int? = null
+
+    private val _constructor: String = "messages.sendMessage#520c3870"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -54,7 +60,8 @@ class TLRequestMessagesSendMessage() : TLMethod<TLAbsUpdates>() {
             message: String,
             randomId: Long,
             replyMarkup: TLAbsReplyMarkup?,
-            entities: TLObjectVector<TLAbsMessageEntity>?
+            entities: TLObjectVector<TLAbsMessageEntity>?,
+            scheduleDate: Int?
     ) : this() {
         this.noWebpage = noWebpage
         this.silent = silent
@@ -66,9 +73,10 @@ class TLRequestMessagesSendMessage() : TLMethod<TLAbsUpdates>() {
         this.randomId = randomId
         this.replyMarkup = replyMarkup
         this.entities = entities
+        this.scheduleDate = scheduleDate
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(noWebpage, 2)
         updateFlags(silent, 32)
@@ -77,6 +85,7 @@ class TLRequestMessagesSendMessage() : TLMethod<TLAbsUpdates>() {
         updateFlags(replyToMsgId, 1)
         updateFlags(replyMarkup, 4)
         updateFlags(entities, 8)
+        updateFlags(scheduleDate, 1024)
     }
 
     @Throws(IOException::class)
@@ -90,6 +99,7 @@ class TLRequestMessagesSendMessage() : TLMethod<TLAbsUpdates>() {
         writeLong(randomId)
         doIfMask(replyMarkup, 4) { writeTLObject(it) }
         doIfMask(entities, 8) { writeTLVector(it) }
+        doIfMask(scheduleDate, 1024) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -105,6 +115,7 @@ class TLRequestMessagesSendMessage() : TLMethod<TLAbsUpdates>() {
         randomId = readLong()
         replyMarkup = readIfMask(4) { readTLObject<TLAbsReplyMarkup>() }
         entities = readIfMask(8) { readTLVector<TLAbsMessageEntity>() }
+        scheduleDate = readIfMask(1024) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -118,6 +129,7 @@ class TLRequestMessagesSendMessage() : TLMethod<TLAbsUpdates>() {
         size += SIZE_INT64
         size += getIntIfMask(replyMarkup, 4) { it.computeSerializedSize() }
         size += getIntIfMask(entities, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(scheduleDate, 1024) { SIZE_INT32 }
         return size
     }
 
@@ -138,8 +150,9 @@ class TLRequestMessagesSendMessage() : TLMethod<TLAbsUpdates>() {
                 && randomId == other.randomId
                 && replyMarkup == other.replyMarkup
                 && entities == other.entities
+                && scheduleDate == other.scheduleDate
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xfa88427a.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x520c3870
     }
 }

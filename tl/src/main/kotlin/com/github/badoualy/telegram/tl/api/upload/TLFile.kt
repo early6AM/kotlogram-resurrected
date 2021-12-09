@@ -70,6 +70,6 @@ class TLFile() : TLAbsFile() {
                 && bytes == other.bytes
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x96a18d5.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x96a18d5
     }
 }

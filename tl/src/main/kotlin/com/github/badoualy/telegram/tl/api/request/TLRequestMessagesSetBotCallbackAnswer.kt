@@ -44,7 +44,7 @@ class TLRequestMessagesSetBotCallbackAnswer() : TLMethod<TLBool>() {
         this.cacheTime = cacheTime
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(alert, 2)
         updateFlags(message, 1)

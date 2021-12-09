@@ -4,8 +4,9 @@ import com.github.badoualy.telegram.tl.core.TLObject
 
 /**
  * Abstraction level for the following constructors:
- * * [inputUser#d8292816][TLInputUser]
+ * * [inputUser#f21158c6][TLInputUser]
  * * [inputUserEmpty#b98886cf][TLInputUserEmpty]
+ * * [inputUserFromMessage#1da448e2][TLInputUserFromMessage]
  * * [inputUserSelf#f7c1b13f][TLInputUserSelf]
  *
  * @author Yannick Badoual yann.badoual@gmail.com

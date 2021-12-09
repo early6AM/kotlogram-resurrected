@@ -58,6 +58,6 @@ class TLRequestInvokeAfterMsgs<T : TLObject>() : TLMethod<T>() {
                 && query == other.query
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3dc4b4f0.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3dc4b4f0
     }
 }

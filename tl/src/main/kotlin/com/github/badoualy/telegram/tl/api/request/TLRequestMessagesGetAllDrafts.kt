@@ -21,6 +21,6 @@ class TLRequestMessagesGetAllDrafts : TLMethod<TLAbsUpdates>() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x6a3f8d65.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x6a3f8d65
     }
 }

@@ -79,6 +79,6 @@ class TLImportedContacts() : TLObject() {
                 && users == other.users
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x77d01c3b.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x77d01c3b
     }
 }

@@ -20,6 +20,6 @@ class TLInputPeerEmpty : TLAbsInputPeer() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x7f3b18ea.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x7f3b18ea
     }
 }

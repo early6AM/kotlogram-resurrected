@@ -11,27 +11,31 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * contacts.found#1aa1f784
+ * contacts.found#b3134d9d
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLFound() : TLObject() {
+    var myResults: TLObjectVector<TLAbsPeer> = TLObjectVector()
+
     var results: TLObjectVector<TLAbsPeer> = TLObjectVector()
 
     var chats: TLObjectVector<TLAbsChat> = TLObjectVector()
 
     var users: TLObjectVector<TLAbsUser> = TLObjectVector()
 
-    private val _constructor: String = "contacts.found#1aa1f784"
+    private val _constructor: String = "contacts.found#b3134d9d"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
+            myResults: TLObjectVector<TLAbsPeer>,
             results: TLObjectVector<TLAbsPeer>,
             chats: TLObjectVector<TLAbsChat>,
             users: TLObjectVector<TLAbsUser>
     ) : this() {
+        this.myResults = myResults
         this.results = results
         this.chats = chats
         this.users = users
@@ -39,6 +43,7 @@ class TLFound() : TLObject() {
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
+        writeTLVector(myResults)
         writeTLVector(results)
         writeTLVector(chats)
         writeTLVector(users)
@@ -46,6 +51,7 @@ class TLFound() : TLObject() {
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
+        myResults = readTLVector<TLAbsPeer>()
         results = readTLVector<TLAbsPeer>()
         chats = readTLVector<TLAbsChat>()
         users = readTLVector<TLAbsUser>()
@@ -53,6 +59,7 @@ class TLFound() : TLObject() {
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
+        size += myResults.computeSerializedSize()
         size += results.computeSerializedSize()
         size += chats.computeSerializedSize()
         size += users.computeSerializedSize()
@@ -65,11 +72,12 @@ class TLFound() : TLObject() {
         if (other !is TLFound) return false
         if (other === this) return true
 
-        return results == other.results
+        return myResults == other.myResults
+                && results == other.results
                 && chats == other.chats
                 && users == other.users
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x1aa1f784.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xb3134d9d.toInt()
     }
 }

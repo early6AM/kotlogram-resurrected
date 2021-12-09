@@ -21,6 +21,9 @@ class TLBotCallbackAnswer() : TLObject() {
     @Transient
     var hasUrl: Boolean = false
 
+    @Transient
+    var nativeUi: Boolean = false
+
     var message: String? = null
 
     var url: String? = null
@@ -34,21 +37,24 @@ class TLBotCallbackAnswer() : TLObject() {
     constructor(
             alert: Boolean,
             hasUrl: Boolean,
+            nativeUi: Boolean,
             message: String?,
             url: String?,
             cacheTime: Int
     ) : this() {
         this.alert = alert
         this.hasUrl = hasUrl
+        this.nativeUi = nativeUi
         this.message = message
         this.url = url
         this.cacheTime = cacheTime
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(alert, 2)
         updateFlags(hasUrl, 8)
+        updateFlags(nativeUi, 16)
         updateFlags(message, 1)
         updateFlags(url, 4)
     }
@@ -68,6 +74,7 @@ class TLBotCallbackAnswer() : TLObject() {
         _flags = readInt()
         alert = isMask(2)
         hasUrl = isMask(8)
+        nativeUi = isMask(16)
         message = readIfMask(1) { readString() }
         url = readIfMask(4) { readString() }
         cacheTime = readInt()
@@ -93,11 +100,12 @@ class TLBotCallbackAnswer() : TLObject() {
         return _flags == other._flags
                 && alert == other.alert
                 && hasUrl == other.hasUrl
+                && nativeUi == other.nativeUi
                 && message == other.message
                 && url == other.url
                 && cacheTime == other.cacheTime
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x36585ea4.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x36585ea4
     }
 }

@@ -49,6 +49,6 @@ class TLCdnConfig() : TLObject() {
         return publicKeys == other.publicKeys
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x5725e40a.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x5725e40a
     }
 }

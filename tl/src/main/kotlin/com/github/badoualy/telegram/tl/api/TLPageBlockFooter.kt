@@ -47,6 +47,6 @@ class TLPageBlockFooter() : TLAbsPageBlock() {
         return text == other.text
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x48870999.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x48870999
     }
 }

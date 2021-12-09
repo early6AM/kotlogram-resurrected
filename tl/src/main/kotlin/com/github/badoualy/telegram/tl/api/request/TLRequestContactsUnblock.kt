@@ -1,8 +1,8 @@
 package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
-import com.github.badoualy.telegram.tl.api.TLAbsInputUser
-import com.github.badoualy.telegram.tl.api.TLInputUserEmpty
+import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
+import com.github.badoualy.telegram.tl.api.TLInputPeerEmpty
 import com.github.badoualy.telegram.tl.core.TLBool
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
@@ -14,13 +14,13 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLRequestContactsUnblock() : TLMethod<TLBool>() {
-    var id: TLAbsInputUser = TLInputUserEmpty()
+    var id: TLAbsInputPeer = TLInputPeerEmpty()
 
-    private val _constructor: String = "contacts.unblock#e54100bd"
+    private val _constructor: String = "contacts.unblock#bea65d50"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(id: TLAbsInputUser) : this() {
+    constructor(id: TLAbsInputPeer) : this() {
         this.id = id
     }
 
@@ -31,7 +31,7 @@ class TLRequestContactsUnblock() : TLMethod<TLBool>() {
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        id = readTLObject<TLAbsInputUser>()
+        id = readTLObject<TLAbsInputPeer>()
     }
 
     override fun computeSerializedSize(): Int {
@@ -49,6 +49,6 @@ class TLRequestContactsUnblock() : TLMethod<TLBool>() {
         return id == other.id
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xe54100bd.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xbea65d50.toInt()
     }
 }

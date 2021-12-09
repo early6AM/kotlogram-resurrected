@@ -20,6 +20,6 @@ class TLChannelAdminLogEventActionParticipantJoin : TLAbsChannelAdminLogEventAct
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x183040d3.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x183040d3
     }
 }

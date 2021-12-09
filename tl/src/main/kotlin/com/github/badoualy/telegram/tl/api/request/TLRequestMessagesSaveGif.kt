@@ -57,6 +57,6 @@ class TLRequestMessagesSaveGif() : TLMethod<TLBool>() {
                 && unsave == other.unsave
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x327a30cb.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x327a30cb
     }
 }

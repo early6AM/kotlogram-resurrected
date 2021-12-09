@@ -1,7 +1,7 @@
 ![Kotlogram](http://s28.postimg.org/u3sc3e24t/logo.png)<br/>
 [![Release](https://jitpack.io/v/badoualy/kotlogram.svg)](https://jitpack.io/#badoualy/kotlogram) [![Build Status](https://travis-ci.org/badoualy/kotlogram.svg?branch=master)](https://travis-ci.org/badoualy/kotlogram)
 
-Current layer: 72
+Current layer: ~~66~~&nbsp;&nbsp;~~72~~&nbsp;&nbsp;133
 ===========
 Documentation@[http://kotlogram.badoualy.com](http://kotlogram.badoualy.com)
 ===========

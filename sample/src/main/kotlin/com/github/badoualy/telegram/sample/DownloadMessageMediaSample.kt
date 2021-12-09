@@ -1,7 +1,6 @@
 package com.github.badoualy.telegram.sample
 
 import com.github.badoualy.telegram.api.Kotlogram
-import com.github.badoualy.telegram.api.utils.getAbsMediaInput
 import com.github.badoualy.telegram.api.utils.id
 import com.github.badoualy.telegram.api.utils.toInputPeer
 import com.github.badoualy.telegram.sample.config.Config
@@ -22,7 +21,7 @@ object DownloadMessageMediaSample {
 
         // You can start making requests
         try {
-            val tlAbsDialogs = client.messagesGetDialogs(false, 0, 0, TLInputPeerEmpty(), 1).blockingGet()
+            /*val tlAbsDialogs = client.messagesGetDialogs(false, 0, 0, TLInputPeerEmpty(), 1).blockingGet()
             val tlAbsPeer = tlAbsDialogs.dialogs[0].peer
             val tlPeerObj: TLObject =
                     if (tlAbsPeer is TLPeerUser) tlAbsDialogs.users.first { it.id == tlAbsPeer.id }
@@ -55,7 +54,7 @@ object DownloadMessageMediaSample {
                 println("Download ${mediaInput.inputFileLocation}")
                 val fos = FileOutputStream(File(Config.ROOT_DIR, fileName))
                 client.sync().downloadFile(mediaInput.inputFileLocation, mediaInput.size, fos)
-            } else println("Nothing to download for this media...")
+            } else println("Nothing to download for this media...")*/
         } catch (e: RpcErrorException) {
             e.printStackTrace()
         } catch (e: IOException) {

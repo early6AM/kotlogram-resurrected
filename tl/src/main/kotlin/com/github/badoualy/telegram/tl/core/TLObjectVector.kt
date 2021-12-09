@@ -17,6 +17,6 @@ class TLObjectVector<T : TLObject> : TLVector<T>() {
 
     override fun deserializeItem(tlDeserializer: TLDeserializer): T = tlDeserializer.readTLObject()
 
-    override fun computeSerializedSize() = SIZE_CONSTRUCTOR_ID + SIZE_INT32 +
-            sumBy { it.computeSerializedSize() }
+    override fun computeSerializedSize() =
+        SIZE_CONSTRUCTOR_ID + SIZE_INT32 + sumOf(TLObject::computeSerializedSize)
 }

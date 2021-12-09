@@ -4,7 +4,7 @@ import com.github.badoualy.telegram.tl.core.TLObject
 
 /**
  * Abstraction level for the following constructors:
- * * [inputGeoPoint#f3b7acc9][TLInputGeoPoint]
+ * * [inputGeoPoint#48222faf][TLInputGeoPoint]
  * * [inputGeoPointEmpty#e4c123d6][TLInputGeoPointEmpty]
  *
  * @author Yannick Badoual yann.badoual@gmail.com

@@ -51,6 +51,6 @@ class TLRequestMessagesReadMessageContents() : TLMethod<TLAffectedMessages>() {
         return id == other.id
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x36a73f77.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x36a73f77
     }
 }

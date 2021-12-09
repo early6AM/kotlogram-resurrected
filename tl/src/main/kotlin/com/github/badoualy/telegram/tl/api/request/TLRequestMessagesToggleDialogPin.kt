@@ -2,8 +2,8 @@ package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
-import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
-import com.github.badoualy.telegram.tl.api.TLInputPeerEmpty
+import com.github.badoualy.telegram.tl.api.TLAbsInputDialogPeer
+import com.github.badoualy.telegram.tl.api.TLInputDialogPeerFolder
 import com.github.badoualy.telegram.tl.core.TLBool
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
@@ -18,18 +18,18 @@ class TLRequestMessagesToggleDialogPin() : TLMethod<TLBool>() {
     @Transient
     var pinned: Boolean = false
 
-    var peer: TLAbsInputPeer = TLInputPeerEmpty()
+    var peer: TLAbsInputDialogPeer = TLInputDialogPeerFolder()
 
-    private val _constructor: String = "messages.toggleDialogPin#3289be6a"
+    private val _constructor: String = "messages.toggleDialogPin#a731e257"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(pinned: Boolean, peer: TLAbsInputPeer) : this() {
+    constructor(pinned: Boolean, peer: TLAbsInputDialogPeer) : this() {
         this.pinned = pinned
         this.peer = peer
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(pinned, 1)
     }
@@ -46,7 +46,7 @@ class TLRequestMessagesToggleDialogPin() : TLMethod<TLBool>() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         pinned = isMask(1)
-        peer = readTLObject<TLAbsInputPeer>()
+        peer = readTLObject<TLAbsInputDialogPeer>()
     }
 
     override fun computeSerializedSize(): Int {
@@ -69,6 +69,6 @@ class TLRequestMessagesToggleDialogPin() : TLMethod<TLBool>() {
                 && peer == other.peer
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3289be6a.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xa731e257.toInt()
     }
 }

@@ -18,6 +18,9 @@ class TLRequestMessagesDeleteHistory() : TLMethod<TLAffectedHistory>() {
     @Transient
     var justClear: Boolean = false
 
+    @Transient
+    var revoke: Boolean = false
+
     var peer: TLAbsInputPeer = TLInputPeerEmpty()
 
     var maxId: Int = 0
@@ -28,10 +31,12 @@ class TLRequestMessagesDeleteHistory() : TLMethod<TLAffectedHistory>() {
 
     constructor(
             justClear: Boolean,
+            revoke: Boolean,
             peer: TLAbsInputPeer,
             maxId: Int
     ) : this() {
         this.justClear = justClear
+        this.revoke = revoke
         this.peer = peer
         this.maxId = maxId
     }
@@ -39,9 +44,10 @@ class TLRequestMessagesDeleteHistory() : TLMethod<TLAffectedHistory>() {
     @Throws(IOException::class)
     override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLAffectedHistory = tlDeserializer.readTLObject(TLAffectedHistory::class, TLAffectedHistory.CONSTRUCTOR_ID)
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(justClear, 1)
+        updateFlags(revoke, 2)
     }
 
     @Throws(IOException::class)
@@ -57,6 +63,7 @@ class TLRequestMessagesDeleteHistory() : TLMethod<TLAffectedHistory>() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         justClear = isMask(1)
+        revoke = isMask(2)
         peer = readTLObject<TLAbsInputPeer>()
         maxId = readInt()
     }
@@ -79,10 +86,11 @@ class TLRequestMessagesDeleteHistory() : TLMethod<TLAffectedHistory>() {
 
         return _flags == other._flags
                 && justClear == other.justClear
+                && revoke == other.revoke
                 && peer == other.peer
                 && maxId == other.maxId
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x1c015b09.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x1c015b09
     }
 }

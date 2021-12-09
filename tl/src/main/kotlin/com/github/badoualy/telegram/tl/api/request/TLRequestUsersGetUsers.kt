@@ -52,6 +52,6 @@ class TLRequestUsersGetUsers() : TLMethod<TLObjectVector<TLAbsUser>>() {
         return id == other.id
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xd91a548.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xd91a548
     }
 }

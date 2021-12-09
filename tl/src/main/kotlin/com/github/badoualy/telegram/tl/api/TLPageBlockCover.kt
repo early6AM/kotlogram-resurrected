@@ -47,6 +47,6 @@ class TLPageBlockCover() : TLAbsPageBlock() {
         return cover == other.cover
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x39f23300.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x39f23300
     }
 }

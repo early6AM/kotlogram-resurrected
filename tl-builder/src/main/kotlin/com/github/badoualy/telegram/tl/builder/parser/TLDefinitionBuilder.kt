@@ -2,7 +2,7 @@ package com.github.badoualy.telegram.tl.builder.parser
 
 object TLDefinitionBuilder {
 
-    private val genericRegex = Regex("([a-zA-Z]+)<([a-zA-Z_]+)>",
+    private val genericRegex = Regex("([a-zA-Z]+)<([a-zA-Z_.]+)>",
                                      RegexOption.IGNORE_CASE) // Vector<SomeKindOfType>
     private val flagRegex = Regex("([a-zA-Z]+).(\\d+)\\?([a-zA-Z<>.]+)",
                                   RegexOption.IGNORE_CASE) // flags.0?true

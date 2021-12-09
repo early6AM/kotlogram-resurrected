@@ -4,7 +4,7 @@ import com.github.badoualy.telegram.tl.core.TLObject
 
 /**
  * Abstraction level for the following constructors:
- * * [document#87232bc7][TLDocument]
+ * * [document#1e87342b][TLDocument]
  * * [documentEmpty#36f8c871][TLDocumentEmpty]
  *
  * @author Yannick Badoual yann.badoual@gmail.com

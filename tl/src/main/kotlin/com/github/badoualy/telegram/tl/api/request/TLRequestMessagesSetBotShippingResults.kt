@@ -37,7 +37,7 @@ class TLRequestMessagesSetBotShippingResults() : TLMethod<TLBool>() {
         this.shippingOptions = shippingOptions
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(error, 1)
         updateFlags(shippingOptions, 2)

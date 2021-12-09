@@ -48,6 +48,6 @@ class TLSendMessageUploadRoundAction() : TLAbsSendMessageAction() {
         return progress == other.progress
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x243e1c66.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x243e1c66
     }
 }

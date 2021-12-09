@@ -10,7 +10,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * inputAppEvent#770656a8
+ * inputAppEvent#1d1b1245
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -22,9 +22,9 @@ class TLInputAppEvent() : TLObject() {
 
     var peer: Long = 0L
 
-    var data: String = ""
+    var data: TLAbsJSONValue = TLJsonNull()
 
-    private val _constructor: String = "inputAppEvent#770656a8"
+    private val _constructor: String = "inputAppEvent#1d1b1245"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -32,7 +32,7 @@ class TLInputAppEvent() : TLObject() {
             time: Double,
             type: String,
             peer: Long,
-            data: String
+            data: TLAbsJSONValue
     ) : this() {
         this.time = time
         this.type = type
@@ -45,7 +45,7 @@ class TLInputAppEvent() : TLObject() {
         writeDouble(time)
         writeString(type)
         writeLong(peer)
-        writeString(data)
+        writeTLObject(data)
     }
 
     @Throws(IOException::class)
@@ -53,7 +53,7 @@ class TLInputAppEvent() : TLObject() {
         time = readDouble()
         type = readString()
         peer = readLong()
-        data = readString()
+        data = readTLObject<TLAbsJSONValue>()
     }
 
     override fun computeSerializedSize(): Int {
@@ -61,7 +61,7 @@ class TLInputAppEvent() : TLObject() {
         size += SIZE_DOUBLE
         size += computeTLStringSerializedSize(type)
         size += SIZE_INT64
-        size += computeTLStringSerializedSize(data)
+        size += data.computeSerializedSize()
         return size
     }
 
@@ -77,6 +77,6 @@ class TLInputAppEvent() : TLObject() {
                 && data == other.data
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x770656a8.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x1d1b1245
     }
 }

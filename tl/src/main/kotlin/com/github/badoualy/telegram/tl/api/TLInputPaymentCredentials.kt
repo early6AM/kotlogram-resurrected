@@ -27,7 +27,7 @@ class TLInputPaymentCredentials() : TLAbsInputPaymentCredentials() {
         this.data = data
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(save, 1)
     }
@@ -67,6 +67,6 @@ class TLInputPaymentCredentials() : TLAbsInputPaymentCredentials() {
                 && data == other.data
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3417d728.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3417d728
     }
 }

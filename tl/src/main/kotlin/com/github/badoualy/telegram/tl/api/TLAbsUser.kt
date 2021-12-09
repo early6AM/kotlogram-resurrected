@@ -4,14 +4,14 @@ import com.github.badoualy.telegram.tl.core.TLObject
 
 /**
  * Abstraction level for the following constructors:
- * * [user#2e13f4c3][TLUser]
- * * [userEmpty#200250ba][TLUserEmpty]
+ * * [user#3ff6ecb0][TLUser]
+ * * [userEmpty#d3bc4b7a][TLUserEmpty]
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 abstract class TLAbsUser : TLObject() {
-    abstract var id: Int
+    abstract var id: Long
 
     fun isEmpty(): Boolean = this is TLUserEmpty
 

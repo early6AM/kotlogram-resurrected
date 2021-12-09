@@ -67,6 +67,6 @@ class TLTextUrl() : TLAbsRichText() {
                 && webpageId == other.webpageId
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3c2884c1.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3c2884c1
     }
 }

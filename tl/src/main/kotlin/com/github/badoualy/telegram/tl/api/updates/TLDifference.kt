@@ -1,7 +1,11 @@
 package com.github.badoualy.telegram.tl.api.updates
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
-import com.github.badoualy.telegram.tl.api.*
+import com.github.badoualy.telegram.tl.api.TLAbsChat
+import com.github.badoualy.telegram.tl.api.TLAbsEncryptedMessage
+import com.github.badoualy.telegram.tl.api.TLAbsMessage
+import com.github.badoualy.telegram.tl.api.TLAbsUpdate
+import com.github.badoualy.telegram.tl.api.TLAbsUser
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
@@ -91,6 +95,6 @@ class TLDifference() : TLAbsDifference() {
                 && state == other.state
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xf49ca0.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xf49ca0
     }
 }

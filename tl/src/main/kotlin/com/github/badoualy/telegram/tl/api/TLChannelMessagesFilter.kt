@@ -28,7 +28,7 @@ class TLChannelMessagesFilter() : TLAbsChannelMessagesFilter() {
         this.ranges = ranges
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(excludeNewMessages, 2)
     }

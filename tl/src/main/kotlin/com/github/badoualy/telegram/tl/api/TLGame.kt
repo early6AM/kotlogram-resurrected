@@ -52,7 +52,7 @@ class TLGame() : TLObject() {
         this.document = document
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(document, 1)
     }

@@ -92,6 +92,6 @@ class TLRequestMessagesGetUnreadMentions() : TLMethod<TLAbsMessages>() {
                 && minId == other.minId
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x46578472.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x46578472
     }
 }

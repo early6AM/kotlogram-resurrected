@@ -51,6 +51,6 @@ class TLRequestMessagesReceivedQueue() : TLMethod<TLLongVector>() {
         return maxQts == other.maxQts
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x55a5bb66.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x55a5bb66
     }
 }

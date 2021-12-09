@@ -59,6 +59,6 @@ class TLRequestContactsSearch() : TLMethod<TLFound>() {
                 && limit == other.limit
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x11f812d8.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x11f812d8
     }
 }

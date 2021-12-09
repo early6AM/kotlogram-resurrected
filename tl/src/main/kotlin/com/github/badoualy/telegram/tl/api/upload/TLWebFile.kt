@@ -88,6 +88,6 @@ class TLWebFile() : TLObject() {
                 && bytes == other.bytes
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x21e753bc.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x21e753bc
     }
 }

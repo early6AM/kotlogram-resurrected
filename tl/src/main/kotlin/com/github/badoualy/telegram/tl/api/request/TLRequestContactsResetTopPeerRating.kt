@@ -58,6 +58,6 @@ class TLRequestContactsResetTopPeerRating() : TLMethod<TLBool>() {
                 && peer == other.peer
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x1ae373ac.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x1ae373ac
     }
 }

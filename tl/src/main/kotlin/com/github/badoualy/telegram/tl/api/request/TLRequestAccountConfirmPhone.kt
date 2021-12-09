@@ -55,6 +55,6 @@ class TLRequestAccountConfirmPhone() : TLMethod<TLBool>() {
                 && phoneCode == other.phoneCode
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x5f2178c3.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x5f2178c3
     }
 }

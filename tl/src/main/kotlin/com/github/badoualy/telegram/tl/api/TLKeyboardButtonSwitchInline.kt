@@ -35,7 +35,7 @@ class TLKeyboardButtonSwitchInline() : TLAbsKeyboardButton() {
         this.query = query
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(samePeer, 1)
     }
@@ -79,6 +79,6 @@ class TLKeyboardButtonSwitchInline() : TLAbsKeyboardButton() {
                 && query == other.query
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x568a748.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x568a748
     }
 }

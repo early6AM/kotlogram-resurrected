@@ -49,6 +49,6 @@ class TLDataJSON() : TLObject() {
         return data == other.data
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x7d748d04.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x7d748d04
     }
 }

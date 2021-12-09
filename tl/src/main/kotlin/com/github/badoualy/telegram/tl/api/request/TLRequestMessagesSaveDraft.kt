@@ -47,7 +47,7 @@ class TLRequestMessagesSaveDraft() : TLMethod<TLBool>() {
         this.entities = entities
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(noWebpage, 2)
         updateFlags(replyToMsgId, 1)

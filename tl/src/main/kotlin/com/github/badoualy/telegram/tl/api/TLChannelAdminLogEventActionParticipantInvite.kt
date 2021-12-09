@@ -12,7 +12,7 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLChannelAdminLogEventActionParticipantInvite() : TLAbsChannelAdminLogEventAction() {
-    var participant: TLAbsChannelParticipant = TLChannelParticipantCreator()
+    var participant: TLAbsChannelParticipant = TLChannelParticipantLeft()
 
     private val _constructor: String = "channelAdminLogEventActionParticipantInvite#e31c34d8"
 

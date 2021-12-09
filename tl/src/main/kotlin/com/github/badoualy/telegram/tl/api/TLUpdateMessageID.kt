@@ -56,6 +56,6 @@ class TLUpdateMessageID() : TLAbsUpdate() {
                 && randomId == other.randomId
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x4e90bfd6.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x4e90bfd6
     }
 }

@@ -48,6 +48,6 @@ class TLRequestMessagesImportChatInvite() : TLMethod<TLAbsUpdates>() {
         return hash == other.hash
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x6c50051c.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x6c50051c
     }
 }

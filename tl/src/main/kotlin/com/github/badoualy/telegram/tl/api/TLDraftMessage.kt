@@ -44,7 +44,7 @@ class TLDraftMessage() : TLAbsDraftMessage() {
         this.date = date
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(noWebpage, 2)
         updateFlags(replyToMsgId, 1)

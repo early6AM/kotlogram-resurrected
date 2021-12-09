@@ -20,6 +20,6 @@ class TLTopPeerCategoryPhoneCalls : TLAbsTopPeerCategory() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x1e76a78c.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x1e76a78c
     }
 }

@@ -21,9 +21,8 @@ class TLStringVector : TLVector<String>() {
     @Throws(IOException::class)
     override fun deserializeItem(tlDeserializer: TLDeserializer): String = tlDeserializer.readString()
 
-    override fun computeSerializedSize() = SIZE_CONSTRUCTOR_ID + SIZE_INT32 + sumBy {
-        TLObjectUtils.computeTLStringSerializedSize(it)
-    }
+    override fun computeSerializedSize() =
+        SIZE_CONSTRUCTOR_ID + SIZE_INT32 + sumOf(TLObjectUtils::computeTLStringSerializedSize)
 
     override fun toString() = "vector<string>#1cb5c415"
 }

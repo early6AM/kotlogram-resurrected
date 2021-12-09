@@ -48,6 +48,6 @@ class TLRequestAccountUpdateDeviceLocked() : TLMethod<TLBool>() {
         return period == other.period
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x38df3532.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x38df3532
     }
 }

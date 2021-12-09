@@ -4,7 +4,7 @@ import com.github.badoualy.telegram.tl.core.TLObject
 
 /**
  * Abstraction level for the following constructors:
- * * [userProfilePhoto#d559d8c8][TLUserProfilePhoto]
+ * * [userProfilePhoto#82d1f706][TLUserProfilePhoto]
  * * [userProfilePhotoEmpty#4f11bae1][TLUserProfilePhotoEmpty]
  *
  * @author Yannick Badoual yann.badoual@gmail.com

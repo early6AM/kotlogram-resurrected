@@ -56,6 +56,15 @@ class TLChannelAdminLogEventsFilter() : TLObject() {
     @Transient
     var delete: Boolean = false
 
+    @Transient
+    var groupCall: Boolean = false
+
+    @Transient
+    var invites: Boolean = false
+
+    @Transient
+    var send: Boolean = false
+
     private val _constructor: String = "channelAdminLogEventsFilter#ea107ae4"
 
     override val constructorId: Int = CONSTRUCTOR_ID
@@ -74,7 +83,10 @@ class TLChannelAdminLogEventsFilter() : TLObject() {
             settings: Boolean,
             pinned: Boolean,
             edit: Boolean,
-            delete: Boolean
+            delete: Boolean,
+            groupCall: Boolean,
+            invites: Boolean,
+            send: Boolean
     ) : this() {
         this.join = join
         this.leave = leave
@@ -90,9 +102,12 @@ class TLChannelAdminLogEventsFilter() : TLObject() {
         this.pinned = pinned
         this.edit = edit
         this.delete = delete
+        this.groupCall = groupCall
+        this.invites = invites
+        this.send = send
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(join, 1)
         updateFlags(leave, 2)
@@ -108,6 +123,9 @@ class TLChannelAdminLogEventsFilter() : TLObject() {
         updateFlags(pinned, 2048)
         updateFlags(edit, 4096)
         updateFlags(delete, 8192)
+        updateFlags(groupCall, 16384)
+        updateFlags(invites, 32768)
+        updateFlags(send, 65536)
     }
 
     @Throws(IOException::class)
@@ -134,6 +152,9 @@ class TLChannelAdminLogEventsFilter() : TLObject() {
         pinned = isMask(2048)
         edit = isMask(4096)
         delete = isMask(8192)
+        groupCall = isMask(16384)
+        invites = isMask(32768)
+        send = isMask(65536)
     }
 
     override fun computeSerializedSize(): Int {
@@ -165,6 +186,9 @@ class TLChannelAdminLogEventsFilter() : TLObject() {
                 && pinned == other.pinned
                 && edit == other.edit
                 && delete == other.delete
+                && groupCall == other.groupCall
+                && invites == other.invites
+                && send == other.send
     }
     companion object  {
         const val CONSTRUCTOR_ID: Int = 0xea107ae4.toInt()

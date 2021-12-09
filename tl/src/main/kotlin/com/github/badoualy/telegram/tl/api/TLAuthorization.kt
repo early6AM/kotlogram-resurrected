@@ -10,15 +10,28 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * authorization#7bf2e6f6
+ * authorization#ad01d61d
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLAuthorization() : TLObject() {
-    var hash: Long = 0L
+    @Transient
+    var current: Boolean = false
 
-    var flags: Int = 0
+    @Transient
+    var officialApp: Boolean = false
+
+    @Transient
+    var passwordPending: Boolean = false
+
+    @Transient
+    var encryptedRequestsDisabled: Boolean = false
+
+    @Transient
+    var callRequestsDisabled: Boolean = false
+
+    var hash: Long = 0L
 
     var deviceModel: String = ""
 
@@ -42,13 +55,17 @@ class TLAuthorization() : TLObject() {
 
     var region: String = ""
 
-    private val _constructor: String = "authorization#7bf2e6f6"
+    private val _constructor: String = "authorization#ad01d61d"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
+            current: Boolean,
+            officialApp: Boolean,
+            passwordPending: Boolean,
+            encryptedRequestsDisabled: Boolean,
+            callRequestsDisabled: Boolean,
             hash: Long,
-            flags: Int,
             deviceModel: String,
             platform: String,
             systemVersion: String,
@@ -61,8 +78,12 @@ class TLAuthorization() : TLObject() {
             country: String,
             region: String
     ) : this() {
+        this.current = current
+        this.officialApp = officialApp
+        this.passwordPending = passwordPending
+        this.encryptedRequestsDisabled = encryptedRequestsDisabled
+        this.callRequestsDisabled = callRequestsDisabled
         this.hash = hash
-        this.flags = flags
         this.deviceModel = deviceModel
         this.platform = platform
         this.systemVersion = systemVersion
@@ -76,10 +97,21 @@ class TLAuthorization() : TLObject() {
         this.region = region
     }
 
+    override fun computeFlags() {
+        _flags = 0
+        updateFlags(current, 1)
+        updateFlags(officialApp, 2)
+        updateFlags(passwordPending, 4)
+        updateFlags(encryptedRequestsDisabled, 8)
+        updateFlags(callRequestsDisabled, 16)
+    }
+
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
+        computeFlags()
+
+        writeInt(_flags)
         writeLong(hash)
-        writeInt(flags)
         writeString(deviceModel)
         writeString(platform)
         writeString(systemVersion)
@@ -95,8 +127,13 @@ class TLAuthorization() : TLObject() {
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
+        _flags = readInt()
+        current = isMask(1)
+        officialApp = isMask(2)
+        passwordPending = isMask(4)
+        encryptedRequestsDisabled = isMask(8)
+        callRequestsDisabled = isMask(16)
         hash = readLong()
-        flags = readInt()
         deviceModel = readString()
         platform = readString()
         systemVersion = readString()
@@ -111,9 +148,11 @@ class TLAuthorization() : TLObject() {
     }
 
     override fun computeSerializedSize(): Int {
+        computeFlags()
+
         var size = SIZE_CONSTRUCTOR_ID
-        size += SIZE_INT64
         size += SIZE_INT32
+        size += SIZE_INT64
         size += computeTLStringSerializedSize(deviceModel)
         size += computeTLStringSerializedSize(platform)
         size += computeTLStringSerializedSize(systemVersion)
@@ -134,8 +173,13 @@ class TLAuthorization() : TLObject() {
         if (other !is TLAuthorization) return false
         if (other === this) return true
 
-        return hash == other.hash
-                && flags == other.flags
+        return _flags == other._flags
+                && current == other.current
+                && officialApp == other.officialApp
+                && passwordPending == other.passwordPending
+                && encryptedRequestsDisabled == other.encryptedRequestsDisabled
+                && callRequestsDisabled == other.callRequestsDisabled
+                && hash == other.hash
                 && deviceModel == other.deviceModel
                 && platform == other.platform
                 && systemVersion == other.systemVersion
@@ -149,6 +193,6 @@ class TLAuthorization() : TLObject() {
                 && region == other.region
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x7bf2e6f6.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xad01d61d.toInt()
     }
 }

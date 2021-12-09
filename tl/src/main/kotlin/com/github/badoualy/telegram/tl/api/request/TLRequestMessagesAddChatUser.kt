@@ -2,6 +2,7 @@ package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.api.TLAbsInputUser
 import com.github.badoualy.telegram.tl.api.TLAbsUpdates
 import com.github.badoualy.telegram.tl.api.TLInputUserEmpty
@@ -15,18 +16,18 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLRequestMessagesAddChatUser() : TLMethod<TLAbsUpdates>() {
-    var chatId: Int = 0
+    var chatId: Long = 0L
 
     var userId: TLAbsInputUser = TLInputUserEmpty()
 
     var fwdLimit: Int = 0
 
-    private val _constructor: String = "messages.addChatUser#f9a0aa09"
+    private val _constructor: String = "messages.addChatUser#f24753e3"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
-            chatId: Int,
+            chatId: Long,
             userId: TLAbsInputUser,
             fwdLimit: Int
     ) : this() {
@@ -37,21 +38,21 @@ class TLRequestMessagesAddChatUser() : TLMethod<TLAbsUpdates>() {
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
-        writeInt(chatId)
+        writeLong(chatId)
         writeTLObject(userId)
         writeInt(fwdLimit)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        chatId = readInt()
+        chatId = readLong()
         userId = readTLObject<TLAbsInputUser>()
         fwdLimit = readInt()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += userId.computeSerializedSize()
         size += SIZE_INT32
         return size
@@ -68,6 +69,6 @@ class TLRequestMessagesAddChatUser() : TLMethod<TLAbsUpdates>() {
                 && fwdLimit == other.fwdLimit
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xf9a0aa09.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xf24753e3.toInt()
     }
 }

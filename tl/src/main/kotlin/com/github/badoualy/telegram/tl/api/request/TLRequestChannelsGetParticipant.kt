@@ -2,9 +2,9 @@ package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.api.TLAbsInputChannel
-import com.github.badoualy.telegram.tl.api.TLAbsInputUser
+import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
 import com.github.badoualy.telegram.tl.api.TLInputChannelEmpty
-import com.github.badoualy.telegram.tl.api.TLInputUserEmpty
+import com.github.badoualy.telegram.tl.api.TLInputPeerEmpty
 import com.github.badoualy.telegram.tl.api.channels.TLChannelParticipant
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
@@ -18,15 +18,15 @@ import java.io.IOException
 class TLRequestChannelsGetParticipant() : TLMethod<TLChannelParticipant>() {
     var channel: TLAbsInputChannel = TLInputChannelEmpty()
 
-    var userId: TLAbsInputUser = TLInputUserEmpty()
+    var participant: TLAbsInputPeer = TLInputPeerEmpty()
 
-    private val _constructor: String = "channels.getParticipant#546dd7a6"
+    private val _constructor: String = "channels.getParticipant#a0ab6cc6"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(channel: TLAbsInputChannel, userId: TLAbsInputUser) : this() {
+    constructor(channel: TLAbsInputChannel, participant: TLAbsInputPeer) : this() {
         this.channel = channel
-        this.userId = userId
+        this.participant = participant
     }
 
     @Throws(IOException::class)
@@ -35,19 +35,19 @@ class TLRequestChannelsGetParticipant() : TLMethod<TLChannelParticipant>() {
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
         writeTLObject(channel)
-        writeTLObject(userId)
+        writeTLObject(participant)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         channel = readTLObject<TLAbsInputChannel>()
-        userId = readTLObject<TLAbsInputUser>()
+        participant = readTLObject<TLAbsInputPeer>()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
         size += channel.computeSerializedSize()
-        size += userId.computeSerializedSize()
+        size += participant.computeSerializedSize()
         return size
     }
 
@@ -58,9 +58,9 @@ class TLRequestChannelsGetParticipant() : TLMethod<TLChannelParticipant>() {
         if (other === this) return true
 
         return channel == other.channel
-                && userId == other.userId
+                && participant == other.participant
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x546dd7a6.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xa0ab6cc6.toInt()
     }
 }

@@ -1,9 +1,9 @@
 package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
-import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
-import com.github.badoualy.telegram.tl.api.auth.TLAuthorization
-import com.github.badoualy.telegram.tl.core.TLBytes
+import com.github.badoualy.telegram.tl.api.TLAbsInputCheckPasswordSRP
+import com.github.badoualy.telegram.tl.api.TLInputCheckPasswordEmpty
+import com.github.badoualy.telegram.tl.api.auth.TLAbsAuthorization
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
@@ -13,33 +13,30 @@ import java.io.IOException
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
-class TLRequestAuthCheckPassword() : TLMethod<TLAuthorization>() {
-    var passwordHash: TLBytes = TLBytes.EMPTY
+class TLRequestAuthCheckPassword() : TLMethod<TLAbsAuthorization>() {
+    var password: TLAbsInputCheckPasswordSRP = TLInputCheckPasswordEmpty()
 
-    private val _constructor: String = "auth.checkPassword#a63011e"
+    private val _constructor: String = "auth.checkPassword#d18b4d16"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(passwordHash: TLBytes) : this() {
-        this.passwordHash = passwordHash
+    constructor(password: TLAbsInputCheckPasswordSRP) : this() {
+        this.password = password
     }
 
     @Throws(IOException::class)
-    override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLAuthorization = tlDeserializer.readTLObject(TLAuthorization::class, TLAuthorization.CONSTRUCTOR_ID)
-
-    @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
-        writeTLBytes(passwordHash)
+        writeTLObject(password)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        passwordHash = readTLBytes()
+        password = readTLObject<TLAbsInputCheckPasswordSRP>()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
-        size += computeTLBytesSerializedSize(passwordHash)
+        size += password.computeSerializedSize()
         return size
     }
 
@@ -49,9 +46,9 @@ class TLRequestAuthCheckPassword() : TLMethod<TLAuthorization>() {
         if (other !is TLRequestAuthCheckPassword) return false
         if (other === this) return true
 
-        return passwordHash == other.passwordHash
+        return password == other.password
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xa63011e.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xd18b4d16.toInt()
     }
 }

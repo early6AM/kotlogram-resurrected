@@ -69,6 +69,6 @@ class TLRequestMessagesSendEncryptedService() : TLMethod<TLAbsSentEncryptedMessa
                 && data == other.data
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x32d439a4.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x32d439a4
     }
 }

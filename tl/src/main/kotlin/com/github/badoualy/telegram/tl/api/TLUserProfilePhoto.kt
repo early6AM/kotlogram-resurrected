@@ -1,57 +1,79 @@
 package com.github.badoualy.telegram.tl.api
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.core.TLBytes
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * userProfilePhoto#d559d8c8
+ * userProfilePhoto#82d1f706
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLUserProfilePhoto() : TLAbsUserProfilePhoto() {
+    @Transient
+    var hasVideo: Boolean = false
+
     var photoId: Long = 0L
 
-    var photoSmall: TLAbsFileLocation = TLFileLocationUnavailable()
+    var strippedThumb: TLBytes? = null
 
-    var photoBig: TLAbsFileLocation = TLFileLocationUnavailable()
+    var dcId: Int = 0
 
-    private val _constructor: String = "userProfilePhoto#d559d8c8"
+    private val _constructor: String = "userProfilePhoto#82d1f706"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
+            hasVideo: Boolean,
             photoId: Long,
-            photoSmall: TLAbsFileLocation,
-            photoBig: TLAbsFileLocation
+            strippedThumb: TLBytes?,
+            dcId: Int
     ) : this() {
+        this.hasVideo = hasVideo
         this.photoId = photoId
-        this.photoSmall = photoSmall
-        this.photoBig = photoBig
+        this.strippedThumb = strippedThumb
+        this.dcId = dcId
+    }
+
+    override fun computeFlags() {
+        _flags = 0
+        updateFlags(hasVideo, 1)
+        updateFlags(strippedThumb, 2)
     }
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
+        computeFlags()
+
+        writeInt(_flags)
         writeLong(photoId)
-        writeTLObject(photoSmall)
-        writeTLObject(photoBig)
+        doIfMask(strippedThumb, 2) { writeTLBytes(it) }
+        writeInt(dcId)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
+        _flags = readInt()
+        hasVideo = isMask(1)
         photoId = readLong()
-        photoSmall = readTLObject<TLAbsFileLocation>()
-        photoBig = readTLObject<TLAbsFileLocation>()
+        strippedThumb = readIfMask(2) { readTLBytes() }
+        dcId = readInt()
     }
 
     override fun computeSerializedSize(): Int {
+        computeFlags()
+
         var size = SIZE_CONSTRUCTOR_ID
+        size += SIZE_INT32
         size += SIZE_INT64
-        size += photoSmall.computeSerializedSize()
-        size += photoBig.computeSerializedSize()
+        size += getIntIfMask(strippedThumb, 2) { computeTLBytesSerializedSize(it) }
+        size += SIZE_INT32
         return size
     }
 
@@ -61,11 +83,13 @@ class TLUserProfilePhoto() : TLAbsUserProfilePhoto() {
         if (other !is TLUserProfilePhoto) return false
         if (other === this) return true
 
-        return photoId == other.photoId
-                && photoSmall == other.photoSmall
-                && photoBig == other.photoBig
+        return _flags == other._flags
+                && hasVideo == other.hasVideo
+                && photoId == other.photoId
+                && strippedThumb == other.strippedThumb
+                && dcId == other.dcId
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xd559d8c8.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x82d1f706.toInt()
     }
 }

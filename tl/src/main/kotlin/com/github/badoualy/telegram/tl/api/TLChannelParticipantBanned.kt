@@ -2,12 +2,13 @@ package com.github.badoualy.telegram.tl.api
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * channelParticipantBanned#222c1886
+ * channelParticipantBanned#6df8014e
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -16,33 +17,33 @@ class TLChannelParticipantBanned() : TLAbsChannelParticipant() {
     @Transient
     var left: Boolean = false
 
-    override var userId: Int = 0
+    var peer: TLAbsPeer = TLPeerChat()
 
-    var kickedBy: Int = 0
+    var kickedBy: Long = 0L
 
     var date: Int = 0
 
-    var bannedRights: TLChannelBannedRights = TLChannelBannedRights()
+    var bannedRights: TLChatBannedRights = TLChatBannedRights()
 
-    private val _constructor: String = "channelParticipantBanned#222c1886"
+    private val _constructor: String = "channelParticipantBanned#6df8014e"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             left: Boolean,
-            userId: Int,
-            kickedBy: Int,
+            peer: TLAbsPeer,
+            kickedBy: Long,
             date: Int,
-            bannedRights: TLChannelBannedRights
+            bannedRights: TLChatBannedRights
     ) : this() {
         this.left = left
-        this.userId = userId
+        this.peer = peer
         this.kickedBy = kickedBy
         this.date = date
         this.bannedRights = bannedRights
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(left, 1)
     }
@@ -52,8 +53,8 @@ class TLChannelParticipantBanned() : TLAbsChannelParticipant() {
         computeFlags()
 
         writeInt(_flags)
-        writeInt(userId)
-        writeInt(kickedBy)
+        writeTLObject(peer)
+        writeLong(kickedBy)
         writeInt(date)
         writeTLObject(bannedRights)
     }
@@ -62,10 +63,10 @@ class TLChannelParticipantBanned() : TLAbsChannelParticipant() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         left = isMask(1)
-        userId = readInt()
-        kickedBy = readInt()
+        peer = readTLObject<TLAbsPeer>()
+        kickedBy = readLong()
         date = readInt()
-        bannedRights = readTLObject<TLChannelBannedRights>(TLChannelBannedRights::class, TLChannelBannedRights.CONSTRUCTOR_ID)
+        bannedRights = readTLObject<TLChatBannedRights>(TLChatBannedRights::class, TLChatBannedRights.CONSTRUCTOR_ID)
     }
 
     override fun computeSerializedSize(): Int {
@@ -73,8 +74,8 @@ class TLChannelParticipantBanned() : TLAbsChannelParticipant() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += SIZE_INT32
-        size += SIZE_INT32
+        size += peer.computeSerializedSize()
+        size += SIZE_INT64
         size += SIZE_INT32
         size += bannedRights.computeSerializedSize()
         return size
@@ -88,12 +89,12 @@ class TLChannelParticipantBanned() : TLAbsChannelParticipant() {
 
         return _flags == other._flags
                 && left == other.left
-                && userId == other.userId
+                && peer == other.peer
                 && kickedBy == other.kickedBy
                 && date == other.date
                 && bannedRights == other.bannedRights
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x222c1886.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x6df8014e
     }
 }

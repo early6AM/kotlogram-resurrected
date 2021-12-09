@@ -2,7 +2,7 @@ package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.api.TLAbsInputPrivacyKey
-import com.github.badoualy.telegram.tl.api.TLInputPrivacyKeyStatusTimestamp
+import com.github.badoualy.telegram.tl.api.TLInputPrivacyKeyAddedByPhone
 import com.github.badoualy.telegram.tl.api.account.TLPrivacyRules
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
@@ -14,7 +14,7 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLRequestAccountGetPrivacy() : TLMethod<TLPrivacyRules>() {
-    var key: TLAbsInputPrivacyKey = TLInputPrivacyKeyStatusTimestamp()
+    var key: TLAbsInputPrivacyKey = TLInputPrivacyKeyAddedByPhone()
 
     private val _constructor: String = "account.getPrivacy#dadbc950"
 

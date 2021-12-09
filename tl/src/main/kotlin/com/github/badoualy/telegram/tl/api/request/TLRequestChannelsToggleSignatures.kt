@@ -57,6 +57,6 @@ class TLRequestChannelsToggleSignatures() : TLMethod<TLAbsUpdates>() {
                 && enabled == other.enabled
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x1f69b606.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x1f69b606
     }
 }

@@ -47,6 +47,6 @@ class TLMessageActionChatEditPhoto() : TLAbsMessageAction() {
         return photo == other.photo
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x7fcb13a8.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x7fcb13a8
     }
 }

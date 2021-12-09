@@ -12,7 +12,7 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLNotifyPeer() : TLAbsNotifyPeer() {
-    var peer: TLAbsPeer = TLPeerUser()
+    var peer: TLAbsPeer = TLPeerChat()
 
     private val _constructor: String = "notifyPeer#9fd40bd8"
 

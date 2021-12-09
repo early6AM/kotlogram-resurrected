@@ -4,7 +4,7 @@ import com.github.badoualy.telegram.tl.core.TLObject
 
 /**
  * Abstraction level for the following constructors:
- * * [inputBotInlineResult#2cbbe15a][TLInputBotInlineResult]
+ * * [inputBotInlineResult#88bf9319][TLInputBotInlineResult]
  * * [inputBotInlineResultDocument#fff8fdc4][TLInputBotInlineResultDocument]
  * * [inputBotInlineResultGame#4fa417f2][TLInputBotInlineResultGame]
  * * [inputBotInlineResultPhoto#a8d864a7][TLInputBotInlineResultPhoto]

@@ -48,6 +48,6 @@ class TLReplyInlineMarkup() : TLAbsReplyMarkup() {
         return rows == other.rows
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x48a30254.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x48a30254
     }
 }

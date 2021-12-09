@@ -2,6 +2,7 @@ package com.github.badoualy.telegram.tl.api
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
@@ -9,7 +10,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * message#90dddc11
+ * message#85d6cbe2
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -30,17 +31,32 @@ class TLMessage() : TLAbsMessage() {
     @Transient
     var post: Boolean = false
 
+    @Transient
+    var fromScheduled: Boolean = false
+
+    @Transient
+    var legacy: Boolean = false
+
+    @Transient
+    var editHide: Boolean = false
+
+    @Transient
+    var pinned: Boolean = false
+
+    @Transient
+    var noforwards: Boolean = false
+
     override var id: Int = 0
 
-    var fromId: Int? = null
+    var fromId: TLAbsPeer? = null
 
-    var toId: TLAbsPeer = TLPeerUser()
+    var peerId: TLAbsPeer = TLPeerChat()
 
     var fwdFrom: TLMessageFwdHeader? = null
 
-    var viaBotId: Int? = null
+    var viaBotId: Long? = null
 
-    var replyToMsgId: Int? = null
+    var replyTo: TLMessageReplyHeader? = null
 
     var date: Int = 0
 
@@ -54,11 +70,21 @@ class TLMessage() : TLAbsMessage() {
 
     var views: Int? = null
 
+    var forwards: Int? = null
+
+    var replies: TLMessageReplies? = null
+
     var editDate: Int? = null
 
     var postAuthor: String? = null
 
-    private val _constructor: String = "message#90dddc11"
+    var groupedId: Long? = null
+
+    var restrictionReason: TLObjectVector<TLRestrictionReason>? = TLObjectVector()
+
+    var ttlPeriod: Int? = null
+
+    private val _constructor: String = "message#85d6cbe2"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -68,59 +94,89 @@ class TLMessage() : TLAbsMessage() {
             mediaUnread: Boolean,
             silent: Boolean,
             post: Boolean,
+            fromScheduled: Boolean,
+            legacy: Boolean,
+            editHide: Boolean,
+            pinned: Boolean,
+            noforwards: Boolean,
             id: Int,
-            fromId: Int?,
-            toId: TLAbsPeer,
+            fromId: TLAbsPeer?,
+            peerId: TLAbsPeer,
             fwdFrom: TLMessageFwdHeader?,
-            viaBotId: Int?,
-            replyToMsgId: Int?,
+            viaBotId: Long?,
+            replyTo: TLMessageReplyHeader?,
             date: Int,
             message: String,
             media: TLAbsMessageMedia?,
             replyMarkup: TLAbsReplyMarkup?,
             entities: TLObjectVector<TLAbsMessageEntity>?,
             views: Int?,
+            forwards: Int?,
+            replies: TLMessageReplies?,
             editDate: Int?,
-            postAuthor: String?
+            postAuthor: String?,
+            groupedId: Long?,
+            restrictionReason: TLObjectVector<TLRestrictionReason>?,
+            ttlPeriod: Int?
     ) : this() {
         this.out = out
         this.mentioned = mentioned
         this.mediaUnread = mediaUnread
         this.silent = silent
         this.post = post
+        this.fromScheduled = fromScheduled
+        this.legacy = legacy
+        this.editHide = editHide
+        this.pinned = pinned
+        this.noforwards = noforwards
         this.id = id
         this.fromId = fromId
-        this.toId = toId
+        this.peerId = peerId
         this.fwdFrom = fwdFrom
         this.viaBotId = viaBotId
-        this.replyToMsgId = replyToMsgId
+        this.replyTo = replyTo
         this.date = date
         this.message = message
         this.media = media
         this.replyMarkup = replyMarkup
         this.entities = entities
         this.views = views
+        this.forwards = forwards
+        this.replies = replies
         this.editDate = editDate
         this.postAuthor = postAuthor
+        this.groupedId = groupedId
+        this.restrictionReason = restrictionReason
+        this.ttlPeriod = ttlPeriod
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(out, 2)
         updateFlags(mentioned, 16)
         updateFlags(mediaUnread, 32)
         updateFlags(silent, 8192)
         updateFlags(post, 16384)
+        updateFlags(fromScheduled, 262144)
+        updateFlags(legacy, 524288)
+        updateFlags(editHide, 2097152)
+        updateFlags(pinned, 16777216)
+        updateFlags(noforwards, 67108864)
         updateFlags(fromId, 256)
         updateFlags(fwdFrom, 4)
         updateFlags(viaBotId, 2048)
-        updateFlags(replyToMsgId, 8)
+        updateFlags(replyTo, 8)
         updateFlags(media, 512)
         updateFlags(replyMarkup, 64)
         updateFlags(entities, 128)
         updateFlags(views, 1024)
+        updateFlags(forwards, 1024)
+        updateFlags(replies, 8388608)
         updateFlags(editDate, 32768)
         updateFlags(postAuthor, 65536)
+        updateFlags(groupedId, 131072)
+        updateFlags(restrictionReason, 4194304)
+        updateFlags(ttlPeriod, 33554432)
     }
 
     @Throws(IOException::class)
@@ -129,19 +185,24 @@ class TLMessage() : TLAbsMessage() {
 
         writeInt(_flags)
         writeInt(id)
-        doIfMask(fromId, 256) { writeInt(it) }
-        writeTLObject(toId)
+        doIfMask(fromId, 256) { writeTLObject(it) }
+        writeTLObject(peerId)
         doIfMask(fwdFrom, 4) { writeTLObject(it) }
-        doIfMask(viaBotId, 2048) { writeInt(it) }
-        doIfMask(replyToMsgId, 8) { writeInt(it) }
+        doIfMask(viaBotId, 2048) { writeLong(it) }
+        doIfMask(replyTo, 8) { writeTLObject(it) }
         writeInt(date)
         writeString(message)
         doIfMask(media, 512) { writeTLObject(it) }
         doIfMask(replyMarkup, 64) { writeTLObject(it) }
         doIfMask(entities, 128) { writeTLVector(it) }
         doIfMask(views, 1024) { writeInt(it) }
+        doIfMask(forwards, 1024) { writeInt(it) }
+        doIfMask(replies, 8388608) { writeTLObject(it) }
         doIfMask(editDate, 32768) { writeInt(it) }
         doIfMask(postAuthor, 65536) { writeString(it) }
+        doIfMask(groupedId, 131072) { writeLong(it) }
+        doIfMask(restrictionReason, 4194304) { writeTLVector(it) }
+        doIfMask(ttlPeriod, 33554432) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -152,20 +213,30 @@ class TLMessage() : TLAbsMessage() {
         mediaUnread = isMask(32)
         silent = isMask(8192)
         post = isMask(16384)
+        fromScheduled = isMask(262144)
+        legacy = isMask(524288)
+        editHide = isMask(2097152)
+        pinned = isMask(16777216)
+        noforwards = isMask(67108864)
         id = readInt()
-        fromId = readIfMask(256) { readInt() }
-        toId = readTLObject<TLAbsPeer>()
+        fromId = readIfMask(256) { readTLObject<TLAbsPeer>() }
+        peerId = readTLObject<TLAbsPeer>()
         fwdFrom = readIfMask(4) { readTLObject<TLMessageFwdHeader>(TLMessageFwdHeader::class, TLMessageFwdHeader.CONSTRUCTOR_ID) }
-        viaBotId = readIfMask(2048) { readInt() }
-        replyToMsgId = readIfMask(8) { readInt() }
+        viaBotId = readIfMask(2048) { readLong() }
+        replyTo = readIfMask(8) { readTLObject<TLMessageReplyHeader>(TLMessageReplyHeader::class, TLMessageReplyHeader.CONSTRUCTOR_ID) }
         date = readInt()
         message = readString()
         media = readIfMask(512) { readTLObject<TLAbsMessageMedia>() }
         replyMarkup = readIfMask(64) { readTLObject<TLAbsReplyMarkup>() }
         entities = readIfMask(128) { readTLVector<TLAbsMessageEntity>() }
         views = readIfMask(1024) { readInt() }
+        forwards = readIfMask(1024) { readInt() }
+        replies = readIfMask(8388608) { readTLObject<TLMessageReplies>(TLMessageReplies::class, TLMessageReplies.CONSTRUCTOR_ID) }
         editDate = readIfMask(32768) { readInt() }
         postAuthor = readIfMask(65536) { readString() }
+        groupedId = readIfMask(131072) { readLong() }
+        restrictionReason = readIfMask(4194304) { readTLVector<TLRestrictionReason>() }
+        ttlPeriod = readIfMask(33554432) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -174,19 +245,24 @@ class TLMessage() : TLAbsMessage() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(fromId, 256) { SIZE_INT32 }
-        size += toId.computeSerializedSize()
+        size += getIntIfMask(fromId, 256) { it.computeSerializedSize() }
+        size += peerId.computeSerializedSize()
         size += getIntIfMask(fwdFrom, 4) { it.computeSerializedSize() }
-        size += getIntIfMask(viaBotId, 2048) { SIZE_INT32 }
-        size += getIntIfMask(replyToMsgId, 8) { SIZE_INT32 }
+        size += getIntIfMask(viaBotId, 2048) { SIZE_INT64 }
+        size += getIntIfMask(replyTo, 8) { it.computeSerializedSize() }
         size += SIZE_INT32
         size += computeTLStringSerializedSize(message)
         size += getIntIfMask(media, 512) { it.computeSerializedSize() }
         size += getIntIfMask(replyMarkup, 64) { it.computeSerializedSize() }
         size += getIntIfMask(entities, 128) { it.computeSerializedSize() }
         size += getIntIfMask(views, 1024) { SIZE_INT32 }
+        size += getIntIfMask(forwards, 1024) { SIZE_INT32 }
+        size += getIntIfMask(replies, 8388608) { it.computeSerializedSize() }
         size += getIntIfMask(editDate, 32768) { SIZE_INT32 }
         size += getIntIfMask(postAuthor, 65536) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(groupedId, 131072) { SIZE_INT64 }
+        size += getIntIfMask(restrictionReason, 4194304) { it.computeSerializedSize() }
+        size += getIntIfMask(ttlPeriod, 33554432) { SIZE_INT32 }
         return size
     }
 
@@ -202,22 +278,32 @@ class TLMessage() : TLAbsMessage() {
                 && mediaUnread == other.mediaUnread
                 && silent == other.silent
                 && post == other.post
+                && fromScheduled == other.fromScheduled
+                && legacy == other.legacy
+                && editHide == other.editHide
+                && pinned == other.pinned
+                && noforwards == other.noforwards
                 && id == other.id
                 && fromId == other.fromId
-                && toId == other.toId
+                && peerId == other.peerId
                 && fwdFrom == other.fwdFrom
                 && viaBotId == other.viaBotId
-                && replyToMsgId == other.replyToMsgId
+                && replyTo == other.replyTo
                 && date == other.date
                 && message == other.message
                 && media == other.media
                 && replyMarkup == other.replyMarkup
                 && entities == other.entities
                 && views == other.views
+                && forwards == other.forwards
+                && replies == other.replies
                 && editDate == other.editDate
                 && postAuthor == other.postAuthor
+                && groupedId == other.groupedId
+                && restrictionReason == other.restrictionReason
+                && ttlPeriod == other.ttlPeriod
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x90dddc11.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x85d6cbe2.toInt()
     }
 }

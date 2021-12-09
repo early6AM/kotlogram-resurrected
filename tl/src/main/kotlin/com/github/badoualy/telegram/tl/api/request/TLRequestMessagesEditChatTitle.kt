@@ -1,7 +1,7 @@
 package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
-import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsUpdates
 import com.github.badoualy.telegram.tl.core.TLMethod
@@ -14,34 +14,34 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLRequestMessagesEditChatTitle() : TLMethod<TLAbsUpdates>() {
-    var chatId: Int = 0
+    var chatId: Long = 0L
 
     var title: String = ""
 
-    private val _constructor: String = "messages.editChatTitle#dc452855"
+    private val _constructor: String = "messages.editChatTitle#73783ffd"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(chatId: Int, title: String) : this() {
+    constructor(chatId: Long, title: String) : this() {
         this.chatId = chatId
         this.title = title
     }
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
-        writeInt(chatId)
+        writeLong(chatId)
         writeString(title)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        chatId = readInt()
+        chatId = readLong()
         title = readString()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += computeTLStringSerializedSize(title)
         return size
     }
@@ -56,6 +56,6 @@ class TLRequestMessagesEditChatTitle() : TLMethod<TLAbsUpdates>() {
                 && title == other.title
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xdc452855.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x73783ffd
     }
 }

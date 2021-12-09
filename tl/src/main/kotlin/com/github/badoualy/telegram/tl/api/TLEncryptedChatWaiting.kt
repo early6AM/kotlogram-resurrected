@@ -8,7 +8,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * encryptedChatWaiting#3bf703dc
+ * encryptedChatWaiting#66b25953
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -20,11 +20,11 @@ class TLEncryptedChatWaiting() : TLAbsEncryptedChat() {
 
     var date: Int = 0
 
-    var adminId: Int = 0
+    var adminId: Long = 0L
 
-    var participantId: Int = 0
+    var participantId: Long = 0L
 
-    private val _constructor: String = "encryptedChatWaiting#3bf703dc"
+    private val _constructor: String = "encryptedChatWaiting#66b25953"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -32,8 +32,8 @@ class TLEncryptedChatWaiting() : TLAbsEncryptedChat() {
             id: Int,
             accessHash: Long,
             date: Int,
-            adminId: Int,
-            participantId: Int
+            adminId: Long,
+            participantId: Long
     ) : this() {
         this.id = id
         this.accessHash = accessHash
@@ -47,8 +47,8 @@ class TLEncryptedChatWaiting() : TLAbsEncryptedChat() {
         writeInt(id)
         writeLong(accessHash)
         writeInt(date)
-        writeInt(adminId)
-        writeInt(participantId)
+        writeLong(adminId)
+        writeLong(participantId)
     }
 
     @Throws(IOException::class)
@@ -56,8 +56,8 @@ class TLEncryptedChatWaiting() : TLAbsEncryptedChat() {
         id = readInt()
         accessHash = readLong()
         date = readInt()
-        adminId = readInt()
-        participantId = readInt()
+        adminId = readLong()
+        participantId = readLong()
     }
 
     override fun computeSerializedSize(): Int {
@@ -65,8 +65,8 @@ class TLEncryptedChatWaiting() : TLAbsEncryptedChat() {
         size += SIZE_INT32
         size += SIZE_INT64
         size += SIZE_INT32
-        size += SIZE_INT32
-        size += SIZE_INT32
+        size += SIZE_INT64
+        size += SIZE_INT64
         return size
     }
 
@@ -83,6 +83,6 @@ class TLEncryptedChatWaiting() : TLAbsEncryptedChat() {
                 && participantId == other.participantId
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3bf703dc.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x66b25953
     }
 }

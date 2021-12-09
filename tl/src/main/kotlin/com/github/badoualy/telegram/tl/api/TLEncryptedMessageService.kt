@@ -77,6 +77,6 @@ class TLEncryptedMessageService() : TLAbsEncryptedMessage() {
                 && bytes == other.bytes
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x23734b06.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x23734b06
     }
 }

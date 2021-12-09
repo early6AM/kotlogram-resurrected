@@ -23,7 +23,7 @@ object GetHistorySample {
 
         // You can start making requests
         try {
-            val tlAbsDialogs = client.messagesGetDialogs(false, 0, 0, TLInputPeerEmpty(), 1).blockingGet()
+            /*val tlAbsDialogs = client.messagesGetDialogs(false, 0, 0, TLInputPeerEmpty(), 1).blockingGet()
             val tlAbsPeer = tlAbsDialogs.dialogs[2].peer
             val tlPeerObj: TLObject =
                     if (tlAbsPeer is TLPeerUser) tlAbsDialogs.users.first { it.id == tlAbsPeer.id }
@@ -44,7 +44,7 @@ object GetHistorySample {
                         else if (it is TLMessageService) "Service: ${it.action}"
                         else "Empty message (TLMessageEmpty)"
                 println(messageContent)
-            }
+            }*/
         } catch (e: RpcErrorException) {
             e.printStackTrace()
         } catch (e: IOException) {

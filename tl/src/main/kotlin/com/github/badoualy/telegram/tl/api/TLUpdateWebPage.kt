@@ -66,6 +66,6 @@ class TLUpdateWebPage() : TLAbsUpdate() {
                 && ptsCount == other.ptsCount
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x7f891213.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x7f891213
     }
 }

@@ -1,10 +1,11 @@
 package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
 import com.github.badoualy.telegram.tl.api.TLAbsSendMessageAction
 import com.github.badoualy.telegram.tl.api.TLInputPeerEmpty
-import com.github.badoualy.telegram.tl.api.TLSendMessageRecordVideoAction
+import com.github.badoualy.telegram.tl.api.TLSendMessageChooseStickerAction
 import com.github.badoualy.telegram.tl.core.TLBool
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
@@ -18,32 +19,54 @@ import java.io.IOException
 class TLRequestMessagesSetTyping() : TLMethod<TLBool>() {
     var peer: TLAbsInputPeer = TLInputPeerEmpty()
 
-    var action: TLAbsSendMessageAction = TLSendMessageRecordVideoAction()
+    var topMsgId: Int? = null
 
-    private val _constructor: String = "messages.setTyping#a3825e50"
+    var action: TLAbsSendMessageAction = TLSendMessageChooseStickerAction()
+
+    private val _constructor: String = "messages.setTyping#58943ee2"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(peer: TLAbsInputPeer, action: TLAbsSendMessageAction) : this() {
+    constructor(
+            peer: TLAbsInputPeer,
+            topMsgId: Int?,
+            action: TLAbsSendMessageAction
+    ) : this() {
         this.peer = peer
+        this.topMsgId = topMsgId
         this.action = action
+    }
+
+    override fun computeFlags() {
+        _flags = 0
+        updateFlags(topMsgId, 1)
     }
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
+        computeFlags()
+
+        writeInt(_flags)
         writeTLObject(peer)
+        doIfMask(topMsgId, 1) { writeInt(it) }
         writeTLObject(action)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
+        _flags = readInt()
         peer = readTLObject<TLAbsInputPeer>()
+        topMsgId = readIfMask(1) { readInt() }
         action = readTLObject<TLAbsSendMessageAction>()
     }
 
     override fun computeSerializedSize(): Int {
+        computeFlags()
+
         var size = SIZE_CONSTRUCTOR_ID
+        size += SIZE_INT32
         size += peer.computeSerializedSize()
+        size += getIntIfMask(topMsgId, 1) { SIZE_INT32 }
         size += action.computeSerializedSize()
         return size
     }
@@ -54,10 +77,12 @@ class TLRequestMessagesSetTyping() : TLMethod<TLBool>() {
         if (other !is TLRequestMessagesSetTyping) return false
         if (other === this) return true
 
-        return peer == other.peer
+        return _flags == other._flags
+                && peer == other.peer
+                && topMsgId == other.topMsgId
                 && action == other.action
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xa3825e50.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x58943ee2
     }
 }

@@ -20,6 +20,6 @@ class TLUpdateReadFeaturedStickers : TLAbsUpdate() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x571d2742.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x571d2742
     }
 }

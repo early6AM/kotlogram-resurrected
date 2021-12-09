@@ -48,6 +48,6 @@ class TLRequestPhoneReceivedCall() : TLMethod<TLBool>() {
         return peer == other.peer
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x17d54f61.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x17d54f61
     }
 }

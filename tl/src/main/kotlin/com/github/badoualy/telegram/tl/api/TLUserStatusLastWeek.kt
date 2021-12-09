@@ -20,6 +20,6 @@ class TLUserStatusLastWeek : TLAbsUserStatus() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x7bf09fc.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x7bf09fc
     }
 }

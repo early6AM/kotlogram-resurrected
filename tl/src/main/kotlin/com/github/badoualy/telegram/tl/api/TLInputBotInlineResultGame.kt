@@ -66,6 +66,6 @@ class TLInputBotInlineResultGame() : TLAbsInputBotInlineResult() {
                 && sendMessage == other.sendMessage
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x4fa417f2.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x4fa417f2
     }
 }

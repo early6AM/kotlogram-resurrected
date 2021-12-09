@@ -3,12 +3,13 @@ package com.github.badoualy.telegram.tl.api
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.core.TLObject
+import com.github.badoualy.telegram.tl.core.TLStringVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * phoneCallProtocol#a2bb35cb
+ * phoneCallProtocol#fc878fc8
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -24,7 +25,9 @@ class TLPhoneCallProtocol() : TLObject() {
 
     var maxLayer: Int = 0
 
-    private val _constructor: String = "phoneCallProtocol#a2bb35cb"
+    var libraryVersions: TLStringVector = TLStringVector()
+
+    private val _constructor: String = "phoneCallProtocol#fc878fc8"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -32,15 +35,17 @@ class TLPhoneCallProtocol() : TLObject() {
             udpP2p: Boolean,
             udpReflector: Boolean,
             minLayer: Int,
-            maxLayer: Int
+            maxLayer: Int,
+            libraryVersions: TLStringVector
     ) : this() {
         this.udpP2p = udpP2p
         this.udpReflector = udpReflector
         this.minLayer = minLayer
         this.maxLayer = maxLayer
+        this.libraryVersions = libraryVersions
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(udpP2p, 1)
         updateFlags(udpReflector, 2)
@@ -53,6 +58,7 @@ class TLPhoneCallProtocol() : TLObject() {
         writeInt(_flags)
         writeInt(minLayer)
         writeInt(maxLayer)
+        writeTLVector(libraryVersions)
     }
 
     @Throws(IOException::class)
@@ -62,6 +68,7 @@ class TLPhoneCallProtocol() : TLObject() {
         udpReflector = isMask(2)
         minLayer = readInt()
         maxLayer = readInt()
+        libraryVersions = readTLStringVector()
     }
 
     override fun computeSerializedSize(): Int {
@@ -71,6 +78,7 @@ class TLPhoneCallProtocol() : TLObject() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
+        size += libraryVersions.computeSerializedSize()
         return size
     }
 
@@ -85,8 +93,9 @@ class TLPhoneCallProtocol() : TLObject() {
                 && udpReflector == other.udpReflector
                 && minLayer == other.minLayer
                 && maxLayer == other.maxLayer
+                && libraryVersions == other.libraryVersions
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xa2bb35cb.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xfc878fc8.toInt()
     }
 }

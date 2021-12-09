@@ -12,7 +12,7 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLUpdateDraftMessage() : TLAbsUpdate() {
-    var peer: TLAbsPeer = TLPeerUser()
+    var peer: TLAbsPeer = TLPeerChat()
 
     var draft: TLAbsDraftMessage = TLDraftMessageEmpty()
 

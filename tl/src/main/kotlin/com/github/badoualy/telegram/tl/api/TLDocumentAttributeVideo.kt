@@ -16,6 +16,9 @@ class TLDocumentAttributeVideo() : TLAbsDocumentAttribute() {
     @Transient
     var roundMessage: Boolean = false
 
+    @Transient
+    var supportsStreaming: Boolean = false
+
     var duration: Int = 0
 
     var w: Int = 0
@@ -28,19 +31,22 @@ class TLDocumentAttributeVideo() : TLAbsDocumentAttribute() {
 
     constructor(
             roundMessage: Boolean,
+            supportsStreaming: Boolean,
             duration: Int,
             w: Int,
             h: Int
     ) : this() {
         this.roundMessage = roundMessage
+        this.supportsStreaming = supportsStreaming
         this.duration = duration
         this.w = w
         this.h = h
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(roundMessage, 1)
+        updateFlags(supportsStreaming, 2)
     }
 
     @Throws(IOException::class)
@@ -57,6 +63,7 @@ class TLDocumentAttributeVideo() : TLAbsDocumentAttribute() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         roundMessage = isMask(1)
+        supportsStreaming = isMask(2)
         duration = readInt()
         w = readInt()
         h = readInt()
@@ -81,11 +88,12 @@ class TLDocumentAttributeVideo() : TLAbsDocumentAttribute() {
 
         return _flags == other._flags
                 && roundMessage == other.roundMessage
+                && supportsStreaming == other.supportsStreaming
                 && duration == other.duration
                 && w == other.w
                 && h == other.h
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xef02ce6.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xef02ce6
     }
 }

@@ -2,6 +2,7 @@ package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.api.TLAbsInputUser
 import com.github.badoualy.telegram.tl.api.TLInputUserEmpty
 import com.github.badoualy.telegram.tl.api.messages.TLAbsChats
@@ -17,17 +18,17 @@ import java.io.IOException
 class TLRequestMessagesGetCommonChats() : TLMethod<TLAbsChats>() {
     var userId: TLAbsInputUser = TLInputUserEmpty()
 
-    var maxId: Int = 0
+    var maxId: Long = 0L
 
     var limit: Int = 0
 
-    private val _constructor: String = "messages.getCommonChats#d0a48c4"
+    private val _constructor: String = "messages.getCommonChats#e40ca104"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             userId: TLAbsInputUser,
-            maxId: Int,
+            maxId: Long,
             limit: Int
     ) : this() {
         this.userId = userId
@@ -38,21 +39,21 @@ class TLRequestMessagesGetCommonChats() : TLMethod<TLAbsChats>() {
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
         writeTLObject(userId)
-        writeInt(maxId)
+        writeLong(maxId)
         writeInt(limit)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         userId = readTLObject<TLAbsInputUser>()
-        maxId = readInt()
+        maxId = readLong()
         limit = readInt()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
         size += userId.computeSerializedSize()
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += SIZE_INT32
         return size
     }
@@ -68,6 +69,6 @@ class TLRequestMessagesGetCommonChats() : TLMethod<TLAbsChats>() {
                 && limit == other.limit
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xd0a48c4.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xe40ca104.toInt()
     }
 }

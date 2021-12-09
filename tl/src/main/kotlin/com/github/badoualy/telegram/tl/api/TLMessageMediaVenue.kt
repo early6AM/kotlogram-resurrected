@@ -90,6 +90,6 @@ class TLMessageMediaVenue() : TLAbsMessageMedia() {
                 && venueType == other.venueType
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x2ec0533f.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x2ec0533f
     }
 }

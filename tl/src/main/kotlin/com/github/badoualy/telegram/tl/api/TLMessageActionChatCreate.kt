@@ -2,13 +2,13 @@ package com.github.badoualy.telegram.tl.api
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
-import com.github.badoualy.telegram.tl.core.TLIntVector
+import com.github.badoualy.telegram.tl.core.TLLongVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * messageActionChatCreate#a6638b9a
+ * messageActionChatCreate#bd47cbad
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -16,13 +16,13 @@ import java.io.IOException
 class TLMessageActionChatCreate() : TLAbsMessageAction() {
     var title: String = ""
 
-    var users: TLIntVector = TLIntVector()
+    var users: TLLongVector = TLLongVector()
 
-    private val _constructor: String = "messageActionChatCreate#a6638b9a"
+    private val _constructor: String = "messageActionChatCreate#bd47cbad"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(title: String, users: TLIntVector) : this() {
+    constructor(title: String, users: TLLongVector) : this() {
         this.title = title
         this.users = users
     }
@@ -36,7 +36,7 @@ class TLMessageActionChatCreate() : TLAbsMessageAction() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         title = readString()
-        users = readTLIntVector()
+        users = readTLLongVector()
     }
 
     override fun computeSerializedSize(): Int {
@@ -56,6 +56,6 @@ class TLMessageActionChatCreate() : TLAbsMessageAction() {
                 && users == other.users
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xa6638b9a.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xbd47cbad.toInt()
     }
 }

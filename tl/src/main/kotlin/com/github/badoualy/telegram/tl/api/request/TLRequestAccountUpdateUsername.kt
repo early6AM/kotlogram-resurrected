@@ -48,6 +48,6 @@ class TLRequestAccountUpdateUsername() : TLMethod<TLAbsUser>() {
         return username == other.username
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3e0bdd7c.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3e0bdd7c
     }
 }

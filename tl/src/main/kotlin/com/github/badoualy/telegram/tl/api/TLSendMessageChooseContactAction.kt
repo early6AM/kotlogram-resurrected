@@ -20,6 +20,6 @@ class TLSendMessageChooseContactAction : TLAbsSendMessageAction() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x628cbc6f.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x628cbc6f
     }
 }

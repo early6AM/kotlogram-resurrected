@@ -49,6 +49,6 @@ class TLPaymentResult() : TLAbsPaymentResult() {
         return updates == other.updates
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x4e5f810d.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x4e5f810d
     }
 }

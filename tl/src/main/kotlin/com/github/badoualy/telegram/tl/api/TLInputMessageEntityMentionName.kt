@@ -66,6 +66,6 @@ class TLInputMessageEntityMentionName() : TLAbsMessageEntity() {
                 && userId == other.userId
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x208e68c9.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x208e68c9
     }
 }

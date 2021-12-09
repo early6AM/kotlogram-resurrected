@@ -49,6 +49,6 @@ class TLInviteText() : TLObject() {
         return message == other.message
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x18cb9f78.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x18cb9f78
     }
 }

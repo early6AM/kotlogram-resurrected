@@ -56,7 +56,7 @@ class TLRequestMessagesSetInlineBotResults() : TLMethod<TLBool>() {
         this.switchPm = switchPm
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(gallery, 1)
         updateFlags(_private, 2)

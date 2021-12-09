@@ -47,6 +47,6 @@ class TLUpdateLangPack() : TLAbsUpdate() {
         return difference == other.difference
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x56022f4d.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x56022f4d
     }
 }

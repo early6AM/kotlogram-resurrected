@@ -20,6 +20,6 @@ class TLInputMessagesFilterVoice : TLAbsMessagesFilter() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x50f5c392.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x50f5c392
     }
 }

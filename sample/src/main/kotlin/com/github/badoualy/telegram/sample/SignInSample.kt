@@ -1,13 +1,12 @@
 package com.github.badoualy.telegram.sample
 
 import com.github.badoualy.telegram.api.Kotlogram
-import com.github.badoualy.telegram.api.TelegramTestHelper
 import com.github.badoualy.telegram.sample.config.Config
 import com.github.badoualy.telegram.sample.config.FileApiStorage
 import com.github.badoualy.telegram.tl.api.auth.TLAuthorization
 import com.github.badoualy.telegram.tl.exception.RpcErrorException
 import java.io.IOException
-import java.util.*
+import java.util.Scanner
 
 object SignInSample {
 
@@ -27,8 +26,8 @@ object SignInSample {
             val authorization: TLAuthorization =
                     try {
                         try {
-                            client.authSignIn(Config.phoneNumber, sentCode.phoneCodeHash,
-                                              code).blockingGet()
+                            client.authSignIn(Config.phoneNumber, sentCode.phoneCodeHash, code)
+                                .blockingGet()
                         } catch (e: RuntimeException) {
                             val cause = e.cause
                             if (cause is RpcErrorException) {
@@ -41,16 +40,13 @@ object SignInSample {
                             // We receive this error is two-step auth is enabled
                             println("Two-step auth password: ")
                             val password = Scanner(System.`in`).nextLine()
-                            client.authCheckPassword(password).blockingGet()
+//                            client.authCheckPassword(password).blockingGet()
+                            TODO()
                         } else if (e.type.equals("PHONE_NUMBER_UNOCCUPIED", true)) {
-                            client.authSignUp(Config.phoneNumber,
-                                              sentCode.phoneCodeHash,
-                                              TelegramTestHelper.getValidationCode(
-                                                      Config.phoneNumber),
-                                              "Danill",
-                                              "Pony").blockingGet()
+                            client.authSignUp(Config.phoneNumber, sentCode.phoneCodeHash, "Danill", "Pony")
+                                .blockingGet()
                         } else throw e
-                    }
+                    } as TLAuthorization
 
             authorization.user.asUser()!!.apply {
                 println("You are now signed in as $firstName $lastName @$username")

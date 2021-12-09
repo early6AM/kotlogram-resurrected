@@ -20,6 +20,9 @@ class TLPhoneCallDiscarded() : TLAbsPhoneCall() {
     @Transient
     var needDebug: Boolean = false
 
+    @Transient
+    var video: Boolean = false
+
     override var id: Long = 0L
 
     var reason: TLAbsPhoneCallDiscardReason? = null
@@ -33,21 +36,24 @@ class TLPhoneCallDiscarded() : TLAbsPhoneCall() {
     constructor(
             needRating: Boolean,
             needDebug: Boolean,
+            video: Boolean,
             id: Long,
             reason: TLAbsPhoneCallDiscardReason?,
             duration: Int?
     ) : this() {
         this.needRating = needRating
         this.needDebug = needDebug
+        this.video = video
         this.id = id
         this.reason = reason
         this.duration = duration
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(needRating, 4)
         updateFlags(needDebug, 8)
+        updateFlags(video, 64)
         updateFlags(reason, 1)
         updateFlags(duration, 2)
     }
@@ -67,6 +73,7 @@ class TLPhoneCallDiscarded() : TLAbsPhoneCall() {
         _flags = readInt()
         needRating = isMask(4)
         needDebug = isMask(8)
+        video = isMask(64)
         id = readLong()
         reason = readIfMask(1) { readTLObject<TLAbsPhoneCallDiscardReason>() }
         duration = readIfMask(2) { readInt() }
@@ -92,11 +99,12 @@ class TLPhoneCallDiscarded() : TLAbsPhoneCall() {
         return _flags == other._flags
                 && needRating == other.needRating
                 && needDebug == other.needDebug
+                && video == other.video
                 && id == other.id
                 && reason == other.reason
                 && duration == other.duration
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x50ca4de1.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x50ca4de1
     }
 }

@@ -1,9 +1,9 @@
 package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
-import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.api.TLAbsInputCheckPasswordSRP
+import com.github.badoualy.telegram.tl.api.TLInputCheckPasswordEmpty
 import com.github.badoualy.telegram.tl.api.account.TLPasswordSettings
-import com.github.badoualy.telegram.tl.core.TLBytes
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
@@ -14,14 +14,14 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLRequestAccountGetPasswordSettings() : TLMethod<TLPasswordSettings>() {
-    var currentPasswordHash: TLBytes = TLBytes.EMPTY
+    var password: TLAbsInputCheckPasswordSRP = TLInputCheckPasswordEmpty()
 
-    private val _constructor: String = "account.getPasswordSettings#bc8d11bb"
+    private val _constructor: String = "account.getPasswordSettings#9cd4eaf9"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(currentPasswordHash: TLBytes) : this() {
-        this.currentPasswordHash = currentPasswordHash
+    constructor(password: TLAbsInputCheckPasswordSRP) : this() {
+        this.password = password
     }
 
     @Throws(IOException::class)
@@ -29,17 +29,17 @@ class TLRequestAccountGetPasswordSettings() : TLMethod<TLPasswordSettings>() {
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
-        writeTLBytes(currentPasswordHash)
+        writeTLObject(password)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        currentPasswordHash = readTLBytes()
+        password = readTLObject<TLAbsInputCheckPasswordSRP>()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
-        size += computeTLBytesSerializedSize(currentPasswordHash)
+        size += password.computeSerializedSize()
         return size
     }
 
@@ -49,9 +49,9 @@ class TLRequestAccountGetPasswordSettings() : TLMethod<TLPasswordSettings>() {
         if (other !is TLRequestAccountGetPasswordSettings) return false
         if (other === this) return true
 
-        return currentPasswordHash == other.currentPasswordHash
+        return password == other.password
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xbc8d11bb.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x9cd4eaf9.toInt()
     }
 }

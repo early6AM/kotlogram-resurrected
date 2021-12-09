@@ -48,6 +48,6 @@ class TLUpdateEncryptedChatTyping() : TLAbsUpdate() {
         return chatId == other.chatId
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x1710f156.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x1710f156
     }
 }

@@ -2,8 +2,13 @@ package com.github.badoualy.telegram.tl.api.payments
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
-import com.github.badoualy.telegram.tl.api.*
+import com.github.badoualy.telegram.tl.api.TLAbsUser
+import com.github.badoualy.telegram.tl.api.TLDataJSON
+import com.github.badoualy.telegram.tl.api.TLInvoice
+import com.github.badoualy.telegram.tl.api.TLPaymentRequestedInfo
+import com.github.badoualy.telegram.tl.api.TLPaymentSavedCredentialsCard
 import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
@@ -11,7 +16,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * payments.paymentForm#3f56aea3
+ * payments.paymentForm#1694761b
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -23,11 +28,13 @@ class TLPaymentForm() : TLObject() {
     @Transient
     var passwordMissing: Boolean = false
 
-    var botId: Int = 0
+    var formId: Long = 0L
+
+    var botId: Long = 0L
 
     var invoice: TLInvoice = TLInvoice()
 
-    var providerId: Int = 0
+    var providerId: Long = 0L
 
     var url: String = ""
 
@@ -41,16 +48,17 @@ class TLPaymentForm() : TLObject() {
 
     var users: TLObjectVector<TLAbsUser> = TLObjectVector()
 
-    private val _constructor: String = "payments.paymentForm#3f56aea3"
+    private val _constructor: String = "payments.paymentForm#1694761b"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             canSaveCredentials: Boolean,
             passwordMissing: Boolean,
-            botId: Int,
+            formId: Long,
+            botId: Long,
             invoice: TLInvoice,
-            providerId: Int,
+            providerId: Long,
             url: String,
             nativeProvider: String?,
             nativeParams: TLDataJSON?,
@@ -60,6 +68,7 @@ class TLPaymentForm() : TLObject() {
     ) : this() {
         this.canSaveCredentials = canSaveCredentials
         this.passwordMissing = passwordMissing
+        this.formId = formId
         this.botId = botId
         this.invoice = invoice
         this.providerId = providerId
@@ -71,7 +80,7 @@ class TLPaymentForm() : TLObject() {
         this.users = users
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(canSaveCredentials, 4)
         updateFlags(passwordMissing, 8)
@@ -86,9 +95,10 @@ class TLPaymentForm() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        writeInt(botId)
+        writeLong(formId)
+        writeLong(botId)
         writeTLObject(invoice)
-        writeInt(providerId)
+        writeLong(providerId)
         writeString(url)
         doIfMask(nativeProvider, 16) { writeString(it) }
         doIfMask(nativeParams, 16) { writeTLObject(it) }
@@ -102,9 +112,10 @@ class TLPaymentForm() : TLObject() {
         _flags = readInt()
         canSaveCredentials = isMask(4)
         passwordMissing = isMask(8)
-        botId = readInt()
+        formId = readLong()
+        botId = readLong()
         invoice = readTLObject<TLInvoice>(TLInvoice::class, TLInvoice.CONSTRUCTOR_ID)
-        providerId = readInt()
+        providerId = readLong()
         url = readString()
         nativeProvider = readIfMask(16) { readString() }
         nativeParams = readIfMask(16) { readTLObject<TLDataJSON>(TLDataJSON::class, TLDataJSON.CONSTRUCTOR_ID) }
@@ -118,9 +129,10 @@ class TLPaymentForm() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += SIZE_INT32
+        size += SIZE_INT64
+        size += SIZE_INT64
         size += invoice.computeSerializedSize()
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += computeTLStringSerializedSize(url)
         size += getIntIfMask(nativeProvider, 16) { computeTLStringSerializedSize(it) }
         size += getIntIfMask(nativeParams, 16) { it.computeSerializedSize() }
@@ -139,6 +151,7 @@ class TLPaymentForm() : TLObject() {
         return _flags == other._flags
                 && canSaveCredentials == other.canSaveCredentials
                 && passwordMissing == other.passwordMissing
+                && formId == other.formId
                 && botId == other.botId
                 && invoice == other.invoice
                 && providerId == other.providerId
@@ -150,6 +163,6 @@ class TLPaymentForm() : TLObject() {
                 && users == other.users
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3f56aea3.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x1694761b
     }
 }

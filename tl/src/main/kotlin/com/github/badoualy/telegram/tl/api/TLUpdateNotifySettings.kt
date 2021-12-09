@@ -12,15 +12,15 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLUpdateNotifySettings() : TLAbsUpdate() {
-    var peer: TLAbsNotifyPeer = TLNotifyChats()
+    var peer: TLAbsNotifyPeer = TLNotifyBroadcasts()
 
-    var notifySettings: TLAbsPeerNotifySettings = TLPeerNotifySettingsEmpty()
+    var notifySettings: TLPeerNotifySettings = TLPeerNotifySettings()
 
     private val _constructor: String = "updateNotifySettings#bec268ef"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(peer: TLAbsNotifyPeer, notifySettings: TLAbsPeerNotifySettings) : this() {
+    constructor(peer: TLAbsNotifyPeer, notifySettings: TLPeerNotifySettings) : this() {
         this.peer = peer
         this.notifySettings = notifySettings
     }
@@ -34,7 +34,7 @@ class TLUpdateNotifySettings() : TLAbsUpdate() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         peer = readTLObject<TLAbsNotifyPeer>()
-        notifySettings = readTLObject<TLAbsPeerNotifySettings>()
+        notifySettings = readTLObject<TLPeerNotifySettings>(TLPeerNotifySettings::class, TLPeerNotifySettings.CONSTRUCTOR_ID)
     }
 
     override fun computeSerializedSize(): Int {

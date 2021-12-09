@@ -26,6 +26,12 @@ class TLRequestMessagesForwardMessages() : TLMethod<TLAbsUpdates>() {
     @Transient
     var withMyScore: Boolean = false
 
+    @Transient
+    var dropAuthor: Boolean = false
+
+    @Transient
+    var dropMediaCaptions: Boolean = false
+
     var fromPeer: TLAbsInputPeer = TLInputPeerEmpty()
 
     var id: TLIntVector = TLIntVector()
@@ -34,7 +40,9 @@ class TLRequestMessagesForwardMessages() : TLMethod<TLAbsUpdates>() {
 
     var toPeer: TLAbsInputPeer = TLInputPeerEmpty()
 
-    private val _constructor: String = "messages.forwardMessages#708e0195"
+    var scheduleDate: Int? = null
+
+    private val _constructor: String = "messages.forwardMessages#d9fee60e"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -42,25 +50,34 @@ class TLRequestMessagesForwardMessages() : TLMethod<TLAbsUpdates>() {
             silent: Boolean,
             background: Boolean,
             withMyScore: Boolean,
+            dropAuthor: Boolean,
+            dropMediaCaptions: Boolean,
             fromPeer: TLAbsInputPeer,
             id: TLIntVector,
             randomId: TLLongVector,
-            toPeer: TLAbsInputPeer
+            toPeer: TLAbsInputPeer,
+            scheduleDate: Int?
     ) : this() {
         this.silent = silent
         this.background = background
         this.withMyScore = withMyScore
+        this.dropAuthor = dropAuthor
+        this.dropMediaCaptions = dropMediaCaptions
         this.fromPeer = fromPeer
         this.id = id
         this.randomId = randomId
         this.toPeer = toPeer
+        this.scheduleDate = scheduleDate
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(silent, 32)
         updateFlags(background, 64)
         updateFlags(withMyScore, 256)
+        updateFlags(dropAuthor, 2048)
+        updateFlags(dropMediaCaptions, 4096)
+        updateFlags(scheduleDate, 1024)
     }
 
     @Throws(IOException::class)
@@ -72,6 +89,7 @@ class TLRequestMessagesForwardMessages() : TLMethod<TLAbsUpdates>() {
         writeTLVector(id)
         writeTLVector(randomId)
         writeTLObject(toPeer)
+        doIfMask(scheduleDate, 1024) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -80,10 +98,13 @@ class TLRequestMessagesForwardMessages() : TLMethod<TLAbsUpdates>() {
         silent = isMask(32)
         background = isMask(64)
         withMyScore = isMask(256)
+        dropAuthor = isMask(2048)
+        dropMediaCaptions = isMask(4096)
         fromPeer = readTLObject<TLAbsInputPeer>()
         id = readTLIntVector()
         randomId = readTLLongVector()
         toPeer = readTLObject<TLAbsInputPeer>()
+        scheduleDate = readIfMask(1024) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -95,6 +116,7 @@ class TLRequestMessagesForwardMessages() : TLMethod<TLAbsUpdates>() {
         size += id.computeSerializedSize()
         size += randomId.computeSerializedSize()
         size += toPeer.computeSerializedSize()
+        size += getIntIfMask(scheduleDate, 1024) { SIZE_INT32 }
         return size
     }
 
@@ -108,12 +130,15 @@ class TLRequestMessagesForwardMessages() : TLMethod<TLAbsUpdates>() {
                 && silent == other.silent
                 && background == other.background
                 && withMyScore == other.withMyScore
+                && dropAuthor == other.dropAuthor
+                && dropMediaCaptions == other.dropMediaCaptions
                 && fromPeer == other.fromPeer
                 && id == other.id
                 && randomId == other.randomId
                 && toPeer == other.toPeer
+                && scheduleDate == other.scheduleDate
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x708e0195.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xd9fee60e.toInt()
     }
 }

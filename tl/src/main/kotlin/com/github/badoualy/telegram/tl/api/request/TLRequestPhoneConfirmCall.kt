@@ -81,6 +81,6 @@ class TLRequestPhoneConfirmCall() : TLMethod<TLPhoneCall>() {
                 && protocol == other.protocol
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x2efe1722.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x2efe1722
     }
 }

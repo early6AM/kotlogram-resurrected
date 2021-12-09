@@ -2,20 +2,17 @@ package com.github.badoualy.telegram.api
 
 import com.github.badoualy.telegram.api.utils.InputFileLocation
 import com.github.badoualy.telegram.mtproto.log.LogTag
-import com.github.badoualy.telegram.mtproto.secure.CryptoUtils
 import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
+import com.github.badoualy.telegram.tl.api.TLCodeSettings
 import com.github.badoualy.telegram.tl.api.TelegramApi
 import com.github.badoualy.telegram.tl.api.TelegramApiWrapper
-import com.github.badoualy.telegram.tl.api.account.TLPassword
 import com.github.badoualy.telegram.tl.api.upload.TLFile
 import com.github.badoualy.telegram.tl.core.TLBytes
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.core.TLObject
-import com.github.badoualy.telegram.tl.exception.RpcErrorException
 import io.reactivex.Observable
 import io.reactivex.Single
 import java.io.Closeable
-import java.io.OutputStream
 
 abstract class TelegramClient : TelegramApiWrapper(), TelegramApi, Closeable {
 
@@ -67,17 +64,19 @@ abstract class TelegramClient : TelegramApiWrapper(), TelegramApi, Closeable {
     fun authSendCode(allowFlashcall: Boolean, phoneNumber: String, currentNumber: Boolean?) =
             with(app) {
                 @Suppress("DEPRECATION")
-                authSendCode(allowFlashcall, phoneNumber, currentNumber, apiId, apiHash)
+                authSendCode(phoneNumber, apiId, apiHash, TLCodeSettings(allowFlashcall, currentNumber ?: true, true))
             }
 
     @Deprecated("Use one of the overload for more convenience",
                 ReplaceWith("authSendCode(phoneNumber)"))
-    override fun authSendCode(allowFlashcall: Boolean, phoneNumber: String, currentNumber: Boolean?, apiId: Int, apiHash: String) =
-            super.authSendCode(allowFlashcall, phoneNumber, currentNumber, apiId, apiHash)
+    fun authSendCode(allowFlashcall: Boolean, phoneNumber: String, currentNumber: Boolean?, apiId: Int, apiHash: String) =
+            super.authSendCode(phoneNumber, apiId, apiHash, TLCodeSettings(allowFlashcall, currentNumber ?: true, true))
 
     /** Convenience method wrapping the argument with salt */
-    fun authCheckPassword(password: String) =
-            accountGetPassword()
+    @Deprecated("IDK WTF has happened to this", level = DeprecationLevel.ERROR)
+    fun authCheckPassword(password: String): Nothing =
+        throw UnsupportedOperationException()
+            /*accountGetPassword()
                     .flatMap { tlPassword ->
                         tlPassword as? TLPassword ?: throw RpcErrorException(400, "NO_PASSWORD")
                         CryptoUtils.encodePasswordHash(tlPassword.currentSalt.data,
@@ -85,11 +84,10 @@ abstract class TelegramClient : TelegramApiWrapper(), TelegramApi, Closeable {
                             @Suppress("DEPRECATION")
                             authCheckPassword(TLBytes(hash))
                         }
-                    }
+                    }*/
 
-    @Deprecated("Use authCheckPassword for more convenience",
-                ReplaceWith("authCheckPassword(password)"))
-    override fun authCheckPassword(passwordHash: TLBytes) = super.authCheckPassword(passwordHash)
+    @Deprecated("Use authCheckPassword for more convenience", ReplaceWith("authCheckPassword(password)"), DeprecationLevel.ERROR)
+    fun authCheckPassword(passwordHash: TLBytes): Nothing = throw UnsupportedOperationException()
 
     /** Convenience method wrapping the argument with TelegramApp values and casting result with good type */
     fun <T : TLObject> initConnection(query: TLMethod<T>) = with(app) {
@@ -101,7 +99,7 @@ abstract class TelegramClient : TelegramApiWrapper(), TelegramApi, Closeable {
     }
 
     @Deprecated("Use initConnection for more convenience", ReplaceWith("initConnection(query)"))
-    override fun <T : TLObject> initConnection(apiId: Int,
+    fun <T : TLObject> initConnection(apiId: Int,
                                                deviceModel: String,
                                                systemVersion: String, appVersion: String,
                                                systemLangCode: String,
@@ -109,11 +107,9 @@ abstract class TelegramClient : TelegramApiWrapper(), TelegramApi, Closeable {
                                                langCode: String,
                                                query: TLMethod<T>?) =
             super.initConnection(apiId, deviceModel, systemVersion, appVersion,
-                                 systemLangCode, langPack, langCode, query)
+                                 systemLangCode, langPack, langCode, null, null, query)
 
     /** Convenience method wrapping the argument for a plain text message */
     fun messagesSendMessage(peer: TLAbsInputPeer, message: String, randomId: Long) =
-            messagesSendMessage(true, false, false, false,
-                                peer, null, message, randomId,
-                                null, null)
+            super.messagesSendMessage(true, false, false, false, peer, null, message, randomId, null, null, null)
 }

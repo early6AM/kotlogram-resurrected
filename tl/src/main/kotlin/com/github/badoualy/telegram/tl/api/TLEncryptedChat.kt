@@ -10,7 +10,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * encryptedChat#fa56ce36
+ * encryptedChat#61f0d4c7
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -22,15 +22,15 @@ class TLEncryptedChat() : TLAbsEncryptedChat() {
 
     var date: Int = 0
 
-    var adminId: Int = 0
+    var adminId: Long = 0L
 
-    var participantId: Int = 0
+    var participantId: Long = 0L
 
     var gAOrB: TLBytes = TLBytes.EMPTY
 
     var keyFingerprint: Long = 0L
 
-    private val _constructor: String = "encryptedChat#fa56ce36"
+    private val _constructor: String = "encryptedChat#61f0d4c7"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -38,8 +38,8 @@ class TLEncryptedChat() : TLAbsEncryptedChat() {
             id: Int,
             accessHash: Long,
             date: Int,
-            adminId: Int,
-            participantId: Int,
+            adminId: Long,
+            participantId: Long,
             gAOrB: TLBytes,
             keyFingerprint: Long
     ) : this() {
@@ -57,8 +57,8 @@ class TLEncryptedChat() : TLAbsEncryptedChat() {
         writeInt(id)
         writeLong(accessHash)
         writeInt(date)
-        writeInt(adminId)
-        writeInt(participantId)
+        writeLong(adminId)
+        writeLong(participantId)
         writeTLBytes(gAOrB)
         writeLong(keyFingerprint)
     }
@@ -68,8 +68,8 @@ class TLEncryptedChat() : TLAbsEncryptedChat() {
         id = readInt()
         accessHash = readLong()
         date = readInt()
-        adminId = readInt()
-        participantId = readInt()
+        adminId = readLong()
+        participantId = readLong()
         gAOrB = readTLBytes()
         keyFingerprint = readLong()
     }
@@ -79,8 +79,8 @@ class TLEncryptedChat() : TLAbsEncryptedChat() {
         size += SIZE_INT32
         size += SIZE_INT64
         size += SIZE_INT32
-        size += SIZE_INT32
-        size += SIZE_INT32
+        size += SIZE_INT64
+        size += SIZE_INT64
         size += computeTLBytesSerializedSize(gAOrB)
         size += SIZE_INT64
         return size
@@ -101,6 +101,6 @@ class TLEncryptedChat() : TLAbsEncryptedChat() {
                 && keyFingerprint == other.keyFingerprint
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xfa56ce36.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x61f0d4c7
     }
 }

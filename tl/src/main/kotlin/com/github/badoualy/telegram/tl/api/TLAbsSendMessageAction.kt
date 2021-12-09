@@ -6,8 +6,12 @@ import com.github.badoualy.telegram.tl.core.TLObject
  * Abstraction level for the following constructors:
  * * [sendMessageCancelAction#fd5ec8f5][TLSendMessageCancelAction]
  * * [sendMessageChooseContactAction#628cbc6f][TLSendMessageChooseContactAction]
+ * * [sendMessageChooseStickerAction#b05ac6b1][TLSendMessageChooseStickerAction]
+ * * [sendMessageEmojiInteraction#25972bcb][TLSendMessageEmojiInteraction]
+ * * [sendMessageEmojiInteractionSeen#b665902e][TLSendMessageEmojiInteractionSeen]
  * * [sendMessageGamePlayAction#dd6a8f48][TLSendMessageGamePlayAction]
  * * [sendMessageGeoLocationAction#176f8ba1][TLSendMessageGeoLocationAction]
+ * * [sendMessageHistoryImportAction#dbda9246][TLSendMessageHistoryImportAction]
  * * [sendMessageRecordAudioAction#d52f73f7][TLSendMessageRecordAudioAction]
  * * [sendMessageRecordRoundAction#88f27fbc][TLSendMessageRecordRoundAction]
  * * [sendMessageRecordVideoAction#a187d66f][TLSendMessageRecordVideoAction]
@@ -17,6 +21,7 @@ import com.github.badoualy.telegram.tl.core.TLObject
  * * [sendMessageUploadPhotoAction#d1d34a26][TLSendMessageUploadPhotoAction]
  * * [sendMessageUploadRoundAction#243e1c66][TLSendMessageUploadRoundAction]
  * * [sendMessageUploadVideoAction#e9763aec][TLSendMessageUploadVideoAction]
+ * * [speakingInGroupCallAction#d92c2285][TLSpeakingInGroupCallAction]
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>

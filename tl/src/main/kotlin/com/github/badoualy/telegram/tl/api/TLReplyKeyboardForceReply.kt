@@ -2,12 +2,13 @@ package com.github.badoualy.telegram.tl.api
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * replyKeyboardForceReply#f4108aa0
+ * replyKeyboardForceReply#86b40b08
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -19,19 +20,27 @@ class TLReplyKeyboardForceReply() : TLAbsReplyMarkup() {
     @Transient
     var selective: Boolean = false
 
-    private val _constructor: String = "replyKeyboardForceReply#f4108aa0"
+    var placeholder: String? = null
+
+    private val _constructor: String = "replyKeyboardForceReply#86b40b08"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(singleUse: Boolean, selective: Boolean) : this() {
+    constructor(
+            singleUse: Boolean,
+            selective: Boolean,
+            placeholder: String?
+    ) : this() {
         this.singleUse = singleUse
         this.selective = selective
+        this.placeholder = placeholder
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(singleUse, 2)
         updateFlags(selective, 4)
+        updateFlags(placeholder, 8)
     }
 
     @Throws(IOException::class)
@@ -39,6 +48,7 @@ class TLReplyKeyboardForceReply() : TLAbsReplyMarkup() {
         computeFlags()
 
         writeInt(_flags)
+        doIfMask(placeholder, 8) { writeString(it) }
     }
 
     @Throws(IOException::class)
@@ -46,6 +56,7 @@ class TLReplyKeyboardForceReply() : TLAbsReplyMarkup() {
         _flags = readInt()
         singleUse = isMask(2)
         selective = isMask(4)
+        placeholder = readIfMask(8) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -53,6 +64,7 @@ class TLReplyKeyboardForceReply() : TLAbsReplyMarkup() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
+        size += getIntIfMask(placeholder, 8) { computeTLStringSerializedSize(it) }
         return size
     }
 
@@ -65,8 +77,9 @@ class TLReplyKeyboardForceReply() : TLAbsReplyMarkup() {
         return _flags == other._flags
                 && singleUse == other.singleUse
                 && selective == other.selective
+                && placeholder == other.placeholder
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xf4108aa0.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x86b40b08.toInt()
     }
 }

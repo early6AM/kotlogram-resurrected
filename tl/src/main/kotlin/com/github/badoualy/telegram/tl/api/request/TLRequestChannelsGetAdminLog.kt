@@ -59,7 +59,7 @@ class TLRequestChannelsGetAdminLog() : TLMethod<TLAdminLogResults>() {
     @Throws(IOException::class)
     override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLAdminLogResults = tlDeserializer.readTLObject(TLAdminLogResults::class, TLAdminLogResults.CONSTRUCTOR_ID)
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(eventsFilter, 1)
         updateFlags(admins, 2)
@@ -122,6 +122,6 @@ class TLRequestChannelsGetAdminLog() : TLMethod<TLAdminLogResults>() {
                 && limit == other.limit
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x33ddf480.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x33ddf480
     }
 }

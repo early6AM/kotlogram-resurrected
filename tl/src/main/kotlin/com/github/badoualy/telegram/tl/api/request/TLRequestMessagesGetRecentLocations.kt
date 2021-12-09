@@ -2,6 +2,7 @@ package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
 import com.github.badoualy.telegram.tl.api.TLInputPeerEmpty
 import com.github.badoualy.telegram.tl.api.messages.TLAbsMessages
@@ -19,31 +20,41 @@ class TLRequestMessagesGetRecentLocations() : TLMethod<TLAbsMessages>() {
 
     var limit: Int = 0
 
-    private val _constructor: String = "messages.getRecentLocations#249431e2"
+    var hash: Long = 0L
+
+    private val _constructor: String = "messages.getRecentLocations#702a40e0"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(peer: TLAbsInputPeer, limit: Int) : this() {
+    constructor(
+            peer: TLAbsInputPeer,
+            limit: Int,
+            hash: Long
+    ) : this() {
         this.peer = peer
         this.limit = limit
+        this.hash = hash
     }
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
         writeTLObject(peer)
         writeInt(limit)
+        writeLong(hash)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         peer = readTLObject<TLAbsInputPeer>()
         limit = readInt()
+        hash = readLong()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
         size += peer.computeSerializedSize()
         size += SIZE_INT32
+        size += SIZE_INT64
         return size
     }
 
@@ -55,8 +66,9 @@ class TLRequestMessagesGetRecentLocations() : TLMethod<TLAbsMessages>() {
 
         return peer == other.peer
                 && limit == other.limit
+                && hash == other.hash
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x249431e2.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x702a40e0
     }
 }

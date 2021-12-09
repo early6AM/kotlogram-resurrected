@@ -20,6 +20,6 @@ class TLUserStatusLastMonth : TLAbsUserStatus() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x77ebc742.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x77ebc742
     }
 }

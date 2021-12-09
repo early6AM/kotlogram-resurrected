@@ -3,7 +3,11 @@ package com.github.badoualy.telegram.tl.api.request
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
-import com.github.badoualy.telegram.tl.api.*
+import com.github.badoualy.telegram.tl.api.TLAbsInputGeoPoint
+import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
+import com.github.badoualy.telegram.tl.api.TLAbsInputUser
+import com.github.badoualy.telegram.tl.api.TLInputPeerEmpty
+import com.github.badoualy.telegram.tl.api.TLInputUserEmpty
 import com.github.badoualy.telegram.tl.api.messages.TLBotResults
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
@@ -46,7 +50,7 @@ class TLRequestMessagesGetInlineBotResults() : TLMethod<TLBotResults>() {
     @Throws(IOException::class)
     override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLBotResults = tlDeserializer.readTLObject(TLBotResults::class, TLBotResults.CONSTRUCTOR_ID)
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(geoPoint, 1)
     }
@@ -100,6 +104,6 @@ class TLRequestMessagesGetInlineBotResults() : TLMethod<TLBotResults>() {
                 && offset == other.offset
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x514e999d.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x514e999d
     }
 }

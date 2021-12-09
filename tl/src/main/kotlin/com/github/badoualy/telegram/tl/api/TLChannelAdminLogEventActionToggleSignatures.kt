@@ -48,6 +48,6 @@ class TLChannelAdminLogEventActionToggleSignatures() : TLAbsChannelAdminLogEvent
         return newValue == other.newValue
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x26ae0971.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x26ae0971
     }
 }

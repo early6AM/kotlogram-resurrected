@@ -12,7 +12,7 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLUpdateChatParticipants() : TLAbsUpdate() {
-    var participants: TLAbsChatParticipants = TLChatParticipants()
+    var participants: TLAbsChatParticipants = TLChatParticipantsForbidden()
 
     private val _constructor: String = "updateChatParticipants#7761198"
 
@@ -47,6 +47,6 @@ class TLUpdateChatParticipants() : TLAbsUpdate() {
         return participants == other.participants
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x7761198.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x7761198
     }
 }

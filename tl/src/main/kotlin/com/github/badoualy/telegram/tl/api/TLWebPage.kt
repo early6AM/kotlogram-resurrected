@@ -4,12 +4,13 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
+import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * webPage#5f07b4bc
+ * webPage#e89c45b2
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -47,9 +48,11 @@ class TLWebPage() : TLAbsWebPage() {
 
     var document: TLAbsDocument? = null
 
-    var cachedPage: TLAbsPage? = null
+    var cachedPage: TLPage? = null
 
-    private val _constructor: String = "webPage#5f07b4bc"
+    var attributes: TLObjectVector<TLWebPageAttributeTheme>? = TLObjectVector()
+
+    private val _constructor: String = "webPage#e89c45b2"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -70,7 +73,8 @@ class TLWebPage() : TLAbsWebPage() {
             duration: Int?,
             author: String?,
             document: TLAbsDocument?,
-            cachedPage: TLAbsPage?
+            cachedPage: TLPage?,
+            attributes: TLObjectVector<TLWebPageAttributeTheme>?
     ) : this() {
         this.id = id
         this.url = url
@@ -89,9 +93,10 @@ class TLWebPage() : TLAbsWebPage() {
         this.author = author
         this.document = document
         this.cachedPage = cachedPage
+        this.attributes = attributes
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(type, 1)
         updateFlags(siteName, 2)
@@ -106,6 +111,7 @@ class TLWebPage() : TLAbsWebPage() {
         updateFlags(author, 256)
         updateFlags(document, 512)
         updateFlags(cachedPage, 1024)
+        updateFlags(attributes, 4096)
     }
 
     @Throws(IOException::class)
@@ -130,6 +136,7 @@ class TLWebPage() : TLAbsWebPage() {
         doIfMask(author, 256) { writeString(it) }
         doIfMask(document, 512) { writeTLObject(it) }
         doIfMask(cachedPage, 1024) { writeTLObject(it) }
+        doIfMask(attributes, 4096) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
@@ -151,7 +158,8 @@ class TLWebPage() : TLAbsWebPage() {
         duration = readIfMask(128) { readInt() }
         author = readIfMask(256) { readString() }
         document = readIfMask(512) { readTLObject<TLAbsDocument>() }
-        cachedPage = readIfMask(1024) { readTLObject<TLAbsPage>() }
+        cachedPage = readIfMask(1024) { readTLObject<TLPage>(TLPage::class, TLPage.CONSTRUCTOR_ID) }
+        attributes = readIfMask(4096) { readTLVector<TLWebPageAttributeTheme>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -176,6 +184,7 @@ class TLWebPage() : TLAbsWebPage() {
         size += getIntIfMask(author, 256) { computeTLStringSerializedSize(it) }
         size += getIntIfMask(document, 512) { it.computeSerializedSize() }
         size += getIntIfMask(cachedPage, 1024) { it.computeSerializedSize() }
+        size += getIntIfMask(attributes, 4096) { it.computeSerializedSize() }
         return size
     }
 
@@ -203,8 +212,9 @@ class TLWebPage() : TLAbsWebPage() {
                 && author == other.author
                 && document == other.document
                 && cachedPage == other.cachedPage
+                && attributes == other.attributes
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x5f07b4bc.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xe89c45b2.toInt()
     }
 }

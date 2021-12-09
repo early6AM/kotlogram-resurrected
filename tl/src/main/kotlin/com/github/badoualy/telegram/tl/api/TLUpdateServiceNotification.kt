@@ -48,7 +48,7 @@ class TLUpdateServiceNotification() : TLAbsUpdate() {
         this.entities = entities
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(popup, 1)
         updateFlags(inboxDate, 2)

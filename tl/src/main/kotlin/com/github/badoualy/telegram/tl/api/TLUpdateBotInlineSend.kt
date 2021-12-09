@@ -2,19 +2,20 @@ package com.github.badoualy.telegram.tl.api
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * updateBotInlineSend#e48f964
+ * updateBotInlineSend#12f12a07
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLUpdateBotInlineSend() : TLAbsUpdate() {
-    var userId: Int = 0
+    var userId: Long = 0L
 
     var query: String = ""
 
@@ -22,18 +23,18 @@ class TLUpdateBotInlineSend() : TLAbsUpdate() {
 
     var id: String = ""
 
-    var msgId: TLInputBotInlineMessageID? = null
+    var msgId: TLAbsInputBotInlineMessageID? = null
 
-    private val _constructor: String = "updateBotInlineSend#e48f964"
+    private val _constructor: String = "updateBotInlineSend#12f12a07"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
-            userId: Int,
+            userId: Long,
             query: String,
             geo: TLAbsGeoPoint?,
             id: String,
-            msgId: TLInputBotInlineMessageID?
+            msgId: TLAbsInputBotInlineMessageID?
     ) : this() {
         this.userId = userId
         this.query = query
@@ -42,7 +43,7 @@ class TLUpdateBotInlineSend() : TLAbsUpdate() {
         this.msgId = msgId
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(geo, 1)
         updateFlags(msgId, 2)
@@ -53,7 +54,7 @@ class TLUpdateBotInlineSend() : TLAbsUpdate() {
         computeFlags()
 
         writeInt(_flags)
-        writeInt(userId)
+        writeLong(userId)
         writeString(query)
         doIfMask(geo, 1) { writeTLObject(it) }
         writeString(id)
@@ -63,11 +64,11 @@ class TLUpdateBotInlineSend() : TLAbsUpdate() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        userId = readInt()
+        userId = readLong()
         query = readString()
         geo = readIfMask(1) { readTLObject<TLAbsGeoPoint>() }
         id = readString()
-        msgId = readIfMask(2) { readTLObject<TLInputBotInlineMessageID>(TLInputBotInlineMessageID::class, TLInputBotInlineMessageID.CONSTRUCTOR_ID) }
+        msgId = readIfMask(2) { readTLObject<TLAbsInputBotInlineMessageID>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -75,7 +76,7 @@ class TLUpdateBotInlineSend() : TLAbsUpdate() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += computeTLStringSerializedSize(query)
         size += getIntIfMask(geo, 1) { it.computeSerializedSize() }
         size += computeTLStringSerializedSize(id)
@@ -97,6 +98,6 @@ class TLUpdateBotInlineSend() : TLAbsUpdate() {
                 && msgId == other.msgId
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xe48f964.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x12f12a07
     }
 }

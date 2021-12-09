@@ -16,11 +16,11 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLMessages() : TLAbsMessages() {
-    override var messages: TLObjectVector<TLAbsMessage> = TLObjectVector()
+    var messages: TLObjectVector<TLAbsMessage> = TLObjectVector()
 
-    override var chats: TLObjectVector<TLAbsChat> = TLObjectVector()
+    var chats: TLObjectVector<TLAbsChat> = TLObjectVector()
 
-    override var users: TLObjectVector<TLAbsUser> = TLObjectVector()
+    var users: TLObjectVector<TLAbsUser> = TLObjectVector()
 
     private val _constructor: String = "messages.messages#8c718e87"
 

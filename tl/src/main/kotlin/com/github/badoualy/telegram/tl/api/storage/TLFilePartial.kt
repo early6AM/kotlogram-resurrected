@@ -20,6 +20,6 @@ class TLFilePartial : TLAbsFileType() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x40bc6f52.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x40bc6f52
     }
 }

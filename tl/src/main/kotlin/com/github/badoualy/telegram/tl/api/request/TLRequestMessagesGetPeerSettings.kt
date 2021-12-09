@@ -52,6 +52,6 @@ class TLRequestMessagesGetPeerSettings() : TLMethod<TLPeerSettings>() {
         return peer == other.peer
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3672e09c.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3672e09c
     }
 }

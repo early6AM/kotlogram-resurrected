@@ -20,6 +20,6 @@ class TLPhoneCallDiscardReasonHangup : TLAbsPhoneCallDiscardReason() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x57adc690.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x57adc690
     }
 }

@@ -58,6 +58,11 @@ interface TLDeserializer {
         var constructorId = expectedConstructorId
 
         val realConstructorId = readInt()
+        if (realConstructorId == TLGzipObject.CONSTRUCTOR_ID) {
+            unzip()
+            return readTLObject(expectedClazz, expectedConstructorId)
+        }
+
         if (constructorId != -1 && realConstructorId != constructorId)
             throw InvalidConstructorIdException(realConstructorId, constructorId)
 
@@ -68,10 +73,6 @@ interface TLDeserializer {
 
         @Suppress("UNCHECKED_CAST")
         return when (constructorId) {
-            TLGzipObject.CONSTRUCTOR_ID -> {
-                unzip()
-                readTLObject(expectedClazz, expectedConstructorId)
-            }
             TLBool.TRUE.constructorId -> TLBool.TRUE as T
             TLBool.FALSE.constructorId -> TLBool.FALSE as T
             TLVector.CONSTRUCTOR_ID -> {
@@ -101,6 +102,7 @@ interface TLDeserializer {
     fun readTLIntVector(): TLIntVector = deserializeVector(TLIntVector())
     fun readTLLongVector(): TLLongVector = deserializeVector(TLLongVector())
     fun readTLStringVector(): TLStringVector = deserializeVector(TLStringVector())
+    fun readTLBytesVector(): TLBytesVector = deserializeVector(TLBytesVector())
 
     fun unzip()
 

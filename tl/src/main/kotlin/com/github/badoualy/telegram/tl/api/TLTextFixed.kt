@@ -47,6 +47,6 @@ class TLTextFixed() : TLAbsRichText() {
         return text == other.text
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x6c3f19b9.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x6c3f19b9
     }
 }

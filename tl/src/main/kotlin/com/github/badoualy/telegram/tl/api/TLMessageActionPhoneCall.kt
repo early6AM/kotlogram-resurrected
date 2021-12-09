@@ -14,6 +14,9 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLMessageActionPhoneCall() : TLAbsMessageAction() {
+    @Transient
+    var video: Boolean = false
+
     var callId: Long = 0L
 
     var reason: TLAbsPhoneCallDiscardReason? = null
@@ -25,17 +28,20 @@ class TLMessageActionPhoneCall() : TLAbsMessageAction() {
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
+            video: Boolean,
             callId: Long,
             reason: TLAbsPhoneCallDiscardReason?,
             duration: Int?
     ) : this() {
+        this.video = video
         this.callId = callId
         this.reason = reason
         this.duration = duration
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
+        updateFlags(video, 4)
         updateFlags(reason, 1)
         updateFlags(duration, 2)
     }
@@ -53,6 +59,7 @@ class TLMessageActionPhoneCall() : TLAbsMessageAction() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
+        video = isMask(4)
         callId = readLong()
         reason = readIfMask(1) { readTLObject<TLAbsPhoneCallDiscardReason>() }
         duration = readIfMask(2) { readInt() }
@@ -76,6 +83,7 @@ class TLMessageActionPhoneCall() : TLAbsMessageAction() {
         if (other === this) return true
 
         return _flags == other._flags
+                && video == other.video
                 && callId == other.callId
                 && reason == other.reason
                 && duration == other.duration

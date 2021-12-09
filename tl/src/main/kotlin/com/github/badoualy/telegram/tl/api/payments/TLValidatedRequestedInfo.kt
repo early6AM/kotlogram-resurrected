@@ -30,7 +30,7 @@ class TLValidatedRequestedInfo() : TLObject() {
         this.shippingOptions = shippingOptions
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(id, 1)
         updateFlags(shippingOptions, 2)

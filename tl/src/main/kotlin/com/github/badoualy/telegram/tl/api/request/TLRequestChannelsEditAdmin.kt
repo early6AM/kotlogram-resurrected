@@ -1,7 +1,13 @@
 package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
-import com.github.badoualy.telegram.tl.api.*
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
+import com.github.badoualy.telegram.tl.api.TLAbsInputChannel
+import com.github.badoualy.telegram.tl.api.TLAbsInputUser
+import com.github.badoualy.telegram.tl.api.TLAbsUpdates
+import com.github.badoualy.telegram.tl.api.TLChatAdminRights
+import com.github.badoualy.telegram.tl.api.TLInputChannelEmpty
+import com.github.badoualy.telegram.tl.api.TLInputUserEmpty
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
@@ -16,20 +22,24 @@ class TLRequestChannelsEditAdmin() : TLMethod<TLAbsUpdates>() {
 
     var userId: TLAbsInputUser = TLInputUserEmpty()
 
-    var adminRights: TLChannelAdminRights = TLChannelAdminRights()
+    var adminRights: TLChatAdminRights = TLChatAdminRights()
 
-    private val _constructor: String = "channels.editAdmin#20b88214"
+    var rank: String = ""
+
+    private val _constructor: String = "channels.editAdmin#d33c8902"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             channel: TLAbsInputChannel,
             userId: TLAbsInputUser,
-            adminRights: TLChannelAdminRights
+            adminRights: TLChatAdminRights,
+            rank: String
     ) : this() {
         this.channel = channel
         this.userId = userId
         this.adminRights = adminRights
+        this.rank = rank
     }
 
     @Throws(IOException::class)
@@ -37,13 +47,15 @@ class TLRequestChannelsEditAdmin() : TLMethod<TLAbsUpdates>() {
         writeTLObject(channel)
         writeTLObject(userId)
         writeTLObject(adminRights)
+        writeString(rank)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         channel = readTLObject<TLAbsInputChannel>()
         userId = readTLObject<TLAbsInputUser>()
-        adminRights = readTLObject<TLChannelAdminRights>(TLChannelAdminRights::class, TLChannelAdminRights.CONSTRUCTOR_ID)
+        adminRights = readTLObject<TLChatAdminRights>(TLChatAdminRights::class, TLChatAdminRights.CONSTRUCTOR_ID)
+        rank = readString()
     }
 
     override fun computeSerializedSize(): Int {
@@ -51,6 +63,7 @@ class TLRequestChannelsEditAdmin() : TLMethod<TLAbsUpdates>() {
         size += channel.computeSerializedSize()
         size += userId.computeSerializedSize()
         size += adminRights.computeSerializedSize()
+        size += computeTLStringSerializedSize(rank)
         return size
     }
 
@@ -63,8 +76,9 @@ class TLRequestChannelsEditAdmin() : TLMethod<TLAbsUpdates>() {
         return channel == other.channel
                 && userId == other.userId
                 && adminRights == other.adminRights
+                && rank == other.rank
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x20b88214.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xd33c8902.toInt()
     }
 }

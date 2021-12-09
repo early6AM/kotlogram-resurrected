@@ -83,6 +83,6 @@ class TLUpdates() : TLAbsUpdates() {
                 && seq == other.seq
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x74ae4240.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x74ae4240
     }
 }

@@ -57,6 +57,6 @@ class TLStickerPack() : TLObject() {
                 && documents == other.documents
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x12b299d4.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x12b299d4
     }
 }

@@ -1,7 +1,6 @@
 package com.github.badoualy.telegram.tl.api
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
-import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.core.TLBytes
@@ -10,7 +9,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * updateBotShippingQuery#e0cdc940
+ * updateBotShippingQuery#b5aefd7d
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -18,19 +17,19 @@ import java.io.IOException
 class TLUpdateBotShippingQuery() : TLAbsUpdate() {
     var queryId: Long = 0L
 
-    var userId: Int = 0
+    var userId: Long = 0L
 
     var payload: TLBytes = TLBytes.EMPTY
 
     var shippingAddress: TLPostAddress = TLPostAddress()
 
-    private val _constructor: String = "updateBotShippingQuery#e0cdc940"
+    private val _constructor: String = "updateBotShippingQuery#b5aefd7d"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             queryId: Long,
-            userId: Int,
+            userId: Long,
             payload: TLBytes,
             shippingAddress: TLPostAddress
     ) : this() {
@@ -43,7 +42,7 @@ class TLUpdateBotShippingQuery() : TLAbsUpdate() {
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
         writeLong(queryId)
-        writeInt(userId)
+        writeLong(userId)
         writeTLBytes(payload)
         writeTLObject(shippingAddress)
     }
@@ -51,7 +50,7 @@ class TLUpdateBotShippingQuery() : TLAbsUpdate() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         queryId = readLong()
-        userId = readInt()
+        userId = readLong()
         payload = readTLBytes()
         shippingAddress = readTLObject<TLPostAddress>(TLPostAddress::class, TLPostAddress.CONSTRUCTOR_ID)
     }
@@ -59,7 +58,7 @@ class TLUpdateBotShippingQuery() : TLAbsUpdate() {
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT64
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += computeTLBytesSerializedSize(payload)
         size += shippingAddress.computeSerializedSize()
         return size
@@ -77,6 +76,6 @@ class TLUpdateBotShippingQuery() : TLAbsUpdate() {
                 && shippingAddress == other.shippingAddress
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xe0cdc940.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xb5aefd7d.toInt()
     }
 }

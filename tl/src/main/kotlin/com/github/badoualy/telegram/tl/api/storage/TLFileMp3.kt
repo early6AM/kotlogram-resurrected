@@ -20,6 +20,6 @@ class TLFileMp3 : TLAbsFileType() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x528a0677.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x528a0677
     }
 }

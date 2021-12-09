@@ -56,6 +56,6 @@ class TLMessageActionPaymentSent() : TLAbsMessageAction() {
                 && totalAmount == other.totalAmount
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x40699cd0.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x40699cd0
     }
 }

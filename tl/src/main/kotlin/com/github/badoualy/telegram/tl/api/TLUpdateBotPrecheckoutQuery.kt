@@ -11,7 +11,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * updateBotPrecheckoutQuery#5d2f3aa9
+ * updateBotPrecheckoutQuery#8caa9a96
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -19,7 +19,7 @@ import java.io.IOException
 class TLUpdateBotPrecheckoutQuery() : TLAbsUpdate() {
     var queryId: Long = 0L
 
-    var userId: Int = 0
+    var userId: Long = 0L
 
     var payload: TLBytes = TLBytes.EMPTY
 
@@ -31,13 +31,13 @@ class TLUpdateBotPrecheckoutQuery() : TLAbsUpdate() {
 
     var totalAmount: Long = 0L
 
-    private val _constructor: String = "updateBotPrecheckoutQuery#5d2f3aa9"
+    private val _constructor: String = "updateBotPrecheckoutQuery#8caa9a96"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             queryId: Long,
-            userId: Int,
+            userId: Long,
             payload: TLBytes,
             info: TLPaymentRequestedInfo?,
             shippingOptionId: String?,
@@ -53,7 +53,7 @@ class TLUpdateBotPrecheckoutQuery() : TLAbsUpdate() {
         this.totalAmount = totalAmount
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(info, 1)
         updateFlags(shippingOptionId, 2)
@@ -65,7 +65,7 @@ class TLUpdateBotPrecheckoutQuery() : TLAbsUpdate() {
 
         writeInt(_flags)
         writeLong(queryId)
-        writeInt(userId)
+        writeLong(userId)
         writeTLBytes(payload)
         doIfMask(info, 1) { writeTLObject(it) }
         doIfMask(shippingOptionId, 2) { writeString(it) }
@@ -77,7 +77,7 @@ class TLUpdateBotPrecheckoutQuery() : TLAbsUpdate() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         queryId = readLong()
-        userId = readInt()
+        userId = readLong()
         payload = readTLBytes()
         info = readIfMask(1) { readTLObject<TLPaymentRequestedInfo>(TLPaymentRequestedInfo::class, TLPaymentRequestedInfo.CONSTRUCTOR_ID) }
         shippingOptionId = readIfMask(2) { readString() }
@@ -91,7 +91,7 @@ class TLUpdateBotPrecheckoutQuery() : TLAbsUpdate() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT64
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += computeTLBytesSerializedSize(payload)
         size += getIntIfMask(info, 1) { it.computeSerializedSize() }
         size += getIntIfMask(shippingOptionId, 2) { computeTLStringSerializedSize(it) }
@@ -116,6 +116,6 @@ class TLUpdateBotPrecheckoutQuery() : TLAbsUpdate() {
                 && totalAmount == other.totalAmount
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x5d2f3aa9.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x8caa9a96.toInt()
     }
 }

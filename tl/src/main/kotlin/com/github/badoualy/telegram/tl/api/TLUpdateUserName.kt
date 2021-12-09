@@ -1,20 +1,20 @@
 package com.github.badoualy.telegram.tl.api
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
-import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * updateUserName#a7332b73
+ * updateUserName#c3f202e0
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLUpdateUserName() : TLAbsUpdate() {
-    var userId: Int = 0
+    var userId: Long = 0L
 
     var firstName: String = ""
 
@@ -22,12 +22,12 @@ class TLUpdateUserName() : TLAbsUpdate() {
 
     var username: String = ""
 
-    private val _constructor: String = "updateUserName#a7332b73"
+    private val _constructor: String = "updateUserName#c3f202e0"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
-            userId: Int,
+            userId: Long,
             firstName: String,
             lastName: String,
             username: String
@@ -40,7 +40,7 @@ class TLUpdateUserName() : TLAbsUpdate() {
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
-        writeInt(userId)
+        writeLong(userId)
         writeString(firstName)
         writeString(lastName)
         writeString(username)
@@ -48,7 +48,7 @@ class TLUpdateUserName() : TLAbsUpdate() {
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        userId = readInt()
+        userId = readLong()
         firstName = readString()
         lastName = readString()
         username = readString()
@@ -56,7 +56,7 @@ class TLUpdateUserName() : TLAbsUpdate() {
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += computeTLStringSerializedSize(firstName)
         size += computeTLStringSerializedSize(lastName)
         size += computeTLStringSerializedSize(username)
@@ -75,6 +75,6 @@ class TLUpdateUserName() : TLAbsUpdate() {
                 && username == other.username
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xa7332b73.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xc3f202e0.toInt()
     }
 }

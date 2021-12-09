@@ -28,7 +28,7 @@ class TLUpdateStickerSetsOrder() : TLAbsUpdate() {
         this.order = order
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(masks, 1)
     }
@@ -68,6 +68,6 @@ class TLUpdateStickerSetsOrder() : TLAbsUpdate() {
                 && order == other.order
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xbb2d201.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xbb2d201
     }
 }

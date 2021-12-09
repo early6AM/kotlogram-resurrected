@@ -35,7 +35,7 @@ class TLInputStickerSetItem() : TLObject() {
         this.maskCoords = maskCoords
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(maskCoords, 1)
     }

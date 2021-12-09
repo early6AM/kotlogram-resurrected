@@ -20,6 +20,6 @@ class TLFilePng : TLAbsFileType() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xa4f63c0.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xa4f63c0
     }
 }

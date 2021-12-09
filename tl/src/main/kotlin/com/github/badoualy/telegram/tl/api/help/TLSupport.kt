@@ -58,6 +58,6 @@ class TLSupport() : TLObject() {
                 && user == other.user
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x17c6b5f6.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x17c6b5f6
     }
 }

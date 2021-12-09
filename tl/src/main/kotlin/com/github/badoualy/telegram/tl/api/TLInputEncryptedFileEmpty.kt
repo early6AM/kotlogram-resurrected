@@ -20,6 +20,6 @@ class TLInputEncryptedFileEmpty : TLAbsInputEncryptedFile() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x1837c364.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x1837c364
     }
 }

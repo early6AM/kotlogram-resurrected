@@ -1,46 +1,46 @@
 package com.github.badoualy.telegram.tl.api
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
-import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * updateUserStatus#1bfbd823
+ * updateUserStatus#e5bdf8de
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLUpdateUserStatus() : TLAbsUpdate() {
-    var userId: Int = 0
+    var userId: Long = 0L
 
     var status: TLAbsUserStatus = TLUserStatusEmpty()
 
-    private val _constructor: String = "updateUserStatus#1bfbd823"
+    private val _constructor: String = "updateUserStatus#e5bdf8de"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(userId: Int, status: TLAbsUserStatus) : this() {
+    constructor(userId: Long, status: TLAbsUserStatus) : this() {
         this.userId = userId
         this.status = status
     }
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
-        writeInt(userId)
+        writeLong(userId)
         writeTLObject(status)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        userId = readInt()
+        userId = readLong()
         status = readTLObject<TLAbsUserStatus>()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += status.computeSerializedSize()
         return size
     }
@@ -55,6 +55,6 @@ class TLUpdateUserStatus() : TLAbsUpdate() {
                 && status == other.status
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x1bfbd823.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xe5bdf8de.toInt()
     }
 }

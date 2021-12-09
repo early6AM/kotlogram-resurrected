@@ -2,6 +2,7 @@ package com.github.badoualy.telegram.tl.api
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
@@ -9,7 +10,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * updateShortChatMessage#16812688
+ * updateShortChatMessage#4d6deea5
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -29,9 +30,9 @@ class TLUpdateShortChatMessage() : TLAbsUpdates() {
 
     var id: Int = 0
 
-    var fromId: Int = 0
+    var fromId: Long = 0L
 
-    var chatId: Int = 0
+    var chatId: Long = 0L
 
     var message: String = ""
 
@@ -43,13 +44,15 @@ class TLUpdateShortChatMessage() : TLAbsUpdates() {
 
     var fwdFrom: TLMessageFwdHeader? = null
 
-    var viaBotId: Int? = null
+    var viaBotId: Long? = null
 
-    var replyToMsgId: Int? = null
+    var replyTo: TLMessageReplyHeader? = null
 
     var entities: TLObjectVector<TLAbsMessageEntity>? = TLObjectVector()
 
-    private val _constructor: String = "updateShortChatMessage#16812688"
+    var ttlPeriod: Int? = null
+
+    private val _constructor: String = "updateShortChatMessage#4d6deea5"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -59,16 +62,17 @@ class TLUpdateShortChatMessage() : TLAbsUpdates() {
             mediaUnread: Boolean,
             silent: Boolean,
             id: Int,
-            fromId: Int,
-            chatId: Int,
+            fromId: Long,
+            chatId: Long,
             message: String,
             pts: Int,
             ptsCount: Int,
             date: Int,
             fwdFrom: TLMessageFwdHeader?,
-            viaBotId: Int?,
-            replyToMsgId: Int?,
-            entities: TLObjectVector<TLAbsMessageEntity>?
+            viaBotId: Long?,
+            replyTo: TLMessageReplyHeader?,
+            entities: TLObjectVector<TLAbsMessageEntity>?,
+            ttlPeriod: Int?
     ) : this() {
         this.out = out
         this.mentioned = mentioned
@@ -83,11 +87,12 @@ class TLUpdateShortChatMessage() : TLAbsUpdates() {
         this.date = date
         this.fwdFrom = fwdFrom
         this.viaBotId = viaBotId
-        this.replyToMsgId = replyToMsgId
+        this.replyTo = replyTo
         this.entities = entities
+        this.ttlPeriod = ttlPeriod
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(out, 2)
         updateFlags(mentioned, 16)
@@ -95,8 +100,9 @@ class TLUpdateShortChatMessage() : TLAbsUpdates() {
         updateFlags(silent, 8192)
         updateFlags(fwdFrom, 4)
         updateFlags(viaBotId, 2048)
-        updateFlags(replyToMsgId, 8)
+        updateFlags(replyTo, 8)
         updateFlags(entities, 128)
+        updateFlags(ttlPeriod, 33554432)
     }
 
     @Throws(IOException::class)
@@ -105,16 +111,17 @@ class TLUpdateShortChatMessage() : TLAbsUpdates() {
 
         writeInt(_flags)
         writeInt(id)
-        writeInt(fromId)
-        writeInt(chatId)
+        writeLong(fromId)
+        writeLong(chatId)
         writeString(message)
         writeInt(pts)
         writeInt(ptsCount)
         writeInt(date)
         doIfMask(fwdFrom, 4) { writeTLObject(it) }
-        doIfMask(viaBotId, 2048) { writeInt(it) }
-        doIfMask(replyToMsgId, 8) { writeInt(it) }
+        doIfMask(viaBotId, 2048) { writeLong(it) }
+        doIfMask(replyTo, 8) { writeTLObject(it) }
         doIfMask(entities, 128) { writeTLVector(it) }
+        doIfMask(ttlPeriod, 33554432) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -125,16 +132,17 @@ class TLUpdateShortChatMessage() : TLAbsUpdates() {
         mediaUnread = isMask(32)
         silent = isMask(8192)
         id = readInt()
-        fromId = readInt()
-        chatId = readInt()
+        fromId = readLong()
+        chatId = readLong()
         message = readString()
         pts = readInt()
         ptsCount = readInt()
         date = readInt()
         fwdFrom = readIfMask(4) { readTLObject<TLMessageFwdHeader>(TLMessageFwdHeader::class, TLMessageFwdHeader.CONSTRUCTOR_ID) }
-        viaBotId = readIfMask(2048) { readInt() }
-        replyToMsgId = readIfMask(8) { readInt() }
+        viaBotId = readIfMask(2048) { readLong() }
+        replyTo = readIfMask(8) { readTLObject<TLMessageReplyHeader>(TLMessageReplyHeader::class, TLMessageReplyHeader.CONSTRUCTOR_ID) }
         entities = readIfMask(128) { readTLVector<TLAbsMessageEntity>() }
+        ttlPeriod = readIfMask(33554432) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -143,16 +151,17 @@ class TLUpdateShortChatMessage() : TLAbsUpdates() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT32
-        size += SIZE_INT32
-        size += SIZE_INT32
+        size += SIZE_INT64
+        size += SIZE_INT64
         size += computeTLStringSerializedSize(message)
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
         size += getIntIfMask(fwdFrom, 4) { it.computeSerializedSize() }
-        size += getIntIfMask(viaBotId, 2048) { SIZE_INT32 }
-        size += getIntIfMask(replyToMsgId, 8) { SIZE_INT32 }
+        size += getIntIfMask(viaBotId, 2048) { SIZE_INT64 }
+        size += getIntIfMask(replyTo, 8) { it.computeSerializedSize() }
         size += getIntIfMask(entities, 128) { it.computeSerializedSize() }
+        size += getIntIfMask(ttlPeriod, 33554432) { SIZE_INT32 }
         return size
     }
 
@@ -176,10 +185,11 @@ class TLUpdateShortChatMessage() : TLAbsUpdates() {
                 && date == other.date
                 && fwdFrom == other.fwdFrom
                 && viaBotId == other.viaBotId
-                && replyToMsgId == other.replyToMsgId
+                && replyTo == other.replyTo
                 && entities == other.entities
+                && ttlPeriod == other.ttlPeriod
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x16812688.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x4d6deea5
     }
 }

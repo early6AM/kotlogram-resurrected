@@ -10,7 +10,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * pageBlockEmbedPost#292c7be9
+ * pageBlockEmbedPost#f259a80b
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -28,9 +28,9 @@ class TLPageBlockEmbedPost() : TLAbsPageBlock() {
 
     var blocks: TLObjectVector<TLAbsPageBlock> = TLObjectVector()
 
-    var caption: TLAbsRichText = TLTextEmpty()
+    var caption: TLPageCaption = TLPageCaption()
 
-    private val _constructor: String = "pageBlockEmbedPost#292c7be9"
+    private val _constructor: String = "pageBlockEmbedPost#f259a80b"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -41,7 +41,7 @@ class TLPageBlockEmbedPost() : TLAbsPageBlock() {
             author: String,
             date: Int,
             blocks: TLObjectVector<TLAbsPageBlock>,
-            caption: TLAbsRichText
+            caption: TLPageCaption
     ) : this() {
         this.url = url
         this.webpageId = webpageId
@@ -71,7 +71,7 @@ class TLPageBlockEmbedPost() : TLAbsPageBlock() {
         author = readString()
         date = readInt()
         blocks = readTLVector<TLAbsPageBlock>()
-        caption = readTLObject<TLAbsRichText>()
+        caption = readTLObject<TLPageCaption>(TLPageCaption::class, TLPageCaption.CONSTRUCTOR_ID)
     }
 
     override fun computeSerializedSize(): Int {
@@ -101,6 +101,6 @@ class TLPageBlockEmbedPost() : TLAbsPageBlock() {
                 && caption == other.caption
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x292c7be9.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xf259a80b.toInt()
     }
 }

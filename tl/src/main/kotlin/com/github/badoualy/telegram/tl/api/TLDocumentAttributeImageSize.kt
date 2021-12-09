@@ -55,6 +55,6 @@ class TLDocumentAttributeImageSize() : TLAbsDocumentAttribute() {
                 && h == other.h
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x6c37c15c.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x6c37c15c
     }
 }

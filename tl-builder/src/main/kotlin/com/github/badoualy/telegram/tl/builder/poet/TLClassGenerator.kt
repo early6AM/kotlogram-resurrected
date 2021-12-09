@@ -189,6 +189,7 @@ class TLClassGenerator(tlDefinition: TLDefinition, val config: Config) {
                     TYPE_TL_INT_VECTOR -> "readTLIntVector"
                     TYPE_TL_LONG_VECTOR -> "readTLLongVector"
                     TYPE_TL_STRING_VECTOR -> "readTLStringVector"
+                    TYPE_TL_BYTES_VECTOR -> "readTLBytesVector"
                     else -> "readTLVector<%T>"
                 }
                 responseFun.addStatement("return tlDeserializer.$methodName()",
@@ -458,6 +459,7 @@ class TLClassGenerator(tlDefinition: TLDefinition, val config: Config) {
                 "int" -> TYPE_TL_INT_VECTOR
                 "long" -> TYPE_TL_LONG_VECTOR
                 "string" -> TYPE_TL_STRING_VECTOR
+                "bytes" -> TYPE_TL_BYTES_VECTOR
                 else -> ParameterizedTypeName.get(TYPE_TL_OBJECT_VECTOR,
                                                   getType(type.parameters.first(),
                                                           true))
@@ -491,6 +493,7 @@ class TLClassGenerator(tlDefinition: TLDefinition, val config: Config) {
         TYPE_TL_INT_VECTOR -> "TLIntVector()"
         TYPE_TL_LONG_VECTOR -> "TLLongVector()"
         TYPE_TL_STRING_VECTOR -> "TLStringVector()"
+        TYPE_TL_BYTES_VECTOR -> "TLBytesVector()"
         ByteArray::class.asTypeName() -> "ByteArray(0)"
         is ParameterizedTypeName -> {
             when (type.rawType) {

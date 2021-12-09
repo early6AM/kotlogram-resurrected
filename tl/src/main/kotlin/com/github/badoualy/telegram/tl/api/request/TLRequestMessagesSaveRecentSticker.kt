@@ -37,7 +37,7 @@ class TLRequestMessagesSaveRecentSticker() : TLMethod<TLBool>() {
         this.unsave = unsave
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(attached, 1)
     }
@@ -81,6 +81,6 @@ class TLRequestMessagesSaveRecentSticker() : TLMethod<TLBool>() {
                 && unsave == other.unsave
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x392718f8.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x392718f8
     }
 }

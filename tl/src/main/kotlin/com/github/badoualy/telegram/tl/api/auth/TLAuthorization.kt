@@ -4,7 +4,6 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.api.TLAbsUser
 import com.github.badoualy.telegram.tl.api.TLUserEmpty
-import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
@@ -15,7 +14,7 @@ import java.io.IOException
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
-class TLAuthorization() : TLObject() {
+class TLAuthorization() : TLAbsAuthorization() {
     var tmpSessions: Int? = null
 
     var user: TLAbsUser = TLUserEmpty()
@@ -29,7 +28,7 @@ class TLAuthorization() : TLObject() {
         this.user = user
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(tmpSessions, 1)
     }

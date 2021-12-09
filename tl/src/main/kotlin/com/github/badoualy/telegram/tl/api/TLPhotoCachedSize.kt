@@ -10,7 +10,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * photoCachedSize#e9a734fa
+ * photoCachedSize#21e1ad6
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -18,27 +18,23 @@ import java.io.IOException
 class TLPhotoCachedSize() : TLAbsPhotoSize() {
     override var type: String = ""
 
-    var location: TLAbsFileLocation = TLFileLocationUnavailable()
-
     var w: Int = 0
 
     var h: Int = 0
 
     var bytes: TLBytes = TLBytes.EMPTY
 
-    private val _constructor: String = "photoCachedSize#e9a734fa"
+    private val _constructor: String = "photoCachedSize#21e1ad6"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             type: String,
-            location: TLAbsFileLocation,
             w: Int,
             h: Int,
             bytes: TLBytes
     ) : this() {
         this.type = type
-        this.location = location
         this.w = w
         this.h = h
         this.bytes = bytes
@@ -47,7 +43,6 @@ class TLPhotoCachedSize() : TLAbsPhotoSize() {
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
         writeString(type)
-        writeTLObject(location)
         writeInt(w)
         writeInt(h)
         writeTLBytes(bytes)
@@ -56,7 +51,6 @@ class TLPhotoCachedSize() : TLAbsPhotoSize() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         type = readString()
-        location = readTLObject<TLAbsFileLocation>()
         w = readInt()
         h = readInt()
         bytes = readTLBytes()
@@ -65,7 +59,6 @@ class TLPhotoCachedSize() : TLAbsPhotoSize() {
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
         size += computeTLStringSerializedSize(type)
-        size += location.computeSerializedSize()
         size += SIZE_INT32
         size += SIZE_INT32
         size += computeTLBytesSerializedSize(bytes)
@@ -79,12 +72,11 @@ class TLPhotoCachedSize() : TLAbsPhotoSize() {
         if (other === this) return true
 
         return type == other.type
-                && location == other.location
                 && w == other.w
                 && h == other.h
                 && bytes == other.bytes
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xe9a734fa.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x21e1ad6
     }
 }

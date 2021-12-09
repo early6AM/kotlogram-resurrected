@@ -91,6 +91,6 @@ class TLPostAddress() : TLObject() {
                 && postCode == other.postCode
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x1e8caaeb.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x1e8caaeb
     }
 }

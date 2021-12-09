@@ -1,7 +1,7 @@
 package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
-import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.api.messages.TLChatFull
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
@@ -13,13 +13,13 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLRequestMessagesGetFullChat() : TLMethod<TLChatFull>() {
-    var chatId: Int = 0
+    var chatId: Long = 0L
 
-    private val _constructor: String = "messages.getFullChat#3b831c66"
+    private val _constructor: String = "messages.getFullChat#aeb00b34"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(chatId: Int) : this() {
+    constructor(chatId: Long) : this() {
         this.chatId = chatId
     }
 
@@ -28,17 +28,17 @@ class TLRequestMessagesGetFullChat() : TLMethod<TLChatFull>() {
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
-        writeInt(chatId)
+        writeLong(chatId)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        chatId = readInt()
+        chatId = readLong()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
-        size += SIZE_INT32
+        size += SIZE_INT64
         return size
     }
 
@@ -51,6 +51,6 @@ class TLRequestMessagesGetFullChat() : TLMethod<TLChatFull>() {
         return chatId == other.chatId
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3b831c66.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xaeb00b34.toInt()
     }
 }

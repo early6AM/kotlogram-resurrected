@@ -58,6 +58,6 @@ class TLArchivedStickers() : TLObject() {
                 && sets == other.sets
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x4fcba9c8.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x4fcba9c8
     }
 }

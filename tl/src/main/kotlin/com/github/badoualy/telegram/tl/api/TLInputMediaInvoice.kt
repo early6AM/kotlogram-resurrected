@@ -10,7 +10,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * inputMediaInvoice#92153685
+ * inputMediaInvoice#d9799874
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -28,9 +28,11 @@ class TLInputMediaInvoice() : TLAbsInputMedia() {
 
     var provider: String = ""
 
-    var startParam: String = ""
+    var providerData: TLDataJSON = TLDataJSON()
 
-    private val _constructor: String = "inputMediaInvoice#92153685"
+    var startParam: String? = null
+
+    private val _constructor: String = "inputMediaInvoice#d9799874"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -41,7 +43,8 @@ class TLInputMediaInvoice() : TLAbsInputMedia() {
             invoice: TLInvoice,
             payload: TLBytes,
             provider: String,
-            startParam: String
+            providerData: TLDataJSON,
+            startParam: String?
     ) : this() {
         this.title = title
         this.description = description
@@ -49,12 +52,14 @@ class TLInputMediaInvoice() : TLAbsInputMedia() {
         this.invoice = invoice
         this.payload = payload
         this.provider = provider
+        this.providerData = providerData
         this.startParam = startParam
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(photo, 1)
+        updateFlags(startParam, 2)
     }
 
     @Throws(IOException::class)
@@ -68,7 +73,8 @@ class TLInputMediaInvoice() : TLAbsInputMedia() {
         writeTLObject(invoice)
         writeTLBytes(payload)
         writeString(provider)
-        writeString(startParam)
+        writeTLObject(providerData)
+        doIfMask(startParam, 2) { writeString(it) }
     }
 
     @Throws(IOException::class)
@@ -80,7 +86,8 @@ class TLInputMediaInvoice() : TLAbsInputMedia() {
         invoice = readTLObject<TLInvoice>(TLInvoice::class, TLInvoice.CONSTRUCTOR_ID)
         payload = readTLBytes()
         provider = readString()
-        startParam = readString()
+        providerData = readTLObject<TLDataJSON>(TLDataJSON::class, TLDataJSON.CONSTRUCTOR_ID)
+        startParam = readIfMask(2) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -94,7 +101,8 @@ class TLInputMediaInvoice() : TLAbsInputMedia() {
         size += invoice.computeSerializedSize()
         size += computeTLBytesSerializedSize(payload)
         size += computeTLStringSerializedSize(provider)
-        size += computeTLStringSerializedSize(startParam)
+        size += providerData.computeSerializedSize()
+        size += getIntIfMask(startParam, 2) { computeTLStringSerializedSize(it) }
         return size
     }
 
@@ -111,9 +119,10 @@ class TLInputMediaInvoice() : TLAbsInputMedia() {
                 && invoice == other.invoice
                 && payload == other.payload
                 && provider == other.provider
+                && providerData == other.providerData
                 && startParam == other.startParam
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x92153685.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xd9799874.toInt()
     }
 }

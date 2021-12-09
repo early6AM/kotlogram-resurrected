@@ -20,6 +20,6 @@ class TLUpdateStickerSets : TLAbsUpdate() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x43ae3dec.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x43ae3dec
     }
 }

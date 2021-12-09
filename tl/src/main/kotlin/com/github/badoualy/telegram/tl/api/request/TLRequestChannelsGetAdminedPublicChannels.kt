@@ -1,16 +1,60 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.api.messages.TLAbsChats
 import com.github.badoualy.telegram.tl.core.TLMethod
+import com.github.badoualy.telegram.tl.serialization.TLDeserializer
+import com.github.badoualy.telegram.tl.serialization.TLSerializer
+import java.io.IOException
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
-class TLRequestChannelsGetAdminedPublicChannels : TLMethod<TLAbsChats>() {
-    private val _constructor: String = "channels.getAdminedPublicChannels#8d8d82d7"
+class TLRequestChannelsGetAdminedPublicChannels() : TLMethod<TLAbsChats>() {
+    @Transient
+    var byLocation: Boolean = false
+
+    @Transient
+    var checkLimit: Boolean = false
+
+    private val _constructor: String = "channels.getAdminedPublicChannels#f8b036af"
 
     override val constructorId: Int = CONSTRUCTOR_ID
+
+    constructor(byLocation: Boolean, checkLimit: Boolean) : this() {
+        this.byLocation = byLocation
+        this.checkLimit = checkLimit
+    }
+
+    override fun computeFlags() {
+        _flags = 0
+        updateFlags(byLocation, 1)
+        updateFlags(checkLimit, 2)
+    }
+
+    @Throws(IOException::class)
+    override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
+        computeFlags()
+
+        writeInt(_flags)
+    }
+
+    @Throws(IOException::class)
+    override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
+        _flags = readInt()
+        byLocation = isMask(1)
+        checkLimit = isMask(2)
+    }
+
+    override fun computeSerializedSize(): Int {
+        computeFlags()
+
+        var size = SIZE_CONSTRUCTOR_ID
+        size += SIZE_INT32
+        return size
+    }
 
     override fun toString() = _constructor
 
@@ -18,9 +62,11 @@ class TLRequestChannelsGetAdminedPublicChannels : TLMethod<TLAbsChats>() {
         if (other !is TLRequestChannelsGetAdminedPublicChannels) return false
         if (other === this) return true
 
-        return true
+        return _flags == other._flags
+                && byLocation == other.byLocation
+                && checkLimit == other.checkLimit
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x8d8d82d7.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xf8b036af.toInt()
     }
 }

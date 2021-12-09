@@ -5,6 +5,8 @@ import com.github.badoualy.telegram.tl.core.TLObject
 /**
  * Abstraction level for the following constructors:
  * * [inputPaymentCredentials#3417d728][TLInputPaymentCredentials]
+ * * [inputPaymentCredentialsApplePay#aa1c39f][TLInputPaymentCredentialsApplePay]
+ * * [inputPaymentCredentialsGooglePay#8ac32801][TLInputPaymentCredentialsGooglePay]
  * * [inputPaymentCredentialsSaved#c10eb2cf][TLInputPaymentCredentialsSaved]
  *
  * @author Yannick Badoual yann.badoual@gmail.com

@@ -20,6 +20,6 @@ class TLInputReportReasonSpam : TLAbsReportReason() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x58dbcab8.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x58dbcab8
     }
 }

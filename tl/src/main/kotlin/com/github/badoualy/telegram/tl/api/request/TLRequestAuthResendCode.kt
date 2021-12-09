@@ -58,6 +58,6 @@ class TLRequestAuthResendCode() : TLMethod<TLSentCode>() {
                 && phoneCodeHash == other.phoneCodeHash
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3ef1a9bf.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3ef1a9bf
     }
 }

@@ -4,6 +4,8 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
+import com.github.badoualy.telegram.tl.api.TLAbsMessagesFilter
+import com.github.badoualy.telegram.tl.api.TLInputMessagesFilterEmpty
 import com.github.badoualy.telegram.tl.api.TLInputPeerEmpty
 import com.github.badoualy.telegram.tl.api.messages.TLAbsMessages
 import com.github.badoualy.telegram.tl.core.TLMethod
@@ -16,9 +18,17 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLRequestMessagesSearchGlobal() : TLMethod<TLAbsMessages>() {
+    var folderId: Int? = null
+
     var q: String = ""
 
-    var offsetDate: Int = 0
+    var filter: TLAbsMessagesFilter = TLInputMessagesFilterEmpty()
+
+    var minDate: Int = 0
+
+    var maxDate: Int = 0
+
+    var offsetRate: Int = 0
 
     var offsetPeer: TLAbsInputPeer = TLInputPeerEmpty()
 
@@ -26,28 +36,48 @@ class TLRequestMessagesSearchGlobal() : TLMethod<TLAbsMessages>() {
 
     var limit: Int = 0
 
-    private val _constructor: String = "messages.searchGlobal#9e3cacb0"
+    private val _constructor: String = "messages.searchGlobal#4bc6589a"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
+            folderId: Int?,
             q: String,
-            offsetDate: Int,
+            filter: TLAbsMessagesFilter,
+            minDate: Int,
+            maxDate: Int,
+            offsetRate: Int,
             offsetPeer: TLAbsInputPeer,
             offsetId: Int,
             limit: Int
     ) : this() {
+        this.folderId = folderId
         this.q = q
-        this.offsetDate = offsetDate
+        this.filter = filter
+        this.minDate = minDate
+        this.maxDate = maxDate
+        this.offsetRate = offsetRate
         this.offsetPeer = offsetPeer
         this.offsetId = offsetId
         this.limit = limit
     }
 
+    override fun computeFlags() {
+        _flags = 0
+        updateFlags(folderId, 1)
+    }
+
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
+        computeFlags()
+
+        writeInt(_flags)
+        doIfMask(folderId, 1) { writeInt(it) }
         writeString(q)
-        writeInt(offsetDate)
+        writeTLObject(filter)
+        writeInt(minDate)
+        writeInt(maxDate)
+        writeInt(offsetRate)
         writeTLObject(offsetPeer)
         writeInt(offsetId)
         writeInt(limit)
@@ -55,16 +85,28 @@ class TLRequestMessagesSearchGlobal() : TLMethod<TLAbsMessages>() {
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
+        _flags = readInt()
+        folderId = readIfMask(1) { readInt() }
         q = readString()
-        offsetDate = readInt()
+        filter = readTLObject<TLAbsMessagesFilter>()
+        minDate = readInt()
+        maxDate = readInt()
+        offsetRate = readInt()
         offsetPeer = readTLObject<TLAbsInputPeer>()
         offsetId = readInt()
         limit = readInt()
     }
 
     override fun computeSerializedSize(): Int {
+        computeFlags()
+
         var size = SIZE_CONSTRUCTOR_ID
+        size += SIZE_INT32
+        size += getIntIfMask(folderId, 1) { SIZE_INT32 }
         size += computeTLStringSerializedSize(q)
+        size += filter.computeSerializedSize()
+        size += SIZE_INT32
+        size += SIZE_INT32
         size += SIZE_INT32
         size += offsetPeer.computeSerializedSize()
         size += SIZE_INT32
@@ -78,13 +120,18 @@ class TLRequestMessagesSearchGlobal() : TLMethod<TLAbsMessages>() {
         if (other !is TLRequestMessagesSearchGlobal) return false
         if (other === this) return true
 
-        return q == other.q
-                && offsetDate == other.offsetDate
+        return _flags == other._flags
+                && folderId == other.folderId
+                && q == other.q
+                && filter == other.filter
+                && minDate == other.minDate
+                && maxDate == other.maxDate
+                && offsetRate == other.offsetRate
                 && offsetPeer == other.offsetPeer
                 && offsetId == other.offsetId
                 && limit == other.limit
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x9e3cacb0.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x4bc6589a
     }
 }

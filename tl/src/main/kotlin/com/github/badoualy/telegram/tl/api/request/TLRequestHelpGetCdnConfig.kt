@@ -26,6 +26,6 @@ class TLRequestHelpGetCdnConfig : TLMethod<TLCdnConfig>() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x52029342.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x52029342
     }
 }

@@ -3,6 +3,8 @@ package com.github.badoualy.telegram.tl.api.request
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
+import com.github.badoualy.telegram.tl.api.TLAbsJSONValue
+import com.github.badoualy.telegram.tl.api.TLInputClientProxy
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
@@ -28,9 +30,13 @@ class TLRequestInitConnection<T : TLObject>() : TLMethod<T>() {
 
     var langCode: String = ""
 
+    var proxy: TLInputClientProxy? = null
+
+    var params: TLAbsJSONValue? = null
+
     var query: TLMethod<T>? = null
 
-    private val _constructor: String = "initConnection#c7481da6"
+    private val _constructor: String = "initConnection#c1cd5ea9"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -42,6 +48,8 @@ class TLRequestInitConnection<T : TLObject>() : TLMethod<T>() {
             systemLangCode: String,
             langPack: String,
             langCode: String,
+            proxy: TLInputClientProxy?,
+            params: TLAbsJSONValue?,
             query: TLMethod<T>?
     ) : this() {
         this.apiId = apiId
@@ -51,14 +59,25 @@ class TLRequestInitConnection<T : TLObject>() : TLMethod<T>() {
         this.systemLangCode = systemLangCode
         this.langPack = langPack
         this.langCode = langCode
+        this.proxy = proxy
+        this.params = params
         this.query = query
     }
 
     @Throws(IOException::class)
     override fun deserializeResponse_(tlDeserializer: TLDeserializer): T = query!!.deserializeResponse(tlDeserializer)
 
+    override fun computeFlags() {
+        _flags = 0
+        updateFlags(proxy, 1)
+        updateFlags(params, 2)
+    }
+
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
+        computeFlags()
+
+        writeInt(_flags)
         writeInt(apiId)
         writeString(deviceModel)
         writeString(systemVersion)
@@ -66,11 +85,14 @@ class TLRequestInitConnection<T : TLObject>() : TLMethod<T>() {
         writeString(systemLangCode)
         writeString(langPack)
         writeString(langCode)
+        doIfMask(proxy, 1) { writeTLObject(it) }
+        doIfMask(params, 2) { writeTLObject(it) }
         writeTLMethod(query!!)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
+        _flags = readInt()
         apiId = readInt()
         deviceModel = readString()
         systemVersion = readString()
@@ -78,11 +100,16 @@ class TLRequestInitConnection<T : TLObject>() : TLMethod<T>() {
         systemLangCode = readString()
         langPack = readString()
         langCode = readString()
+        proxy = readIfMask(1) { readTLObject<TLInputClientProxy>(TLInputClientProxy::class, TLInputClientProxy.CONSTRUCTOR_ID) }
+        params = readIfMask(2) { readTLObject<TLAbsJSONValue>() }
         query = readTLMethod()
     }
 
     override fun computeSerializedSize(): Int {
+        computeFlags()
+
         var size = SIZE_CONSTRUCTOR_ID
+        size += SIZE_INT32
         size += SIZE_INT32
         size += computeTLStringSerializedSize(deviceModel)
         size += computeTLStringSerializedSize(systemVersion)
@@ -90,6 +117,8 @@ class TLRequestInitConnection<T : TLObject>() : TLMethod<T>() {
         size += computeTLStringSerializedSize(systemLangCode)
         size += computeTLStringSerializedSize(langPack)
         size += computeTLStringSerializedSize(langCode)
+        size += getIntIfMask(proxy, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(params, 2) { it.computeSerializedSize() }
         size += query!!.computeSerializedSize()
         return size
     }
@@ -100,16 +129,19 @@ class TLRequestInitConnection<T : TLObject>() : TLMethod<T>() {
         if (other !is TLRequestInitConnection<*>) return false
         if (other === this) return true
 
-        return apiId == other.apiId
+        return _flags == other._flags
+                && apiId == other.apiId
                 && deviceModel == other.deviceModel
                 && systemVersion == other.systemVersion
                 && appVersion == other.appVersion
                 && systemLangCode == other.systemLangCode
                 && langPack == other.langPack
                 && langCode == other.langCode
+                && proxy == other.proxy
+                && params == other.params
                 && query == other.query
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xc7481da6.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xc1cd5ea9.toInt()
     }
 }

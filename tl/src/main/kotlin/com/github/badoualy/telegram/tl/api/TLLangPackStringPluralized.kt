@@ -50,7 +50,7 @@ class TLLangPackStringPluralized() : TLAbsLangPackString() {
         this.otherValue = otherValue
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(zeroValue, 1)
         updateFlags(oneValue, 2)
@@ -116,6 +116,6 @@ class TLLangPackStringPluralized() : TLAbsLangPackString() {
                 && otherValue == other.otherValue
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x6c47ac9f.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x6c47ac9f
     }
 }

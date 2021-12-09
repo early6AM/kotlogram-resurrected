@@ -1,9 +1,13 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLBool
+import com.github.badoualy.telegram.tl.core.TLBytes
+import com.github.badoualy.telegram.tl.core.TLLongVector
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
@@ -14,35 +18,77 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLRequestAccountRegisterDevice() : TLMethod<TLBool>() {
+    @Transient
+    var noMuted: Boolean = false
+
     var tokenType: Int = 0
 
     var token: String = ""
 
-    private val _constructor: String = "account.registerDevice#637ea878"
+    var appSandbox: Boolean = false
+
+    var secret: TLBytes = TLBytes.EMPTY
+
+    var otherUids: TLLongVector = TLLongVector()
+
+    private val _constructor: String = "account.registerDevice#ec86017a"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(tokenType: Int, token: String) : this() {
+    constructor(
+            noMuted: Boolean,
+            tokenType: Int,
+            token: String,
+            appSandbox: Boolean,
+            secret: TLBytes,
+            otherUids: TLLongVector
+    ) : this() {
+        this.noMuted = noMuted
         this.tokenType = tokenType
         this.token = token
+        this.appSandbox = appSandbox
+        this.secret = secret
+        this.otherUids = otherUids
+    }
+
+    override fun computeFlags() {
+        _flags = 0
+        updateFlags(noMuted, 1)
     }
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
+        computeFlags()
+
+        writeInt(_flags)
         writeInt(tokenType)
         writeString(token)
+        writeBoolean(appSandbox)
+        writeTLBytes(secret)
+        writeTLVector(otherUids)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
+        _flags = readInt()
+        noMuted = isMask(1)
         tokenType = readInt()
         token = readString()
+        appSandbox = readBoolean()
+        secret = readTLBytes()
+        otherUids = readTLLongVector()
     }
 
     override fun computeSerializedSize(): Int {
+        computeFlags()
+
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
+        size += SIZE_INT32
         size += computeTLStringSerializedSize(token)
+        size += SIZE_BOOLEAN
+        size += computeTLBytesSerializedSize(secret)
+        size += otherUids.computeSerializedSize()
         return size
     }
 
@@ -52,10 +98,15 @@ class TLRequestAccountRegisterDevice() : TLMethod<TLBool>() {
         if (other !is TLRequestAccountRegisterDevice) return false
         if (other === this) return true
 
-        return tokenType == other.tokenType
+        return _flags == other._flags
+                && noMuted == other.noMuted
+                && tokenType == other.tokenType
                 && token == other.token
+                && appSandbox == other.appSandbox
+                && secret == other.secret
+                && otherUids == other.otherUids
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x637ea878.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xec86017a.toInt()
     }
 }

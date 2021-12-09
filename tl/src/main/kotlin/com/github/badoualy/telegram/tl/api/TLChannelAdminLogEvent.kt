@@ -9,7 +9,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * channelAdminLogEvent#3b5a3e40
+ * channelAdminLogEvent#1fad68cd
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -19,18 +19,18 @@ class TLChannelAdminLogEvent() : TLObject() {
 
     var date: Int = 0
 
-    var userId: Int = 0
+    var userId: Long = 0L
 
     var action: TLAbsChannelAdminLogEventAction = TLChannelAdminLogEventActionParticipantLeave()
 
-    private val _constructor: String = "channelAdminLogEvent#3b5a3e40"
+    private val _constructor: String = "channelAdminLogEvent#1fad68cd"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             id: Long,
             date: Int,
-            userId: Int,
+            userId: Long,
             action: TLAbsChannelAdminLogEventAction
     ) : this() {
         this.id = id
@@ -43,7 +43,7 @@ class TLChannelAdminLogEvent() : TLObject() {
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
         writeLong(id)
         writeInt(date)
-        writeInt(userId)
+        writeLong(userId)
         writeTLObject(action)
     }
 
@@ -51,7 +51,7 @@ class TLChannelAdminLogEvent() : TLObject() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         id = readLong()
         date = readInt()
-        userId = readInt()
+        userId = readLong()
         action = readTLObject<TLAbsChannelAdminLogEventAction>()
     }
 
@@ -59,7 +59,7 @@ class TLChannelAdminLogEvent() : TLObject() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT64
         size += SIZE_INT32
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += action.computeSerializedSize()
         return size
     }
@@ -76,6 +76,6 @@ class TLChannelAdminLogEvent() : TLObject() {
                 && action == other.action
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3b5a3e40.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x1fad68cd
     }
 }

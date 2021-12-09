@@ -26,6 +26,6 @@ class TLRequestHelpGetInviteText : TLMethod<TLInviteText>() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x4d392343.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x4d392343
     }
 }

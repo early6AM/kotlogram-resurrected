@@ -26,6 +26,6 @@ class TLRequestHelpGetNearestDc : TLMethod<TLNearestDc>() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x1fb33026.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x1fb33026
     }
 }

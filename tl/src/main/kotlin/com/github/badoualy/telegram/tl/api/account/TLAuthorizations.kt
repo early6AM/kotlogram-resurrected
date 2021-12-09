@@ -50,6 +50,6 @@ class TLAuthorizations() : TLObject() {
         return authorizations == other.authorizations
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x1250abde.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x1250abde
     }
 }

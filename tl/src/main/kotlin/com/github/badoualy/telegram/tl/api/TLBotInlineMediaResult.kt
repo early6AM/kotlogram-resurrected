@@ -50,7 +50,7 @@ class TLBotInlineMediaResult() : TLAbsBotInlineResult() {
         this.sendMessage = sendMessage
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(photo, 1)
         updateFlags(document, 2)
@@ -115,6 +115,6 @@ class TLBotInlineMediaResult() : TLAbsBotInlineResult() {
                 && sendMessage == other.sendMessage
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x17db940b.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x17db940b
     }
 }

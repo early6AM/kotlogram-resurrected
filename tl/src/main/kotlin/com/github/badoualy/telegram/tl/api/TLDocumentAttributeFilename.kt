@@ -48,6 +48,6 @@ class TLDocumentAttributeFilename() : TLAbsDocumentAttribute() {
         return fileName == other.fileName
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x15590068.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x15590068
     }
 }

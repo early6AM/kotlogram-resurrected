@@ -52,6 +52,6 @@ class TLRequestMessagesGetStickerSet() : TLMethod<TLStickerSet>() {
         return stickerset == other.stickerset
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x2619a90e.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x2619a90e
     }
 }

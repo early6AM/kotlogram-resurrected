@@ -2,35 +2,36 @@ package com.github.badoualy.telegram.tl.api
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * updateChatParticipantAdd#ea4b0e5c
+ * updateChatParticipantAdd#3dda5451
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLUpdateChatParticipantAdd() : TLAbsUpdate() {
-    var chatId: Int = 0
+    var chatId: Long = 0L
 
-    var userId: Int = 0
+    var userId: Long = 0L
 
-    var inviterId: Int = 0
+    var inviterId: Long = 0L
 
     var date: Int = 0
 
     var version: Int = 0
 
-    private val _constructor: String = "updateChatParticipantAdd#ea4b0e5c"
+    private val _constructor: String = "updateChatParticipantAdd#3dda5451"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
-            chatId: Int,
-            userId: Int,
-            inviterId: Int,
+            chatId: Long,
+            userId: Long,
+            inviterId: Long,
             date: Int,
             version: Int
     ) : this() {
@@ -43,27 +44,27 @@ class TLUpdateChatParticipantAdd() : TLAbsUpdate() {
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
-        writeInt(chatId)
-        writeInt(userId)
-        writeInt(inviterId)
+        writeLong(chatId)
+        writeLong(userId)
+        writeLong(inviterId)
         writeInt(date)
         writeInt(version)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        chatId = readInt()
-        userId = readInt()
-        inviterId = readInt()
+        chatId = readLong()
+        userId = readLong()
+        inviterId = readLong()
         date = readInt()
         version = readInt()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
-        size += SIZE_INT32
-        size += SIZE_INT32
-        size += SIZE_INT32
+        size += SIZE_INT64
+        size += SIZE_INT64
+        size += SIZE_INT64
         size += SIZE_INT32
         size += SIZE_INT32
         return size
@@ -82,6 +83,6 @@ class TLUpdateChatParticipantAdd() : TLAbsUpdate() {
                 && version == other.version
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xea4b0e5c.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3dda5451
     }
 }

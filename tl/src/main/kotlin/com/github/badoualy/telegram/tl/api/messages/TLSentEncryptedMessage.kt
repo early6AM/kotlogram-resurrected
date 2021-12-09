@@ -48,6 +48,6 @@ class TLSentEncryptedMessage() : TLAbsSentEncryptedMessage() {
         return date == other.date
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x560f8935.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x560f8935
     }
 }

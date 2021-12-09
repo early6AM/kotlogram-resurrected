@@ -48,6 +48,6 @@ class TLChannelParticipantsSearch() : TLAbsChannelParticipantsFilter() {
         return q == other.q
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x656ac4b.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x656ac4b
     }
 }

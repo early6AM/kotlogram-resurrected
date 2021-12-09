@@ -15,9 +15,6 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLSentCode() : TLObject() {
-    @Transient
-    var phoneRegistered: Boolean = false
-
     var type: TLAbsSentCodeType = TLSentCodeTypeFlashCall()
 
     var phoneCodeHash: String = ""
@@ -31,22 +28,19 @@ class TLSentCode() : TLObject() {
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
-            phoneRegistered: Boolean,
             type: TLAbsSentCodeType,
             phoneCodeHash: String,
             nextType: TLAbsCodeType?,
             timeout: Int?
     ) : this() {
-        this.phoneRegistered = phoneRegistered
         this.type = type
         this.phoneCodeHash = phoneCodeHash
         this.nextType = nextType
         this.timeout = timeout
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
-        updateFlags(phoneRegistered, 1)
         updateFlags(nextType, 2)
         updateFlags(timeout, 4)
     }
@@ -65,7 +59,6 @@ class TLSentCode() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        phoneRegistered = isMask(1)
         type = readTLObject<TLAbsSentCodeType>()
         phoneCodeHash = readString()
         nextType = readIfMask(2) { readTLObject<TLAbsCodeType>() }
@@ -91,13 +84,12 @@ class TLSentCode() : TLObject() {
         if (other === this) return true
 
         return _flags == other._flags
-                && phoneRegistered == other.phoneRegistered
                 && type == other.type
                 && phoneCodeHash == other.phoneCodeHash
                 && nextType == other.nextType
                 && timeout == other.timeout
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x5e002502.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x5e002502
     }
 }

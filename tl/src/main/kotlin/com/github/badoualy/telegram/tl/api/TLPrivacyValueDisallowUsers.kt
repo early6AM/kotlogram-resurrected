@@ -1,25 +1,25 @@
 package com.github.badoualy.telegram.tl.api
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
-import com.github.badoualy.telegram.tl.core.TLIntVector
+import com.github.badoualy.telegram.tl.core.TLLongVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * privacyValueDisallowUsers#c7f49b7
+ * privacyValueDisallowUsers#e4621141
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLPrivacyValueDisallowUsers() : TLAbsPrivacyRule() {
-    var users: TLIntVector = TLIntVector()
+    var users: TLLongVector = TLLongVector()
 
-    private val _constructor: String = "privacyValueDisallowUsers#c7f49b7"
+    private val _constructor: String = "privacyValueDisallowUsers#e4621141"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(users: TLIntVector) : this() {
+    constructor(users: TLLongVector) : this() {
         this.users = users
     }
 
@@ -30,7 +30,7 @@ class TLPrivacyValueDisallowUsers() : TLAbsPrivacyRule() {
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        users = readTLIntVector()
+        users = readTLLongVector()
     }
 
     override fun computeSerializedSize(): Int {
@@ -48,6 +48,6 @@ class TLPrivacyValueDisallowUsers() : TLAbsPrivacyRule() {
         return users == other.users
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xc7f49b7.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xe4621141.toInt()
     }
 }

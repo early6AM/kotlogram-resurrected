@@ -20,6 +20,6 @@ class TLFileMov : TLAbsFileType() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x4b09ebbc.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x4b09ebbc
     }
 }

@@ -67,6 +67,6 @@ class TLMessageEntityTextUrl() : TLAbsMessageEntity() {
                 && url == other.url
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x76a6d327.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x76a6d327
     }
 }

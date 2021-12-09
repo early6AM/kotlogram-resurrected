@@ -21,6 +21,6 @@ class TLRequestAuthLogOut : TLMethod<TLBool>() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x5717da40.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x5717da40
     }
 }

@@ -70,6 +70,6 @@ class TLRecentMeUrls() : TLObject() {
                 && users == other.users
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xe0310d7.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xe0310d7
     }
 }

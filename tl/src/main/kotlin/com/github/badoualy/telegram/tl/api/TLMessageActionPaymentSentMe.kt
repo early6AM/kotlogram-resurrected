@@ -49,7 +49,7 @@ class TLMessageActionPaymentSentMe() : TLAbsMessageAction() {
         this.charge = charge
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(info, 1)
         updateFlags(shippingOptionId, 2)

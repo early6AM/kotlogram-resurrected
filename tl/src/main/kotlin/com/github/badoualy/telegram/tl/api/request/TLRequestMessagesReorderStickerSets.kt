@@ -28,7 +28,7 @@ class TLRequestMessagesReorderStickerSets() : TLMethod<TLBool>() {
         this.order = order
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(masks, 1)
     }
@@ -68,6 +68,6 @@ class TLRequestMessagesReorderStickerSets() : TLMethod<TLBool>() {
                 && order == other.order
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x78337739.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x78337739
     }
 }

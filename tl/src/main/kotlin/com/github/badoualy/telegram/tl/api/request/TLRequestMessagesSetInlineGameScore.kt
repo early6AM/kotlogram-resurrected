@@ -2,6 +2,7 @@ package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.api.TLAbsInputBotInlineMessageID
 import com.github.badoualy.telegram.tl.api.TLAbsInputUser
 import com.github.badoualy.telegram.tl.api.TLInputBotInlineMessageID
 import com.github.badoualy.telegram.tl.api.TLInputUserEmpty
@@ -22,7 +23,7 @@ class TLRequestMessagesSetInlineGameScore() : TLMethod<TLBool>() {
     @Transient
     var force: Boolean = false
 
-    var id: TLInputBotInlineMessageID = TLInputBotInlineMessageID()
+    var id: TLAbsInputBotInlineMessageID = TLInputBotInlineMessageID()
 
     var userId: TLAbsInputUser = TLInputUserEmpty()
 
@@ -35,7 +36,7 @@ class TLRequestMessagesSetInlineGameScore() : TLMethod<TLBool>() {
     constructor(
             editMessage: Boolean,
             force: Boolean,
-            id: TLInputBotInlineMessageID,
+            id: TLAbsInputBotInlineMessageID,
             userId: TLAbsInputUser,
             score: Int
     ) : this() {
@@ -46,7 +47,7 @@ class TLRequestMessagesSetInlineGameScore() : TLMethod<TLBool>() {
         this.score = score
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(editMessage, 1)
         updateFlags(force, 2)
@@ -67,7 +68,7 @@ class TLRequestMessagesSetInlineGameScore() : TLMethod<TLBool>() {
         _flags = readInt()
         editMessage = isMask(1)
         force = isMask(2)
-        id = readTLObject<TLInputBotInlineMessageID>(TLInputBotInlineMessageID::class, TLInputBotInlineMessageID.CONSTRUCTOR_ID)
+        id = readTLObject<TLAbsInputBotInlineMessageID>()
         userId = readTLObject<TLAbsInputUser>()
         score = readInt()
     }
@@ -97,6 +98,6 @@ class TLRequestMessagesSetInlineGameScore() : TLMethod<TLBool>() {
                 && score == other.score
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x15ad9f64.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x15ad9f64
     }
 }

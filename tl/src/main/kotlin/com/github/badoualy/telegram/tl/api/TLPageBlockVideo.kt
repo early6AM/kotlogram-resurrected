@@ -8,7 +8,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * pageBlockVideo#d9d71866
+ * pageBlockVideo#7c8fe7b6
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -22,9 +22,9 @@ class TLPageBlockVideo() : TLAbsPageBlock() {
 
     var videoId: Long = 0L
 
-    var caption: TLAbsRichText = TLTextEmpty()
+    var caption: TLPageCaption = TLPageCaption()
 
-    private val _constructor: String = "pageBlockVideo#d9d71866"
+    private val _constructor: String = "pageBlockVideo#7c8fe7b6"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -32,7 +32,7 @@ class TLPageBlockVideo() : TLAbsPageBlock() {
             autoplay: Boolean,
             loop: Boolean,
             videoId: Long,
-            caption: TLAbsRichText
+            caption: TLPageCaption
     ) : this() {
         this.autoplay = autoplay
         this.loop = loop
@@ -40,7 +40,7 @@ class TLPageBlockVideo() : TLAbsPageBlock() {
         this.caption = caption
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(autoplay, 1)
         updateFlags(loop, 2)
@@ -61,7 +61,7 @@ class TLPageBlockVideo() : TLAbsPageBlock() {
         autoplay = isMask(1)
         loop = isMask(2)
         videoId = readLong()
-        caption = readTLObject<TLAbsRichText>()
+        caption = readTLObject<TLPageCaption>(TLPageCaption::class, TLPageCaption.CONSTRUCTOR_ID)
     }
 
     override fun computeSerializedSize(): Int {
@@ -87,6 +87,6 @@ class TLPageBlockVideo() : TLAbsPageBlock() {
                 && caption == other.caption
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xd9d71866.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x7c8fe7b6
     }
 }

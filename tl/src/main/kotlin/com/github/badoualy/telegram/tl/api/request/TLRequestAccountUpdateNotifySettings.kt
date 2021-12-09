@@ -2,7 +2,7 @@ package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.api.TLAbsInputNotifyPeer
-import com.github.badoualy.telegram.tl.api.TLInputNotifyUsers
+import com.github.badoualy.telegram.tl.api.TLInputNotifyBroadcasts
 import com.github.badoualy.telegram.tl.api.TLInputPeerNotifySettings
 import com.github.badoualy.telegram.tl.core.TLBool
 import com.github.badoualy.telegram.tl.core.TLMethod
@@ -15,7 +15,7 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLRequestAccountUpdateNotifySettings() : TLMethod<TLBool>() {
-    var peer: TLAbsInputNotifyPeer = TLInputNotifyUsers()
+    var peer: TLAbsInputNotifyPeer = TLInputNotifyBroadcasts()
 
     var settings: TLInputPeerNotifySettings = TLInputPeerNotifySettings()
 

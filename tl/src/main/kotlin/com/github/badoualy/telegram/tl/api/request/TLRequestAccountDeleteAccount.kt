@@ -48,6 +48,6 @@ class TLRequestAccountDeleteAccount() : TLMethod<TLBool>() {
         return reason == other.reason
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x418d4e0b.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x418d4e0b
     }
 }

@@ -20,6 +20,6 @@ class TLInputPrivacyKeyStatusTimestamp : TLAbsInputPrivacyKey() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x4f96cb18.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x4f96cb18
     }
 }

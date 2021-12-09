@@ -2,6 +2,7 @@ package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.api.TLAbsChannelParticipantsFilter
 import com.github.badoualy.telegram.tl.api.TLAbsInputChannel
 import com.github.badoualy.telegram.tl.api.TLChannelParticipantsRecent
@@ -25,9 +26,9 @@ class TLRequestChannelsGetParticipants() : TLMethod<TLAbsChannelParticipants>() 
 
     var limit: Int = 0
 
-    var hash: Int = 0
+    var hash: Long = 0L
 
-    private val _constructor: String = "channels.getParticipants#123e05e9"
+    private val _constructor: String = "channels.getParticipants#77ced9d0"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -36,7 +37,7 @@ class TLRequestChannelsGetParticipants() : TLMethod<TLAbsChannelParticipants>() 
             filter: TLAbsChannelParticipantsFilter,
             offset: Int,
             limit: Int,
-            hash: Int
+            hash: Long
     ) : this() {
         this.channel = channel
         this.filter = filter
@@ -51,7 +52,7 @@ class TLRequestChannelsGetParticipants() : TLMethod<TLAbsChannelParticipants>() 
         writeTLObject(filter)
         writeInt(offset)
         writeInt(limit)
-        writeInt(hash)
+        writeLong(hash)
     }
 
     @Throws(IOException::class)
@@ -60,7 +61,7 @@ class TLRequestChannelsGetParticipants() : TLMethod<TLAbsChannelParticipants>() 
         filter = readTLObject<TLAbsChannelParticipantsFilter>()
         offset = readInt()
         limit = readInt()
-        hash = readInt()
+        hash = readLong()
     }
 
     override fun computeSerializedSize(): Int {
@@ -69,7 +70,7 @@ class TLRequestChannelsGetParticipants() : TLMethod<TLAbsChannelParticipants>() 
         size += filter.computeSerializedSize()
         size += SIZE_INT32
         size += SIZE_INT32
-        size += SIZE_INT32
+        size += SIZE_INT64
         return size
     }
 
@@ -86,6 +87,6 @@ class TLRequestChannelsGetParticipants() : TLMethod<TLAbsChannelParticipants>() 
                 && hash == other.hash
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x123e05e9.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x77ced9d0
     }
 }

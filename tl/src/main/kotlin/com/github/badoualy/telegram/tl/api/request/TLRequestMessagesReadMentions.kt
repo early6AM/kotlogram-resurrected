@@ -52,6 +52,6 @@ class TLRequestMessagesReadMentions() : TLMethod<TLAffectedHistory>() {
         return peer == other.peer
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xf0189d3.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xf0189d3
     }
 }

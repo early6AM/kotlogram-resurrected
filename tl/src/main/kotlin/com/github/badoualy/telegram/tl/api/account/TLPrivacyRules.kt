@@ -1,6 +1,7 @@
 package com.github.badoualy.telegram.tl.api.account
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.api.TLAbsChat
 import com.github.badoualy.telegram.tl.api.TLAbsPrivacyRule
 import com.github.badoualy.telegram.tl.api.TLAbsUser
 import com.github.badoualy.telegram.tl.core.TLObject
@@ -10,7 +11,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * account.privacyRules#554abb6f
+ * account.privacyRules#50a04e45
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -18,32 +19,42 @@ import java.io.IOException
 class TLPrivacyRules() : TLObject() {
     var rules: TLObjectVector<TLAbsPrivacyRule> = TLObjectVector()
 
+    var chats: TLObjectVector<TLAbsChat> = TLObjectVector()
+
     var users: TLObjectVector<TLAbsUser> = TLObjectVector()
 
-    private val _constructor: String = "account.privacyRules#554abb6f"
+    private val _constructor: String = "account.privacyRules#50a04e45"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(rules: TLObjectVector<TLAbsPrivacyRule>, users: TLObjectVector<TLAbsUser>) : this() {
+    constructor(
+            rules: TLObjectVector<TLAbsPrivacyRule>,
+            chats: TLObjectVector<TLAbsChat>,
+            users: TLObjectVector<TLAbsUser>
+    ) : this() {
         this.rules = rules
+        this.chats = chats
         this.users = users
     }
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
         writeTLVector(rules)
+        writeTLVector(chats)
         writeTLVector(users)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         rules = readTLVector<TLAbsPrivacyRule>()
+        chats = readTLVector<TLAbsChat>()
         users = readTLVector<TLAbsUser>()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
         size += rules.computeSerializedSize()
+        size += chats.computeSerializedSize()
         size += users.computeSerializedSize()
         return size
     }
@@ -55,9 +66,10 @@ class TLPrivacyRules() : TLObject() {
         if (other === this) return true
 
         return rules == other.rules
+                && chats == other.chats
                 && users == other.users
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x554abb6f.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x50a04e45
     }
 }

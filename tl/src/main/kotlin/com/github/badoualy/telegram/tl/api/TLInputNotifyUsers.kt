@@ -20,6 +20,6 @@ class TLInputNotifyUsers : TLAbsInputNotifyPeer() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x193b4417.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x193b4417
     }
 }

@@ -4,9 +4,9 @@ import com.github.badoualy.telegram.tl.core.TLObject
 
 /**
  * Abstraction level for the following constructors:
- * * [message#90dddc11][TLMessage]
- * * [messageEmpty#83e5de54][TLMessageEmpty]
- * * [messageService#9e19a1f6][TLMessageService]
+ * * [message#85d6cbe2][TLMessage]
+ * * [messageEmpty#90a6ca84][TLMessageEmpty]
+ * * [messageService#2b085862][TLMessageService]
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>

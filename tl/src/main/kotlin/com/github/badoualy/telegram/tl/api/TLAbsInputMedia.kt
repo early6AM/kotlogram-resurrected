@@ -4,19 +4,20 @@ import com.github.badoualy.telegram.tl.core.TLObject
 
 /**
  * Abstraction level for the following constructors:
- * * [inputMediaContact#a6e45987][TLInputMediaContact]
- * * [inputMediaDocument#5acb668e][TLInputMediaDocument]
- * * [inputMediaDocumentExternal#b6f74335][TLInputMediaDocumentExternal]
+ * * [inputMediaContact#f8ab7dfb][TLInputMediaContact]
+ * * [inputMediaDice#e66fbf7b][TLInputMediaDice]
+ * * [inputMediaDocument#33473058][TLInputMediaDocument]
+ * * [inputMediaDocumentExternal#fb52dc99][TLInputMediaDocumentExternal]
  * * [inputMediaEmpty#9664f57f][TLInputMediaEmpty]
  * * [inputMediaGame#d33f43f3][TLInputMediaGame]
- * * [inputMediaGeoLive#7b1a118f][TLInputMediaGeoLive]
+ * * [inputMediaGeoLive#971fa843][TLInputMediaGeoLive]
  * * [inputMediaGeoPoint#f9c44144][TLInputMediaGeoPoint]
- * * [inputMediaGifExternal#4843b0fd][TLInputMediaGifExternal]
- * * [inputMediaInvoice#92153685][TLInputMediaInvoice]
- * * [inputMediaPhoto#81fa373a][TLInputMediaPhoto]
- * * [inputMediaPhotoExternal#922aec1][TLInputMediaPhotoExternal]
- * * [inputMediaUploadedDocument#e39621fd][TLInputMediaUploadedDocument]
- * * [inputMediaUploadedPhoto#2f37e231][TLInputMediaUploadedPhoto]
+ * * [inputMediaInvoice#d9799874][TLInputMediaInvoice]
+ * * [inputMediaPhoto#b3ba0635][TLInputMediaPhoto]
+ * * [inputMediaPhotoExternal#e5bbfe1a][TLInputMediaPhotoExternal]
+ * * [inputMediaPoll#f94e5f1][TLInputMediaPoll]
+ * * [inputMediaUploadedDocument#5b38c6c1][TLInputMediaUploadedDocument]
+ * * [inputMediaUploadedPhoto#1e287d04][TLInputMediaUploadedPhoto]
  * * [inputMediaVenue#c13d1c11][TLInputMediaVenue]
  *
  * @author Yannick Badoual yann.badoual@gmail.com

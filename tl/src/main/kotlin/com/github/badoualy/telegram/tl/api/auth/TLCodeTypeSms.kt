@@ -20,6 +20,6 @@ class TLCodeTypeSms : TLAbsCodeType() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x72a3158c.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x72a3158c
     }
 }

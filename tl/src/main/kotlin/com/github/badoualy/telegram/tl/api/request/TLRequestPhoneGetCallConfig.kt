@@ -26,6 +26,6 @@ class TLRequestPhoneGetCallConfig : TLMethod<TLDataJSON>() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x55451fa9.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x55451fa9
     }
 }

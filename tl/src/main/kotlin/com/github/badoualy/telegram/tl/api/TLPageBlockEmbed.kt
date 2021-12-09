@@ -9,7 +9,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * pageBlockEmbed#cde200d1
+ * pageBlockEmbed#a8718dc5
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -27,13 +27,13 @@ class TLPageBlockEmbed() : TLAbsPageBlock() {
 
     var posterPhotoId: Long? = null
 
-    var w: Int = 0
+    var w: Int? = null
 
-    var h: Int = 0
+    var h: Int? = null
 
-    var caption: TLAbsRichText = TLTextEmpty()
+    var caption: TLPageCaption = TLPageCaption()
 
-    private val _constructor: String = "pageBlockEmbed#cde200d1"
+    private val _constructor: String = "pageBlockEmbed#a8718dc5"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -43,9 +43,9 @@ class TLPageBlockEmbed() : TLAbsPageBlock() {
             url: String?,
             html: String?,
             posterPhotoId: Long?,
-            w: Int,
-            h: Int,
-            caption: TLAbsRichText
+            w: Int?,
+            h: Int?,
+            caption: TLPageCaption
     ) : this() {
         this.fullWidth = fullWidth
         this.allowScrolling = allowScrolling
@@ -57,13 +57,15 @@ class TLPageBlockEmbed() : TLAbsPageBlock() {
         this.caption = caption
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(fullWidth, 1)
         updateFlags(allowScrolling, 8)
         updateFlags(url, 2)
         updateFlags(html, 4)
         updateFlags(posterPhotoId, 16)
+        updateFlags(w, 32)
+        updateFlags(h, 32)
     }
 
     @Throws(IOException::class)
@@ -74,8 +76,8 @@ class TLPageBlockEmbed() : TLAbsPageBlock() {
         doIfMask(url, 2) { writeString(it) }
         doIfMask(html, 4) { writeString(it) }
         doIfMask(posterPhotoId, 16) { writeLong(it) }
-        writeInt(w)
-        writeInt(h)
+        doIfMask(w, 32) { writeInt(it) }
+        doIfMask(h, 32) { writeInt(it) }
         writeTLObject(caption)
     }
 
@@ -87,9 +89,9 @@ class TLPageBlockEmbed() : TLAbsPageBlock() {
         url = readIfMask(2) { readString() }
         html = readIfMask(4) { readString() }
         posterPhotoId = readIfMask(16) { readLong() }
-        w = readInt()
-        h = readInt()
-        caption = readTLObject<TLAbsRichText>()
+        w = readIfMask(32) { readInt() }
+        h = readIfMask(32) { readInt() }
+        caption = readTLObject<TLPageCaption>(TLPageCaption::class, TLPageCaption.CONSTRUCTOR_ID)
     }
 
     override fun computeSerializedSize(): Int {
@@ -100,8 +102,8 @@ class TLPageBlockEmbed() : TLAbsPageBlock() {
         size += getIntIfMask(url, 2) { computeTLStringSerializedSize(it) }
         size += getIntIfMask(html, 4) { computeTLStringSerializedSize(it) }
         size += getIntIfMask(posterPhotoId, 16) { SIZE_INT64 }
-        size += SIZE_INT32
-        size += SIZE_INT32
+        size += getIntIfMask(w, 32) { SIZE_INT32 }
+        size += getIntIfMask(h, 32) { SIZE_INT32 }
         size += caption.computeSerializedSize()
         return size
     }
@@ -123,6 +125,6 @@ class TLPageBlockEmbed() : TLAbsPageBlock() {
                 && caption == other.caption
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xcde200d1.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xa8718dc5.toInt()
     }
 }

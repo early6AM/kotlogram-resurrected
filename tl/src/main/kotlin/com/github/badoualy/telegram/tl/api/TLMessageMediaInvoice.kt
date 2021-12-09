@@ -25,7 +25,7 @@ class TLMessageMediaInvoice() : TLAbsMessageMedia() {
 
     var description: String = ""
 
-    var photo: TLWebDocument? = null
+    var photo: TLAbsWebDocument? = null
 
     var receiptMsgId: Int? = null
 
@@ -44,7 +44,7 @@ class TLMessageMediaInvoice() : TLAbsMessageMedia() {
             test: Boolean,
             title: String,
             description: String,
-            photo: TLWebDocument?,
+            photo: TLAbsWebDocument?,
             receiptMsgId: Int?,
             currency: String,
             totalAmount: Long,
@@ -61,7 +61,7 @@ class TLMessageMediaInvoice() : TLAbsMessageMedia() {
         this.startParam = startParam
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(shippingAddressRequested, 2)
         updateFlags(test, 8)
@@ -90,7 +90,7 @@ class TLMessageMediaInvoice() : TLAbsMessageMedia() {
         test = isMask(8)
         title = readString()
         description = readString()
-        photo = readIfMask(1) { readTLObject<TLWebDocument>(TLWebDocument::class, TLWebDocument.CONSTRUCTOR_ID) }
+        photo = readIfMask(1) { readTLObject<TLAbsWebDocument>() }
         receiptMsgId = readIfMask(4) { readInt() }
         currency = readString()
         totalAmount = readLong()

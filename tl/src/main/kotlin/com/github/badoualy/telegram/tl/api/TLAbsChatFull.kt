@@ -1,24 +1,21 @@
 package com.github.badoualy.telegram.tl.api
 
 import com.github.badoualy.telegram.tl.core.TLObject
-import com.github.badoualy.telegram.tl.core.TLObjectVector
 
 /**
  * Abstraction level for the following constructors:
- * * [channelFull#76af5481][TLChannelFull]
- * * [chatFull#2e02a614][TLChatFull]
+ * * [channelFull#e9b27a17][TLChannelFull]
+ * * [chatFull#4dbdc099][TLChatFull]
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 abstract class TLAbsChatFull : TLObject() {
-    abstract var id: Int
+    abstract var id: Long
 
-    abstract var chatPhoto: TLAbsPhoto
+    abstract var about: String
 
-    abstract var notifySettings: TLAbsPeerNotifySettings
+    abstract var notifySettings: TLPeerNotifySettings
 
-    abstract var exportedInvite: TLAbsExportedChatInvite
-
-    abstract var botInfo: TLObjectVector<TLBotInfo>
+    abstract var folderId: Int?
 }

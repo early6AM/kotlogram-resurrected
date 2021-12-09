@@ -13,7 +13,7 @@ fun TLMessageMediaGeo.getLocation(): TLGeoPoint? = when (geo) {
     else -> null
 }
 
-fun TLAbsMessageMedia.getAbsMediaInput() = when (this) {
+/*fun TLAbsMessageMedia.getAbsMediaInput() = when (this) {
     is TLMessageMediaContact -> null // nothing to download
     is TLMessageMediaDocument -> getMediaInput()
     is TLMessageMediaEmpty -> null // nothing to download
@@ -35,19 +35,22 @@ fun TLAbsMessageMedia.getAbsMediaThumbnailInput() = when (this) {
     is TLMessageMediaVenue -> null // nothing to download
     is TLMessageMediaWebPage -> getMediaThumbnailInput()
     else -> null
-}
+}*/
 
 fun TLMessageMediaDocument.getMediaInput() = when (document) {
     is TLDocument -> {
         val document = document as TLDocument
-        val inputFileLocation = InputFileLocation(TLInputDocumentFileLocation(document.id, document.accessHash, document.version), document.dcId)
+        val inputFileLocation = InputFileLocation(
+            TLInputDocumentFileLocation(document.id, document.accessHash, document.fileReference, document.thumbs?.firstOrNull()?.type ?: TODO("WTF is 'dis?")),
+            document.dcId
+        )
         MediaInput(inputFileLocation, document.size, document.mimeType)
     }
     else -> null
 }
 
-fun TLMessageMediaDocument.getMediaThumbnailInput() = when (document) {
-    is TLDocument -> (document as TLDocument).thumb.getMediaInput()
+/*fun TLMessageMediaDocument.getMediaThumbnailInput() = when (document) {
+    is TLDocument -> (document as TLDocument).thumbs?.firstOrNull()?.getMediaInput()
     else -> null
 }
 
@@ -95,7 +98,7 @@ fun TLAbsPhotoSize?.getMediaInput() = when (this) {
         else null
     }
     else -> null
-}
+}*/
 
 fun Collection<TLAbsPhotoSize>?.getMaxSize(): TLAbsPhotoSize? {
     if (this == null || isEmpty())
@@ -121,11 +124,11 @@ fun Collection<TLAbsPhotoSize>?.getMinSize(): TLAbsPhotoSize? {
     return filterIsInstance<TLPhotoSize>().sortedBy { it.w * it.h }.firstOrNull()
 }
 
-fun TLAbsFileLocation.toInputFileLocation() = when (this) {
+/*fun TLAbsFileLocation.toInputFileLocation() = when (this) {
     is TLFileLocation -> InputFileLocation(TLInputFileLocation(volumeId, localId, secret), dcId)
     is TLFileLocationUnavailable -> null
     else -> null
-}
+}*/
 
 data class MediaInput(val inputFileLocation: InputFileLocation, val size: Int, val mimeType: String, val cached: TLBytes? = null)
 data class InputFileLocation(val inputFileLocation: TLAbsInputFileLocation, val dcId: Int)

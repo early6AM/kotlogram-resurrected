@@ -20,6 +20,6 @@ class TLInputMessagesFilterMusic : TLAbsMessagesFilter() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3751b49e.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3751b49e
     }
 }

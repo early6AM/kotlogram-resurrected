@@ -55,6 +55,6 @@ class TLDifferenceEmpty() : TLAbsDifference() {
                 && seq == other.seq
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x5d75a138.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x5d75a138
     }
 }

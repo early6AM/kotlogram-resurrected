@@ -58,6 +58,6 @@ class TLRequestChannelsInviteToChannel() : TLMethod<TLAbsUpdates>() {
                 && users == other.users
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x199f3a6c.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x199f3a6c
     }
 }

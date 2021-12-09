@@ -4,6 +4,7 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
 import com.github.badoualy.telegram.tl.api.TLInputPeerEmpty
+import com.github.badoualy.telegram.tl.api.messages.TLMessageViews
 import com.github.badoualy.telegram.tl.core.TLIntVector
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
@@ -14,14 +15,14 @@ import java.io.IOException
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
-class TLRequestMessagesGetMessagesViews() : TLMethod<TLIntVector>() {
+class TLRequestMessagesGetMessagesViews() : TLMethod<TLMessageViews>() {
     var peer: TLAbsInputPeer = TLInputPeerEmpty()
 
     var id: TLIntVector = TLIntVector()
 
     var increment: Boolean = false
 
-    private val _constructor: String = "messages.getMessagesViews#c4c8a55d"
+    private val _constructor: String = "messages.getMessagesViews#5784d3e1"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -36,7 +37,7 @@ class TLRequestMessagesGetMessagesViews() : TLMethod<TLIntVector>() {
     }
 
     @Throws(IOException::class)
-    override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLIntVector = tlDeserializer.readTLIntVector()
+    override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLMessageViews = tlDeserializer.readTLObject(TLMessageViews::class, TLMessageViews.CONSTRUCTOR_ID)
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
@@ -71,6 +72,6 @@ class TLRequestMessagesGetMessagesViews() : TLMethod<TLIntVector>() {
                 && increment == other.increment
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xc4c8a55d.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x5784d3e1
     }
 }

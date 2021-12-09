@@ -69,6 +69,6 @@ class TLPhotosSlice() : TLAbsPhotos() {
                 && users == other.users
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x15051f54.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x15051f54
     }
 }

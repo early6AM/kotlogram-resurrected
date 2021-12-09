@@ -20,6 +20,6 @@ class TLInputPrivacyValueAllowAll : TLAbsInputPrivacyRule() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x184b35ce.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x184b35ce
     }
 }

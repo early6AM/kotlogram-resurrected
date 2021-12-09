@@ -47,6 +47,6 @@ class TLChannelAdminLogEventActionDeleteMessage() : TLAbsChannelAdminLogEventAct
         return message == other.message
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x42e047bb.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x42e047bb
     }
 }

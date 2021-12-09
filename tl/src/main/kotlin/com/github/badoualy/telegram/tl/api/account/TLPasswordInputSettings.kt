@@ -4,6 +4,8 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
+import com.github.badoualy.telegram.tl.api.TLAbsPasswordKdfAlgo
+import com.github.badoualy.telegram.tl.api.TLSecureSecretSettings
 import com.github.badoualy.telegram.tl.core.TLBytes
 import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
@@ -11,13 +13,13 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * account.passwordInputSettings#86916deb
+ * account.passwordInputSettings#c23727c9
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLPasswordInputSettings() : TLObject() {
-    var newSalt: TLBytes? = null
+    var newAlgo: TLAbsPasswordKdfAlgo? = null
 
     var newPasswordHash: TLBytes? = null
 
@@ -25,28 +27,33 @@ class TLPasswordInputSettings() : TLObject() {
 
     var email: String? = null
 
-    private val _constructor: String = "account.passwordInputSettings#86916deb"
+    var newSecureSettings: TLSecureSecretSettings? = null
+
+    private val _constructor: String = "account.passwordInputSettings#c23727c9"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
-            newSalt: TLBytes?,
+            newAlgo: TLAbsPasswordKdfAlgo?,
             newPasswordHash: TLBytes?,
             hint: String?,
-            email: String?
+            email: String?,
+            newSecureSettings: TLSecureSecretSettings?
     ) : this() {
-        this.newSalt = newSalt
+        this.newAlgo = newAlgo
         this.newPasswordHash = newPasswordHash
         this.hint = hint
         this.email = email
+        this.newSecureSettings = newSecureSettings
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
-        updateFlags(newSalt, 1)
+        updateFlags(newAlgo, 1)
         updateFlags(newPasswordHash, 1)
         updateFlags(hint, 1)
         updateFlags(email, 2)
+        updateFlags(newSecureSettings, 4)
     }
 
     @Throws(IOException::class)
@@ -54,19 +61,21 @@ class TLPasswordInputSettings() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(newSalt, 1) { writeTLBytes(it) }
+        doIfMask(newAlgo, 1) { writeTLObject(it) }
         doIfMask(newPasswordHash, 1) { writeTLBytes(it) }
         doIfMask(hint, 1) { writeString(it) }
         doIfMask(email, 2) { writeString(it) }
+        doIfMask(newSecureSettings, 4) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        newSalt = readIfMask(1) { readTLBytes() }
+        newAlgo = readIfMask(1) { readTLObject<TLAbsPasswordKdfAlgo>() }
         newPasswordHash = readIfMask(1) { readTLBytes() }
         hint = readIfMask(1) { readString() }
         email = readIfMask(2) { readString() }
+        newSecureSettings = readIfMask(4) { readTLObject<TLSecureSecretSettings>(TLSecureSecretSettings::class, TLSecureSecretSettings.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -74,10 +83,11 @@ class TLPasswordInputSettings() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(newSalt, 1) { computeTLBytesSerializedSize(it) }
+        size += getIntIfMask(newAlgo, 1) { it.computeSerializedSize() }
         size += getIntIfMask(newPasswordHash, 1) { computeTLBytesSerializedSize(it) }
         size += getIntIfMask(hint, 1) { computeTLStringSerializedSize(it) }
         size += getIntIfMask(email, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(newSecureSettings, 4) { it.computeSerializedSize() }
         return size
     }
 
@@ -88,12 +98,13 @@ class TLPasswordInputSettings() : TLObject() {
         if (other === this) return true
 
         return _flags == other._flags
-                && newSalt == other.newSalt
+                && newAlgo == other.newAlgo
                 && newPasswordHash == other.newPasswordHash
                 && hint == other.hint
                 && email == other.email
+                && newSecureSettings == other.newSecureSettings
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x86916deb.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xc23727c9.toInt()
     }
 }

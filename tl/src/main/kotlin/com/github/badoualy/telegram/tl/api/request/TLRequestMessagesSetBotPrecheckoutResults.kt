@@ -36,7 +36,7 @@ class TLRequestMessagesSetBotPrecheckoutResults() : TLMethod<TLBool>() {
         this.error = error
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(success, 2)
         updateFlags(error, 1)
@@ -81,6 +81,6 @@ class TLRequestMessagesSetBotPrecheckoutResults() : TLMethod<TLBool>() {
                 && error == other.error
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x9c2dd95.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x9c2dd95
     }
 }

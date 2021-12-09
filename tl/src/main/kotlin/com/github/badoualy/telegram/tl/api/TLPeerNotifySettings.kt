@@ -1,38 +1,38 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
+import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * peerNotifySettings#9acda4c0
+ * peerNotifySettings#af509d20
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
-class TLPeerNotifySettings() : TLAbsPeerNotifySettings() {
-    @Transient
-    var showPreviews: Boolean = false
+class TLPeerNotifySettings() : TLObject() {
+    var showPreviews: Boolean? = null
 
-    @Transient
-    var silent: Boolean = false
+    var silent: Boolean? = null
 
-    var muteUntil: Int = 0
+    var muteUntil: Int? = null
 
-    var sound: String = ""
+    var sound: String? = null
 
-    private val _constructor: String = "peerNotifySettings#9acda4c0"
+    private val _constructor: String = "peerNotifySettings#af509d20"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
-            showPreviews: Boolean,
-            silent: Boolean,
-            muteUntil: Int,
-            sound: String
+            showPreviews: Boolean?,
+            silent: Boolean?,
+            muteUntil: Int?,
+            sound: String?
     ) : this() {
         this.showPreviews = showPreviews
         this.silent = silent
@@ -40,10 +40,12 @@ class TLPeerNotifySettings() : TLAbsPeerNotifySettings() {
         this.sound = sound
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(showPreviews, 1)
         updateFlags(silent, 2)
+        updateFlags(muteUntil, 4)
+        updateFlags(sound, 8)
     }
 
     @Throws(IOException::class)
@@ -51,17 +53,19 @@ class TLPeerNotifySettings() : TLAbsPeerNotifySettings() {
         computeFlags()
 
         writeInt(_flags)
-        writeInt(muteUntil)
-        writeString(sound)
+        doIfMask(showPreviews, 1) { writeBoolean(it) }
+        doIfMask(silent, 2) { writeBoolean(it) }
+        doIfMask(muteUntil, 4) { writeInt(it) }
+        doIfMask(sound, 8) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        showPreviews = isMask(1)
-        silent = isMask(2)
-        muteUntil = readInt()
-        sound = readString()
+        showPreviews = readIfMask(1) { readBoolean() }
+        silent = readIfMask(2) { readBoolean() }
+        muteUntil = readIfMask(4) { readInt() }
+        sound = readIfMask(8) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -69,8 +73,10 @@ class TLPeerNotifySettings() : TLAbsPeerNotifySettings() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += SIZE_INT32
-        size += computeTLStringSerializedSize(sound)
+        size += getIntIfMask(showPreviews, 1) { SIZE_BOOLEAN }
+        size += getIntIfMask(silent, 2) { SIZE_BOOLEAN }
+        size += getIntIfMask(muteUntil, 4) { SIZE_INT32 }
+        size += getIntIfMask(sound, 8) { computeTLStringSerializedSize(it) }
         return size
     }
 
@@ -87,6 +93,6 @@ class TLPeerNotifySettings() : TLAbsPeerNotifySettings() {
                 && sound == other.sound
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x9acda4c0.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xaf509d20.toInt()
     }
 }

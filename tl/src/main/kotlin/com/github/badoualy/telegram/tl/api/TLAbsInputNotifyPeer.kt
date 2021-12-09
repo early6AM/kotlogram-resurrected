@@ -4,7 +4,7 @@ import com.github.badoualy.telegram.tl.core.TLObject
 
 /**
  * Abstraction level for the following constructors:
- * * [inputNotifyAll#a429b886][TLInputNotifyAll]
+ * * [inputNotifyBroadcasts#b1db7c7e][TLInputNotifyBroadcasts]
  * * [inputNotifyChats#4a95e84e][TLInputNotifyChats]
  * * [inputNotifyPeer#b8bc5b0c][TLInputNotifyPeer]
  * * [inputNotifyUsers#193b4417][TLInputNotifyUsers]

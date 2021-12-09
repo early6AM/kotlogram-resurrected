@@ -20,6 +20,6 @@ class TLInputMessagesFilterChatPhotos : TLAbsMessagesFilter() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3a20ecb8.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3a20ecb8
     }
 }

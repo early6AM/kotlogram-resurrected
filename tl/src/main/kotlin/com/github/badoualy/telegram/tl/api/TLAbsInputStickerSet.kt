@@ -4,6 +4,9 @@ import com.github.badoualy.telegram.tl.core.TLObject
 
 /**
  * Abstraction level for the following constructors:
+ * * [inputStickerSetAnimatedEmoji#28703c8][TLInputStickerSetAnimatedEmoji]
+ * * [inputStickerSetAnimatedEmojiAnimations#cde3739][TLInputStickerSetAnimatedEmojiAnimations]
+ * * [inputStickerSetDice#e67f520e][TLInputStickerSetDice]
  * * [inputStickerSetEmpty#ffb62b95][TLInputStickerSetEmpty]
  * * [inputStickerSetID#9de7a269][TLInputStickerSetID]
  * * [inputStickerSetShortName#861cc8a0][TLInputStickerSetShortName]

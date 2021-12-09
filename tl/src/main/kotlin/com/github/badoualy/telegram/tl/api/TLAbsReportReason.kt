@@ -4,7 +4,11 @@ import com.github.badoualy.telegram.tl.core.TLObject
 
 /**
  * Abstraction level for the following constructors:
- * * [inputReportReasonOther#e1746d0a][TLInputReportReasonOther]
+ * * [inputReportReasonChildAbuse#adf44ee3][TLInputReportReasonChildAbuse]
+ * * [inputReportReasonCopyright#9b89f93a][TLInputReportReasonCopyright]
+ * * [inputReportReasonFake#f5ddd6e7][TLInputReportReasonFake]
+ * * [inputReportReasonGeoIrrelevant#dbd4feed][TLInputReportReasonGeoIrrelevant]
+ * * [inputReportReasonOther#c1e4a2b1][TLInputReportReasonOther]
  * * [inputReportReasonPornography#2e59d922][TLInputReportReasonPornography]
  * * [inputReportReasonSpam#58dbcab8][TLInputReportReasonSpam]
  * * [inputReportReasonViolence#1e22c78d][TLInputReportReasonViolence]

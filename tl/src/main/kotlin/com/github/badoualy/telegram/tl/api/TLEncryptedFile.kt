@@ -83,6 +83,6 @@ class TLEncryptedFile() : TLAbsEncryptedFile() {
                 && keyFingerprint == other.keyFingerprint
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x4a70994c.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x4a70994c
     }
 }

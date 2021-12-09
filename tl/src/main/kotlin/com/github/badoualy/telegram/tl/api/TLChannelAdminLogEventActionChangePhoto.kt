@@ -6,21 +6,21 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * channelAdminLogEventActionChangePhoto#b82f55c3
+ * channelAdminLogEventActionChangePhoto#434bd2af
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLChannelAdminLogEventActionChangePhoto() : TLAbsChannelAdminLogEventAction() {
-    var prevPhoto: TLAbsChatPhoto = TLChatPhotoEmpty()
+    var prevPhoto: TLAbsPhoto = TLPhotoEmpty()
 
-    var newPhoto: TLAbsChatPhoto = TLChatPhotoEmpty()
+    var newPhoto: TLAbsPhoto = TLPhotoEmpty()
 
-    private val _constructor: String = "channelAdminLogEventActionChangePhoto#b82f55c3"
+    private val _constructor: String = "channelAdminLogEventActionChangePhoto#434bd2af"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(prevPhoto: TLAbsChatPhoto, newPhoto: TLAbsChatPhoto) : this() {
+    constructor(prevPhoto: TLAbsPhoto, newPhoto: TLAbsPhoto) : this() {
         this.prevPhoto = prevPhoto
         this.newPhoto = newPhoto
     }
@@ -33,8 +33,8 @@ class TLChannelAdminLogEventActionChangePhoto() : TLAbsChannelAdminLogEventActio
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        prevPhoto = readTLObject<TLAbsChatPhoto>()
-        newPhoto = readTLObject<TLAbsChatPhoto>()
+        prevPhoto = readTLObject<TLAbsPhoto>()
+        newPhoto = readTLObject<TLAbsPhoto>()
     }
 
     override fun computeSerializedSize(): Int {
@@ -54,6 +54,6 @@ class TLChannelAdminLogEventActionChangePhoto() : TLAbsChannelAdminLogEventActio
                 && newPhoto == other.newPhoto
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xb82f55c3.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x434bd2af
     }
 }

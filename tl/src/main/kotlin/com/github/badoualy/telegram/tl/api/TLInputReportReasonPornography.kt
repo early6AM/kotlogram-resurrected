@@ -20,6 +20,6 @@ class TLInputReportReasonPornography : TLAbsReportReason() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x2e59d922.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x2e59d922
     }
 }

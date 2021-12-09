@@ -49,6 +49,6 @@ class TLStickerSetInstallResultArchive() : TLAbsStickerSetInstallResult() {
         return sets == other.sets
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x35e410a8.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x35e410a8
     }
 }

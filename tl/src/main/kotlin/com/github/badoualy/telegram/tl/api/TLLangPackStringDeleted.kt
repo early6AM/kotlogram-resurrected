@@ -48,6 +48,6 @@ class TLLangPackStringDeleted() : TLAbsLangPackString() {
         return key == other.key
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x2979eeb2.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x2979eeb2
     }
 }

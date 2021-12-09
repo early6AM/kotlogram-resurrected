@@ -1,21 +1,46 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.api.messages.TLPeerDialogs
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
+import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
-class TLRequestMessagesGetPinnedDialogs : TLMethod<TLPeerDialogs>() {
-    private val _constructor: String = "messages.getPinnedDialogs#e254d64e"
+class TLRequestMessagesGetPinnedDialogs() : TLMethod<TLPeerDialogs>() {
+    var folderId: Int = 0
+
+    private val _constructor: String = "messages.getPinnedDialogs#d6b94df2"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
+    constructor(folderId: Int) : this() {
+        this.folderId = folderId
+    }
+
     @Throws(IOException::class)
     override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLPeerDialogs = tlDeserializer.readTLObject(TLPeerDialogs::class, TLPeerDialogs.CONSTRUCTOR_ID)
+
+    @Throws(IOException::class)
+    override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
+        writeInt(folderId)
+    }
+
+    @Throws(IOException::class)
+    override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
+        folderId = readInt()
+    }
+
+    override fun computeSerializedSize(): Int {
+        var size = SIZE_CONSTRUCTOR_ID
+        size += SIZE_INT32
+        return size
+    }
 
     override fun toString() = _constructor
 
@@ -23,9 +48,9 @@ class TLRequestMessagesGetPinnedDialogs : TLMethod<TLPeerDialogs>() {
         if (other !is TLRequestMessagesGetPinnedDialogs) return false
         if (other === this) return true
 
-        return true
+        return folderId == other.folderId
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xe254d64e.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xd6b94df2.toInt()
     }
 }

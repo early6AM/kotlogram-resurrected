@@ -55,6 +55,6 @@ class TLMessageEntityEmail() : TLAbsMessageEntity() {
                 && length == other.length
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x64e475c2.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x64e475c2
     }
 }

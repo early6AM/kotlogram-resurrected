@@ -7,7 +7,9 @@ import com.github.badoualy.telegram.tl.core.TLObject
  * * [channelParticipantsAdmins#b4608969][TLChannelParticipantsAdmins]
  * * [channelParticipantsBanned#1427a5e1][TLChannelParticipantsBanned]
  * * [channelParticipantsBots#b0d1865b][TLChannelParticipantsBots]
+ * * [channelParticipantsContacts#bb6ae88d][TLChannelParticipantsContacts]
  * * [channelParticipantsKicked#a3b54985][TLChannelParticipantsKicked]
+ * * [channelParticipantsMentions#e04b5ceb][TLChannelParticipantsMentions]
  * * [channelParticipantsRecent#de3f3c79][TLChannelParticipantsRecent]
  * * [channelParticipantsSearch#656ac4b][TLChannelParticipantsSearch]
  *

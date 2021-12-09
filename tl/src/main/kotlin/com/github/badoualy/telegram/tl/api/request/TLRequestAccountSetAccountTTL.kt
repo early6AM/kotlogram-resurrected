@@ -48,6 +48,6 @@ class TLRequestAccountSetAccountTTL() : TLMethod<TLBool>() {
         return ttl == other.ttl
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x2442485e.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x2442485e
     }
 }

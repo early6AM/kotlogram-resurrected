@@ -47,6 +47,6 @@ class TLChatInviteAlready() : TLAbsChatInvite() {
         return chat == other.chat
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x5a686d7c.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x5a686d7c
     }
 }

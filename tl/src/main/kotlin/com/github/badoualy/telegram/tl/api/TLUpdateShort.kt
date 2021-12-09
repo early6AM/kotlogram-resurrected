@@ -55,6 +55,6 @@ class TLUpdateShort() : TLAbsUpdates() {
                 && date == other.date
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x78d4dec1.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x78d4dec1
     }
 }

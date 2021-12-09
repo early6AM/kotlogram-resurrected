@@ -57,6 +57,6 @@ class TLRequestChannelsUpdateUsername() : TLMethod<TLBool>() {
                 && username == other.username
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3514b3de.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3514b3de
     }
 }

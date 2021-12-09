@@ -2,6 +2,7 @@ package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
 import com.github.badoualy.telegram.tl.api.TLInputPeerEmpty
 import com.github.badoualy.telegram.tl.api.messages.TLAbsDialogs
@@ -18,6 +19,8 @@ class TLRequestMessagesGetDialogs() : TLMethod<TLAbsDialogs>() {
     @Transient
     var excludePinned: Boolean = false
 
+    var folderId: Int? = null
+
     var offsetDate: Int = 0
 
     var offsetId: Int = 0
@@ -26,27 +29,34 @@ class TLRequestMessagesGetDialogs() : TLMethod<TLAbsDialogs>() {
 
     var limit: Int = 0
 
-    private val _constructor: String = "messages.getDialogs#191ba9c5"
+    var hash: Long = 0L
+
+    private val _constructor: String = "messages.getDialogs#a0f4cb4f"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             excludePinned: Boolean,
+            folderId: Int?,
             offsetDate: Int,
             offsetId: Int,
             offsetPeer: TLAbsInputPeer,
-            limit: Int
+            limit: Int,
+            hash: Long
     ) : this() {
         this.excludePinned = excludePinned
+        this.folderId = folderId
         this.offsetDate = offsetDate
         this.offsetId = offsetId
         this.offsetPeer = offsetPeer
         this.limit = limit
+        this.hash = hash
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(excludePinned, 1)
+        updateFlags(folderId, 2)
     }
 
     @Throws(IOException::class)
@@ -54,20 +64,24 @@ class TLRequestMessagesGetDialogs() : TLMethod<TLAbsDialogs>() {
         computeFlags()
 
         writeInt(_flags)
+        doIfMask(folderId, 2) { writeInt(it) }
         writeInt(offsetDate)
         writeInt(offsetId)
         writeTLObject(offsetPeer)
         writeInt(limit)
+        writeLong(hash)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         excludePinned = isMask(1)
+        folderId = readIfMask(2) { readInt() }
         offsetDate = readInt()
         offsetId = readInt()
         offsetPeer = readTLObject<TLAbsInputPeer>()
         limit = readInt()
+        hash = readLong()
     }
 
     override fun computeSerializedSize(): Int {
@@ -75,10 +89,12 @@ class TLRequestMessagesGetDialogs() : TLMethod<TLAbsDialogs>() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
+        size += getIntIfMask(folderId, 2) { SIZE_INT32 }
         size += SIZE_INT32
         size += SIZE_INT32
         size += offsetPeer.computeSerializedSize()
         size += SIZE_INT32
+        size += SIZE_INT64
         return size
     }
 
@@ -90,12 +106,14 @@ class TLRequestMessagesGetDialogs() : TLMethod<TLAbsDialogs>() {
 
         return _flags == other._flags
                 && excludePinned == other.excludePinned
+                && folderId == other.folderId
                 && offsetDate == other.offsetDate
                 && offsetId == other.offsetId
                 && offsetPeer == other.offsetPeer
                 && limit == other.limit
+                && hash == other.hash
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x191ba9c5.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xa0f4cb4f.toInt()
     }
 }

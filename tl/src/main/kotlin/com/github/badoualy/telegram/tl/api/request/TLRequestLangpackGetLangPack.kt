@@ -13,13 +13,16 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLRequestLangpackGetLangPack() : TLMethod<TLLangPackDifference>() {
+    var langPack: String = ""
+
     var langCode: String = ""
 
-    private val _constructor: String = "langpack.getLangPack#9ab5c58e"
+    private val _constructor: String = "langpack.getLangPack#f2f2330a"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(langCode: String) : this() {
+    constructor(langPack: String, langCode: String) : this() {
+        this.langPack = langPack
         this.langCode = langCode
     }
 
@@ -28,16 +31,19 @@ class TLRequestLangpackGetLangPack() : TLMethod<TLLangPackDifference>() {
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
+        writeString(langPack)
         writeString(langCode)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
+        langPack = readString()
         langCode = readString()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
+        size += computeTLStringSerializedSize(langPack)
         size += computeTLStringSerializedSize(langCode)
         return size
     }
@@ -48,9 +54,10 @@ class TLRequestLangpackGetLangPack() : TLMethod<TLLangPackDifference>() {
         if (other !is TLRequestLangpackGetLangPack) return false
         if (other === this) return true
 
-        return langCode == other.langCode
+        return langPack == other.langPack
+                && langCode == other.langCode
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x9ab5c58e.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xf2f2330a.toInt()
     }
 }

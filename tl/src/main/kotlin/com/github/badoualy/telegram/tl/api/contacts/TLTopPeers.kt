@@ -69,6 +69,6 @@ class TLTopPeers() : TLAbsTopPeers() {
                 && users == other.users
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x70b772a8.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x70b772a8
     }
 }

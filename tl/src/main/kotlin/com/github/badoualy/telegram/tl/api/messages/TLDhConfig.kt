@@ -76,6 +76,6 @@ class TLDhConfig() : TLAbsDhConfig() {
                 && random == other.random
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x2c221edd.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x2c221edd
     }
 }

@@ -48,6 +48,6 @@ class TLUserStatusOffline() : TLAbsUserStatus() {
         return wasOnline == other.wasOnline
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x8c703f.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x8c703f
     }
 }

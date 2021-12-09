@@ -54,6 +54,6 @@ class TLPageBlockPullquote() : TLAbsPageBlock() {
                 && caption == other.caption
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x4f4456d3.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x4f4456d3
     }
 }

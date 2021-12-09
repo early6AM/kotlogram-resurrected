@@ -20,6 +20,6 @@ class TLStickerSetInstallResultSuccess : TLAbsStickerSetInstallResult() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x38641628.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x38641628
     }
 }

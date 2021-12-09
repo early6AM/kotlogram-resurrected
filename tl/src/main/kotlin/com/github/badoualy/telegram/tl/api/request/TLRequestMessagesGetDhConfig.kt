@@ -55,6 +55,6 @@ class TLRequestMessagesGetDhConfig() : TLMethod<TLAbsDhConfig>() {
                 && randomLength == other.randomLength
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x26cf8950.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x26cf8950
     }
 }

@@ -1,7 +1,7 @@
 package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
-import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.api.TLAbsInputChatPhoto
 import com.github.badoualy.telegram.tl.api.TLAbsUpdates
 import com.github.badoualy.telegram.tl.api.TLInputChatPhotoEmpty
@@ -15,34 +15,34 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLRequestMessagesEditChatPhoto() : TLMethod<TLAbsUpdates>() {
-    var chatId: Int = 0
+    var chatId: Long = 0L
 
     var photo: TLAbsInputChatPhoto = TLInputChatPhotoEmpty()
 
-    private val _constructor: String = "messages.editChatPhoto#ca4c79d8"
+    private val _constructor: String = "messages.editChatPhoto#35ddd674"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(chatId: Int, photo: TLAbsInputChatPhoto) : this() {
+    constructor(chatId: Long, photo: TLAbsInputChatPhoto) : this() {
         this.chatId = chatId
         this.photo = photo
     }
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
-        writeInt(chatId)
+        writeLong(chatId)
         writeTLObject(photo)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        chatId = readInt()
+        chatId = readLong()
         photo = readTLObject<TLAbsInputChatPhoto>()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += photo.computeSerializedSize()
         return size
     }
@@ -57,6 +57,6 @@ class TLRequestMessagesEditChatPhoto() : TLMethod<TLAbsUpdates>() {
                 && photo == other.photo
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xca4c79d8.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x35ddd674
     }
 }

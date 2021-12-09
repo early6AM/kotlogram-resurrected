@@ -66,6 +66,6 @@ class TLUpdateNewChannelMessage() : TLAbsUpdate() {
                 && ptsCount == other.ptsCount
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x62ba04d9.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x62ba04d9
     }
 }

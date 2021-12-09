@@ -56,6 +56,6 @@ class TLRequestMessagesSetEncryptedTyping() : TLMethod<TLBool>() {
                 && typing == other.typing
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x791451ed.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x791451ed
     }
 }

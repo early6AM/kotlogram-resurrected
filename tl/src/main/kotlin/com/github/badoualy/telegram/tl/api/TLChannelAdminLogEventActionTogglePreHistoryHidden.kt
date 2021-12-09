@@ -48,6 +48,6 @@ class TLChannelAdminLogEventActionTogglePreHistoryHidden() : TLAbsChannelAdminLo
         return newValue == other.newValue
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x5f5c95f1.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x5f5c95f1
     }
 }

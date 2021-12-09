@@ -4,7 +4,7 @@ import com.github.badoualy.telegram.tl.core.TLObject
 
 /**
  * Abstraction level for the following constructors:
- * * [channels.channelParticipants#f56ee2a8][TLChannelParticipants]
+ * * [channels.channelParticipants#9ab0feaf][TLChannelParticipants]
  * * [channels.channelParticipantsNotModified#f0173fe9][TLChannelParticipantsNotModified]
  *
  * @author Yannick Badoual yann.badoual@gmail.com

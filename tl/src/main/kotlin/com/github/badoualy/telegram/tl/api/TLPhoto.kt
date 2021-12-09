@@ -3,13 +3,15 @@ package com.github.badoualy.telegram.tl.api
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.core.TLBytes
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * photo#9288dd29
+ * photo#fb197a65
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -22,11 +24,17 @@ class TLPhoto() : TLAbsPhoto() {
 
     var accessHash: Long = 0L
 
+    var fileReference: TLBytes = TLBytes.EMPTY
+
     var date: Int = 0
 
     var sizes: TLObjectVector<TLAbsPhotoSize> = TLObjectVector()
 
-    private val _constructor: String = "photo#9288dd29"
+    var videoSizes: TLObjectVector<TLVideoSize>? = TLObjectVector()
+
+    var dcId: Int = 0
+
+    private val _constructor: String = "photo#fb197a65"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -34,19 +42,26 @@ class TLPhoto() : TLAbsPhoto() {
             hasStickers: Boolean,
             id: Long,
             accessHash: Long,
+            fileReference: TLBytes,
             date: Int,
-            sizes: TLObjectVector<TLAbsPhotoSize>
+            sizes: TLObjectVector<TLAbsPhotoSize>,
+            videoSizes: TLObjectVector<TLVideoSize>?,
+            dcId: Int
     ) : this() {
         this.hasStickers = hasStickers
         this.id = id
         this.accessHash = accessHash
+        this.fileReference = fileReference
         this.date = date
         this.sizes = sizes
+        this.videoSizes = videoSizes
+        this.dcId = dcId
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(hasStickers, 1)
+        updateFlags(videoSizes, 2)
     }
 
     @Throws(IOException::class)
@@ -56,8 +71,11 @@ class TLPhoto() : TLAbsPhoto() {
         writeInt(_flags)
         writeLong(id)
         writeLong(accessHash)
+        writeTLBytes(fileReference)
         writeInt(date)
         writeTLVector(sizes)
+        doIfMask(videoSizes, 2) { writeTLVector(it) }
+        writeInt(dcId)
     }
 
     @Throws(IOException::class)
@@ -66,8 +84,11 @@ class TLPhoto() : TLAbsPhoto() {
         hasStickers = isMask(1)
         id = readLong()
         accessHash = readLong()
+        fileReference = readTLBytes()
         date = readInt()
         sizes = readTLVector<TLAbsPhotoSize>()
+        videoSizes = readIfMask(2) { readTLVector<TLVideoSize>() }
+        dcId = readInt()
     }
 
     override fun computeSerializedSize(): Int {
@@ -77,8 +98,11 @@ class TLPhoto() : TLAbsPhoto() {
         size += SIZE_INT32
         size += SIZE_INT64
         size += SIZE_INT64
+        size += computeTLBytesSerializedSize(fileReference)
         size += SIZE_INT32
         size += sizes.computeSerializedSize()
+        size += getIntIfMask(videoSizes, 2) { it.computeSerializedSize() }
+        size += SIZE_INT32
         return size
     }
 
@@ -92,10 +116,13 @@ class TLPhoto() : TLAbsPhoto() {
                 && hasStickers == other.hasStickers
                 && id == other.id
                 && accessHash == other.accessHash
+                && fileReference == other.fileReference
                 && date == other.date
                 && sizes == other.sizes
+                && videoSizes == other.videoSizes
+                && dcId == other.dcId
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x9288dd29.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xfb197a65.toInt()
     }
 }

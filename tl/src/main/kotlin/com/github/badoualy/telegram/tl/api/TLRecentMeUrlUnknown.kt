@@ -48,6 +48,6 @@ class TLRecentMeUrlUnknown() : TLAbsRecentMeUrl() {
         return url == other.url
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x46e1d13d.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x46e1d13d
     }
 }

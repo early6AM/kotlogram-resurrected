@@ -18,6 +18,9 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLRequestPhoneRequestCall() : TLMethod<TLPhoneCall>() {
+    @Transient
+    var video: Boolean = false
+
     var userId: TLAbsInputUser = TLInputUserEmpty()
 
     var randomId: Int = 0
@@ -26,16 +29,18 @@ class TLRequestPhoneRequestCall() : TLMethod<TLPhoneCall>() {
 
     var protocol: TLPhoneCallProtocol = TLPhoneCallProtocol()
 
-    private val _constructor: String = "phone.requestCall#5b95b3d4"
+    private val _constructor: String = "phone.requestCall#42ff96ed"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
+            video: Boolean,
             userId: TLAbsInputUser,
             randomId: Int,
             gAHash: TLBytes,
             protocol: TLPhoneCallProtocol
     ) : this() {
+        this.video = video
         this.userId = userId
         this.randomId = randomId
         this.gAHash = gAHash
@@ -45,8 +50,16 @@ class TLRequestPhoneRequestCall() : TLMethod<TLPhoneCall>() {
     @Throws(IOException::class)
     override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLPhoneCall = tlDeserializer.readTLObject(TLPhoneCall::class, TLPhoneCall.CONSTRUCTOR_ID)
 
+    override fun computeFlags() {
+        _flags = 0
+        updateFlags(video, 1)
+    }
+
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
+        computeFlags()
+
+        writeInt(_flags)
         writeTLObject(userId)
         writeInt(randomId)
         writeTLBytes(gAHash)
@@ -55,6 +68,8 @@ class TLRequestPhoneRequestCall() : TLMethod<TLPhoneCall>() {
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
+        _flags = readInt()
+        video = isMask(1)
         userId = readTLObject<TLAbsInputUser>()
         randomId = readInt()
         gAHash = readTLBytes()
@@ -62,7 +77,10 @@ class TLRequestPhoneRequestCall() : TLMethod<TLPhoneCall>() {
     }
 
     override fun computeSerializedSize(): Int {
+        computeFlags()
+
         var size = SIZE_CONSTRUCTOR_ID
+        size += SIZE_INT32
         size += userId.computeSerializedSize()
         size += SIZE_INT32
         size += computeTLBytesSerializedSize(gAHash)
@@ -76,12 +94,14 @@ class TLRequestPhoneRequestCall() : TLMethod<TLPhoneCall>() {
         if (other !is TLRequestPhoneRequestCall) return false
         if (other === this) return true
 
-        return userId == other.userId
+        return _flags == other._flags
+                && video == other.video
+                && userId == other.userId
                 && randomId == other.randomId
                 && gAHash == other.gAHash
                 && protocol == other.protocol
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x5b95b3d4.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x42ff96ed
     }
 }

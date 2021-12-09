@@ -20,6 +20,6 @@ class TLGeoPointEmpty : TLAbsGeoPoint() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x1117dd5f.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x1117dd5f
     }
 }

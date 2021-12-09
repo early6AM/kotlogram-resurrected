@@ -56,6 +56,6 @@ class TLRequestMessagesReadEncryptedHistory() : TLMethod<TLBool>() {
                 && maxDate == other.maxDate
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x7f4b690a.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x7f4b690a
     }
 }

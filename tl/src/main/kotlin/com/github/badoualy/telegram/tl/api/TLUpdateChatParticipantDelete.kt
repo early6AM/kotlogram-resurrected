@@ -2,30 +2,31 @@ package com.github.badoualy.telegram.tl.api
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * updateChatParticipantDelete#6e5f8c22
+ * updateChatParticipantDelete#e32f3d77
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLUpdateChatParticipantDelete() : TLAbsUpdate() {
-    var chatId: Int = 0
+    var chatId: Long = 0L
 
-    var userId: Int = 0
+    var userId: Long = 0L
 
     var version: Int = 0
 
-    private val _constructor: String = "updateChatParticipantDelete#6e5f8c22"
+    private val _constructor: String = "updateChatParticipantDelete#e32f3d77"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
-            chatId: Int,
-            userId: Int,
+            chatId: Long,
+            userId: Long,
             version: Int
     ) : this() {
         this.chatId = chatId
@@ -35,22 +36,22 @@ class TLUpdateChatParticipantDelete() : TLAbsUpdate() {
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
-        writeInt(chatId)
-        writeInt(userId)
+        writeLong(chatId)
+        writeLong(userId)
         writeInt(version)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        chatId = readInt()
-        userId = readInt()
+        chatId = readLong()
+        userId = readLong()
         version = readInt()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
-        size += SIZE_INT32
-        size += SIZE_INT32
+        size += SIZE_INT64
+        size += SIZE_INT64
         size += SIZE_INT32
         return size
     }
@@ -66,6 +67,6 @@ class TLUpdateChatParticipantDelete() : TLAbsUpdate() {
                 && version == other.version
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x6e5f8c22.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xe32f3d77.toInt()
     }
 }

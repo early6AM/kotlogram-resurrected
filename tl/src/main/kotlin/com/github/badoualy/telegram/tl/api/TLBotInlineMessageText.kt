@@ -40,7 +40,7 @@ class TLBotInlineMessageText() : TLAbsBotInlineMessage() {
         this.replyMarkup = replyMarkup
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(noWebpage, 1)
         updateFlags(entities, 2)

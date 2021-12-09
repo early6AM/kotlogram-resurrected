@@ -2,9 +2,9 @@ package com.github.badoualy.telegram.tl.api.messages
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.api.TLAbsChat
+import com.github.badoualy.telegram.tl.api.TLAbsDialog
 import com.github.badoualy.telegram.tl.api.TLAbsMessage
 import com.github.badoualy.telegram.tl.api.TLAbsUser
-import com.github.badoualy.telegram.tl.api.TLDialog
 import com.github.badoualy.telegram.tl.api.updates.TLState
 import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.core.TLObjectVector
@@ -19,7 +19,7 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLPeerDialogs() : TLObject() {
-    var dialogs: TLObjectVector<TLDialog> = TLObjectVector()
+    var dialogs: TLObjectVector<TLAbsDialog> = TLObjectVector()
 
     var messages: TLObjectVector<TLAbsMessage> = TLObjectVector()
 
@@ -34,7 +34,7 @@ class TLPeerDialogs() : TLObject() {
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
-            dialogs: TLObjectVector<TLDialog>,
+            dialogs: TLObjectVector<TLAbsDialog>,
             messages: TLObjectVector<TLAbsMessage>,
             chats: TLObjectVector<TLAbsChat>,
             users: TLObjectVector<TLAbsUser>,
@@ -58,7 +58,7 @@ class TLPeerDialogs() : TLObject() {
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        dialogs = readTLVector<TLDialog>()
+        dialogs = readTLVector<TLAbsDialog>()
         messages = readTLVector<TLAbsMessage>()
         chats = readTLVector<TLAbsChat>()
         users = readTLVector<TLAbsUser>()
@@ -88,6 +88,6 @@ class TLPeerDialogs() : TLObject() {
                 && state == other.state
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3371c354.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3371c354
     }
 }

@@ -66,6 +66,6 @@ class TLUpdateEncryptedMessagesRead() : TLAbsUpdate() {
                 && date == other.date
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x38fe25b7.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x38fe25b7
     }
 }

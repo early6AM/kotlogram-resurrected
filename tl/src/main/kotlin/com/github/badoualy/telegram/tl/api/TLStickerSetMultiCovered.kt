@@ -55,6 +55,6 @@ class TLStickerSetMultiCovered() : TLAbsStickerSetCovered() {
                 && covers == other.covers
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3407e51b.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3407e51b
     }
 }

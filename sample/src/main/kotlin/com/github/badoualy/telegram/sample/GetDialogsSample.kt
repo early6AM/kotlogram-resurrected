@@ -25,11 +25,11 @@ object GetDialogsSample {
 
         // You can start making requests
         try {
-            val tlAbsDialogs = client.messagesGetDialogs(true, 0, 0, TLInputPeerEmpty(),
+            /*val tlAbsDialogs = client.messagesGetDialogs(true, 0, 0, TLInputPeerEmpty(),
                                                          count).blockingGet()
 
             // Create a map of id to name map
-            val nameMap = HashMap<Int, String>()
+            val nameMap = HashMap<Long, String>()
             tlAbsDialogs.users.filterIsInstance<TLUser>()
                     .map { Pair(it.id, "${it.firstName} ${it.lastName}") }
                     .toMap(nameMap)
@@ -45,7 +45,7 @@ object GetDialogsSample {
                         else "Empty message (TLMessageEmpty)"
 
                 println("${nameMap[dialog.peer.id]}: $topMessageContent")
-            }
+            }*/
 
             //client.pfs()
         } catch (e: RpcErrorException) {

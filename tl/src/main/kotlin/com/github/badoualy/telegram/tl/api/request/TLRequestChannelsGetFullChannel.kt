@@ -52,6 +52,6 @@ class TLRequestChannelsGetFullChannel() : TLMethod<TLChatFull>() {
         return channel == other.channel
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x8736a09.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x8736a09
     }
 }

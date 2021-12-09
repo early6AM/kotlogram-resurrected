@@ -51,6 +51,6 @@ class TLRequestHelpGetRecentMeUrls() : TLMethod<TLRecentMeUrls>() {
         return referer == other.referer
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3dc0f114.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3dc0f114
     }
 }

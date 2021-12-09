@@ -2,6 +2,7 @@ package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.api.messages.TLAbsRecentStickers
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
@@ -16,18 +17,18 @@ class TLRequestMessagesGetRecentStickers() : TLMethod<TLAbsRecentStickers>() {
     @Transient
     var attached: Boolean = false
 
-    var hash: Int = 0
+    var hash: Long = 0L
 
-    private val _constructor: String = "messages.getRecentStickers#5ea192c9"
+    private val _constructor: String = "messages.getRecentStickers#9da9403b"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(attached: Boolean, hash: Int) : this() {
+    constructor(attached: Boolean, hash: Long) : this() {
         this.attached = attached
         this.hash = hash
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(attached, 1)
     }
@@ -37,14 +38,14 @@ class TLRequestMessagesGetRecentStickers() : TLMethod<TLAbsRecentStickers>() {
         computeFlags()
 
         writeInt(_flags)
-        writeInt(hash)
+        writeLong(hash)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         attached = isMask(1)
-        hash = readInt()
+        hash = readLong()
     }
 
     override fun computeSerializedSize(): Int {
@@ -52,7 +53,7 @@ class TLRequestMessagesGetRecentStickers() : TLMethod<TLAbsRecentStickers>() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += SIZE_INT32
+        size += SIZE_INT64
         return size
     }
 
@@ -67,6 +68,6 @@ class TLRequestMessagesGetRecentStickers() : TLMethod<TLAbsRecentStickers>() {
                 && hash == other.hash
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x5ea192c9.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x9da9403b.toInt()
     }
 }

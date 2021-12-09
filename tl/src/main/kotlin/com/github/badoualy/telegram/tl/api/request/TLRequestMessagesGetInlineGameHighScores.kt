@@ -1,6 +1,7 @@
 package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.api.TLAbsInputBotInlineMessageID
 import com.github.badoualy.telegram.tl.api.TLAbsInputUser
 import com.github.badoualy.telegram.tl.api.TLInputBotInlineMessageID
 import com.github.badoualy.telegram.tl.api.TLInputUserEmpty
@@ -15,7 +16,7 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLRequestMessagesGetInlineGameHighScores() : TLMethod<TLHighScores>() {
-    var id: TLInputBotInlineMessageID = TLInputBotInlineMessageID()
+    var id: TLAbsInputBotInlineMessageID = TLInputBotInlineMessageID()
 
     var userId: TLAbsInputUser = TLInputUserEmpty()
 
@@ -23,7 +24,7 @@ class TLRequestMessagesGetInlineGameHighScores() : TLMethod<TLHighScores>() {
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(id: TLInputBotInlineMessageID, userId: TLAbsInputUser) : this() {
+    constructor(id: TLAbsInputBotInlineMessageID, userId: TLAbsInputUser) : this() {
         this.id = id
         this.userId = userId
     }
@@ -39,7 +40,7 @@ class TLRequestMessagesGetInlineGameHighScores() : TLMethod<TLHighScores>() {
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        id = readTLObject<TLInputBotInlineMessageID>(TLInputBotInlineMessageID::class, TLInputBotInlineMessageID.CONSTRUCTOR_ID)
+        id = readTLObject<TLAbsInputBotInlineMessageID>()
         userId = readTLObject<TLAbsInputUser>()
     }
 
@@ -60,6 +61,6 @@ class TLRequestMessagesGetInlineGameHighScores() : TLMethod<TLHighScores>() {
                 && userId == other.userId
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xf635e1b.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xf635e1b
     }
 }

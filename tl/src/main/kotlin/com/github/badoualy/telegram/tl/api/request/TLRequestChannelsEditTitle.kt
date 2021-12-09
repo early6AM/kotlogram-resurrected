@@ -57,6 +57,6 @@ class TLRequestChannelsEditTitle() : TLMethod<TLAbsUpdates>() {
                 && title == other.title
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x566decd0.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x566decd0
     }
 }

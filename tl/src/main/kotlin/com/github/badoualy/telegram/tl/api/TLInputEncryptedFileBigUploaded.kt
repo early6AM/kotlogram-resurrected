@@ -67,6 +67,6 @@ class TLInputEncryptedFileBigUploaded() : TLAbsInputEncryptedFile() {
                 && keyFingerprint == other.keyFingerprint
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x2dc173c8.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x2dc173c8
     }
 }

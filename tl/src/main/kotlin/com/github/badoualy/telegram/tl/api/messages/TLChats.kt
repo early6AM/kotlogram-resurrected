@@ -49,6 +49,6 @@ class TLChats() : TLAbsChats() {
         return chats == other.chats
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x64ff9fd5.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x64ff9fd5
     }
 }

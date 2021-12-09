@@ -4,7 +4,7 @@ import com.github.badoualy.telegram.tl.core.TLObject
 
 /**
  * Abstraction level for the following constructors:
- * * [messages.stickers#8a8ecd32][TLStickers]
+ * * [messages.stickers#30a6ec7e][TLStickers]
  * * [messages.stickersNotModified#f1749a22][TLStickersNotModified]
  *
  * @author Yannick Badoual yann.badoual@gmail.com

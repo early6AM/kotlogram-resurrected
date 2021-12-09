@@ -55,6 +55,6 @@ class TLRequestAuthCancelCode() : TLMethod<TLBool>() {
                 && phoneCodeHash == other.phoneCodeHash
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x1f040578.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x1f040578
     }
 }

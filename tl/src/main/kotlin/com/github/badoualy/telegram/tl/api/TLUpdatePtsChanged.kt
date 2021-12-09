@@ -20,6 +20,6 @@ class TLUpdatePtsChanged : TLAbsUpdate() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3354678f.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3354678f
     }
 }

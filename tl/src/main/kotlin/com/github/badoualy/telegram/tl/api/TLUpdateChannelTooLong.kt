@@ -2,31 +2,32 @@ package com.github.badoualy.telegram.tl.api
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * updateChannelTooLong#eb0467fb
+ * updateChannelTooLong#108d941f
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLUpdateChannelTooLong() : TLAbsUpdate() {
-    var channelId: Int = 0
+    var channelId: Long = 0L
 
     var pts: Int? = null
 
-    private val _constructor: String = "updateChannelTooLong#eb0467fb"
+    private val _constructor: String = "updateChannelTooLong#108d941f"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(channelId: Int, pts: Int?) : this() {
+    constructor(channelId: Long, pts: Int?) : this() {
         this.channelId = channelId
         this.pts = pts
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(pts, 1)
     }
@@ -36,14 +37,14 @@ class TLUpdateChannelTooLong() : TLAbsUpdate() {
         computeFlags()
 
         writeInt(_flags)
-        writeInt(channelId)
+        writeLong(channelId)
         doIfMask(pts, 1) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        channelId = readInt()
+        channelId = readLong()
         pts = readIfMask(1) { readInt() }
     }
 
@@ -52,7 +53,7 @@ class TLUpdateChannelTooLong() : TLAbsUpdate() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += getIntIfMask(pts, 1) { SIZE_INT32 }
         return size
     }
@@ -68,6 +69,6 @@ class TLUpdateChannelTooLong() : TLAbsUpdate() {
                 && pts == other.pts
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xeb0467fb.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x108d941f
     }
 }

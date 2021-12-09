@@ -20,6 +20,6 @@ class TLUserProfilePhotoEmpty : TLAbsUserProfilePhoto() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x4f11bae1.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x4f11bae1
     }
 }

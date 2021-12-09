@@ -11,11 +11,11 @@ val TLAbsMessageAction.title: String?
         else -> null
     }
 
-val TLAbsMessageAction.userIdList: IntArray?
+val TLAbsMessageAction.userIdList: LongArray?
     get() = when (this) {
-        is TLMessageActionChatAddUser -> users!!.toIntArray()
-        is TLMessageActionChatCreate -> users!!.toIntArray()
-        is TLMessageActionChatDeleteUser -> intArrayOf(userId)
-        is TLMessageActionChatJoinedByLink -> intArrayOf(inviterId)
+        is TLMessageActionChatAddUser -> users.toLongArray()
+        is TLMessageActionChatCreate -> users.toLongArray()
+        is TLMessageActionChatDeleteUser -> longArrayOf(userId)
+        is TLMessageActionChatJoinedByLink -> longArrayOf(inviterId)
         else -> null
     }

@@ -69,6 +69,6 @@ class TLRequestMessagesGetDocumentByHash() : TLMethod<TLAbsDocument>() {
                 && mimeType == other.mimeType
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x338e2464.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x338e2464
     }
 }

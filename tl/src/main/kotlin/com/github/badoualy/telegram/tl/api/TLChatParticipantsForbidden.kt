@@ -2,31 +2,32 @@ package com.github.badoualy.telegram.tl.api
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * chatParticipantsForbidden#fc900c2b
+ * chatParticipantsForbidden#8763d3e1
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLChatParticipantsForbidden() : TLAbsChatParticipants() {
-    override var chatId: Int = 0
+    override var chatId: Long = 0L
 
     var selfParticipant: TLAbsChatParticipant? = null
 
-    private val _constructor: String = "chatParticipantsForbidden#fc900c2b"
+    private val _constructor: String = "chatParticipantsForbidden#8763d3e1"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(chatId: Int, selfParticipant: TLAbsChatParticipant?) : this() {
+    constructor(chatId: Long, selfParticipant: TLAbsChatParticipant?) : this() {
         this.chatId = chatId
         this.selfParticipant = selfParticipant
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(selfParticipant, 1)
     }
@@ -36,14 +37,14 @@ class TLChatParticipantsForbidden() : TLAbsChatParticipants() {
         computeFlags()
 
         writeInt(_flags)
-        writeInt(chatId)
+        writeLong(chatId)
         doIfMask(selfParticipant, 1) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        chatId = readInt()
+        chatId = readLong()
         selfParticipant = readIfMask(1) { readTLObject<TLAbsChatParticipant>() }
     }
 
@@ -52,7 +53,7 @@ class TLChatParticipantsForbidden() : TLAbsChatParticipants() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += getIntIfMask(selfParticipant, 1) { it.computeSerializedSize() }
         return size
     }
@@ -68,6 +69,6 @@ class TLChatParticipantsForbidden() : TLAbsChatParticipants() {
                 && selfParticipant == other.selfParticipant
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xfc900c2b.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x8763d3e1.toInt()
     }
 }

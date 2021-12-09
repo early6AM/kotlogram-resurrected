@@ -56,6 +56,6 @@ class TLRequestPhoneSaveCallDebug() : TLMethod<TLBool>() {
                 && debug == other.debug
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x277add7e.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x277add7e
     }
 }

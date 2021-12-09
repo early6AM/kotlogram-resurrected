@@ -26,6 +26,6 @@ class TLRequestAccountGetAccountTTL : TLMethod<TLAccountDaysTTL>() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x8fc711d.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x8fc711d
     }
 }

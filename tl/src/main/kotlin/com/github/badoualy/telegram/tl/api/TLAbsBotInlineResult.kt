@@ -5,7 +5,7 @@ import com.github.badoualy.telegram.tl.core.TLObject
 /**
  * Abstraction level for the following constructors:
  * * [botInlineMediaResult#17db940b][TLBotInlineMediaResult]
- * * [botInlineResult#9bebaeb9][TLBotInlineResult]
+ * * [botInlineResult#11965f3a][TLBotInlineResult]
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>

@@ -67,6 +67,6 @@ class TLMessageEntityPre() : TLAbsMessageEntity() {
                 && language == other.language
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x73924be0.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x73924be0
     }
 }

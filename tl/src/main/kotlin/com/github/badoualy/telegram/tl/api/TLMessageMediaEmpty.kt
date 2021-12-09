@@ -20,6 +20,6 @@ class TLMessageMediaEmpty : TLAbsMessageMedia() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3ded6320.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3ded6320
     }
 }

@@ -66,6 +66,6 @@ class TLRequestAccountChangePhone() : TLMethod<TLAbsUser>() {
                 && phoneCode == other.phoneCode
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x70c32edb.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x70c32edb
     }
 }

@@ -4,11 +4,11 @@ import com.github.badoualy.telegram.tl.core.TLObject
 
 /**
  * Abstraction level for the following constructors:
- * * [recentMeUrlChat#a01b22f9][TLRecentMeUrlChat]
+ * * [recentMeUrlChat#b2da71d2][TLRecentMeUrlChat]
  * * [recentMeUrlChatInvite#eb49081d][TLRecentMeUrlChatInvite]
  * * [recentMeUrlStickerSet#bc0a57dc][TLRecentMeUrlStickerSet]
  * * [recentMeUrlUnknown#46e1d13d][TLRecentMeUrlUnknown]
- * * [recentMeUrlUser#8dbc3336][TLRecentMeUrlUser]
+ * * [recentMeUrlUser#b92c09e2][TLRecentMeUrlUser]
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>

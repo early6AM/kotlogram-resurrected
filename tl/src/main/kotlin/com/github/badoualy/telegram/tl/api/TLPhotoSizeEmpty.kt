@@ -48,6 +48,6 @@ class TLPhotoSizeEmpty() : TLAbsPhotoSize() {
         return type == other.type
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xe17e23c.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xe17e23c
     }
 }

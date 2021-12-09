@@ -48,6 +48,6 @@ class TLRequestMessagesCheckChatInvite() : TLMethod<TLAbsChatInvite>() {
         return hash == other.hash
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3eadb1bb.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3eadb1bb
     }
 }

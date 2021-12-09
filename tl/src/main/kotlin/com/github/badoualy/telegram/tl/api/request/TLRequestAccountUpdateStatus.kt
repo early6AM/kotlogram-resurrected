@@ -48,6 +48,6 @@ class TLRequestAccountUpdateStatus() : TLMethod<TLBool>() {
         return offline == other.offline
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x6628562c.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x6628562c
     }
 }

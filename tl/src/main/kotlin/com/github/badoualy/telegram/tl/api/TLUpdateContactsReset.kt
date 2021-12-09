@@ -20,6 +20,6 @@ class TLUpdateContactsReset : TLAbsUpdate() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x7084a7be.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x7084a7be
     }
 }

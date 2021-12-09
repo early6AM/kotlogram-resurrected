@@ -55,6 +55,6 @@ class TLInputEncryptedFile() : TLAbsInputEncryptedFile() {
                 && accessHash == other.accessHash
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x5a17b5e5.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x5a17b5e5
     }
 }

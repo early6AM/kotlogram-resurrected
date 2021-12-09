@@ -16,7 +16,7 @@ class TLChannelDifferenceEmpty() : TLAbsChannelDifference() {
     @Transient
     override var _final: Boolean = false
 
-    override var pts: Int = 0
+    var pts: Int = 0
 
     override var timeout: Int? = null
 
@@ -34,7 +34,7 @@ class TLChannelDifferenceEmpty() : TLAbsChannelDifference() {
         this.timeout = timeout
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(_final, 1)
         updateFlags(timeout, 2)
@@ -79,6 +79,6 @@ class TLChannelDifferenceEmpty() : TLAbsChannelDifference() {
                 && timeout == other.timeout
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3e11affb.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3e11affb
     }
 }

@@ -49,6 +49,6 @@ class TLRequestHelpSaveAppLog() : TLMethod<TLBool>() {
         return events == other.events
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x6f02f748.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x6f02f748
     }
 }

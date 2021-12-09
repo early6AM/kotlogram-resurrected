@@ -7,7 +7,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * inputBotInlineMessageMediaGeo#c1b15d65
+ * inputBotInlineMessageMediaGeo#96929a85
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -15,26 +15,37 @@ import java.io.IOException
 class TLInputBotInlineMessageMediaGeo() : TLAbsInputBotInlineMessage() {
     var geoPoint: TLAbsInputGeoPoint = TLInputGeoPointEmpty()
 
-    var period: Int = 0
+    var heading: Int? = null
+
+    var period: Int? = null
+
+    var proximityNotificationRadius: Int? = null
 
     override var replyMarkup: TLAbsReplyMarkup? = null
 
-    private val _constructor: String = "inputBotInlineMessageMediaGeo#c1b15d65"
+    private val _constructor: String = "inputBotInlineMessageMediaGeo#96929a85"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             geoPoint: TLAbsInputGeoPoint,
-            period: Int,
+            heading: Int?,
+            period: Int?,
+            proximityNotificationRadius: Int?,
             replyMarkup: TLAbsReplyMarkup?
     ) : this() {
         this.geoPoint = geoPoint
+        this.heading = heading
         this.period = period
+        this.proximityNotificationRadius = proximityNotificationRadius
         this.replyMarkup = replyMarkup
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
+        updateFlags(heading, 1)
+        updateFlags(period, 2)
+        updateFlags(proximityNotificationRadius, 8)
         updateFlags(replyMarkup, 4)
     }
 
@@ -44,7 +55,9 @@ class TLInputBotInlineMessageMediaGeo() : TLAbsInputBotInlineMessage() {
 
         writeInt(_flags)
         writeTLObject(geoPoint)
-        writeInt(period)
+        doIfMask(heading, 1) { writeInt(it) }
+        doIfMask(period, 2) { writeInt(it) }
+        doIfMask(proximityNotificationRadius, 8) { writeInt(it) }
         doIfMask(replyMarkup, 4) { writeTLObject(it) }
     }
 
@@ -52,7 +65,9 @@ class TLInputBotInlineMessageMediaGeo() : TLAbsInputBotInlineMessage() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         geoPoint = readTLObject<TLAbsInputGeoPoint>()
-        period = readInt()
+        heading = readIfMask(1) { readInt() }
+        period = readIfMask(2) { readInt() }
+        proximityNotificationRadius = readIfMask(8) { readInt() }
         replyMarkup = readIfMask(4) { readTLObject<TLAbsReplyMarkup>() }
     }
 
@@ -62,7 +77,9 @@ class TLInputBotInlineMessageMediaGeo() : TLAbsInputBotInlineMessage() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += geoPoint.computeSerializedSize()
-        size += SIZE_INT32
+        size += getIntIfMask(heading, 1) { SIZE_INT32 }
+        size += getIntIfMask(period, 2) { SIZE_INT32 }
+        size += getIntIfMask(proximityNotificationRadius, 8) { SIZE_INT32 }
         size += getIntIfMask(replyMarkup, 4) { it.computeSerializedSize() }
         return size
     }
@@ -75,10 +92,12 @@ class TLInputBotInlineMessageMediaGeo() : TLAbsInputBotInlineMessage() {
 
         return _flags == other._flags
                 && geoPoint == other.geoPoint
+                && heading == other.heading
                 && period == other.period
+                && proximityNotificationRadius == other.proximityNotificationRadius
                 && replyMarkup == other.replyMarkup
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xc1b15d65.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x96929a85.toInt()
     }
 }

@@ -8,6 +8,8 @@ import com.github.badoualy.telegram.tl.core.TLObject
  * * [topPeerCategoryBotsPM#ab661b5b][TLTopPeerCategoryBotsPM]
  * * [topPeerCategoryChannels#161d9628][TLTopPeerCategoryChannels]
  * * [topPeerCategoryCorrespondents#637b7ed][TLTopPeerCategoryCorrespondents]
+ * * [topPeerCategoryForwardChats#fbeec0f0][TLTopPeerCategoryForwardChats]
+ * * [topPeerCategoryForwardUsers#a8406ca9][TLTopPeerCategoryForwardUsers]
  * * [topPeerCategoryGroups#bd17a14a][TLTopPeerCategoryGroups]
  * * [topPeerCategoryPhoneCalls#1e76a78c][TLTopPeerCategoryPhoneCalls]
  *

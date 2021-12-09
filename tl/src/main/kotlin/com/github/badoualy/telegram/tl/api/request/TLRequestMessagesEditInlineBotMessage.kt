@@ -3,6 +3,8 @@ package com.github.badoualy.telegram.tl.api.request
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
+import com.github.badoualy.telegram.tl.api.TLAbsInputBotInlineMessageID
+import com.github.badoualy.telegram.tl.api.TLAbsInputMedia
 import com.github.badoualy.telegram.tl.api.TLAbsMessageEntity
 import com.github.badoualy.telegram.tl.api.TLAbsReplyMarkup
 import com.github.badoualy.telegram.tl.api.TLInputBotInlineMessageID
@@ -21,36 +23,41 @@ class TLRequestMessagesEditInlineBotMessage() : TLMethod<TLBool>() {
     @Transient
     var noWebpage: Boolean = false
 
-    var id: TLInputBotInlineMessageID = TLInputBotInlineMessageID()
+    var id: TLAbsInputBotInlineMessageID = TLInputBotInlineMessageID()
 
     var message: String? = null
+
+    var media: TLAbsInputMedia? = null
 
     var replyMarkup: TLAbsReplyMarkup? = null
 
     var entities: TLObjectVector<TLAbsMessageEntity>? = TLObjectVector()
 
-    private val _constructor: String = "messages.editInlineBotMessage#130c2c85"
+    private val _constructor: String = "messages.editInlineBotMessage#83557dba"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             noWebpage: Boolean,
-            id: TLInputBotInlineMessageID,
+            id: TLAbsInputBotInlineMessageID,
             message: String?,
+            media: TLAbsInputMedia?,
             replyMarkup: TLAbsReplyMarkup?,
             entities: TLObjectVector<TLAbsMessageEntity>?
     ) : this() {
         this.noWebpage = noWebpage
         this.id = id
         this.message = message
+        this.media = media
         this.replyMarkup = replyMarkup
         this.entities = entities
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(noWebpage, 2)
         updateFlags(message, 2048)
+        updateFlags(media, 16384)
         updateFlags(replyMarkup, 4)
         updateFlags(entities, 8)
     }
@@ -62,6 +69,7 @@ class TLRequestMessagesEditInlineBotMessage() : TLMethod<TLBool>() {
         writeInt(_flags)
         writeTLObject(id)
         doIfMask(message, 2048) { writeString(it) }
+        doIfMask(media, 16384) { writeTLObject(it) }
         doIfMask(replyMarkup, 4) { writeTLObject(it) }
         doIfMask(entities, 8) { writeTLVector(it) }
     }
@@ -70,8 +78,9 @@ class TLRequestMessagesEditInlineBotMessage() : TLMethod<TLBool>() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         noWebpage = isMask(2)
-        id = readTLObject<TLInputBotInlineMessageID>(TLInputBotInlineMessageID::class, TLInputBotInlineMessageID.CONSTRUCTOR_ID)
+        id = readTLObject<TLAbsInputBotInlineMessageID>()
         message = readIfMask(2048) { readString() }
+        media = readIfMask(16384) { readTLObject<TLAbsInputMedia>() }
         replyMarkup = readIfMask(4) { readTLObject<TLAbsReplyMarkup>() }
         entities = readIfMask(8) { readTLVector<TLAbsMessageEntity>() }
     }
@@ -83,6 +92,7 @@ class TLRequestMessagesEditInlineBotMessage() : TLMethod<TLBool>() {
         size += SIZE_INT32
         size += id.computeSerializedSize()
         size += getIntIfMask(message, 2048) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(media, 16384) { it.computeSerializedSize() }
         size += getIntIfMask(replyMarkup, 4) { it.computeSerializedSize() }
         size += getIntIfMask(entities, 8) { it.computeSerializedSize() }
         return size
@@ -98,10 +108,11 @@ class TLRequestMessagesEditInlineBotMessage() : TLMethod<TLBool>() {
                 && noWebpage == other.noWebpage
                 && id == other.id
                 && message == other.message
+                && media == other.media
                 && replyMarkup == other.replyMarkup
                 && entities == other.entities
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x130c2c85.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x83557dba.toInt()
     }
 }

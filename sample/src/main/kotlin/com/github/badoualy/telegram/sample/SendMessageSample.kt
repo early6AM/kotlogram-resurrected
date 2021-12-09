@@ -23,7 +23,7 @@ object SendMessageSample {
 
         // You can start making requests
         try {
-            val tlAbsDialogs = client.messagesGetDialogs(false, 0, 0, TLInputPeerEmpty(), 1).blockingGet()
+            /*val tlAbsDialogs = client.messagesGetDialogs(false, 0, 0, TLInputPeerEmpty(), 1).blockingGet()
             val tlAbsPeer = tlAbsDialogs.dialogs[0].peer
             val tlPeerObj: TLObject =
                     if (tlAbsPeer is TLPeerUser) tlAbsDialogs.users.first { it.id == tlAbsPeer.id }
@@ -38,7 +38,7 @@ object SendMessageSample {
 
             val tlAbsUpdates = client.messagesSendMessage(inputPeer,
                                                           "Sent from Kotlogram :)",
-                                                          RandomUtils.randomLong()).blockingGet()
+                                                          RandomUtils.randomLong()).blockingGet()*/
             // tlAbsUpdates contains the id and date of the message in a TLUpdateShortSentMessage
         } catch (e: RpcErrorException) {
             e.printStackTrace()

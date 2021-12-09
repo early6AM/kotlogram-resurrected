@@ -15,15 +15,28 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLRequestChannelsExportMessageLink() : TLMethod<TLExportedMessageLink>() {
+    @Transient
+    var grouped: Boolean = false
+
+    @Transient
+    var thread: Boolean = false
+
     var channel: TLAbsInputChannel = TLInputChannelEmpty()
 
     var id: Int = 0
 
-    private val _constructor: String = "channels.exportMessageLink#c846d22d"
+    private val _constructor: String = "channels.exportMessageLink#e63fadeb"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(channel: TLAbsInputChannel, id: Int) : this() {
+    constructor(
+            grouped: Boolean,
+            thread: Boolean,
+            channel: TLAbsInputChannel,
+            id: Int
+    ) : this() {
+        this.grouped = grouped
+        this.thread = thread
         this.channel = channel
         this.id = id
     }
@@ -31,20 +44,35 @@ class TLRequestChannelsExportMessageLink() : TLMethod<TLExportedMessageLink>() {
     @Throws(IOException::class)
     override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLExportedMessageLink = tlDeserializer.readTLObject(TLExportedMessageLink::class, TLExportedMessageLink.CONSTRUCTOR_ID)
 
+    override fun computeFlags() {
+        _flags = 0
+        updateFlags(grouped, 1)
+        updateFlags(thread, 2)
+    }
+
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
+        computeFlags()
+
+        writeInt(_flags)
         writeTLObject(channel)
         writeInt(id)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
+        _flags = readInt()
+        grouped = isMask(1)
+        thread = isMask(2)
         channel = readTLObject<TLAbsInputChannel>()
         id = readInt()
     }
 
     override fun computeSerializedSize(): Int {
+        computeFlags()
+
         var size = SIZE_CONSTRUCTOR_ID
+        size += SIZE_INT32
         size += channel.computeSerializedSize()
         size += SIZE_INT32
         return size
@@ -56,10 +84,13 @@ class TLRequestChannelsExportMessageLink() : TLMethod<TLExportedMessageLink>() {
         if (other !is TLRequestChannelsExportMessageLink) return false
         if (other === this) return true
 
-        return channel == other.channel
+        return _flags == other._flags
+                && grouped == other.grouped
+                && thread == other.thread
+                && channel == other.channel
                 && id == other.id
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xc846d22d.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xe63fadeb.toInt()
     }
 }

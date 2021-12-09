@@ -48,6 +48,6 @@ class TLRequestMessagesReadFeaturedStickers() : TLMethod<TLBool>() {
         return id == other.id
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x5b118126.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x5b118126
     }
 }

@@ -7,7 +7,7 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * messageEmpty#83e5de54
+ * messageEmpty#90a6ca84
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -15,27 +15,45 @@ import java.io.IOException
 class TLMessageEmpty() : TLAbsMessage() {
     override var id: Int = 0
 
-    private val _constructor: String = "messageEmpty#83e5de54"
+    var peerId: TLAbsPeer? = null
+
+    private val _constructor: String = "messageEmpty#90a6ca84"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(id: Int) : this() {
+    constructor(id: Int, peerId: TLAbsPeer?) : this() {
         this.id = id
+        this.peerId = peerId
+    }
+
+    override fun computeFlags() {
+        _flags = 0
+        updateFlags(peerId, 1)
     }
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
+        computeFlags()
+
+        writeInt(_flags)
         writeInt(id)
+        doIfMask(peerId, 1) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
+        _flags = readInt()
         id = readInt()
+        peerId = readIfMask(1) { readTLObject<TLAbsPeer>() }
     }
 
     override fun computeSerializedSize(): Int {
+        computeFlags()
+
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
+        size += SIZE_INT32
+        size += getIntIfMask(peerId, 1) { it.computeSerializedSize() }
         return size
     }
 
@@ -45,9 +63,11 @@ class TLMessageEmpty() : TLAbsMessage() {
         if (other !is TLMessageEmpty) return false
         if (other === this) return true
 
-        return id == other.id
+        return _flags == other._flags
+                && id == other.id
+                && peerId == other.peerId
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x83e5de54.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x90a6ca84.toInt()
     }
 }

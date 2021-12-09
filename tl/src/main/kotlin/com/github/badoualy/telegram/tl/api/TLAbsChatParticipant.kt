@@ -4,13 +4,13 @@ import com.github.badoualy.telegram.tl.core.TLObject
 
 /**
  * Abstraction level for the following constructors:
- * * [chatParticipant#c8d7493e][TLChatParticipant]
- * * [chatParticipantAdmin#e2d6e436][TLChatParticipantAdmin]
- * * [chatParticipantCreator#da13538a][TLChatParticipantCreator]
+ * * [chatParticipant#c02d4007][TLChatParticipant]
+ * * [chatParticipantAdmin#a0933f5b][TLChatParticipantAdmin]
+ * * [chatParticipantCreator#e46bcee4][TLChatParticipantCreator]
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 abstract class TLAbsChatParticipant : TLObject() {
-    abstract var userId: Int
+    abstract var userId: Long
 }

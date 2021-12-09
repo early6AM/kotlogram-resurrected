@@ -47,6 +47,6 @@ class TLMessageMediaGeo() : TLAbsMessageMedia() {
         return geo == other.geo
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x56e0d474.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x56e0d474
     }
 }

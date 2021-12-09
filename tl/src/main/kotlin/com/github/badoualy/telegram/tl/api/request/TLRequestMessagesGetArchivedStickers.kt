@@ -38,7 +38,7 @@ class TLRequestMessagesGetArchivedStickers() : TLMethod<TLArchivedStickers>() {
     @Throws(IOException::class)
     override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLArchivedStickers = tlDeserializer.readTLObject(TLArchivedStickers::class, TLArchivedStickers.CONSTRUCTOR_ID)
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(masks, 1)
     }
@@ -82,6 +82,6 @@ class TLRequestMessagesGetArchivedStickers() : TLMethod<TLArchivedStickers>() {
                 && limit == other.limit
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x57f17692.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x57f17692
     }
 }

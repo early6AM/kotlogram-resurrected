@@ -20,6 +20,6 @@ class TLPrivacyKeyPhoneCall : TLAbsPrivacyKey() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3d662b7b.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3d662b7b
     }
 }

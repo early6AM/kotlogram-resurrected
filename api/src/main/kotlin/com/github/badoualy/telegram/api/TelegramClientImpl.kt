@@ -262,7 +262,7 @@ class TelegramClientImpl internal constructor(override val app: TelegramApp,
             (0 until size.splitInParts(DOWNLOAD_PART_SIZE))
                     .map { it * DOWNLOAD_PART_SIZE } // Map to offset
                     .map { offset ->
-                        TLRequestUploadGetFile(inputFileLocation.inputFileLocation,
+                        TLRequestUploadGetFile(false, false, inputFileLocation.inputFileLocation,
                                                offset, DOWNLOAD_PART_SIZE)
                     }
                     .withIndex()
@@ -331,7 +331,7 @@ class TelegramClientImpl internal constructor(override val app: TelegramApp,
                                     deviceModel,
                                     systemVersion, appVersion,
                                     systemLangCode, langPack, langCode,
-                                    method)
+                                    null, null, method)
         }
 
         val request = TLRequestInvokeWithLayer(Kotlogram.apiLayer, initConnectionRequest)

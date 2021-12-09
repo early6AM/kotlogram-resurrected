@@ -52,6 +52,6 @@ class TLRequestMessagesReceivedMessages() : TLMethod<TLObjectVector<TLReceivedNo
         return maxId == other.maxId
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x5a954c0.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x5a954c0
     }
 }

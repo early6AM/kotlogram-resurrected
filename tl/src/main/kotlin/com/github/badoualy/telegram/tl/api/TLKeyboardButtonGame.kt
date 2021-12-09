@@ -48,6 +48,6 @@ class TLKeyboardButtonGame() : TLAbsKeyboardButton() {
         return text == other.text
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x50f41ccf.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x50f41ccf
     }
 }

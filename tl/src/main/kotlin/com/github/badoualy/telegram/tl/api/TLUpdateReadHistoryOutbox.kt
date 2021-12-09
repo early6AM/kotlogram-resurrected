@@ -13,7 +13,7 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLUpdateReadHistoryOutbox() : TLAbsUpdate() {
-    var peer: TLAbsPeer = TLPeerUser()
+    var peer: TLAbsPeer = TLPeerChat()
 
     var maxId: Int = 0
 
@@ -74,6 +74,6 @@ class TLUpdateReadHistoryOutbox() : TLAbsUpdate() {
                 && ptsCount == other.ptsCount
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x2f2f21bf.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x2f2f21bf
     }
 }

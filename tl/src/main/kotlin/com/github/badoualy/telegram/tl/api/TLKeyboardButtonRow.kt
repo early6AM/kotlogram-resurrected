@@ -49,6 +49,6 @@ class TLKeyboardButtonRow() : TLObject() {
         return buttons == other.buttons
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x77608b83.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x77608b83
     }
 }

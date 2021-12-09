@@ -2,7 +2,7 @@ package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.api.messages.TLAbsChats
-import com.github.badoualy.telegram.tl.core.TLIntVector
+import com.github.badoualy.telegram.tl.core.TLLongVector
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
@@ -13,13 +13,13 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLRequestMessagesGetAllChats() : TLMethod<TLAbsChats>() {
-    var exceptIds: TLIntVector = TLIntVector()
+    var exceptIds: TLLongVector = TLLongVector()
 
-    private val _constructor: String = "messages.getAllChats#eba80ff0"
+    private val _constructor: String = "messages.getAllChats#875f74be"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(exceptIds: TLIntVector) : this() {
+    constructor(exceptIds: TLLongVector) : this() {
         this.exceptIds = exceptIds
     }
 
@@ -30,7 +30,7 @@ class TLRequestMessagesGetAllChats() : TLMethod<TLAbsChats>() {
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        exceptIds = readTLIntVector()
+        exceptIds = readTLLongVector()
     }
 
     override fun computeSerializedSize(): Int {
@@ -48,6 +48,6 @@ class TLRequestMessagesGetAllChats() : TLMethod<TLAbsChats>() {
         return exceptIds == other.exceptIds
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xeba80ff0.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x875f74be.toInt()
     }
 }

@@ -20,6 +20,6 @@ class TLMessageActionScreenshotTaken : TLAbsMessageAction() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x4792929b.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x4792929b
     }
 }

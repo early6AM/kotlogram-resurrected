@@ -4,11 +4,13 @@ import com.github.badoualy.telegram.tl.core.TLObject
 
 /**
  * Abstraction level for the following constructors:
- * * [inputPeerChannel#20adaef8][TLInputPeerChannel]
- * * [inputPeerChat#179be863][TLInputPeerChat]
+ * * [inputPeerChannel#27bcbbfc][TLInputPeerChannel]
+ * * [inputPeerChannelFromMessage#bd2a0840][TLInputPeerChannelFromMessage]
+ * * [inputPeerChat#35a95cb9][TLInputPeerChat]
  * * [inputPeerEmpty#7f3b18ea][TLInputPeerEmpty]
  * * [inputPeerSelf#7da07ec9][TLInputPeerSelf]
- * * [inputPeerUser#7b8e7de6][TLInputPeerUser]
+ * * [inputPeerUser#dde8a54c][TLInputPeerUser]
+ * * [inputPeerUserFromMessage#a87b0a1c][TLInputPeerUserFromMessage]
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>

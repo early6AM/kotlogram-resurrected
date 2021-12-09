@@ -5,6 +5,7 @@ import com.github.badoualy.telegram.tl.core.TLObject
 /**
  * Abstraction level for the following constructors:
  * * [contacts.topPeers#70b772a8][TLTopPeers]
+ * * [contacts.topPeersDisabled#b52c939d][TLTopPeersDisabled]
  * * [contacts.topPeersNotModified#de266ef5][TLTopPeersNotModified]
  *
  * @author Yannick Badoual yann.badoual@gmail.com

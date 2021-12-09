@@ -72,6 +72,6 @@ class TLRequestPhoneAcceptCall() : TLMethod<TLPhoneCall>() {
                 && protocol == other.protocol
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3bd2b4a0.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3bd2b4a0
     }
 }

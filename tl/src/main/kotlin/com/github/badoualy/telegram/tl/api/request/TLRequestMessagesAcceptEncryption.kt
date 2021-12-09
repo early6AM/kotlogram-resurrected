@@ -69,6 +69,6 @@ class TLRequestMessagesAcceptEncryption() : TLMethod<TLAbsEncryptedChat>() {
                 && keyFingerprint == other.keyFingerprint
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3dbc0415.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3dbc0415
     }
 }

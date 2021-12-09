@@ -66,6 +66,6 @@ class TLUpdateNewMessage() : TLAbsUpdate() {
                 && ptsCount == other.ptsCount
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x1f2b0afd.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x1f2b0afd
     }
 }

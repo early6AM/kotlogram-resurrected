@@ -8,24 +8,28 @@ import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
 
 /**
- * updatePinnedDialogs#d8caf68d
+ * updatePinnedDialogs#fa0f3ca2
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLUpdatePinnedDialogs() : TLAbsUpdate() {
-    var order: TLObjectVector<TLAbsPeer>? = TLObjectVector()
+    var folderId: Int? = null
 
-    private val _constructor: String = "updatePinnedDialogs#d8caf68d"
+    var order: TLObjectVector<TLAbsDialogPeer>? = TLObjectVector()
+
+    private val _constructor: String = "updatePinnedDialogs#fa0f3ca2"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(order: TLObjectVector<TLAbsPeer>?) : this() {
+    constructor(folderId: Int?, order: TLObjectVector<TLAbsDialogPeer>?) : this() {
+        this.folderId = folderId
         this.order = order
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
+        updateFlags(folderId, 2)
         updateFlags(order, 1)
     }
 
@@ -34,13 +38,15 @@ class TLUpdatePinnedDialogs() : TLAbsUpdate() {
         computeFlags()
 
         writeInt(_flags)
+        doIfMask(folderId, 2) { writeInt(it) }
         doIfMask(order, 1) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        order = readIfMask(1) { readTLVector<TLAbsPeer>() }
+        folderId = readIfMask(2) { readInt() }
+        order = readIfMask(1) { readTLVector<TLAbsDialogPeer>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -48,6 +54,7 @@ class TLUpdatePinnedDialogs() : TLAbsUpdate() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
+        size += getIntIfMask(folderId, 2) { SIZE_INT32 }
         size += getIntIfMask(order, 1) { it.computeSerializedSize() }
         return size
     }
@@ -59,9 +66,10 @@ class TLUpdatePinnedDialogs() : TLAbsUpdate() {
         if (other === this) return true
 
         return _flags == other._flags
+                && folderId == other.folderId
                 && order == other.order
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xd8caf68d.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xfa0f3ca2.toInt()
     }
 }

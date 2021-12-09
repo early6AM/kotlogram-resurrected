@@ -48,6 +48,6 @@ class TLRequestMessagesReportEncryptedSpam() : TLMethod<TLBool>() {
         return peer == other.peer
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x4b0c8c0f.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x4b0c8c0f
     }
 }

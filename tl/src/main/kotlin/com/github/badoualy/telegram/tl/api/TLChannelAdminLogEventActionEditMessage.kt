@@ -54,6 +54,6 @@ class TLChannelAdminLogEventActionEditMessage() : TLAbsChannelAdminLogEventActio
                 && newMessage == other.newMessage
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x709b2405.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x709b2405
     }
 }

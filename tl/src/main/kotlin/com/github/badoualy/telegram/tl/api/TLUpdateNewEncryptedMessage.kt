@@ -55,6 +55,6 @@ class TLUpdateNewEncryptedMessage() : TLAbsUpdate() {
                 && qts == other.qts
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x12bcbd9a.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x12bcbd9a
     }
 }

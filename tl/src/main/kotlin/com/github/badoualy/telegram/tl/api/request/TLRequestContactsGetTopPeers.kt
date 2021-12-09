@@ -2,6 +2,7 @@ package com.github.badoualy.telegram.tl.api.request
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.api.contacts.TLAbsTopPeers
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
@@ -26,6 +27,12 @@ class TLRequestContactsGetTopPeers() : TLMethod<TLAbsTopPeers>() {
     var phoneCalls: Boolean = false
 
     @Transient
+    var forwardUsers: Boolean = false
+
+    @Transient
+    var forwardChats: Boolean = false
+
+    @Transient
     var groups: Boolean = false
 
     @Transient
@@ -35,9 +42,9 @@ class TLRequestContactsGetTopPeers() : TLMethod<TLAbsTopPeers>() {
 
     var limit: Int = 0
 
-    var hash: Int = 0
+    var hash: Long = 0L
 
-    private val _constructor: String = "contacts.getTopPeers#d4982db5"
+    private val _constructor: String = "contacts.getTopPeers#973478b6"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -46,16 +53,20 @@ class TLRequestContactsGetTopPeers() : TLMethod<TLAbsTopPeers>() {
             botsPm: Boolean,
             botsInline: Boolean,
             phoneCalls: Boolean,
+            forwardUsers: Boolean,
+            forwardChats: Boolean,
             groups: Boolean,
             channels: Boolean,
             offset: Int,
             limit: Int,
-            hash: Int
+            hash: Long
     ) : this() {
         this.correspondents = correspondents
         this.botsPm = botsPm
         this.botsInline = botsInline
         this.phoneCalls = phoneCalls
+        this.forwardUsers = forwardUsers
+        this.forwardChats = forwardChats
         this.groups = groups
         this.channels = channels
         this.offset = offset
@@ -63,12 +74,14 @@ class TLRequestContactsGetTopPeers() : TLMethod<TLAbsTopPeers>() {
         this.hash = hash
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(correspondents, 1)
         updateFlags(botsPm, 2)
         updateFlags(botsInline, 4)
         updateFlags(phoneCalls, 8)
+        updateFlags(forwardUsers, 16)
+        updateFlags(forwardChats, 32)
         updateFlags(groups, 1024)
         updateFlags(channels, 32768)
     }
@@ -80,7 +93,7 @@ class TLRequestContactsGetTopPeers() : TLMethod<TLAbsTopPeers>() {
         writeInt(_flags)
         writeInt(offset)
         writeInt(limit)
-        writeInt(hash)
+        writeLong(hash)
     }
 
     @Throws(IOException::class)
@@ -90,11 +103,13 @@ class TLRequestContactsGetTopPeers() : TLMethod<TLAbsTopPeers>() {
         botsPm = isMask(2)
         botsInline = isMask(4)
         phoneCalls = isMask(8)
+        forwardUsers = isMask(16)
+        forwardChats = isMask(32)
         groups = isMask(1024)
         channels = isMask(32768)
         offset = readInt()
         limit = readInt()
-        hash = readInt()
+        hash = readLong()
     }
 
     override fun computeSerializedSize(): Int {
@@ -104,7 +119,7 @@ class TLRequestContactsGetTopPeers() : TLMethod<TLAbsTopPeers>() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
-        size += SIZE_INT32
+        size += SIZE_INT64
         return size
     }
 
@@ -119,6 +134,8 @@ class TLRequestContactsGetTopPeers() : TLMethod<TLAbsTopPeers>() {
                 && botsPm == other.botsPm
                 && botsInline == other.botsInline
                 && phoneCalls == other.phoneCalls
+                && forwardUsers == other.forwardUsers
+                && forwardChats == other.forwardChats
                 && groups == other.groups
                 && channels == other.channels
                 && offset == other.offset
@@ -126,6 +143,6 @@ class TLRequestContactsGetTopPeers() : TLMethod<TLAbsTopPeers>() {
                 && hash == other.hash
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xd4982db5.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x973478b6.toInt()
     }
 }

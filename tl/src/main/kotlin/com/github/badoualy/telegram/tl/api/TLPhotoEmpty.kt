@@ -48,6 +48,6 @@ class TLPhotoEmpty() : TLAbsPhoto() {
         return id == other.id
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x2331b22d.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x2331b22d
     }
 }

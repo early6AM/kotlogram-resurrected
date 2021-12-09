@@ -9,29 +9,29 @@ val TLAbsMessage?.date: Int
         else -> 0
     }
 
-val TLAbsMessage?.fromId: Int?
+val TLAbsMessage?.fromId: Long?
     get() = when (this) {
-        is TLMessage -> fromId
-        is TLMessageService -> fromId
+        is TLMessage -> fromId?.id
+        is TLMessageService -> fromId?.id
         else -> null
     }
 
 fun TLAbsMessage?.getMessageOrEmpty() = when (this) {
-    is TLMessage -> message!!
+    is TLMessage -> message
     else -> ""
 }
 
 val TLAbsMessage?.toId: TLAbsPeer?
     get() = when (this) {
-        is TLMessage -> toId
-        is TLMessageService -> toId
+        is TLMessage -> peerId
+        is TLMessageService -> peerId
         else -> null
     }
 
 val TLAbsMessage.isReply: Boolean
     get() = this is TLMessage && replyToMsgId != null
-val TLAbsMessage.replyToMsgId: Int?
-    get() = if (this is TLMessage) replyToMsgId else null
+val TLAbsMessage.replyToMsgId: TLMessageReplyHeader?
+    get() = if (this is TLMessage) replyTo else null
 
 val TLMessage.isForward: Boolean
     get() = fwdFrom != null

@@ -59,6 +59,6 @@ class TLPhoto() : TLObject() {
                 && users == other.users
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x20212ca8.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x20212ca8
     }
 }

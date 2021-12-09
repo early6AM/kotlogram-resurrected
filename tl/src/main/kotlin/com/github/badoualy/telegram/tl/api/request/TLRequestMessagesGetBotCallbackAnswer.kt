@@ -3,6 +3,7 @@ package com.github.badoualy.telegram.tl.api.request
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.api.TLAbsInputCheckPasswordSRP
 import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
 import com.github.badoualy.telegram.tl.api.TLInputPeerEmpty
 import com.github.badoualy.telegram.tl.api.messages.TLBotCallbackAnswer
@@ -26,7 +27,9 @@ class TLRequestMessagesGetBotCallbackAnswer() : TLMethod<TLBotCallbackAnswer>() 
 
     var data: TLBytes? = null
 
-    private val _constructor: String = "messages.getBotCallbackAnswer#810a9fec"
+    var password: TLAbsInputCheckPasswordSRP? = null
+
+    private val _constructor: String = "messages.getBotCallbackAnswer#9342ca07"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -34,21 +37,24 @@ class TLRequestMessagesGetBotCallbackAnswer() : TLMethod<TLBotCallbackAnswer>() 
             game: Boolean,
             peer: TLAbsInputPeer,
             msgId: Int,
-            data: TLBytes?
+            data: TLBytes?,
+            password: TLAbsInputCheckPasswordSRP?
     ) : this() {
         this.game = game
         this.peer = peer
         this.msgId = msgId
         this.data = data
+        this.password = password
     }
 
     @Throws(IOException::class)
     override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLBotCallbackAnswer = tlDeserializer.readTLObject(TLBotCallbackAnswer::class, TLBotCallbackAnswer.CONSTRUCTOR_ID)
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(game, 2)
         updateFlags(data, 1)
+        updateFlags(password, 4)
     }
 
     @Throws(IOException::class)
@@ -59,6 +65,7 @@ class TLRequestMessagesGetBotCallbackAnswer() : TLMethod<TLBotCallbackAnswer>() 
         writeTLObject(peer)
         writeInt(msgId)
         doIfMask(data, 1) { writeTLBytes(it) }
+        doIfMask(password, 4) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
@@ -68,6 +75,7 @@ class TLRequestMessagesGetBotCallbackAnswer() : TLMethod<TLBotCallbackAnswer>() 
         peer = readTLObject<TLAbsInputPeer>()
         msgId = readInt()
         data = readIfMask(1) { readTLBytes() }
+        password = readIfMask(4) { readTLObject<TLAbsInputCheckPasswordSRP>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -78,6 +86,7 @@ class TLRequestMessagesGetBotCallbackAnswer() : TLMethod<TLBotCallbackAnswer>() 
         size += peer.computeSerializedSize()
         size += SIZE_INT32
         size += getIntIfMask(data, 1) { computeTLBytesSerializedSize(it) }
+        size += getIntIfMask(password, 4) { it.computeSerializedSize() }
         return size
     }
 
@@ -92,8 +101,9 @@ class TLRequestMessagesGetBotCallbackAnswer() : TLMethod<TLBotCallbackAnswer>() 
                 && peer == other.peer
                 && msgId == other.msgId
                 && data == other.data
+                && password == other.password
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x810a9fec.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x9342ca07.toInt()
     }
 }

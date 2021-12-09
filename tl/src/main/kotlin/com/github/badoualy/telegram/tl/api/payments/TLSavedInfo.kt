@@ -29,7 +29,7 @@ class TLSavedInfo() : TLObject() {
         this.savedInfo = savedInfo
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(hasSavedCredentials, 2)
         updateFlags(savedInfo, 1)

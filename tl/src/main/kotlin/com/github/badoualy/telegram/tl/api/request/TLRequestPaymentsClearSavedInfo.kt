@@ -28,7 +28,7 @@ class TLRequestPaymentsClearSavedInfo() : TLMethod<TLBool>() {
         this.info = info
     }
 
-    protected override fun computeFlags() {
+    override fun computeFlags() {
         _flags = 0
         updateFlags(credentials, 1)
         updateFlags(info, 2)
