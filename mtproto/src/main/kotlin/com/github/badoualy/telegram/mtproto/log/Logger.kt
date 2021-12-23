@@ -3,7 +3,7 @@ package com.github.badoualy.telegram.mtproto.log
 import org.slf4j.LoggerFactory
 import kotlin.reflect.KClass
 
-class Logger private constructor(val name: String) {
+class Logger private constructor(name: String) {
 
     private val delegate = LoggerFactory.getLogger(name)!!
 
@@ -59,7 +59,6 @@ class Logger private constructor(val name: String) {
     }
 
     companion object Factory {
-        fun create(name: String) = ConsoleLogger(name)
-        fun create(clazz: KClass<*>) = ConsoleLogger(clazz.java.simpleName)
+        fun create(clazz: KClass<*>) = Logger(clazz.java.name)
     }
 }
