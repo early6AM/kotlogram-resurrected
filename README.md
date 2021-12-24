@@ -1,8 +1,14 @@
-![Kotlogram](http://s28.postimg.org/u3sc3e24t/logo.png)<br/>
-[![Release](https://jitpack.io/v/badoualy/kotlogram.svg)](https://jitpack.io/#badoualy/kotlogram) [![Build Status](https://travis-ci.org/badoualy/kotlogram.svg?branch=master)](https://travis-ci.org/badoualy/kotlogram)
+![Kotlogram](/ART/logo.png)<br/>
 
 Current layer: ~~66~~&nbsp;&nbsp;~~72~~&nbsp;&nbsp;133
 ===========
+```groovy
+implementation 'com.github.Miha-x64:kotlogram-resurrected:ac9acf18'
+```
+
+__________________
+Original README follows
+
 Documentation@[http://kotlogram.badoualy.com](http://kotlogram.badoualy.com)
 ===========
 
