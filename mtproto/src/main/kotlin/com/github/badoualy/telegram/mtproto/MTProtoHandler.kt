@@ -98,7 +98,8 @@ class MTProtoHandler {
                 .observeOn(Schedulers.computation())
                 .flatMap { flatMapMessage(it) }
                 .map { deserializePayload(it) }
-                .subscribe(messageSubject)
+                .subscribeBy(messageSubject::onError, messageSubject::onComplete, messageSubject::onNext)
+                .let(compositeDisposable::add)
 
         messageSubject
                 .observeOn(Schedulers.computation())
