@@ -46,9 +46,8 @@ internal object MTProtoWatchdog : Runnable {
         lastBusyTime = System.currentTimeMillis()
         while (running) {
             // Register new connections
-            if (registerQueue.isNotEmpty()) {
-                // This thread is the only one removing items, no need to sync above call
-                synchronized(this) {
+            synchronized(this) {
+                if (registerQueue.isNotEmpty()) {
                     registerQueue.forEach { it.register(selector, SelectionKey.OP_READ) }
                     registerQueue.clear()
                 }
@@ -109,10 +108,16 @@ internal object MTProtoWatchdog : Runnable {
             .doOnError {
                 logger.error(connection.tag, "onError: cancel selectionKey")
                 cancelByTag(connection)
+                synchronized(this) {
+                    registerQueue.remove(connection)
+                }
             }
             .doOnDispose {
                 logger.debug(connection.tag, "onDispose: cancel selectionKey")
                 cancelByTag(connection)
+                synchronized(this) {
+                    registerQueue.remove(connection)
+                }
             }
             .observeOn(Schedulers.computation())!! // Ensure pool private usage
 
