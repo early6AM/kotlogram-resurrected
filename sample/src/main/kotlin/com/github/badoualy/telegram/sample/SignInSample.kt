@@ -4,6 +4,7 @@ import com.github.badoualy.telegram.api.Kotlogram
 import com.github.badoualy.telegram.sample.config.Config
 import com.github.badoualy.telegram.sample.config.FileApiStorage
 import com.github.badoualy.telegram.tl.api.auth.TLAuthorization
+import com.github.badoualy.telegram.tl.api.auth.TLSentCode
 import com.github.badoualy.telegram.tl.exception.RpcErrorException
 import java.io.IOException
 import java.util.Scanner
@@ -18,28 +19,28 @@ object SignInSample {
         // You can start making requests
         try {
             // Send code to account
-            val sentCode = client.authSendCode(false, Config.phoneNumber, true).blockingGet()
+            val sentCode = client.authSendCode(false, Config.phoneNumber, true).blockingGet() as TLSentCode
             println("Authentication code: ")
             val code = Scanner(System.`in`).nextLine()
 
             // Auth with the received code
             val authorization: TLAuthorization =
+                try {
                     try {
-                        try {
-                            client.authSignIn(Config.phoneNumber, sentCode.phoneCodeHash, code)
-                                .blockingGet()
-                        } catch (e: RuntimeException) {
-                            val cause = e.cause
-                            if (cause is RpcErrorException) {
-                                throw cause
-                            }
-                            throw e
+                        client.authSignIn(Config.phoneNumber, sentCode.phoneCodeHash, code, null)
+                            .blockingGet()
+                    } catch (e: RuntimeException) {
+                        val cause = e.cause
+                        if (cause is RpcErrorException) {
+                            throw cause
                         }
-                    } catch (e: RpcErrorException) {
-                        if (e.type.equals("SESSION_PASSWORD_NEEDED", true)) {
-                            // We receive this error is two-step auth is enabled
-                            println("Two-step auth password: ")
-                            val password = Scanner(System.`in`).nextLine()
+                        throw e
+                    }
+                } catch (e: RpcErrorException) {
+                    if (e.type.equals("SESSION_PASSWORD_NEEDED", true)) {
+                        // We receive this error is two-step auth is enabled
+                        println("Two-step auth password: ")
+                        val password = Scanner(System.`in`).nextLine()
 //                            client.authCheckPassword(password).blockingGet()
                             TODO()
                         } else if (e.type.equals("PHONE_NUMBER_UNOCCUPIED", true)) {
