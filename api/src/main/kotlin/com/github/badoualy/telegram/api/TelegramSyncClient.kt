@@ -4,6 +4,7 @@ import com.github.badoualy.telegram.api.utils.InputFileLocation
 import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
 import com.github.badoualy.telegram.tl.api.TLCodeSettings
 import com.github.badoualy.telegram.tl.api.TelegramSyncApiWrapper
+import com.github.badoualy.telegram.tl.core.TLBytesVector
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.exception.RpcErrorException
@@ -24,15 +25,37 @@ abstract class TelegramSyncClient : TelegramSyncApiWrapper() {
 
     /** Convenience method wrapping the argument with [TelegramApp] values */
     fun authSendCode(allowFlashcall: Boolean, phoneNumber: String, currentNumber: Boolean?) =
-            with(app) {
-                @Suppress("DEPRECATION")
-                authSendCode(allowFlashcall, phoneNumber, currentNumber, apiId, apiHash)
-            }
+        with(app) {
+            @Suppress("DEPRECATION")
+            authSendCode(allowFlashcall, phoneNumber, currentNumber, apiId, apiHash)
+        }
 
-    @Deprecated("Use one of the overload for more convenience",
-                ReplaceWith("authSendCode(phoneNumber)"))
-    fun authSendCode(allowFlashcall: Boolean, phoneNumber: String, currentNumber: Boolean?, apiId: Int, apiHash: String) =
-            super.authSendCode(phoneNumber, apiId, apiHash, TLCodeSettings(allowFlashcall, currentNumber ?: true, true))
+    @Deprecated(
+        "Use one of the overload for more convenience",
+        ReplaceWith("authSendCode(phoneNumber)")
+    )
+    fun authSendCode(
+        allowFlashcall: Boolean,
+        phoneNumber: String,
+        currentNumber: Boolean?,
+        apiId: Int,
+        apiHash: String
+    ) =
+        super.authSendCode(
+            phoneNumber,
+            apiId,
+            apiHash,
+            TLCodeSettings(
+                allowFlashcall = allowFlashcall,
+                currentNumber = currentNumber ?: true,
+                allowAppHash = true,
+                allowMissedCall = true,
+                allowFirebase = true,
+                logoutTokens = null,
+                token = null,
+                appSandbox = null
+            )
+        )
 
     /** Convenience method wrapping the argument with salt */
     /*fun authCheckPassword(password: String): TLAuthorization {
@@ -51,28 +74,37 @@ abstract class TelegramSyncClient : TelegramSyncApiWrapper() {
     /** Convenience method wrapping the argument with TelegramApp values and casting result with good type */
     fun <T : TLObject> initConnection(query: TLMethod<T>) = with(app) {
         @Suppress("DEPRECATION")
-        initConnection(apiId, deviceModel,
-                       systemVersion, appVersion,
-                       systemLangCode, langPack, langCode,
-                       query)
+        initConnection(
+            apiId, deviceModel,
+            systemVersion, appVersion,
+            systemLangCode, langPack, langCode,
+            query
+        )
     }
 
     @Deprecated("Use initConnection for more convenience", ReplaceWith("initConnection(query)"))
-    fun <T : TLObject> initConnection(apiId: Int,
-                                               deviceModel: String,
-                                               systemVersion: String, appVersion: String,
-                                               systemLangCode: String,
-                                               langPack: String,
-                                               langCode: String,
-                                               query: TLMethod<T>?) =
-            super.initConnection(apiId, deviceModel, systemVersion, appVersion,
-                                 systemLangCode, langPack, langCode, null, null, query)
+    fun <T : TLObject> initConnection(
+        apiId: Int,
+        deviceModel: String,
+        systemVersion: String, appVersion: String,
+        systemLangCode: String,
+        langPack: String,
+        langCode: String,
+        query: TLMethod<T>?
+    ) =
+        super.initConnection(
+            apiId, deviceModel, systemVersion, appVersion,
+            systemLangCode, langPack, langCode, null, null, query
+        )
 
     /** Convenience method wrapping the argument for a plain text message */
     fun messagesSendMessage(peer: TLAbsInputPeer, message: String, randomId: Long) =
-            super.messagesSendMessage(true, false, false, false,
-                                peer, null, message, randomId,
-                                null, null, null)
+        super.messagesSendMessage(
+            true, false, false, false,
+            false, false, false,
+            peer, null, message, randomId,
+            null, null, null, null
+        )
 }
 
 /**
@@ -94,26 +126,26 @@ internal class TelegramSyncClientImpl(val client: TelegramClient) : TelegramSync
     override fun downloadFile(inputFileLocation: InputFileLocation, size: Int, outputStream: OutputStream) {
         try {
             client.downloadFile(inputFileLocation, size)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(Schedulers.io())
-                    .blockingIterable()
-                    .forEach {
-                        outputStream.write(it.bytes.data)
-                    }
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .blockingIterable()
+                .forEach {
+                    outputStream.write(it.bytes.data)
+                }
 
             outputStream.flush()
             outputStream.close()
         } catch (e: RuntimeException) {
-            throw   e.unwrapRpcError()
+            throw e.unwrapRpcError()
         }
     }
 
     companion object {
         @Throws(Throwable::class)
         fun Throwable.unwrapRpcError() =
-                when (cause) {
-                    is RpcErrorException -> cause as RpcErrorException
-                    else -> this
-                }
+            when (cause) {
+                is RpcErrorException -> cause as RpcErrorException
+                else -> this
+            }
     }
 }

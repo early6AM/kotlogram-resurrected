@@ -1,14 +1,25 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
- * peerSettings#733f2961
+ * peerSettings#a518110d
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -38,9 +49,16 @@ class TLPeerSettings() : TLObject() {
     @Transient
     var inviteMembers: Boolean = false
 
+    @Transient
+    var requestChatBroadcast: Boolean = false
+
     var geoDistance: Int? = null
 
-    private val _constructor: String = "peerSettings#733f2961"
+    var requestChatTitle: String? = null
+
+    var requestChatDate: Int? = null
+
+    private val _constructor: String = "peerSettings#a518110d"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -53,7 +71,10 @@ class TLPeerSettings() : TLObject() {
             reportGeo: Boolean,
             autoarchived: Boolean,
             inviteMembers: Boolean,
-            geoDistance: Int?
+            requestChatBroadcast: Boolean,
+            geoDistance: Int?,
+            requestChatTitle: String?,
+            requestChatDate: Int?
     ) : this() {
         this.reportSpam = reportSpam
         this.addContact = addContact
@@ -63,10 +84,13 @@ class TLPeerSettings() : TLObject() {
         this.reportGeo = reportGeo
         this.autoarchived = autoarchived
         this.inviteMembers = inviteMembers
+        this.requestChatBroadcast = requestChatBroadcast
         this.geoDistance = geoDistance
+        this.requestChatTitle = requestChatTitle
+        this.requestChatDate = requestChatDate
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(reportSpam, 1)
         updateFlags(addContact, 2)
@@ -76,7 +100,10 @@ class TLPeerSettings() : TLObject() {
         updateFlags(reportGeo, 32)
         updateFlags(autoarchived, 128)
         updateFlags(inviteMembers, 256)
+        updateFlags(requestChatBroadcast, 1024)
         updateFlags(geoDistance, 64)
+        updateFlags(requestChatTitle, 512)
+        updateFlags(requestChatDate, 512)
     }
 
     @Throws(IOException::class)
@@ -85,6 +112,8 @@ class TLPeerSettings() : TLObject() {
 
         writeInt(_flags)
         doIfMask(geoDistance, 64) { writeInt(it) }
+        doIfMask(requestChatTitle, 512) { writeString(it) }
+        doIfMask(requestChatDate, 512) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -98,7 +127,10 @@ class TLPeerSettings() : TLObject() {
         reportGeo = isMask(32)
         autoarchived = isMask(128)
         inviteMembers = isMask(256)
+        requestChatBroadcast = isMask(1024)
         geoDistance = readIfMask(64) { readInt() }
+        requestChatTitle = readIfMask(512) { readString() }
+        requestChatDate = readIfMask(512) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -107,6 +139,8 @@ class TLPeerSettings() : TLObject() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += getIntIfMask(geoDistance, 64) { SIZE_INT32 }
+        size += getIntIfMask(requestChatTitle, 512) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(requestChatDate, 512) { SIZE_INT32 }
         return size
     }
 
@@ -125,9 +159,12 @@ class TLPeerSettings() : TLObject() {
                 && reportGeo == other.reportGeo
                 && autoarchived == other.autoarchived
                 && inviteMembers == other.inviteMembers
+                && requestChatBroadcast == other.requestChatBroadcast
                 && geoDistance == other.geoDistance
+                && requestChatTitle == other.requestChatTitle
+                && requestChatDate == other.requestChatDate
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x733f2961
+        const val CONSTRUCTOR_ID: Int = 0xa518110d.toInt()
     }
 }

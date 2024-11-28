@@ -1,10 +1,21 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * messageMediaPhoto#695150d7
@@ -13,6 +24,9 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLMessageMediaPhoto() : TLAbsMessageMedia() {
+    @Transient
+    var spoiler: Boolean = false
+
     var photo: TLAbsPhoto? = null
 
     var ttlSeconds: Int? = null
@@ -21,13 +35,19 @@ class TLMessageMediaPhoto() : TLAbsMessageMedia() {
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(photo: TLAbsPhoto?, ttlSeconds: Int?) : this() {
+    constructor(
+            spoiler: Boolean,
+            photo: TLAbsPhoto?,
+            ttlSeconds: Int?
+    ) : this() {
+        this.spoiler = spoiler
         this.photo = photo
         this.ttlSeconds = ttlSeconds
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
+        updateFlags(spoiler, 8)
         updateFlags(photo, 1)
         updateFlags(ttlSeconds, 4)
     }
@@ -44,6 +64,7 @@ class TLMessageMediaPhoto() : TLAbsMessageMedia() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
+        spoiler = isMask(8)
         photo = readIfMask(1) { readTLObject<TLAbsPhoto>() }
         ttlSeconds = readIfMask(4) { readInt() }
     }
@@ -65,10 +86,11 @@ class TLMessageMediaPhoto() : TLAbsMessageMedia() {
         if (other === this) return true
 
         return _flags == other._flags
+                && spoiler == other.spoiler
                 && photo == other.photo
                 && ttlSeconds == other.ttlSeconds
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x695150d7
+        const val CONSTRUCTOR_ID: Int = 0x695150d7.toInt()
     }
 }

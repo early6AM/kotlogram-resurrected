@@ -1,13 +1,24 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.messages.TLArchivedStickers
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
@@ -16,6 +27,9 @@ import java.io.IOException
 class TLRequestMessagesGetArchivedStickers() : TLMethod<TLArchivedStickers>() {
     @Transient
     var masks: Boolean = false
+
+    @Transient
+    var emojis: Boolean = false
 
     var offsetId: Long = 0L
 
@@ -27,10 +41,12 @@ class TLRequestMessagesGetArchivedStickers() : TLMethod<TLArchivedStickers>() {
 
     constructor(
             masks: Boolean,
+            emojis: Boolean,
             offsetId: Long,
             limit: Int
     ) : this() {
         this.masks = masks
+        this.emojis = emojis
         this.offsetId = offsetId
         this.limit = limit
     }
@@ -38,9 +54,10 @@ class TLRequestMessagesGetArchivedStickers() : TLMethod<TLArchivedStickers>() {
     @Throws(IOException::class)
     override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLArchivedStickers = tlDeserializer.readTLObject(TLArchivedStickers::class, TLArchivedStickers.CONSTRUCTOR_ID)
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(masks, 1)
+        updateFlags(emojis, 2)
     }
 
     @Throws(IOException::class)
@@ -56,6 +73,7 @@ class TLRequestMessagesGetArchivedStickers() : TLMethod<TLArchivedStickers>() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         masks = isMask(1)
+        emojis = isMask(2)
         offsetId = readLong()
         limit = readInt()
     }
@@ -78,10 +96,11 @@ class TLRequestMessagesGetArchivedStickers() : TLMethod<TLArchivedStickers>() {
 
         return _flags == other._flags
                 && masks == other.masks
+                && emojis == other.emojis
                 && offsetId == other.offsetId
                 && limit == other.limit
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x57f17692
+        const val CONSTRUCTOR_ID: Int = 0x57f17692.toInt()
     }
 }

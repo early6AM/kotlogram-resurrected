@@ -1,13 +1,24 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputNotifyPeer
 import com.github.badoualy.telegram.tl.api.TLAbsUpdates
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
@@ -17,20 +28,29 @@ class TLRequestAccountGetNotifyExceptions() : TLMethod<TLAbsUpdates>() {
     @Transient
     var compareSound: Boolean = false
 
+    @Transient
+    var compareStories: Boolean = false
+
     var peer: TLAbsInputNotifyPeer? = null
 
     private val _constructor: String = "account.getNotifyExceptions#53577479"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(compareSound: Boolean, peer: TLAbsInputNotifyPeer?) : this() {
+    constructor(
+            compareSound: Boolean,
+            compareStories: Boolean,
+            peer: TLAbsInputNotifyPeer?
+    ) : this() {
         this.compareSound = compareSound
+        this.compareStories = compareStories
         this.peer = peer
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(compareSound, 2)
+        updateFlags(compareStories, 4)
         updateFlags(peer, 1)
     }
 
@@ -46,6 +66,7 @@ class TLRequestAccountGetNotifyExceptions() : TLMethod<TLAbsUpdates>() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         compareSound = isMask(2)
+        compareStories = isMask(4)
         peer = readIfMask(1) { readTLObject<TLAbsInputNotifyPeer>() }
     }
 
@@ -66,9 +87,10 @@ class TLRequestAccountGetNotifyExceptions() : TLMethod<TLAbsUpdates>() {
 
         return _flags == other._flags
                 && compareSound == other.compareSound
+                && compareStories == other.compareStories
                 && peer == other.peer
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x53577479
+        const val CONSTRUCTOR_ID: Int = 0x53577479.toInt()
     }
 }

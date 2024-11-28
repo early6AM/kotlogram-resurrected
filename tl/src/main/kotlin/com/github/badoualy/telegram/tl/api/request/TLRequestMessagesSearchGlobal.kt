@@ -1,7 +1,11 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
 import com.github.badoualy.telegram.tl.api.TLAbsMessagesFilter
@@ -12,12 +16,21 @@ import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLRequestMessagesSearchGlobal() : TLMethod<TLAbsMessages>() {
+    @Transient
+    var broadcastsOnly: Boolean = false
+
     var folderId: Int? = null
 
     var q: String = ""
@@ -41,6 +54,7 @@ class TLRequestMessagesSearchGlobal() : TLMethod<TLAbsMessages>() {
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
+            broadcastsOnly: Boolean,
             folderId: Int?,
             q: String,
             filter: TLAbsMessagesFilter,
@@ -51,6 +65,7 @@ class TLRequestMessagesSearchGlobal() : TLMethod<TLAbsMessages>() {
             offsetId: Int,
             limit: Int
     ) : this() {
+        this.broadcastsOnly = broadcastsOnly
         this.folderId = folderId
         this.q = q
         this.filter = filter
@@ -62,8 +77,9 @@ class TLRequestMessagesSearchGlobal() : TLMethod<TLAbsMessages>() {
         this.limit = limit
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
+        updateFlags(broadcastsOnly, 2)
         updateFlags(folderId, 1)
     }
 
@@ -86,6 +102,7 @@ class TLRequestMessagesSearchGlobal() : TLMethod<TLAbsMessages>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
+        broadcastsOnly = isMask(2)
         folderId = readIfMask(1) { readInt() }
         q = readString()
         filter = readTLObject<TLAbsMessagesFilter>()
@@ -121,6 +138,7 @@ class TLRequestMessagesSearchGlobal() : TLMethod<TLAbsMessages>() {
         if (other === this) return true
 
         return _flags == other._flags
+                && broadcastsOnly == other.broadcastsOnly
                 && folderId == other.folderId
                 && q == other.q
                 && filter == other.filter
@@ -132,6 +150,6 @@ class TLRequestMessagesSearchGlobal() : TLMethod<TLAbsMessages>() {
                 && limit == other.limit
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x4bc6589a
+        const val CONSTRUCTOR_ID: Int = 0x4bc6589a.toInt()
     }
 }

@@ -1,10 +1,21 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * secureRequiredType#829d99da
@@ -22,7 +33,7 @@ class TLSecureRequiredType() : TLAbsSecureRequiredType() {
     @Transient
     var translationRequired: Boolean = false
 
-    var type: TLAbsSecureValueType = TLSecureValueTypeAddress()
+    var type: TLAbsSecureValueType = TLSecureValueTypeUtilityBill()
 
     private val _constructor: String = "secureRequiredType#829d99da"
 
@@ -40,7 +51,7 @@ class TLSecureRequiredType() : TLAbsSecureRequiredType() {
         this.type = type
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(nativeNames, 1)
         updateFlags(selfieRequired, 2)

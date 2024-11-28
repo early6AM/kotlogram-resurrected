@@ -1,7 +1,11 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputGeoPoint
 import com.github.badoualy.telegram.tl.api.TLAbsUpdates
@@ -9,6 +13,12 @@ import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
@@ -24,6 +34,9 @@ class TLRequestChannelsCreateChannel() : TLMethod<TLAbsUpdates>() {
     @Transient
     var forImport: Boolean = false
 
+    @Transient
+    var forum: Boolean = false
+
     var title: String = ""
 
     var about: String = ""
@@ -32,7 +45,9 @@ class TLRequestChannelsCreateChannel() : TLMethod<TLAbsUpdates>() {
 
     var address: String? = null
 
-    private val _constructor: String = "channels.createChannel#3d5fb10f"
+    var ttlPeriod: Int? = null
+
+    private val _constructor: String = "channels.createChannel#91006707"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -40,27 +55,33 @@ class TLRequestChannelsCreateChannel() : TLMethod<TLAbsUpdates>() {
             broadcast: Boolean,
             megagroup: Boolean,
             forImport: Boolean,
+            forum: Boolean,
             title: String,
             about: String,
             geoPoint: TLAbsInputGeoPoint?,
-            address: String?
+            address: String?,
+            ttlPeriod: Int?
     ) : this() {
         this.broadcast = broadcast
         this.megagroup = megagroup
         this.forImport = forImport
+        this.forum = forum
         this.title = title
         this.about = about
         this.geoPoint = geoPoint
         this.address = address
+        this.ttlPeriod = ttlPeriod
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(broadcast, 1)
         updateFlags(megagroup, 2)
         updateFlags(forImport, 8)
+        updateFlags(forum, 32)
         updateFlags(geoPoint, 4)
         updateFlags(address, 4)
+        updateFlags(ttlPeriod, 16)
     }
 
     @Throws(IOException::class)
@@ -72,6 +93,7 @@ class TLRequestChannelsCreateChannel() : TLMethod<TLAbsUpdates>() {
         writeString(about)
         doIfMask(geoPoint, 4) { writeTLObject(it) }
         doIfMask(address, 4) { writeString(it) }
+        doIfMask(ttlPeriod, 16) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -80,10 +102,12 @@ class TLRequestChannelsCreateChannel() : TLMethod<TLAbsUpdates>() {
         broadcast = isMask(1)
         megagroup = isMask(2)
         forImport = isMask(8)
+        forum = isMask(32)
         title = readString()
         about = readString()
         geoPoint = readIfMask(4) { readTLObject<TLAbsInputGeoPoint>() }
         address = readIfMask(4) { readString() }
+        ttlPeriod = readIfMask(16) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -95,6 +119,7 @@ class TLRequestChannelsCreateChannel() : TLMethod<TLAbsUpdates>() {
         size += computeTLStringSerializedSize(about)
         size += getIntIfMask(geoPoint, 4) { it.computeSerializedSize() }
         size += getIntIfMask(address, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(ttlPeriod, 16) { SIZE_INT32 }
         return size
     }
 
@@ -108,12 +133,14 @@ class TLRequestChannelsCreateChannel() : TLMethod<TLAbsUpdates>() {
                 && broadcast == other.broadcast
                 && megagroup == other.megagroup
                 && forImport == other.forImport
+                && forum == other.forum
                 && title == other.title
                 && about == other.about
                 && geoPoint == other.geoPoint
                 && address == other.address
+                && ttlPeriod == other.ttlPeriod
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3d5fb10f
+        const val CONSTRUCTOR_ID: Int = 0x91006707.toInt()
     }
 }

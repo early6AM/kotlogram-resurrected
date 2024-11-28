@@ -1,14 +1,24 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.upload.TLAbsCdnFile
 import com.github.badoualy.telegram.tl.core.TLBytes
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
@@ -17,17 +27,17 @@ import java.io.IOException
 class TLRequestUploadGetCdnFile() : TLMethod<TLAbsCdnFile>() {
     var fileToken: TLBytes = TLBytes.EMPTY
 
-    var offset: Int = 0
+    var offset: Long = 0L
 
     var limit: Int = 0
 
-    private val _constructor: String = "upload.getCdnFile#2000bcc3"
+    private val _constructor: String = "upload.getCdnFile#395f69da"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             fileToken: TLBytes,
-            offset: Int,
+            offset: Long,
             limit: Int
     ) : this() {
         this.fileToken = fileToken
@@ -38,21 +48,21 @@ class TLRequestUploadGetCdnFile() : TLMethod<TLAbsCdnFile>() {
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
         writeTLBytes(fileToken)
-        writeInt(offset)
+        writeLong(offset)
         writeInt(limit)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         fileToken = readTLBytes()
-        offset = readInt()
+        offset = readLong()
         limit = readInt()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
         size += computeTLBytesSerializedSize(fileToken)
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += SIZE_INT32
         return size
     }
@@ -68,6 +78,6 @@ class TLRequestUploadGetCdnFile() : TLMethod<TLAbsCdnFile>() {
                 && limit == other.limit
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x2000bcc3
+        const val CONSTRUCTOR_ID: Int = 0x395f69da.toInt()
     }
 }

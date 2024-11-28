@@ -1,7 +1,10 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLBytes
@@ -9,6 +12,12 @@ import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * dcOption#18b7a10d
@@ -32,6 +41,9 @@ class TLDcOption() : TLObject() {
     @Transient
     var static: Boolean = false
 
+    @Transient
+    var thisPortOnly: Boolean = false
+
     var id: Int = 0
 
     var ipAddress: String = ""
@@ -50,6 +62,7 @@ class TLDcOption() : TLObject() {
             tcpoOnly: Boolean,
             cdn: Boolean,
             static: Boolean,
+            thisPortOnly: Boolean,
             id: Int,
             ipAddress: String,
             port: Int,
@@ -60,19 +73,21 @@ class TLDcOption() : TLObject() {
         this.tcpoOnly = tcpoOnly
         this.cdn = cdn
         this.static = static
+        this.thisPortOnly = thisPortOnly
         this.id = id
         this.ipAddress = ipAddress
         this.port = port
         this.secret = secret
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(ipv6, 1)
         updateFlags(mediaOnly, 2)
         updateFlags(tcpoOnly, 4)
         updateFlags(cdn, 8)
         updateFlags(static, 16)
+        updateFlags(thisPortOnly, 32)
         updateFlags(secret, 1024)
     }
 
@@ -95,6 +110,7 @@ class TLDcOption() : TLObject() {
         tcpoOnly = isMask(4)
         cdn = isMask(8)
         static = isMask(16)
+        thisPortOnly = isMask(32)
         id = readInt()
         ipAddress = readString()
         port = readInt()
@@ -125,12 +141,13 @@ class TLDcOption() : TLObject() {
                 && tcpoOnly == other.tcpoOnly
                 && cdn == other.cdn
                 && static == other.static
+                && thisPortOnly == other.thisPortOnly
                 && id == other.id
                 && ipAddress == other.ipAddress
                 && port == other.port
                 && secret == other.secret
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x18b7a10d
+        const val CONSTRUCTOR_ID: Int = 0x18b7a10d.toInt()
     }
 }

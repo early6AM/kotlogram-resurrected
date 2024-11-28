@@ -1,17 +1,29 @@
 package com.github.badoualy.telegram.tl.api.messages
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsChat
+import com.github.badoualy.telegram.tl.api.TLAbsForumTopic
 import com.github.badoualy.telegram.tl.api.TLAbsMessage
 import com.github.badoualy.telegram.tl.api.TLAbsUser
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
- * messages.channelMessages#64479808
+ * messages.channelMessages#c776ba4e
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -28,11 +40,13 @@ class TLChannelMessages() : TLAbsMessages() {
 
     var messages: TLObjectVector<TLAbsMessage> = TLObjectVector()
 
+    var topics: TLObjectVector<TLAbsForumTopic> = TLObjectVector()
+
     var chats: TLObjectVector<TLAbsChat> = TLObjectVector()
 
     var users: TLObjectVector<TLAbsUser> = TLObjectVector()
 
-    private val _constructor: String = "messages.channelMessages#64479808"
+    private val _constructor: String = "messages.channelMessages#c776ba4e"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -42,6 +56,7 @@ class TLChannelMessages() : TLAbsMessages() {
             count: Int,
             offsetIdOffset: Int?,
             messages: TLObjectVector<TLAbsMessage>,
+            topics: TLObjectVector<TLAbsForumTopic>,
             chats: TLObjectVector<TLAbsChat>,
             users: TLObjectVector<TLAbsUser>
     ) : this() {
@@ -50,11 +65,12 @@ class TLChannelMessages() : TLAbsMessages() {
         this.count = count
         this.offsetIdOffset = offsetIdOffset
         this.messages = messages
+        this.topics = topics
         this.chats = chats
         this.users = users
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(inexact, 2)
         updateFlags(offsetIdOffset, 4)
@@ -69,6 +85,7 @@ class TLChannelMessages() : TLAbsMessages() {
         writeInt(count)
         doIfMask(offsetIdOffset, 4) { writeInt(it) }
         writeTLVector(messages)
+        writeTLVector(topics)
         writeTLVector(chats)
         writeTLVector(users)
     }
@@ -81,6 +98,7 @@ class TLChannelMessages() : TLAbsMessages() {
         count = readInt()
         offsetIdOffset = readIfMask(4) { readInt() }
         messages = readTLVector<TLAbsMessage>()
+        topics = readTLVector<TLAbsForumTopic>()
         chats = readTLVector<TLAbsChat>()
         users = readTLVector<TLAbsUser>()
     }
@@ -94,6 +112,7 @@ class TLChannelMessages() : TLAbsMessages() {
         size += SIZE_INT32
         size += getIntIfMask(offsetIdOffset, 4) { SIZE_INT32 }
         size += messages.computeSerializedSize()
+        size += topics.computeSerializedSize()
         size += chats.computeSerializedSize()
         size += users.computeSerializedSize()
         return size
@@ -111,10 +130,11 @@ class TLChannelMessages() : TLAbsMessages() {
                 && count == other.count
                 && offsetIdOffset == other.offsetIdOffset
                 && messages == other.messages
+                && topics == other.topics
                 && chats == other.chats
                 && users == other.users
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x64479808
+        const val CONSTRUCTOR_ID: Int = 0xc776ba4e.toInt()
     }
 }

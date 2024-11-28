@@ -1,7 +1,11 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputMedia
 import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
@@ -14,6 +18,12 @@ import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
@@ -22,6 +32,9 @@ import java.io.IOException
 class TLRequestMessagesEditMessage() : TLMethod<TLAbsUpdates>() {
     @Transient
     var noWebpage: Boolean = false
+
+    @Transient
+    var invertMedia: Boolean = false
 
     var peer: TLAbsInputPeer = TLInputPeerEmpty()
 
@@ -43,6 +56,7 @@ class TLRequestMessagesEditMessage() : TLMethod<TLAbsUpdates>() {
 
     constructor(
             noWebpage: Boolean,
+            invertMedia: Boolean,
             peer: TLAbsInputPeer,
             id: Int,
             message: String?,
@@ -52,6 +66,7 @@ class TLRequestMessagesEditMessage() : TLMethod<TLAbsUpdates>() {
             scheduleDate: Int?
     ) : this() {
         this.noWebpage = noWebpage
+        this.invertMedia = invertMedia
         this.peer = peer
         this.id = id
         this.message = message
@@ -61,9 +76,10 @@ class TLRequestMessagesEditMessage() : TLMethod<TLAbsUpdates>() {
         this.scheduleDate = scheduleDate
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(noWebpage, 2)
+        updateFlags(invertMedia, 65536)
         updateFlags(message, 2048)
         updateFlags(media, 16384)
         updateFlags(replyMarkup, 4)
@@ -89,6 +105,7 @@ class TLRequestMessagesEditMessage() : TLMethod<TLAbsUpdates>() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         noWebpage = isMask(2)
+        invertMedia = isMask(65536)
         peer = readTLObject<TLAbsInputPeer>()
         id = readInt()
         message = readIfMask(2048) { readString() }
@@ -121,6 +138,7 @@ class TLRequestMessagesEditMessage() : TLMethod<TLAbsUpdates>() {
 
         return _flags == other._flags
                 && noWebpage == other.noWebpage
+                && invertMedia == other.invertMedia
                 && peer == other.peer
                 && id == other.id
                 && message == other.message
@@ -130,6 +148,6 @@ class TLRequestMessagesEditMessage() : TLMethod<TLAbsUpdates>() {
                 && scheduleDate == other.scheduleDate
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x48f71778
+        const val CONSTRUCTOR_ID: Int = 0x48f71778.toInt()
     }
 }

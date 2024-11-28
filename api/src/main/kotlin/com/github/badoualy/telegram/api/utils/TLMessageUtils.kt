@@ -30,7 +30,7 @@ val TLAbsMessage?.toId: TLAbsPeer?
 
 val TLAbsMessage.isReply: Boolean
     get() = this is TLMessage && replyToMsgId != null
-val TLAbsMessage.replyToMsgId: TLMessageReplyHeader?
+val TLAbsMessage.replyToMsgId: TLAbsMessageReplyHeader?
     get() = if (this is TLMessage) replyTo else null
 
 val TLMessage.isForward: Boolean

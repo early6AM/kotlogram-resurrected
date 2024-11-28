@@ -1,11 +1,22 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * updateChannelParticipant#985d3abb
@@ -14,6 +25,9 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLUpdateChannelParticipant() : TLAbsUpdate() {
+    @Transient
+    var viaChatlist: Boolean = false
+
     var channelId: Long = 0L
 
     var date: Int = 0
@@ -26,7 +40,7 @@ class TLUpdateChannelParticipant() : TLAbsUpdate() {
 
     var newParticipant: TLAbsChannelParticipant? = null
 
-    var invite: TLChatInviteExported? = null
+    var invite: TLAbsExportedChatInvite? = null
 
     var qts: Int = 0
 
@@ -35,15 +49,17 @@ class TLUpdateChannelParticipant() : TLAbsUpdate() {
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
+            viaChatlist: Boolean,
             channelId: Long,
             date: Int,
             actorId: Long,
             userId: Long,
             prevParticipant: TLAbsChannelParticipant?,
             newParticipant: TLAbsChannelParticipant?,
-            invite: TLChatInviteExported?,
+            invite: TLAbsExportedChatInvite?,
             qts: Int
     ) : this() {
+        this.viaChatlist = viaChatlist
         this.channelId = channelId
         this.date = date
         this.actorId = actorId
@@ -54,8 +70,9 @@ class TLUpdateChannelParticipant() : TLAbsUpdate() {
         this.qts = qts
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
+        updateFlags(viaChatlist, 8)
         updateFlags(prevParticipant, 1)
         updateFlags(newParticipant, 2)
         updateFlags(invite, 4)
@@ -79,13 +96,14 @@ class TLUpdateChannelParticipant() : TLAbsUpdate() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
+        viaChatlist = isMask(8)
         channelId = readLong()
         date = readInt()
         actorId = readLong()
         userId = readLong()
         prevParticipant = readIfMask(1) { readTLObject<TLAbsChannelParticipant>() }
         newParticipant = readIfMask(2) { readTLObject<TLAbsChannelParticipant>() }
-        invite = readIfMask(4) { readTLObject<TLChatInviteExported>(TLChatInviteExported::class, TLChatInviteExported.CONSTRUCTOR_ID) }
+        invite = readIfMask(4) { readTLObject<TLAbsExportedChatInvite>() }
         qts = readInt()
     }
 
@@ -112,6 +130,7 @@ class TLUpdateChannelParticipant() : TLAbsUpdate() {
         if (other === this) return true
 
         return _flags == other._flags
+                && viaChatlist == other.viaChatlist
                 && channelId == other.channelId
                 && date == other.date
                 && actorId == other.actorId

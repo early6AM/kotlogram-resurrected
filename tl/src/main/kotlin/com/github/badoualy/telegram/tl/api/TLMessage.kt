@@ -1,16 +1,26 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
- * message#85d6cbe2
+ * message#76bec211
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -46,17 +56,22 @@ class TLMessage() : TLAbsMessage() {
     @Transient
     var noforwards: Boolean = false
 
+    @Transient
+    var invertMedia: Boolean = false
+
     override var id: Int = 0
 
     var fromId: TLAbsPeer? = null
 
     var peerId: TLAbsPeer = TLPeerChat()
 
+    var savedPeerId: TLAbsPeer? = null
+
     var fwdFrom: TLMessageFwdHeader? = null
 
     var viaBotId: Long? = null
 
-    var replyTo: TLMessageReplyHeader? = null
+    var replyTo: TLAbsMessageReplyHeader? = null
 
     var date: Int = 0
 
@@ -80,11 +95,13 @@ class TLMessage() : TLAbsMessage() {
 
     var groupedId: Long? = null
 
+    var reactions: TLMessageReactions? = null
+
     var restrictionReason: TLObjectVector<TLRestrictionReason>? = TLObjectVector()
 
     var ttlPeriod: Int? = null
 
-    private val _constructor: String = "message#85d6cbe2"
+    private val _constructor: String = "message#76bec211"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -99,12 +116,14 @@ class TLMessage() : TLAbsMessage() {
             editHide: Boolean,
             pinned: Boolean,
             noforwards: Boolean,
+            invertMedia: Boolean,
             id: Int,
             fromId: TLAbsPeer?,
             peerId: TLAbsPeer,
+            savedPeerId: TLAbsPeer?,
             fwdFrom: TLMessageFwdHeader?,
             viaBotId: Long?,
-            replyTo: TLMessageReplyHeader?,
+            replyTo: TLAbsMessageReplyHeader?,
             date: Int,
             message: String,
             media: TLAbsMessageMedia?,
@@ -116,6 +135,7 @@ class TLMessage() : TLAbsMessage() {
             editDate: Int?,
             postAuthor: String?,
             groupedId: Long?,
+            reactions: TLMessageReactions?,
             restrictionReason: TLObjectVector<TLRestrictionReason>?,
             ttlPeriod: Int?
     ) : this() {
@@ -129,9 +149,11 @@ class TLMessage() : TLAbsMessage() {
         this.editHide = editHide
         this.pinned = pinned
         this.noforwards = noforwards
+        this.invertMedia = invertMedia
         this.id = id
         this.fromId = fromId
         this.peerId = peerId
+        this.savedPeerId = savedPeerId
         this.fwdFrom = fwdFrom
         this.viaBotId = viaBotId
         this.replyTo = replyTo
@@ -146,11 +168,12 @@ class TLMessage() : TLAbsMessage() {
         this.editDate = editDate
         this.postAuthor = postAuthor
         this.groupedId = groupedId
+        this.reactions = reactions
         this.restrictionReason = restrictionReason
         this.ttlPeriod = ttlPeriod
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(out, 2)
         updateFlags(mentioned, 16)
@@ -162,7 +185,9 @@ class TLMessage() : TLAbsMessage() {
         updateFlags(editHide, 2097152)
         updateFlags(pinned, 16777216)
         updateFlags(noforwards, 67108864)
+        updateFlags(invertMedia, 134217728)
         updateFlags(fromId, 256)
+        updateFlags(savedPeerId, 268435456)
         updateFlags(fwdFrom, 4)
         updateFlags(viaBotId, 2048)
         updateFlags(replyTo, 8)
@@ -175,6 +200,7 @@ class TLMessage() : TLAbsMessage() {
         updateFlags(editDate, 32768)
         updateFlags(postAuthor, 65536)
         updateFlags(groupedId, 131072)
+        updateFlags(reactions, 1048576)
         updateFlags(restrictionReason, 4194304)
         updateFlags(ttlPeriod, 33554432)
     }
@@ -187,6 +213,7 @@ class TLMessage() : TLAbsMessage() {
         writeInt(id)
         doIfMask(fromId, 256) { writeTLObject(it) }
         writeTLObject(peerId)
+        doIfMask(savedPeerId, 268435456) { writeTLObject(it) }
         doIfMask(fwdFrom, 4) { writeTLObject(it) }
         doIfMask(viaBotId, 2048) { writeLong(it) }
         doIfMask(replyTo, 8) { writeTLObject(it) }
@@ -201,6 +228,7 @@ class TLMessage() : TLAbsMessage() {
         doIfMask(editDate, 32768) { writeInt(it) }
         doIfMask(postAuthor, 65536) { writeString(it) }
         doIfMask(groupedId, 131072) { writeLong(it) }
+        doIfMask(reactions, 1048576) { writeTLObject(it) }
         doIfMask(restrictionReason, 4194304) { writeTLVector(it) }
         doIfMask(ttlPeriod, 33554432) { writeInt(it) }
     }
@@ -218,12 +246,14 @@ class TLMessage() : TLAbsMessage() {
         editHide = isMask(2097152)
         pinned = isMask(16777216)
         noforwards = isMask(67108864)
+        invertMedia = isMask(134217728)
         id = readInt()
         fromId = readIfMask(256) { readTLObject<TLAbsPeer>() }
         peerId = readTLObject<TLAbsPeer>()
+        savedPeerId = readIfMask(268435456) { readTLObject<TLAbsPeer>() }
         fwdFrom = readIfMask(4) { readTLObject<TLMessageFwdHeader>(TLMessageFwdHeader::class, TLMessageFwdHeader.CONSTRUCTOR_ID) }
         viaBotId = readIfMask(2048) { readLong() }
-        replyTo = readIfMask(8) { readTLObject<TLMessageReplyHeader>(TLMessageReplyHeader::class, TLMessageReplyHeader.CONSTRUCTOR_ID) }
+        replyTo = readIfMask(8) { readTLObject<TLAbsMessageReplyHeader>() }
         date = readInt()
         message = readString()
         media = readIfMask(512) { readTLObject<TLAbsMessageMedia>() }
@@ -235,6 +265,7 @@ class TLMessage() : TLAbsMessage() {
         editDate = readIfMask(32768) { readInt() }
         postAuthor = readIfMask(65536) { readString() }
         groupedId = readIfMask(131072) { readLong() }
+        reactions = readIfMask(1048576) { readTLObject<TLMessageReactions>(TLMessageReactions::class, TLMessageReactions.CONSTRUCTOR_ID) }
         restrictionReason = readIfMask(4194304) { readTLVector<TLRestrictionReason>() }
         ttlPeriod = readIfMask(33554432) { readInt() }
     }
@@ -247,6 +278,7 @@ class TLMessage() : TLAbsMessage() {
         size += SIZE_INT32
         size += getIntIfMask(fromId, 256) { it.computeSerializedSize() }
         size += peerId.computeSerializedSize()
+        size += getIntIfMask(savedPeerId, 268435456) { it.computeSerializedSize() }
         size += getIntIfMask(fwdFrom, 4) { it.computeSerializedSize() }
         size += getIntIfMask(viaBotId, 2048) { SIZE_INT64 }
         size += getIntIfMask(replyTo, 8) { it.computeSerializedSize() }
@@ -261,6 +293,7 @@ class TLMessage() : TLAbsMessage() {
         size += getIntIfMask(editDate, 32768) { SIZE_INT32 }
         size += getIntIfMask(postAuthor, 65536) { computeTLStringSerializedSize(it) }
         size += getIntIfMask(groupedId, 131072) { SIZE_INT64 }
+        size += getIntIfMask(reactions, 1048576) { it.computeSerializedSize() }
         size += getIntIfMask(restrictionReason, 4194304) { it.computeSerializedSize() }
         size += getIntIfMask(ttlPeriod, 33554432) { SIZE_INT32 }
         return size
@@ -283,9 +316,11 @@ class TLMessage() : TLAbsMessage() {
                 && editHide == other.editHide
                 && pinned == other.pinned
                 && noforwards == other.noforwards
+                && invertMedia == other.invertMedia
                 && id == other.id
                 && fromId == other.fromId
                 && peerId == other.peerId
+                && savedPeerId == other.savedPeerId
                 && fwdFrom == other.fwdFrom
                 && viaBotId == other.viaBotId
                 && replyTo == other.replyTo
@@ -300,10 +335,11 @@ class TLMessage() : TLAbsMessage() {
                 && editDate == other.editDate
                 && postAuthor == other.postAuthor
                 && groupedId == other.groupedId
+                && reactions == other.reactions
                 && restrictionReason == other.restrictionReason
                 && ttlPeriod == other.ttlPeriod
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x85d6cbe2.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x76bec211.toInt()
     }
 }

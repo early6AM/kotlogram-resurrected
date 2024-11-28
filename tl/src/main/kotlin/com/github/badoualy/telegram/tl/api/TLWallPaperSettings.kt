@@ -1,14 +1,25 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
- * wallPaperSettings#1dc1bca4
+ * wallPaperSettings#372efcd0
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -32,7 +43,9 @@ class TLWallPaperSettings() : TLObject() {
 
     var rotation: Int? = null
 
-    private val _constructor: String = "wallPaperSettings#1dc1bca4"
+    var emoticon: String? = null
+
+    private val _constructor: String = "wallPaperSettings#372efcd0"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -44,7 +57,8 @@ class TLWallPaperSettings() : TLObject() {
             thirdBackgroundColor: Int?,
             fourthBackgroundColor: Int?,
             intensity: Int?,
-            rotation: Int?
+            rotation: Int?,
+            emoticon: String?
     ) : this() {
         this.blur = blur
         this.motion = motion
@@ -54,9 +68,10 @@ class TLWallPaperSettings() : TLObject() {
         this.fourthBackgroundColor = fourthBackgroundColor
         this.intensity = intensity
         this.rotation = rotation
+        this.emoticon = emoticon
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(blur, 2)
         updateFlags(motion, 4)
@@ -66,6 +81,7 @@ class TLWallPaperSettings() : TLObject() {
         updateFlags(fourthBackgroundColor, 64)
         updateFlags(intensity, 8)
         updateFlags(rotation, 16)
+        updateFlags(emoticon, 128)
     }
 
     @Throws(IOException::class)
@@ -79,6 +95,7 @@ class TLWallPaperSettings() : TLObject() {
         doIfMask(fourthBackgroundColor, 64) { writeInt(it) }
         doIfMask(intensity, 8) { writeInt(it) }
         doIfMask(rotation, 16) { writeInt(it) }
+        doIfMask(emoticon, 128) { writeString(it) }
     }
 
     @Throws(IOException::class)
@@ -92,6 +109,7 @@ class TLWallPaperSettings() : TLObject() {
         fourthBackgroundColor = readIfMask(64) { readInt() }
         intensity = readIfMask(8) { readInt() }
         rotation = readIfMask(16) { readInt() }
+        emoticon = readIfMask(128) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -105,6 +123,7 @@ class TLWallPaperSettings() : TLObject() {
         size += getIntIfMask(fourthBackgroundColor, 64) { SIZE_INT32 }
         size += getIntIfMask(intensity, 8) { SIZE_INT32 }
         size += getIntIfMask(rotation, 16) { SIZE_INT32 }
+        size += getIntIfMask(emoticon, 128) { computeTLStringSerializedSize(it) }
         return size
     }
 
@@ -123,8 +142,9 @@ class TLWallPaperSettings() : TLObject() {
                 && fourthBackgroundColor == other.fourthBackgroundColor
                 && intensity == other.intensity
                 && rotation == other.rotation
+                && emoticon == other.emoticon
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x1dc1bca4
+        const val CONSTRUCTOR_ID: Int = 0x372efcd0.toInt()
     }
 }

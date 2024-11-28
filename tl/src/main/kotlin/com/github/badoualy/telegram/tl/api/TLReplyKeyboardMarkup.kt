@@ -1,12 +1,22 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * replyKeyboardMarkup#85dd99d1
@@ -24,6 +34,9 @@ class TLReplyKeyboardMarkup() : TLAbsReplyMarkup() {
     @Transient
     var selective: Boolean = false
 
+    @Transient
+    var persistent: Boolean = false
+
     var rows: TLObjectVector<TLKeyboardButtonRow> = TLObjectVector()
 
     var placeholder: String? = null
@@ -36,21 +49,24 @@ class TLReplyKeyboardMarkup() : TLAbsReplyMarkup() {
             resize: Boolean,
             singleUse: Boolean,
             selective: Boolean,
+            persistent: Boolean,
             rows: TLObjectVector<TLKeyboardButtonRow>,
             placeholder: String?
     ) : this() {
         this.resize = resize
         this.singleUse = singleUse
         this.selective = selective
+        this.persistent = persistent
         this.rows = rows
         this.placeholder = placeholder
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(resize, 1)
         updateFlags(singleUse, 2)
         updateFlags(selective, 4)
+        updateFlags(persistent, 16)
         updateFlags(placeholder, 8)
     }
 
@@ -69,6 +85,7 @@ class TLReplyKeyboardMarkup() : TLAbsReplyMarkup() {
         resize = isMask(1)
         singleUse = isMask(2)
         selective = isMask(4)
+        persistent = isMask(16)
         rows = readTLVector<TLKeyboardButtonRow>()
         placeholder = readIfMask(8) { readString() }
     }
@@ -93,6 +110,7 @@ class TLReplyKeyboardMarkup() : TLAbsReplyMarkup() {
                 && resize == other.resize
                 && singleUse == other.singleUse
                 && selective == other.selective
+                && persistent == other.persistent
                 && rows == other.rows
                 && placeholder == other.placeholder
     }

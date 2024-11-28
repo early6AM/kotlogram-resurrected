@@ -1,16 +1,27 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
+import com.github.badoualy.telegram.tl.core.TLLongVector
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
- * chatFull#4dbdc099
+ * chatFull#c9d31138
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -22,17 +33,20 @@ class TLChatFull() : TLAbsChatFull() {
     @Transient
     var hasScheduled: Boolean = false
 
+    @Transient
+    var translationsDisabled: Boolean = false
+
     override var id: Long = 0L
 
     override var about: String = ""
 
-    var participants: TLAbsChatParticipants = TLChatParticipantsForbidden()
+    var participants: TLAbsChatParticipants = TLChatParticipants()
 
     var chatPhoto: TLAbsPhoto? = null
 
     override var notifySettings: TLPeerNotifySettings = TLPeerNotifySettings()
 
-    var exportedInvite: TLChatInviteExported? = null
+    var exportedInvite: TLAbsExportedChatInvite? = null
 
     var botInfo: TLObjectVector<TLBotInfo>? = TLObjectVector()
 
@@ -48,29 +62,40 @@ class TLChatFull() : TLAbsChatFull() {
 
     var themeEmoticon: String? = null
 
-    private val _constructor: String = "chatFull#4dbdc099"
+    var requestsPending: Int? = null
+
+    var recentRequesters: TLLongVector? = null
+
+    var availableReactions: TLAbsChatReactions? = null
+
+    private val _constructor: String = "chatFull#c9d31138"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             canSetUsername: Boolean,
             hasScheduled: Boolean,
+            translationsDisabled: Boolean,
             id: Long,
             about: String,
             participants: TLAbsChatParticipants,
             chatPhoto: TLAbsPhoto?,
             notifySettings: TLPeerNotifySettings,
-            exportedInvite: TLChatInviteExported?,
+            exportedInvite: TLAbsExportedChatInvite?,
             botInfo: TLObjectVector<TLBotInfo>?,
             pinnedMsgId: Int?,
             folderId: Int?,
             call: TLInputGroupCall?,
             ttlPeriod: Int?,
             groupcallDefaultJoinAs: TLAbsPeer?,
-            themeEmoticon: String?
+            themeEmoticon: String?,
+            requestsPending: Int?,
+            recentRequesters: TLLongVector?,
+            availableReactions: TLAbsChatReactions?
     ) : this() {
         this.canSetUsername = canSetUsername
         this.hasScheduled = hasScheduled
+        this.translationsDisabled = translationsDisabled
         this.id = id
         this.about = about
         this.participants = participants
@@ -84,12 +109,16 @@ class TLChatFull() : TLAbsChatFull() {
         this.ttlPeriod = ttlPeriod
         this.groupcallDefaultJoinAs = groupcallDefaultJoinAs
         this.themeEmoticon = themeEmoticon
+        this.requestsPending = requestsPending
+        this.recentRequesters = recentRequesters
+        this.availableReactions = availableReactions
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(canSetUsername, 128)
         updateFlags(hasScheduled, 256)
+        updateFlags(translationsDisabled, 524288)
         updateFlags(chatPhoto, 4)
         updateFlags(exportedInvite, 8192)
         updateFlags(botInfo, 8)
@@ -99,6 +128,9 @@ class TLChatFull() : TLAbsChatFull() {
         updateFlags(ttlPeriod, 16384)
         updateFlags(groupcallDefaultJoinAs, 32768)
         updateFlags(themeEmoticon, 65536)
+        updateFlags(requestsPending, 131072)
+        updateFlags(recentRequesters, 131072)
+        updateFlags(availableReactions, 262144)
     }
 
     @Throws(IOException::class)
@@ -119,6 +151,9 @@ class TLChatFull() : TLAbsChatFull() {
         doIfMask(ttlPeriod, 16384) { writeInt(it) }
         doIfMask(groupcallDefaultJoinAs, 32768) { writeTLObject(it) }
         doIfMask(themeEmoticon, 65536) { writeString(it) }
+        doIfMask(requestsPending, 131072) { writeInt(it) }
+        doIfMask(recentRequesters, 131072) { writeTLVector(it) }
+        doIfMask(availableReactions, 262144) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
@@ -126,12 +161,13 @@ class TLChatFull() : TLAbsChatFull() {
         _flags = readInt()
         canSetUsername = isMask(128)
         hasScheduled = isMask(256)
+        translationsDisabled = isMask(524288)
         id = readLong()
         about = readString()
         participants = readTLObject<TLAbsChatParticipants>()
         chatPhoto = readIfMask(4) { readTLObject<TLAbsPhoto>() }
         notifySettings = readTLObject<TLPeerNotifySettings>(TLPeerNotifySettings::class, TLPeerNotifySettings.CONSTRUCTOR_ID)
-        exportedInvite = readIfMask(8192) { readTLObject<TLChatInviteExported>(TLChatInviteExported::class, TLChatInviteExported.CONSTRUCTOR_ID) }
+        exportedInvite = readIfMask(8192) { readTLObject<TLAbsExportedChatInvite>() }
         botInfo = readIfMask(8) { readTLVector<TLBotInfo>() }
         pinnedMsgId = readIfMask(64) { readInt() }
         folderId = readIfMask(2048) { readInt() }
@@ -139,6 +175,9 @@ class TLChatFull() : TLAbsChatFull() {
         ttlPeriod = readIfMask(16384) { readInt() }
         groupcallDefaultJoinAs = readIfMask(32768) { readTLObject<TLAbsPeer>() }
         themeEmoticon = readIfMask(65536) { readString() }
+        requestsPending = readIfMask(131072) { readInt() }
+        recentRequesters = readIfMask(131072) { readTLLongVector() }
+        availableReactions = readIfMask(262144) { readTLObject<TLAbsChatReactions>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -159,6 +198,9 @@ class TLChatFull() : TLAbsChatFull() {
         size += getIntIfMask(ttlPeriod, 16384) { SIZE_INT32 }
         size += getIntIfMask(groupcallDefaultJoinAs, 32768) { it.computeSerializedSize() }
         size += getIntIfMask(themeEmoticon, 65536) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(requestsPending, 131072) { SIZE_INT32 }
+        size += getIntIfMask(recentRequesters, 131072) { it.computeSerializedSize() }
+        size += getIntIfMask(availableReactions, 262144) { it.computeSerializedSize() }
         return size
     }
 
@@ -171,6 +213,7 @@ class TLChatFull() : TLAbsChatFull() {
         return _flags == other._flags
                 && canSetUsername == other.canSetUsername
                 && hasScheduled == other.hasScheduled
+                && translationsDisabled == other.translationsDisabled
                 && id == other.id
                 && about == other.about
                 && participants == other.participants
@@ -184,8 +227,11 @@ class TLChatFull() : TLAbsChatFull() {
                 && ttlPeriod == other.ttlPeriod
                 && groupcallDefaultJoinAs == other.groupcallDefaultJoinAs
                 && themeEmoticon == other.themeEmoticon
+                && requestsPending == other.requestsPending
+                && recentRequesters == other.recentRequesters
+                && availableReactions == other.availableReactions
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x4dbdc099
+        const val CONSTRUCTOR_ID: Int = 0xc9d31138.toInt()
     }
 }

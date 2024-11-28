@@ -1,17 +1,28 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
+import com.github.badoualy.telegram.tl.core.TLLongVector
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.core.TLStringVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
- * channelFull#e9b27a17
+ * channelFull#f2bcb6f
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -41,6 +52,24 @@ class TLChannelFull() : TLAbsChatFull() {
     @Transient
     var blocked: Boolean = false
 
+    @Transient
+    var canDeleteChannel: Boolean = false
+
+    @Transient
+    var antispam: Boolean = false
+
+    @Transient
+    var participantsHidden: Boolean = false
+
+    @Transient
+    var translationsDisabled: Boolean = false
+
+    @Transient
+    var storiesPinnedAvailable: Boolean = false
+
+    @Transient
+    var viewForumAsMessages: Boolean = false
+
     override var id: Long = 0L
 
     override var about: String = ""
@@ -65,7 +94,7 @@ class TLChannelFull() : TLAbsChatFull() {
 
     override var notifySettings: TLPeerNotifySettings = TLPeerNotifySettings()
 
-    var exportedInvite: TLChatInviteExported? = null
+    var exportedInvite: TLAbsExportedChatInvite? = null
 
     var botInfo: TLObjectVector<TLBotInfo> = TLObjectVector()
 
@@ -103,7 +132,19 @@ class TLChannelFull() : TLAbsChatFull() {
 
     var themeEmoticon: String? = null
 
-    private val _constructor: String = "channelFull#e9b27a17"
+    var requestsPending: Int? = null
+
+    var recentRequesters: TLLongVector? = null
+
+    var defaultSendAs: TLAbsPeer? = null
+
+    var availableReactions: TLAbsChatReactions? = null
+
+    var stories: TLPeerStories? = null
+
+    var wallpaper: TLAbsWallPaper? = null
+
+    private val _constructor: String = "channelFull#f2bcb6f"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -116,6 +157,12 @@ class TLChannelFull() : TLAbsChatFull() {
             hasScheduled: Boolean,
             canViewStats: Boolean,
             blocked: Boolean,
+            canDeleteChannel: Boolean,
+            antispam: Boolean,
+            participantsHidden: Boolean,
+            translationsDisabled: Boolean,
+            storiesPinnedAvailable: Boolean,
+            viewForumAsMessages: Boolean,
             id: Long,
             about: String,
             participantsCount: Int?,
@@ -128,7 +175,7 @@ class TLChannelFull() : TLAbsChatFull() {
             unreadCount: Int,
             chatPhoto: TLAbsPhoto,
             notifySettings: TLPeerNotifySettings,
-            exportedInvite: TLChatInviteExported?,
+            exportedInvite: TLAbsExportedChatInvite?,
             botInfo: TLObjectVector<TLBotInfo>,
             migratedFromChatId: Long?,
             migratedFromMaxId: Int?,
@@ -146,7 +193,13 @@ class TLChannelFull() : TLAbsChatFull() {
             ttlPeriod: Int?,
             pendingSuggestions: TLStringVector?,
             groupcallDefaultJoinAs: TLAbsPeer?,
-            themeEmoticon: String?
+            themeEmoticon: String?,
+            requestsPending: Int?,
+            recentRequesters: TLLongVector?,
+            defaultSendAs: TLAbsPeer?,
+            availableReactions: TLAbsChatReactions?,
+            stories: TLPeerStories?,
+            wallpaper: TLAbsWallPaper?
     ) : this() {
         this.canViewParticipants = canViewParticipants
         this.canSetUsername = canSetUsername
@@ -156,6 +209,12 @@ class TLChannelFull() : TLAbsChatFull() {
         this.hasScheduled = hasScheduled
         this.canViewStats = canViewStats
         this.blocked = blocked
+        this.canDeleteChannel = canDeleteChannel
+        this.antispam = antispam
+        this.participantsHidden = participantsHidden
+        this.translationsDisabled = translationsDisabled
+        this.storiesPinnedAvailable = storiesPinnedAvailable
+        this.viewForumAsMessages = viewForumAsMessages
         this.id = id
         this.about = about
         this.participantsCount = participantsCount
@@ -187,9 +246,15 @@ class TLChannelFull() : TLAbsChatFull() {
         this.pendingSuggestions = pendingSuggestions
         this.groupcallDefaultJoinAs = groupcallDefaultJoinAs
         this.themeEmoticon = themeEmoticon
+        this.requestsPending = requestsPending
+        this.recentRequesters = recentRequesters
+        this.defaultSendAs = defaultSendAs
+        this.availableReactions = availableReactions
+        this.stories = stories
+        this.wallpaper = wallpaper
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(canViewParticipants, 8)
         updateFlags(canSetUsername, 64)
@@ -199,6 +264,12 @@ class TLChannelFull() : TLAbsChatFull() {
         updateFlags(hasScheduled, 524288)
         updateFlags(canViewStats, 1048576)
         updateFlags(blocked, 4194304)
+        updateFlags(canDeleteChannel, 1)
+        updateFlags(antispam, 2)
+        updateFlags(participantsHidden, 4)
+        updateFlags(translationsDisabled, 8)
+        updateFlags(storiesPinnedAvailable, 32)
+        updateFlags(viewForumAsMessages, 64)
         updateFlags(participantsCount, 1)
         updateFlags(adminsCount, 2)
         updateFlags(kickedCount, 4)
@@ -221,12 +292,30 @@ class TLChannelFull() : TLAbsChatFull() {
         updateFlags(pendingSuggestions, 33554432)
         updateFlags(groupcallDefaultJoinAs, 67108864)
         updateFlags(themeEmoticon, 134217728)
+        updateFlags(requestsPending, 268435456)
+        updateFlags(recentRequesters, 268435456)
+        updateFlags(defaultSendAs, 536870912)
+        updateFlags(availableReactions, 1073741824)
+        updateFlags(stories, 16)
+        updateFlags(wallpaper, 128)
+
+        // Following parameters might be forced to true by another field that updated the flags
+        canViewParticipants = isMask(8)
+        canSetUsername = isMask(64)
+        canSetStickers = isMask(128)
+        canDeleteChannel = isMask(1)
+        antispam = isMask(2)
+        participantsHidden = isMask(4)
+        translationsDisabled = isMask(8)
+        storiesPinnedAvailable = isMask(32)
+        viewForumAsMessages = isMask(64)
     }
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
         computeFlags()
 
+        writeInt(_flags)
         writeInt(_flags)
         writeLong(id)
         writeString(about)
@@ -259,6 +348,12 @@ class TLChannelFull() : TLAbsChatFull() {
         doIfMask(pendingSuggestions, 33554432) { writeTLVector(it) }
         doIfMask(groupcallDefaultJoinAs, 67108864) { writeTLObject(it) }
         doIfMask(themeEmoticon, 134217728) { writeString(it) }
+        doIfMask(requestsPending, 268435456) { writeInt(it) }
+        doIfMask(recentRequesters, 268435456) { writeTLVector(it) }
+        doIfMask(defaultSendAs, 536870912) { writeTLObject(it) }
+        doIfMask(availableReactions, 1073741824) { writeTLObject(it) }
+        doIfMask(stories, 16) { writeTLObject(it) }
+        doIfMask(wallpaper, 128) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
@@ -272,6 +367,13 @@ class TLChannelFull() : TLAbsChatFull() {
         hasScheduled = isMask(524288)
         canViewStats = isMask(1048576)
         blocked = isMask(4194304)
+        _flags = readInt()
+        canDeleteChannel = isMask(1)
+        antispam = isMask(2)
+        participantsHidden = isMask(4)
+        translationsDisabled = isMask(8)
+        storiesPinnedAvailable = isMask(32)
+        viewForumAsMessages = isMask(64)
         id = readLong()
         about = readString()
         participantsCount = readIfMask(1) { readInt() }
@@ -284,7 +386,7 @@ class TLChannelFull() : TLAbsChatFull() {
         unreadCount = readInt()
         chatPhoto = readTLObject<TLAbsPhoto>()
         notifySettings = readTLObject<TLPeerNotifySettings>(TLPeerNotifySettings::class, TLPeerNotifySettings.CONSTRUCTOR_ID)
-        exportedInvite = readIfMask(8388608) { readTLObject<TLChatInviteExported>(TLChatInviteExported::class, TLChatInviteExported.CONSTRUCTOR_ID) }
+        exportedInvite = readIfMask(8388608) { readTLObject<TLAbsExportedChatInvite>() }
         botInfo = readTLVector<TLBotInfo>()
         migratedFromChatId = readIfMask(16) { readLong() }
         migratedFromMaxId = readIfMask(16) { readInt() }
@@ -303,12 +405,19 @@ class TLChannelFull() : TLAbsChatFull() {
         pendingSuggestions = readIfMask(33554432) { readTLStringVector() }
         groupcallDefaultJoinAs = readIfMask(67108864) { readTLObject<TLAbsPeer>() }
         themeEmoticon = readIfMask(134217728) { readString() }
+        requestsPending = readIfMask(268435456) { readInt() }
+        recentRequesters = readIfMask(268435456) { readTLLongVector() }
+        defaultSendAs = readIfMask(536870912) { readTLObject<TLAbsPeer>() }
+        availableReactions = readIfMask(1073741824) { readTLObject<TLAbsChatReactions>() }
+        stories = readIfMask(16) { readTLObject<TLPeerStories>(TLPeerStories::class, TLPeerStories.CONSTRUCTOR_ID) }
+        wallpaper = readIfMask(128) { readTLObject<TLAbsWallPaper>() }
     }
 
     override fun computeSerializedSize(): Int {
         computeFlags()
 
         var size = SIZE_CONSTRUCTOR_ID
+        size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT64
         size += computeTLStringSerializedSize(about)
@@ -341,6 +450,12 @@ class TLChannelFull() : TLAbsChatFull() {
         size += getIntIfMask(pendingSuggestions, 33554432) { it.computeSerializedSize() }
         size += getIntIfMask(groupcallDefaultJoinAs, 67108864) { it.computeSerializedSize() }
         size += getIntIfMask(themeEmoticon, 134217728) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(requestsPending, 268435456) { SIZE_INT32 }
+        size += getIntIfMask(recentRequesters, 268435456) { it.computeSerializedSize() }
+        size += getIntIfMask(defaultSendAs, 536870912) { it.computeSerializedSize() }
+        size += getIntIfMask(availableReactions, 1073741824) { it.computeSerializedSize() }
+        size += getIntIfMask(stories, 16) { it.computeSerializedSize() }
+        size += getIntIfMask(wallpaper, 128) { it.computeSerializedSize() }
         return size
     }
 
@@ -359,6 +474,13 @@ class TLChannelFull() : TLAbsChatFull() {
                 && hasScheduled == other.hasScheduled
                 && canViewStats == other.canViewStats
                 && blocked == other.blocked
+                && _flags == other._flags
+                && canDeleteChannel == other.canDeleteChannel
+                && antispam == other.antispam
+                && participantsHidden == other.participantsHidden
+                && translationsDisabled == other.translationsDisabled
+                && storiesPinnedAvailable == other.storiesPinnedAvailable
+                && viewForumAsMessages == other.viewForumAsMessages
                 && id == other.id
                 && about == other.about
                 && participantsCount == other.participantsCount
@@ -390,8 +512,14 @@ class TLChannelFull() : TLAbsChatFull() {
                 && pendingSuggestions == other.pendingSuggestions
                 && groupcallDefaultJoinAs == other.groupcallDefaultJoinAs
                 && themeEmoticon == other.themeEmoticon
+                && requestsPending == other.requestsPending
+                && recentRequesters == other.recentRequesters
+                && defaultSendAs == other.defaultSendAs
+                && availableReactions == other.availableReactions
+                && stories == other.stories
+                && wallpaper == other.wallpaper
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xe9b27a17.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xf2bcb6f.toInt()
     }
 }

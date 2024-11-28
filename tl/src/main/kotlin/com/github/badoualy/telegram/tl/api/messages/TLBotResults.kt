@@ -1,20 +1,31 @@
 package com.github.badoualy.telegram.tl.api.messages
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsBotInlineResult
 import com.github.badoualy.telegram.tl.api.TLAbsUser
 import com.github.badoualy.telegram.tl.api.TLInlineBotSwitchPM
+import com.github.badoualy.telegram.tl.api.TLInlineBotWebView
 import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
- * messages.botResults#947ca848
+ * messages.botResults#e021f2f6
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -29,13 +40,15 @@ class TLBotResults() : TLObject() {
 
     var switchPm: TLInlineBotSwitchPM? = null
 
+    var switchWebview: TLInlineBotWebView? = null
+
     var results: TLObjectVector<TLAbsBotInlineResult> = TLObjectVector()
 
     var cacheTime: Int = 0
 
     var users: TLObjectVector<TLAbsUser> = TLObjectVector()
 
-    private val _constructor: String = "messages.botResults#947ca848"
+    private val _constructor: String = "messages.botResults#e021f2f6"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -44,6 +57,7 @@ class TLBotResults() : TLObject() {
             queryId: Long,
             nextOffset: String?,
             switchPm: TLInlineBotSwitchPM?,
+            switchWebview: TLInlineBotWebView?,
             results: TLObjectVector<TLAbsBotInlineResult>,
             cacheTime: Int,
             users: TLObjectVector<TLAbsUser>
@@ -52,16 +66,18 @@ class TLBotResults() : TLObject() {
         this.queryId = queryId
         this.nextOffset = nextOffset
         this.switchPm = switchPm
+        this.switchWebview = switchWebview
         this.results = results
         this.cacheTime = cacheTime
         this.users = users
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(gallery, 1)
         updateFlags(nextOffset, 2)
         updateFlags(switchPm, 4)
+        updateFlags(switchWebview, 8)
     }
 
     @Throws(IOException::class)
@@ -72,6 +88,7 @@ class TLBotResults() : TLObject() {
         writeLong(queryId)
         doIfMask(nextOffset, 2) { writeString(it) }
         doIfMask(switchPm, 4) { writeTLObject(it) }
+        doIfMask(switchWebview, 8) { writeTLObject(it) }
         writeTLVector(results)
         writeInt(cacheTime)
         writeTLVector(users)
@@ -84,6 +101,7 @@ class TLBotResults() : TLObject() {
         queryId = readLong()
         nextOffset = readIfMask(2) { readString() }
         switchPm = readIfMask(4) { readTLObject<TLInlineBotSwitchPM>(TLInlineBotSwitchPM::class, TLInlineBotSwitchPM.CONSTRUCTOR_ID) }
+        switchWebview = readIfMask(8) { readTLObject<TLInlineBotWebView>(TLInlineBotWebView::class, TLInlineBotWebView.CONSTRUCTOR_ID) }
         results = readTLVector<TLAbsBotInlineResult>()
         cacheTime = readInt()
         users = readTLVector<TLAbsUser>()
@@ -97,6 +115,7 @@ class TLBotResults() : TLObject() {
         size += SIZE_INT64
         size += getIntIfMask(nextOffset, 2) { computeTLStringSerializedSize(it) }
         size += getIntIfMask(switchPm, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(switchWebview, 8) { it.computeSerializedSize() }
         size += results.computeSerializedSize()
         size += SIZE_INT32
         size += users.computeSerializedSize()
@@ -114,11 +133,12 @@ class TLBotResults() : TLObject() {
                 && queryId == other.queryId
                 && nextOffset == other.nextOffset
                 && switchPm == other.switchPm
+                && switchWebview == other.switchWebview
                 && results == other.results
                 && cacheTime == other.cacheTime
                 && users == other.users
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x947ca848.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xe021f2f6.toInt()
     }
 }

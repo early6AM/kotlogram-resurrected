@@ -1,12 +1,23 @@
 package com.github.badoualy.telegram.tl.api.messages
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsUser
-import com.github.badoualy.telegram.tl.api.TLChatInviteExported
+import com.github.badoualy.telegram.tl.api.TLChatInvitePublicJoinRequests
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
  * messages.exportedChatInviteReplaced#222600ef
@@ -15,9 +26,9 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLExportedChatInviteReplaced() : TLAbsExportedChatInvite() {
-    override var invite: TLChatInviteExported = TLChatInviteExported()
+    override var invite: com.github.badoualy.telegram.tl.api.TLAbsExportedChatInvite = TLChatInvitePublicJoinRequests()
 
-    var newInvite: TLChatInviteExported = TLChatInviteExported()
+    var newInvite: com.github.badoualy.telegram.tl.api.TLAbsExportedChatInvite = TLChatInvitePublicJoinRequests()
 
     override var users: TLObjectVector<TLAbsUser> = TLObjectVector()
 
@@ -26,8 +37,8 @@ class TLExportedChatInviteReplaced() : TLAbsExportedChatInvite() {
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
-            invite: TLChatInviteExported,
-            newInvite: TLChatInviteExported,
+            invite: com.github.badoualy.telegram.tl.api.TLAbsExportedChatInvite,
+            newInvite: com.github.badoualy.telegram.tl.api.TLAbsExportedChatInvite,
             users: TLObjectVector<TLAbsUser>
     ) : this() {
         this.invite = invite
@@ -44,8 +55,8 @@ class TLExportedChatInviteReplaced() : TLAbsExportedChatInvite() {
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        invite = readTLObject<TLChatInviteExported>(TLChatInviteExported::class, TLChatInviteExported.CONSTRUCTOR_ID)
-        newInvite = readTLObject<TLChatInviteExported>(TLChatInviteExported::class, TLChatInviteExported.CONSTRUCTOR_ID)
+        invite = readTLObject<com.github.badoualy.telegram.tl.api.TLAbsExportedChatInvite>()
+        newInvite = readTLObject<com.github.badoualy.telegram.tl.api.TLAbsExportedChatInvite>()
         users = readTLVector<TLAbsUser>()
     }
 
@@ -68,6 +79,6 @@ class TLExportedChatInviteReplaced() : TLAbsExportedChatInvite() {
                 && users == other.users
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x222600ef
+        const val CONSTRUCTOR_ID: Int = 0x222600ef.toInt()
     }
 }

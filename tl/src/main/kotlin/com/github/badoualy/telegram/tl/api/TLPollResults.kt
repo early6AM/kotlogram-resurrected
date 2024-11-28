@@ -1,17 +1,26 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
-import com.github.badoualy.telegram.tl.core.TLLongVector
 import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
- * pollResults#dcb82ea3
+ * pollResults#7adf2420
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -24,13 +33,13 @@ class TLPollResults() : TLObject() {
 
     var totalVoters: Int? = null
 
-    var recentVoters: TLLongVector? = null
+    var recentVoters: TLObjectVector<TLAbsPeer>? = TLObjectVector()
 
     var solution: String? = null
 
     var solutionEntities: TLObjectVector<TLAbsMessageEntity>? = TLObjectVector()
 
-    private val _constructor: String = "pollResults#dcb82ea3"
+    private val _constructor: String = "pollResults#7adf2420"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -38,7 +47,7 @@ class TLPollResults() : TLObject() {
             min: Boolean,
             results: TLObjectVector<TLPollAnswerVoters>?,
             totalVoters: Int?,
-            recentVoters: TLLongVector?,
+            recentVoters: TLObjectVector<TLAbsPeer>?,
             solution: String?,
             solutionEntities: TLObjectVector<TLAbsMessageEntity>?
     ) : this() {
@@ -50,7 +59,7 @@ class TLPollResults() : TLObject() {
         this.solutionEntities = solutionEntities
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(min, 1)
         updateFlags(results, 2)
@@ -78,7 +87,7 @@ class TLPollResults() : TLObject() {
         min = isMask(1)
         results = readIfMask(2) { readTLVector<TLPollAnswerVoters>() }
         totalVoters = readIfMask(4) { readInt() }
-        recentVoters = readIfMask(8) { readTLLongVector() }
+        recentVoters = readIfMask(8) { readTLVector<TLAbsPeer>() }
         solution = readIfMask(16) { readString() }
         solutionEntities = readIfMask(16) { readTLVector<TLAbsMessageEntity>() }
     }
@@ -111,6 +120,6 @@ class TLPollResults() : TLObject() {
                 && solutionEntities == other.solutionEntities
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xdcb82ea3.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x7adf2420.toInt()
     }
 }

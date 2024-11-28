@@ -1,6 +1,8 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
@@ -9,6 +11,13 @@ import com.github.badoualy.telegram.tl.core.TLBytes
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * messageActionPaymentSentMe#8f31b327
@@ -17,6 +26,12 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLMessageActionPaymentSentMe() : TLAbsMessageAction() {
+    @Transient
+    var recurringInit: Boolean = false
+
+    @Transient
+    var recurringUsed: Boolean = false
+
     var currency: String = ""
 
     var totalAmount: Long = 0L
@@ -34,6 +49,8 @@ class TLMessageActionPaymentSentMe() : TLAbsMessageAction() {
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
+            recurringInit: Boolean,
+            recurringUsed: Boolean,
             currency: String,
             totalAmount: Long,
             payload: TLBytes,
@@ -41,6 +58,8 @@ class TLMessageActionPaymentSentMe() : TLAbsMessageAction() {
             shippingOptionId: String?,
             charge: TLPaymentCharge
     ) : this() {
+        this.recurringInit = recurringInit
+        this.recurringUsed = recurringUsed
         this.currency = currency
         this.totalAmount = totalAmount
         this.payload = payload
@@ -49,8 +68,10 @@ class TLMessageActionPaymentSentMe() : TLAbsMessageAction() {
         this.charge = charge
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
+        updateFlags(recurringInit, 4)
+        updateFlags(recurringUsed, 8)
         updateFlags(info, 1)
         updateFlags(shippingOptionId, 2)
     }
@@ -71,6 +92,8 @@ class TLMessageActionPaymentSentMe() : TLAbsMessageAction() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
+        recurringInit = isMask(4)
+        recurringUsed = isMask(8)
         currency = readString()
         totalAmount = readLong()
         payload = readTLBytes()
@@ -100,6 +123,8 @@ class TLMessageActionPaymentSentMe() : TLAbsMessageAction() {
         if (other === this) return true
 
         return _flags == other._flags
+                && recurringInit == other.recurringInit
+                && recurringUsed == other.recurringUsed
                 && currency == other.currency
                 && totalAmount == other.totalAmount
                 && payload == other.payload

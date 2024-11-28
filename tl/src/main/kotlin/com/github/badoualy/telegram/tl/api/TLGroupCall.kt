@@ -1,12 +1,22 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * groupCall#d597650c
@@ -32,6 +42,12 @@ class TLGroupCall() : TLAbsGroupCall() {
 
     @Transient
     var recordVideoActive: Boolean = false
+
+    @Transient
+    var rtmpStream: Boolean = false
+
+    @Transient
+    var listenersHidden: Boolean = false
 
     override var id: Long = 0L
 
@@ -64,6 +80,8 @@ class TLGroupCall() : TLAbsGroupCall() {
             scheduleStartSubscribed: Boolean,
             canStartVideo: Boolean,
             recordVideoActive: Boolean,
+            rtmpStream: Boolean,
+            listenersHidden: Boolean,
             id: Long,
             accessHash: Long,
             participantsCount: Int,
@@ -81,6 +99,8 @@ class TLGroupCall() : TLAbsGroupCall() {
         this.scheduleStartSubscribed = scheduleStartSubscribed
         this.canStartVideo = canStartVideo
         this.recordVideoActive = recordVideoActive
+        this.rtmpStream = rtmpStream
+        this.listenersHidden = listenersHidden
         this.id = id
         this.accessHash = accessHash
         this.participantsCount = participantsCount
@@ -93,7 +113,7 @@ class TLGroupCall() : TLAbsGroupCall() {
         this.version = version
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(joinMuted, 2)
         updateFlags(canChangeJoinMuted, 4)
@@ -101,6 +121,8 @@ class TLGroupCall() : TLAbsGroupCall() {
         updateFlags(scheduleStartSubscribed, 256)
         updateFlags(canStartVideo, 512)
         updateFlags(recordVideoActive, 2048)
+        updateFlags(rtmpStream, 4096)
+        updateFlags(listenersHidden, 8192)
         updateFlags(title, 8)
         updateFlags(streamDcId, 16)
         updateFlags(recordStartDate, 32)
@@ -134,6 +156,8 @@ class TLGroupCall() : TLAbsGroupCall() {
         scheduleStartSubscribed = isMask(256)
         canStartVideo = isMask(512)
         recordVideoActive = isMask(2048)
+        rtmpStream = isMask(4096)
+        listenersHidden = isMask(8192)
         id = readLong()
         accessHash = readLong()
         participantsCount = readInt()
@@ -177,6 +201,8 @@ class TLGroupCall() : TLAbsGroupCall() {
                 && scheduleStartSubscribed == other.scheduleStartSubscribed
                 && canStartVideo == other.canStartVideo
                 && recordVideoActive == other.recordVideoActive
+                && rtmpStream == other.rtmpStream
+                && listenersHidden == other.listenersHidden
                 && id == other.id
                 && accessHash == other.accessHash
                 && participantsCount == other.participantsCount

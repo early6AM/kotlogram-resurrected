@@ -1,7 +1,11 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputTheme
 import com.github.badoualy.telegram.tl.api.TLInputThemeSlug
@@ -10,6 +14,11 @@ import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
@@ -20,20 +29,13 @@ class TLRequestAccountGetTheme() : TLMethod<TLTheme>() {
 
     var theme: TLAbsInputTheme = TLInputThemeSlug()
 
-    var documentId: Long = 0L
-
-    private val _constructor: String = "account.getTheme#8d9d742b"
+    private val _constructor: String = "account.getTheme#3a5869ec"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(
-            format: String,
-            theme: TLAbsInputTheme,
-            documentId: Long
-    ) : this() {
+    constructor(format: String, theme: TLAbsInputTheme) : this() {
         this.format = format
         this.theme = theme
-        this.documentId = documentId
     }
 
     @Throws(IOException::class)
@@ -43,21 +45,18 @@ class TLRequestAccountGetTheme() : TLMethod<TLTheme>() {
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
         writeString(format)
         writeTLObject(theme)
-        writeLong(documentId)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         format = readString()
         theme = readTLObject<TLAbsInputTheme>()
-        documentId = readLong()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
         size += computeTLStringSerializedSize(format)
         size += theme.computeSerializedSize()
-        size += SIZE_INT64
         return size
     }
 
@@ -69,9 +68,8 @@ class TLRequestAccountGetTheme() : TLMethod<TLTheme>() {
 
         return format == other.format
                 && theme == other.theme
-                && documentId == other.documentId
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x8d9d742b.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3a5869ec.toInt()
     }
 }

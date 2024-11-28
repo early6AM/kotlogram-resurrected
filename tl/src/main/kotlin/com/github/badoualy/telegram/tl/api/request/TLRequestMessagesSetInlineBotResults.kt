@@ -1,17 +1,28 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputBotInlineResult
 import com.github.badoualy.telegram.tl.api.TLInlineBotSwitchPM
+import com.github.badoualy.telegram.tl.api.TLInlineBotWebView
 import com.github.badoualy.telegram.tl.core.TLBool
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
@@ -34,7 +45,9 @@ class TLRequestMessagesSetInlineBotResults() : TLMethod<TLBool>() {
 
     var switchPm: TLInlineBotSwitchPM? = null
 
-    private val _constructor: String = "messages.setInlineBotResults#eb5ea206"
+    var switchWebview: TLInlineBotWebView? = null
+
+    private val _constructor: String = "messages.setInlineBotResults#bb12a419"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -45,7 +58,8 @@ class TLRequestMessagesSetInlineBotResults() : TLMethod<TLBool>() {
             results: TLObjectVector<TLAbsInputBotInlineResult>,
             cacheTime: Int,
             nextOffset: String?,
-            switchPm: TLInlineBotSwitchPM?
+            switchPm: TLInlineBotSwitchPM?,
+            switchWebview: TLInlineBotWebView?
     ) : this() {
         this.gallery = gallery
         this._private = _private
@@ -54,14 +68,16 @@ class TLRequestMessagesSetInlineBotResults() : TLMethod<TLBool>() {
         this.cacheTime = cacheTime
         this.nextOffset = nextOffset
         this.switchPm = switchPm
+        this.switchWebview = switchWebview
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(gallery, 1)
         updateFlags(_private, 2)
         updateFlags(nextOffset, 4)
         updateFlags(switchPm, 8)
+        updateFlags(switchWebview, 16)
     }
 
     @Throws(IOException::class)
@@ -74,6 +90,7 @@ class TLRequestMessagesSetInlineBotResults() : TLMethod<TLBool>() {
         writeInt(cacheTime)
         doIfMask(nextOffset, 4) { writeString(it) }
         doIfMask(switchPm, 8) { writeTLObject(it) }
+        doIfMask(switchWebview, 16) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
@@ -86,6 +103,7 @@ class TLRequestMessagesSetInlineBotResults() : TLMethod<TLBool>() {
         cacheTime = readInt()
         nextOffset = readIfMask(4) { readString() }
         switchPm = readIfMask(8) { readTLObject<TLInlineBotSwitchPM>(TLInlineBotSwitchPM::class, TLInlineBotSwitchPM.CONSTRUCTOR_ID) }
+        switchWebview = readIfMask(16) { readTLObject<TLInlineBotWebView>(TLInlineBotWebView::class, TLInlineBotWebView.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -98,6 +116,7 @@ class TLRequestMessagesSetInlineBotResults() : TLMethod<TLBool>() {
         size += SIZE_INT32
         size += getIntIfMask(nextOffset, 4) { computeTLStringSerializedSize(it) }
         size += getIntIfMask(switchPm, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(switchWebview, 16) { it.computeSerializedSize() }
         return size
     }
 
@@ -115,8 +134,9 @@ class TLRequestMessagesSetInlineBotResults() : TLMethod<TLBool>() {
                 && cacheTime == other.cacheTime
                 && nextOffset == other.nextOffset
                 && switchPm == other.switchPm
+                && switchWebview == other.switchWebview
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xeb5ea206.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xbb12a419.toInt()
     }
 }

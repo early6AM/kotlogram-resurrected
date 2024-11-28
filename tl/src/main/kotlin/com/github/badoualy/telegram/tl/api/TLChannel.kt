@@ -1,16 +1,26 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
- * channel#8261ac61
+ * channel#aadfc8f
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -67,6 +77,24 @@ class TLChannel() : TLAbsChat() {
     @Transient
     var noforwards: Boolean = false
 
+    @Transient
+    var joinToSend: Boolean = false
+
+    @Transient
+    var joinRequest: Boolean = false
+
+    @Transient
+    var forum: Boolean = false
+
+    @Transient
+    var storiesHidden: Boolean = false
+
+    @Transient
+    var storiesHiddenMin: Boolean = false
+
+    @Transient
+    var storiesUnavailable: Boolean = false
+
     override var id: Long = 0L
 
     var accessHash: Long? = null
@@ -89,7 +117,19 @@ class TLChannel() : TLAbsChat() {
 
     var participantsCount: Int? = null
 
-    private val _constructor: String = "channel#8261ac61"
+    var usernames: TLObjectVector<TLUsername>? = TLObjectVector()
+
+    var storiesMaxId: Int? = null
+
+    var color: TLPeerColor? = null
+
+    var profileColor: TLPeerColor? = null
+
+    var emojiStatus: TLAbsEmojiStatus? = null
+
+    var level: Int? = null
+
+    private val _constructor: String = "channel#aadfc8f"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -111,6 +151,12 @@ class TLChannel() : TLAbsChat() {
             fake: Boolean,
             gigagroup: Boolean,
             noforwards: Boolean,
+            joinToSend: Boolean,
+            joinRequest: Boolean,
+            forum: Boolean,
+            storiesHidden: Boolean,
+            storiesHiddenMin: Boolean,
+            storiesUnavailable: Boolean,
             id: Long,
             accessHash: Long?,
             title: String,
@@ -121,7 +167,13 @@ class TLChannel() : TLAbsChat() {
             adminRights: TLChatAdminRights?,
             bannedRights: TLChatBannedRights?,
             defaultBannedRights: TLChatBannedRights?,
-            participantsCount: Int?
+            participantsCount: Int?,
+            usernames: TLObjectVector<TLUsername>?,
+            storiesMaxId: Int?,
+            color: TLPeerColor?,
+            profileColor: TLPeerColor?,
+            emojiStatus: TLAbsEmojiStatus?,
+            level: Int?
     ) : this() {
         this.creator = creator
         this.left = left
@@ -140,6 +192,12 @@ class TLChannel() : TLAbsChat() {
         this.fake = fake
         this.gigagroup = gigagroup
         this.noforwards = noforwards
+        this.joinToSend = joinToSend
+        this.joinRequest = joinRequest
+        this.forum = forum
+        this.storiesHidden = storiesHidden
+        this.storiesHiddenMin = storiesHiddenMin
+        this.storiesUnavailable = storiesUnavailable
         this.id = id
         this.accessHash = accessHash
         this.title = title
@@ -151,9 +209,15 @@ class TLChannel() : TLAbsChat() {
         this.bannedRights = bannedRights
         this.defaultBannedRights = defaultBannedRights
         this.participantsCount = participantsCount
+        this.usernames = usernames
+        this.storiesMaxId = storiesMaxId
+        this.color = color
+        this.profileColor = profileColor
+        this.emojiStatus = emojiStatus
+        this.level = level
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(creator, 1)
         updateFlags(left, 4)
@@ -172,6 +236,12 @@ class TLChannel() : TLAbsChat() {
         updateFlags(fake, 33554432)
         updateFlags(gigagroup, 67108864)
         updateFlags(noforwards, 134217728)
+        updateFlags(joinToSend, 268435456)
+        updateFlags(joinRequest, 536870912)
+        updateFlags(forum, 1073741824)
+        updateFlags(storiesHidden, 2)
+        updateFlags(storiesHiddenMin, 4)
+        updateFlags(storiesUnavailable, 8)
         updateFlags(accessHash, 8192)
         updateFlags(username, 64)
         updateFlags(restrictionReason, 512)
@@ -179,15 +249,27 @@ class TLChannel() : TLAbsChat() {
         updateFlags(bannedRights, 32768)
         updateFlags(defaultBannedRights, 262144)
         updateFlags(participantsCount, 131072)
+        updateFlags(usernames, 1)
+        updateFlags(storiesMaxId, 16)
+        updateFlags(color, 128)
+        updateFlags(profileColor, 256)
+        updateFlags(emojiStatus, 512)
+        updateFlags(level, 1024)
 
         // Following parameters might be forced to true by another field that updated the flags
+        creator = isMask(1)
+        left = isMask(4)
+        verified = isMask(128)
+        megagroup = isMask(256)
         restricted = isMask(512)
+        storiesHiddenMin = isMask(4)
     }
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
         computeFlags()
 
+        writeInt(_flags)
         writeInt(_flags)
         writeLong(id)
         doIfMask(accessHash, 8192) { writeLong(it) }
@@ -200,6 +282,12 @@ class TLChannel() : TLAbsChat() {
         doIfMask(bannedRights, 32768) { writeTLObject(it) }
         doIfMask(defaultBannedRights, 262144) { writeTLObject(it) }
         doIfMask(participantsCount, 131072) { writeInt(it) }
+        doIfMask(usernames, 1) { writeTLVector(it) }
+        doIfMask(storiesMaxId, 16) { writeInt(it) }
+        doIfMask(color, 128) { writeTLObject(it) }
+        doIfMask(profileColor, 256) { writeTLObject(it) }
+        doIfMask(emojiStatus, 512) { writeTLObject(it) }
+        doIfMask(level, 1024) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -222,6 +310,13 @@ class TLChannel() : TLAbsChat() {
         fake = isMask(33554432)
         gigagroup = isMask(67108864)
         noforwards = isMask(134217728)
+        joinToSend = isMask(268435456)
+        joinRequest = isMask(536870912)
+        forum = isMask(1073741824)
+        _flags = readInt()
+        storiesHidden = isMask(2)
+        storiesHiddenMin = isMask(4)
+        storiesUnavailable = isMask(8)
         id = readLong()
         accessHash = readIfMask(8192) { readLong() }
         title = readString()
@@ -233,12 +328,19 @@ class TLChannel() : TLAbsChat() {
         bannedRights = readIfMask(32768) { readTLObject<TLChatBannedRights>(TLChatBannedRights::class, TLChatBannedRights.CONSTRUCTOR_ID) }
         defaultBannedRights = readIfMask(262144) { readTLObject<TLChatBannedRights>(TLChatBannedRights::class, TLChatBannedRights.CONSTRUCTOR_ID) }
         participantsCount = readIfMask(131072) { readInt() }
+        usernames = readIfMask(1) { readTLVector<TLUsername>() }
+        storiesMaxId = readIfMask(16) { readInt() }
+        color = readIfMask(128) { readTLObject<TLPeerColor>(TLPeerColor::class, TLPeerColor.CONSTRUCTOR_ID) }
+        profileColor = readIfMask(256) { readTLObject<TLPeerColor>(TLPeerColor::class, TLPeerColor.CONSTRUCTOR_ID) }
+        emojiStatus = readIfMask(512) { readTLObject<TLAbsEmojiStatus>() }
+        level = readIfMask(1024) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
         computeFlags()
 
         var size = SIZE_CONSTRUCTOR_ID
+        size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT64
         size += getIntIfMask(accessHash, 8192) { SIZE_INT64 }
@@ -251,6 +353,12 @@ class TLChannel() : TLAbsChat() {
         size += getIntIfMask(bannedRights, 32768) { it.computeSerializedSize() }
         size += getIntIfMask(defaultBannedRights, 262144) { it.computeSerializedSize() }
         size += getIntIfMask(participantsCount, 131072) { SIZE_INT32 }
+        size += getIntIfMask(usernames, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(storiesMaxId, 16) { SIZE_INT32 }
+        size += getIntIfMask(color, 128) { it.computeSerializedSize() }
+        size += getIntIfMask(profileColor, 256) { it.computeSerializedSize() }
+        size += getIntIfMask(emojiStatus, 512) { it.computeSerializedSize() }
+        size += getIntIfMask(level, 1024) { SIZE_INT32 }
         return size
     }
 
@@ -278,6 +386,13 @@ class TLChannel() : TLAbsChat() {
                 && fake == other.fake
                 && gigagroup == other.gigagroup
                 && noforwards == other.noforwards
+                && joinToSend == other.joinToSend
+                && joinRequest == other.joinRequest
+                && forum == other.forum
+                && _flags == other._flags
+                && storiesHidden == other.storiesHidden
+                && storiesHiddenMin == other.storiesHiddenMin
+                && storiesUnavailable == other.storiesUnavailable
                 && id == other.id
                 && accessHash == other.accessHash
                 && title == other.title
@@ -289,8 +404,14 @@ class TLChannel() : TLAbsChat() {
                 && bannedRights == other.bannedRights
                 && defaultBannedRights == other.defaultBannedRights
                 && participantsCount == other.participantsCount
+                && usernames == other.usernames
+                && storiesMaxId == other.storiesMaxId
+                && color == other.color
+                && profileColor == other.profileColor
+                && emojiStatus == other.emojiStatus
+                && level == other.level
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x8261ac61.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xaadfc8f.toInt()
     }
 }

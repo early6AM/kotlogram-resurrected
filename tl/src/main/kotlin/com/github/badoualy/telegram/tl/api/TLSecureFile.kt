@@ -1,16 +1,25 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLBytes
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
- * secureFile#e0277a62
+ * secureFile#7d09c27e
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -20,7 +29,7 @@ class TLSecureFile() : TLAbsSecureFile() {
 
     var accessHash: Long = 0L
 
-    var size: Int = 0
+    var size: Long = 0L
 
     var dcId: Int = 0
 
@@ -30,14 +39,14 @@ class TLSecureFile() : TLAbsSecureFile() {
 
     var secret: TLBytes = TLBytes.EMPTY
 
-    private val _constructor: String = "secureFile#e0277a62"
+    private val _constructor: String = "secureFile#7d09c27e"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             id: Long,
             accessHash: Long,
-            size: Int,
+            size: Long,
             dcId: Int,
             date: Int,
             fileHash: TLBytes,
@@ -56,7 +65,7 @@ class TLSecureFile() : TLAbsSecureFile() {
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
         writeLong(id)
         writeLong(accessHash)
-        writeInt(size)
+        writeLong(size)
         writeInt(dcId)
         writeInt(date)
         writeTLBytes(fileHash)
@@ -67,7 +76,7 @@ class TLSecureFile() : TLAbsSecureFile() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         id = readLong()
         accessHash = readLong()
-        size = readInt()
+        size = readLong()
         dcId = readInt()
         date = readInt()
         fileHash = readTLBytes()
@@ -78,7 +87,7 @@ class TLSecureFile() : TLAbsSecureFile() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT64
         size += SIZE_INT64
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += SIZE_INT32
         size += SIZE_INT32
         size += computeTLBytesSerializedSize(fileHash)
@@ -101,6 +110,6 @@ class TLSecureFile() : TLAbsSecureFile() {
                 && secret == other.secret
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xe0277a62.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x7d09c27e.toInt()
     }
 }

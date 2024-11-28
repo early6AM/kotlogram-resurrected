@@ -1,15 +1,25 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
- * messageMediaInvoice#84551347
+ * messageMediaInvoice#f6a548d3
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -35,7 +45,9 @@ class TLMessageMediaInvoice() : TLAbsMessageMedia() {
 
     var startParam: String = ""
 
-    private val _constructor: String = "messageMediaInvoice#84551347"
+    var extendedMedia: TLAbsMessageExtendedMedia? = null
+
+    private val _constructor: String = "messageMediaInvoice#f6a548d3"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -48,7 +60,8 @@ class TLMessageMediaInvoice() : TLAbsMessageMedia() {
             receiptMsgId: Int?,
             currency: String,
             totalAmount: Long,
-            startParam: String
+            startParam: String,
+            extendedMedia: TLAbsMessageExtendedMedia?
     ) : this() {
         this.shippingAddressRequested = shippingAddressRequested
         this.test = test
@@ -59,14 +72,16 @@ class TLMessageMediaInvoice() : TLAbsMessageMedia() {
         this.currency = currency
         this.totalAmount = totalAmount
         this.startParam = startParam
+        this.extendedMedia = extendedMedia
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(shippingAddressRequested, 2)
         updateFlags(test, 8)
         updateFlags(photo, 1)
         updateFlags(receiptMsgId, 4)
+        updateFlags(extendedMedia, 16)
     }
 
     @Throws(IOException::class)
@@ -81,6 +96,7 @@ class TLMessageMediaInvoice() : TLAbsMessageMedia() {
         writeString(currency)
         writeLong(totalAmount)
         writeString(startParam)
+        doIfMask(extendedMedia, 16) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
@@ -95,6 +111,7 @@ class TLMessageMediaInvoice() : TLAbsMessageMedia() {
         currency = readString()
         totalAmount = readLong()
         startParam = readString()
+        extendedMedia = readIfMask(16) { readTLObject<TLAbsMessageExtendedMedia>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -109,6 +126,7 @@ class TLMessageMediaInvoice() : TLAbsMessageMedia() {
         size += computeTLStringSerializedSize(currency)
         size += SIZE_INT64
         size += computeTLStringSerializedSize(startParam)
+        size += getIntIfMask(extendedMedia, 16) { it.computeSerializedSize() }
         return size
     }
 
@@ -128,8 +146,9 @@ class TLMessageMediaInvoice() : TLAbsMessageMedia() {
                 && currency == other.currency
                 && totalAmount == other.totalAmount
                 && startParam == other.startParam
+                && extendedMedia == other.extendedMedia
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x84551347.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xf6a548d3.toInt()
     }
 }

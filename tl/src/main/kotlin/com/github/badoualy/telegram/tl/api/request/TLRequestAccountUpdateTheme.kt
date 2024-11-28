@@ -1,7 +1,11 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputDocument
 import com.github.badoualy.telegram.tl.api.TLAbsInputTheme
@@ -9,9 +13,15 @@ import com.github.badoualy.telegram.tl.api.TLInputThemeSettings
 import com.github.badoualy.telegram.tl.api.TLInputThemeSlug
 import com.github.badoualy.telegram.tl.api.TLTheme
 import com.github.badoualy.telegram.tl.core.TLMethod
+import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
@@ -28,9 +38,9 @@ class TLRequestAccountUpdateTheme() : TLMethod<TLTheme>() {
 
     var document: TLAbsInputDocument? = null
 
-    var settings: TLInputThemeSettings? = null
+    var settings: TLObjectVector<TLInputThemeSettings>? = TLObjectVector()
 
-    private val _constructor: String = "account.updateTheme#5cb367d5"
+    private val _constructor: String = "account.updateTheme#2bf40ccc"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -40,7 +50,7 @@ class TLRequestAccountUpdateTheme() : TLMethod<TLTheme>() {
             slug: String?,
             title: String?,
             document: TLAbsInputDocument?,
-            settings: TLInputThemeSettings?
+            settings: TLObjectVector<TLInputThemeSettings>?
     ) : this() {
         this.format = format
         this.theme = theme
@@ -53,7 +63,7 @@ class TLRequestAccountUpdateTheme() : TLMethod<TLTheme>() {
     @Throws(IOException::class)
     override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLTheme = tlDeserializer.readTLObject(TLTheme::class, TLTheme.CONSTRUCTOR_ID)
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(slug, 1)
         updateFlags(title, 2)
@@ -71,7 +81,7 @@ class TLRequestAccountUpdateTheme() : TLMethod<TLTheme>() {
         doIfMask(slug, 1) { writeString(it) }
         doIfMask(title, 2) { writeString(it) }
         doIfMask(document, 4) { writeTLObject(it) }
-        doIfMask(settings, 8) { writeTLObject(it) }
+        doIfMask(settings, 8) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
@@ -82,7 +92,7 @@ class TLRequestAccountUpdateTheme() : TLMethod<TLTheme>() {
         slug = readIfMask(1) { readString() }
         title = readIfMask(2) { readString() }
         document = readIfMask(4) { readTLObject<TLAbsInputDocument>() }
-        settings = readIfMask(8) { readTLObject<TLInputThemeSettings>(TLInputThemeSettings::class, TLInputThemeSettings.CONSTRUCTOR_ID) }
+        settings = readIfMask(8) { readTLVector<TLInputThemeSettings>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -114,6 +124,6 @@ class TLRequestAccountUpdateTheme() : TLMethod<TLTheme>() {
                 && settings == other.settings
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x5cb367d5
+        const val CONSTRUCTOR_ID: Int = 0x2bf40ccc.toInt()
     }
 }

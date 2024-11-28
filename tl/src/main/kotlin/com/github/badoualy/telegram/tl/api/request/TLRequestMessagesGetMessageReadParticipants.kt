@@ -1,25 +1,36 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
 import com.github.badoualy.telegram.tl.api.TLInputPeerEmpty
-import com.github.badoualy.telegram.tl.core.TLLongVector
+import com.github.badoualy.telegram.tl.api.TLReadParticipantDate
 import com.github.badoualy.telegram.tl.core.TLMethod
+import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
-class TLRequestMessagesGetMessageReadParticipants() : TLMethod<TLLongVector>() {
+class TLRequestMessagesGetMessageReadParticipants() : TLMethod<TLObjectVector<TLReadParticipantDate>>() {
     var peer: TLAbsInputPeer = TLInputPeerEmpty()
 
     var msgId: Int = 0
 
-    private val _constructor: String = "messages.getMessageReadParticipants#2c6f97b7"
+    private val _constructor: String = "messages.getMessageReadParticipants#31c1c44f"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -29,7 +40,7 @@ class TLRequestMessagesGetMessageReadParticipants() : TLMethod<TLLongVector>() {
     }
 
     @Throws(IOException::class)
-    override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLLongVector = tlDeserializer.readTLLongVector()
+    override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLObjectVector<TLReadParticipantDate> = tlDeserializer.readTLVector<TLReadParticipantDate>()
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
@@ -60,6 +71,6 @@ class TLRequestMessagesGetMessageReadParticipants() : TLMethod<TLLongVector>() {
                 && msgId == other.msgId
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x2c6f97b7
+        const val CONSTRUCTOR_ID: Int = 0x31c1c44f.toInt()
     }
 }

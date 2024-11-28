@@ -1,29 +1,48 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputDocument
 import com.github.badoualy.telegram.tl.api.TLAbsInputUser
 import com.github.badoualy.telegram.tl.api.TLInputStickerSetItem
 import com.github.badoualy.telegram.tl.api.TLInputUserEmpty
-import com.github.badoualy.telegram.tl.api.messages.TLStickerSet
+import com.github.badoualy.telegram.tl.api.messages.TLAbsStickerSet
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
-class TLRequestStickersCreateStickerSet() : TLMethod<TLStickerSet>() {
+class TLRequestStickersCreateStickerSet() : TLMethod<TLAbsStickerSet>() {
     @Transient
     var masks: Boolean = false
 
     @Transient
     var animated: Boolean = false
+
+    @Transient
+    var videos: Boolean = false
+
+    @Transient
+    var emojis: Boolean = false
+
+    @Transient
+    var textColor: Boolean = false
 
     var userId: TLAbsInputUser = TLInputUserEmpty()
 
@@ -44,6 +63,9 @@ class TLRequestStickersCreateStickerSet() : TLMethod<TLStickerSet>() {
     constructor(
             masks: Boolean,
             animated: Boolean,
+            videos: Boolean,
+            emojis: Boolean,
+            textColor: Boolean,
             userId: TLAbsInputUser,
             title: String,
             shortName: String,
@@ -53,6 +75,9 @@ class TLRequestStickersCreateStickerSet() : TLMethod<TLStickerSet>() {
     ) : this() {
         this.masks = masks
         this.animated = animated
+        this.videos = videos
+        this.emojis = emojis
+        this.textColor = textColor
         this.userId = userId
         this.title = title
         this.shortName = shortName
@@ -61,13 +86,13 @@ class TLRequestStickersCreateStickerSet() : TLMethod<TLStickerSet>() {
         this.software = software
     }
 
-    @Throws(IOException::class)
-    override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLStickerSet = tlDeserializer.readTLObject(TLStickerSet::class, TLStickerSet.CONSTRUCTOR_ID)
-
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(masks, 1)
         updateFlags(animated, 2)
+        updateFlags(videos, 16)
+        updateFlags(emojis, 32)
+        updateFlags(textColor, 64)
         updateFlags(thumb, 4)
         updateFlags(software, 8)
     }
@@ -90,6 +115,9 @@ class TLRequestStickersCreateStickerSet() : TLMethod<TLStickerSet>() {
         _flags = readInt()
         masks = isMask(1)
         animated = isMask(2)
+        videos = isMask(16)
+        emojis = isMask(32)
+        textColor = isMask(64)
         userId = readTLObject<TLAbsInputUser>()
         title = readString()
         shortName = readString()
@@ -121,6 +149,9 @@ class TLRequestStickersCreateStickerSet() : TLMethod<TLStickerSet>() {
         return _flags == other._flags
                 && masks == other.masks
                 && animated == other.animated
+                && videos == other.videos
+                && emojis == other.emojis
+                && textColor == other.textColor
                 && userId == other.userId
                 && title == other.title
                 && shortName == other.shortName

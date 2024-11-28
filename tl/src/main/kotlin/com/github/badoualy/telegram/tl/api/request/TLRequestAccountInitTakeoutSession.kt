@@ -1,12 +1,24 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.account.TLTakeout
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
@@ -31,9 +43,9 @@ class TLRequestAccountInitTakeoutSession() : TLMethod<TLTakeout>() {
     @Transient
     var files: Boolean = false
 
-    var fileMaxSize: Int? = null
+    var fileMaxSize: Long? = null
 
-    private val _constructor: String = "account.initTakeoutSession#f05b4804"
+    private val _constructor: String = "account.initTakeoutSession#8ef3eab0"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -44,7 +56,7 @@ class TLRequestAccountInitTakeoutSession() : TLMethod<TLTakeout>() {
             messageMegagroups: Boolean,
             messageChannels: Boolean,
             files: Boolean,
-            fileMaxSize: Int?
+            fileMaxSize: Long?
     ) : this() {
         this.contacts = contacts
         this.messageUsers = messageUsers
@@ -58,7 +70,7 @@ class TLRequestAccountInitTakeoutSession() : TLMethod<TLTakeout>() {
     @Throws(IOException::class)
     override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLTakeout = tlDeserializer.readTLObject(TLTakeout::class, TLTakeout.CONSTRUCTOR_ID)
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(contacts, 1)
         updateFlags(messageUsers, 2)
@@ -77,7 +89,7 @@ class TLRequestAccountInitTakeoutSession() : TLMethod<TLTakeout>() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(fileMaxSize, 32) { writeInt(it) }
+        doIfMask(fileMaxSize, 32) { writeLong(it) }
     }
 
     @Throws(IOException::class)
@@ -89,7 +101,7 @@ class TLRequestAccountInitTakeoutSession() : TLMethod<TLTakeout>() {
         messageMegagroups = isMask(8)
         messageChannels = isMask(16)
         files = isMask(32)
-        fileMaxSize = readIfMask(32) { readInt() }
+        fileMaxSize = readIfMask(32) { readLong() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -97,7 +109,7 @@ class TLRequestAccountInitTakeoutSession() : TLMethod<TLTakeout>() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(fileMaxSize, 32) { SIZE_INT32 }
+        size += getIntIfMask(fileMaxSize, 32) { SIZE_INT64 }
         return size
     }
 
@@ -117,6 +129,6 @@ class TLRequestAccountInitTakeoutSession() : TLMethod<TLTakeout>() {
                 && fileMaxSize == other.fileMaxSize
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xf05b4804.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x8ef3eab0.toInt()
     }
 }

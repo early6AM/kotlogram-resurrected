@@ -1,15 +1,25 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
- * messageFwdHeader#5f777dce
+ * messageFwdHeader#4e4df4bb
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -17,6 +27,9 @@ import java.io.IOException
 class TLMessageFwdHeader() : TLObject() {
     @Transient
     var imported: Boolean = false
+
+    @Transient
+    var savedOut: Boolean = false
 
     var fromId: TLAbsPeer? = null
 
@@ -32,14 +45,21 @@ class TLMessageFwdHeader() : TLObject() {
 
     var savedFromMsgId: Int? = null
 
+    var savedFromId: TLAbsPeer? = null
+
+    var savedFromName: String? = null
+
+    var savedDate: Int? = null
+
     var psaType: String? = null
 
-    private val _constructor: String = "messageFwdHeader#5f777dce"
+    private val _constructor: String = "messageFwdHeader#4e4df4bb"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             imported: Boolean,
+            savedOut: Boolean,
             fromId: TLAbsPeer?,
             fromName: String?,
             date: Int,
@@ -47,9 +67,13 @@ class TLMessageFwdHeader() : TLObject() {
             postAuthor: String?,
             savedFromPeer: TLAbsPeer?,
             savedFromMsgId: Int?,
+            savedFromId: TLAbsPeer?,
+            savedFromName: String?,
+            savedDate: Int?,
             psaType: String?
     ) : this() {
         this.imported = imported
+        this.savedOut = savedOut
         this.fromId = fromId
         this.fromName = fromName
         this.date = date
@@ -57,18 +81,25 @@ class TLMessageFwdHeader() : TLObject() {
         this.postAuthor = postAuthor
         this.savedFromPeer = savedFromPeer
         this.savedFromMsgId = savedFromMsgId
+        this.savedFromId = savedFromId
+        this.savedFromName = savedFromName
+        this.savedDate = savedDate
         this.psaType = psaType
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(imported, 128)
+        updateFlags(savedOut, 2048)
         updateFlags(fromId, 1)
         updateFlags(fromName, 32)
         updateFlags(channelPost, 4)
         updateFlags(postAuthor, 8)
         updateFlags(savedFromPeer, 16)
         updateFlags(savedFromMsgId, 16)
+        updateFlags(savedFromId, 256)
+        updateFlags(savedFromName, 512)
+        updateFlags(savedDate, 1024)
         updateFlags(psaType, 64)
     }
 
@@ -84,6 +115,9 @@ class TLMessageFwdHeader() : TLObject() {
         doIfMask(postAuthor, 8) { writeString(it) }
         doIfMask(savedFromPeer, 16) { writeTLObject(it) }
         doIfMask(savedFromMsgId, 16) { writeInt(it) }
+        doIfMask(savedFromId, 256) { writeTLObject(it) }
+        doIfMask(savedFromName, 512) { writeString(it) }
+        doIfMask(savedDate, 1024) { writeInt(it) }
         doIfMask(psaType, 64) { writeString(it) }
     }
 
@@ -91,6 +125,7 @@ class TLMessageFwdHeader() : TLObject() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         imported = isMask(128)
+        savedOut = isMask(2048)
         fromId = readIfMask(1) { readTLObject<TLAbsPeer>() }
         fromName = readIfMask(32) { readString() }
         date = readInt()
@@ -98,6 +133,9 @@ class TLMessageFwdHeader() : TLObject() {
         postAuthor = readIfMask(8) { readString() }
         savedFromPeer = readIfMask(16) { readTLObject<TLAbsPeer>() }
         savedFromMsgId = readIfMask(16) { readInt() }
+        savedFromId = readIfMask(256) { readTLObject<TLAbsPeer>() }
+        savedFromName = readIfMask(512) { readString() }
+        savedDate = readIfMask(1024) { readInt() }
         psaType = readIfMask(64) { readString() }
     }
 
@@ -113,6 +151,9 @@ class TLMessageFwdHeader() : TLObject() {
         size += getIntIfMask(postAuthor, 8) { computeTLStringSerializedSize(it) }
         size += getIntIfMask(savedFromPeer, 16) { it.computeSerializedSize() }
         size += getIntIfMask(savedFromMsgId, 16) { SIZE_INT32 }
+        size += getIntIfMask(savedFromId, 256) { it.computeSerializedSize() }
+        size += getIntIfMask(savedFromName, 512) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(savedDate, 1024) { SIZE_INT32 }
         size += getIntIfMask(psaType, 64) { computeTLStringSerializedSize(it) }
         return size
     }
@@ -125,6 +166,7 @@ class TLMessageFwdHeader() : TLObject() {
 
         return _flags == other._flags
                 && imported == other.imported
+                && savedOut == other.savedOut
                 && fromId == other.fromId
                 && fromName == other.fromName
                 && date == other.date
@@ -132,9 +174,12 @@ class TLMessageFwdHeader() : TLObject() {
                 && postAuthor == other.postAuthor
                 && savedFromPeer == other.savedFromPeer
                 && savedFromMsgId == other.savedFromMsgId
+                && savedFromId == other.savedFromId
+                && savedFromName == other.savedFromName
+                && savedDate == other.savedDate
                 && psaType == other.psaType
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x5f777dce
+        const val CONSTRUCTOR_ID: Int = 0x4e4df4bb.toInt()
     }
 }

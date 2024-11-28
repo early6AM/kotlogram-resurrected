@@ -1,11 +1,21 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLBytesVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
  * secureValueErrorTranslationFiles#34636dd8
@@ -14,7 +24,7 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLSecureValueErrorTranslationFiles() : TLAbsSecureValueError() {
-    override var type: TLAbsSecureValueType = TLSecureValueTypeAddress()
+    override var type: TLAbsSecureValueType = TLSecureValueTypeUtilityBill()
 
     var fileHash: TLBytesVector = TLBytesVector()
 
@@ -67,6 +77,6 @@ class TLSecureValueErrorTranslationFiles() : TLAbsSecureValueError() {
                 && text == other.text
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x34636dd8
+        const val CONSTRUCTOR_ID: Int = 0x34636dd8.toInt()
     }
 }

@@ -1,14 +1,25 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputDialogPeer
-import com.github.badoualy.telegram.tl.api.TLInputDialogPeerFolder
+import com.github.badoualy.telegram.tl.api.TLInputDialogPeer
 import com.github.badoualy.telegram.tl.core.TLBool
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
@@ -18,7 +29,7 @@ class TLRequestMessagesToggleDialogPin() : TLMethod<TLBool>() {
     @Transient
     var pinned: Boolean = false
 
-    var peer: TLAbsInputDialogPeer = TLInputDialogPeerFolder()
+    var peer: TLAbsInputDialogPeer = TLInputDialogPeer()
 
     private val _constructor: String = "messages.toggleDialogPin#a731e257"
 
@@ -29,7 +40,7 @@ class TLRequestMessagesToggleDialogPin() : TLMethod<TLBool>() {
         this.peer = peer
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(pinned, 1)
     }

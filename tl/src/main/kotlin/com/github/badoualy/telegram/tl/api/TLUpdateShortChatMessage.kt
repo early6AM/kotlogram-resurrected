@@ -1,13 +1,23 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * updateShortChatMessage#4d6deea5
@@ -46,7 +56,7 @@ class TLUpdateShortChatMessage() : TLAbsUpdates() {
 
     var viaBotId: Long? = null
 
-    var replyTo: TLMessageReplyHeader? = null
+    var replyTo: TLAbsMessageReplyHeader? = null
 
     var entities: TLObjectVector<TLAbsMessageEntity>? = TLObjectVector()
 
@@ -70,7 +80,7 @@ class TLUpdateShortChatMessage() : TLAbsUpdates() {
             date: Int,
             fwdFrom: TLMessageFwdHeader?,
             viaBotId: Long?,
-            replyTo: TLMessageReplyHeader?,
+            replyTo: TLAbsMessageReplyHeader?,
             entities: TLObjectVector<TLAbsMessageEntity>?,
             ttlPeriod: Int?
     ) : this() {
@@ -92,7 +102,7 @@ class TLUpdateShortChatMessage() : TLAbsUpdates() {
         this.ttlPeriod = ttlPeriod
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(out, 2)
         updateFlags(mentioned, 16)
@@ -140,7 +150,7 @@ class TLUpdateShortChatMessage() : TLAbsUpdates() {
         date = readInt()
         fwdFrom = readIfMask(4) { readTLObject<TLMessageFwdHeader>(TLMessageFwdHeader::class, TLMessageFwdHeader.CONSTRUCTOR_ID) }
         viaBotId = readIfMask(2048) { readLong() }
-        replyTo = readIfMask(8) { readTLObject<TLMessageReplyHeader>(TLMessageReplyHeader::class, TLMessageReplyHeader.CONSTRUCTOR_ID) }
+        replyTo = readIfMask(8) { readTLObject<TLAbsMessageReplyHeader>() }
         entities = readIfMask(128) { readTLVector<TLAbsMessageEntity>() }
         ttlPeriod = readIfMask(33554432) { readInt() }
     }
@@ -190,6 +200,6 @@ class TLUpdateShortChatMessage() : TLAbsUpdates() {
                 && ttlPeriod == other.ttlPeriod
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x4d6deea5
+        const val CONSTRUCTOR_ID: Int = 0x4d6deea5.toInt()
     }
 }

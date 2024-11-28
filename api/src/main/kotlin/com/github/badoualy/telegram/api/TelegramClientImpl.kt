@@ -263,7 +263,7 @@ class TelegramClientImpl internal constructor(override val app: TelegramApp,
                     .map { it * DOWNLOAD_PART_SIZE } // Map to offset
                     .map { offset ->
                         TLRequestUploadGetFile(false, false, inputFileLocation.inputFileLocation,
-                                               offset, DOWNLOAD_PART_SIZE)
+                                               offset.toLong(), DOWNLOAD_PART_SIZE)
                     }
                     .withIndex()
                     .groupBy({ it.index / DOWNLOAD_GROUP_SIZE }, { it.value })
@@ -440,9 +440,11 @@ class TelegramClientImpl internal constructor(override val app: TelegramApp,
         private inline fun <T> executeSync(body: () -> Single<T>): T = try {
             body.invoke().blockingGet()
         } catch (e: RuntimeException) {
-            if (e.cause is RpcErrorException)
-                throw e.cause as RpcErrorException
-            throw e
+            when (e.cause) {
+                is RpcErrorException -> throw e.cause as RpcErrorException
+                is NoSuchElementException -> throw NoSuchElementException("Не найден элемент: ${e.message}")
+                else -> throw e
+            }
         }
 
         private fun createHandler(dataCenter: DataCenter, authKey: AuthKey, session: MTSession? = null): Single<MTProtoHandler> =

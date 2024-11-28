@@ -1,16 +1,27 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLObject
+import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
- * theme#e802b8dc
+ * theme#a00e67d6
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -35,11 +46,13 @@ class TLTheme() : TLObject() {
 
     var document: TLAbsDocument? = null
 
-    var settings: TLThemeSettings? = null
+    var settings: TLObjectVector<TLThemeSettings>? = TLObjectVector()
+
+    var emoticon: String? = null
 
     var installsCount: Int? = null
 
-    private val _constructor: String = "theme#e802b8dc"
+    private val _constructor: String = "theme#a00e67d6"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -52,7 +65,8 @@ class TLTheme() : TLObject() {
             slug: String,
             title: String,
             document: TLAbsDocument?,
-            settings: TLThemeSettings?,
+            settings: TLObjectVector<TLThemeSettings>?,
+            emoticon: String?,
             installsCount: Int?
     ) : this() {
         this.creator = creator
@@ -64,16 +78,18 @@ class TLTheme() : TLObject() {
         this.title = title
         this.document = document
         this.settings = settings
+        this.emoticon = emoticon
         this.installsCount = installsCount
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(creator, 1)
         updateFlags(default, 2)
         updateFlags(forChat, 32)
         updateFlags(document, 4)
         updateFlags(settings, 8)
+        updateFlags(emoticon, 64)
         updateFlags(installsCount, 16)
     }
 
@@ -87,7 +103,8 @@ class TLTheme() : TLObject() {
         writeString(slug)
         writeString(title)
         doIfMask(document, 4) { writeTLObject(it) }
-        doIfMask(settings, 8) { writeTLObject(it) }
+        doIfMask(settings, 8) { writeTLVector(it) }
+        doIfMask(emoticon, 64) { writeString(it) }
         doIfMask(installsCount, 16) { writeInt(it) }
     }
 
@@ -102,7 +119,8 @@ class TLTheme() : TLObject() {
         slug = readString()
         title = readString()
         document = readIfMask(4) { readTLObject<TLAbsDocument>() }
-        settings = readIfMask(8) { readTLObject<TLThemeSettings>(TLThemeSettings::class, TLThemeSettings.CONSTRUCTOR_ID) }
+        settings = readIfMask(8) { readTLVector<TLThemeSettings>() }
+        emoticon = readIfMask(64) { readString() }
         installsCount = readIfMask(16) { readInt() }
     }
 
@@ -117,6 +135,7 @@ class TLTheme() : TLObject() {
         size += computeTLStringSerializedSize(title)
         size += getIntIfMask(document, 4) { it.computeSerializedSize() }
         size += getIntIfMask(settings, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(emoticon, 64) { computeTLStringSerializedSize(it) }
         size += getIntIfMask(installsCount, 16) { SIZE_INT32 }
         return size
     }
@@ -137,9 +156,10 @@ class TLTheme() : TLObject() {
                 && title == other.title
                 && document == other.document
                 && settings == other.settings
+                && emoticon == other.emoticon
                 && installsCount == other.installsCount
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xe802b8dc.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xa00e67d6.toInt()
     }
 }

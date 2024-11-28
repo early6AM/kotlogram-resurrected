@@ -1,7 +1,10 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsDocument
@@ -10,6 +13,12 @@ import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
@@ -18,17 +27,17 @@ import java.io.IOException
 class TLRequestMessagesGetDocumentByHash() : TLMethod<TLAbsDocument>() {
     var sha256: TLBytes = TLBytes.EMPTY
 
-    var size: Int = 0
+    var size: Long = 0L
 
     var mimeType: String = ""
 
-    private val _constructor: String = "messages.getDocumentByHash#338e2464"
+    private val _constructor: String = "messages.getDocumentByHash#b1f2061f"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             sha256: TLBytes,
-            size: Int,
+            size: Long,
             mimeType: String
     ) : this() {
         this.sha256 = sha256
@@ -39,21 +48,21 @@ class TLRequestMessagesGetDocumentByHash() : TLMethod<TLAbsDocument>() {
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
         writeTLBytes(sha256)
-        writeInt(size)
+        writeLong(size)
         writeString(mimeType)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         sha256 = readTLBytes()
-        size = readInt()
+        size = readLong()
         mimeType = readString()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
         size += computeTLBytesSerializedSize(sha256)
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += computeTLStringSerializedSize(mimeType)
         return size
     }
@@ -69,6 +78,6 @@ class TLRequestMessagesGetDocumentByHash() : TLMethod<TLAbsDocument>() {
                 && mimeType == other.mimeType
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x338e2464
+        const val CONSTRUCTOR_ID: Int = 0xb1f2061f.toInt()
     }
 }

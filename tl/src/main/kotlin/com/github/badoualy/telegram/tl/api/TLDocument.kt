@@ -1,6 +1,8 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
@@ -10,9 +12,15 @@ import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
- * document#1e87342b
+ * document#8fd4c4d8
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -28,17 +36,17 @@ class TLDocument() : TLAbsDocument() {
 
     var mimeType: String = ""
 
-    var size: Int = 0
+    var size: Long = 0L
 
     var thumbs: TLObjectVector<TLAbsPhotoSize>? = TLObjectVector()
 
-    var videoThumbs: TLObjectVector<TLVideoSize>? = TLObjectVector()
+    var videoThumbs: TLObjectVector<TLAbsVideoSize>? = TLObjectVector()
 
     var dcId: Int = 0
 
     var attributes: TLObjectVector<TLAbsDocumentAttribute> = TLObjectVector()
 
-    private val _constructor: String = "document#1e87342b"
+    private val _constructor: String = "document#8fd4c4d8"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -48,9 +56,9 @@ class TLDocument() : TLAbsDocument() {
             fileReference: TLBytes,
             date: Int,
             mimeType: String,
-            size: Int,
+            size: Long,
             thumbs: TLObjectVector<TLAbsPhotoSize>?,
-            videoThumbs: TLObjectVector<TLVideoSize>?,
+            videoThumbs: TLObjectVector<TLAbsVideoSize>?,
             dcId: Int,
             attributes: TLObjectVector<TLAbsDocumentAttribute>
     ) : this() {
@@ -66,7 +74,7 @@ class TLDocument() : TLAbsDocument() {
         this.attributes = attributes
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(thumbs, 1)
         updateFlags(videoThumbs, 2)
@@ -82,7 +90,7 @@ class TLDocument() : TLAbsDocument() {
         writeTLBytes(fileReference)
         writeInt(date)
         writeString(mimeType)
-        writeInt(size)
+        writeLong(size)
         doIfMask(thumbs, 1) { writeTLVector(it) }
         doIfMask(videoThumbs, 2) { writeTLVector(it) }
         writeInt(dcId)
@@ -97,9 +105,9 @@ class TLDocument() : TLAbsDocument() {
         fileReference = readTLBytes()
         date = readInt()
         mimeType = readString()
-        size = readInt()
+        size = readLong()
         thumbs = readIfMask(1) { readTLVector<TLAbsPhotoSize>() }
-        videoThumbs = readIfMask(2) { readTLVector<TLVideoSize>() }
+        videoThumbs = readIfMask(2) { readTLVector<TLAbsVideoSize>() }
         dcId = readInt()
         attributes = readTLVector<TLAbsDocumentAttribute>()
     }
@@ -114,7 +122,7 @@ class TLDocument() : TLAbsDocument() {
         size += computeTLBytesSerializedSize(fileReference)
         size += SIZE_INT32
         size += computeTLStringSerializedSize(mimeType)
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += getIntIfMask(thumbs, 1) { it.computeSerializedSize() }
         size += getIntIfMask(videoThumbs, 2) { it.computeSerializedSize() }
         size += SIZE_INT32
@@ -141,6 +149,6 @@ class TLDocument() : TLAbsDocument() {
                 && attributes == other.attributes
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x1e87342b
+        const val CONSTRUCTOR_ID: Int = 0x8fd4c4d8.toInt()
     }
 }

@@ -2,32 +2,35 @@ package com.github.badoualy.telegram.tl.api
 
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
- * config#330b4067
+ * config#cc1a241e
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLConfig() : TLObject() {
     @Transient
-    var phonecallsEnabled: Boolean = false
-
-    @Transient
     var defaultP2pContacts: Boolean = false
 
     @Transient
     var preloadFeaturedStickers: Boolean = false
-
-    @Transient
-    var ignorePhoneEntities: Boolean = false
 
     @Transient
     var revokePmInbox: Boolean = false
@@ -36,7 +39,7 @@ class TLConfig() : TLObject() {
     var blockedMode: Boolean = false
 
     @Transient
-    var pfsEnabled: Boolean = false
+    var forceTryIpv6: Boolean = false
 
     var date: Int = 0
 
@@ -72,8 +75,6 @@ class TLConfig() : TLObject() {
 
     var pushChatLimit: Int = 0
 
-    var savedGifsLimit: Int = 0
-
     var editTimeLimit: Int = 0
 
     var revokeTimeLimit: Int = 0
@@ -84,15 +85,9 @@ class TLConfig() : TLObject() {
 
     var stickersRecentLimit: Int = 0
 
-    var stickersFavedLimit: Int = 0
-
     var channelsReadMediaPeriod: Int = 0
 
     var tmpSessions: Int? = null
-
-    var pinnedDialogsCountMax: Int = 0
-
-    var pinnedInfolderCountMax: Int = 0
 
     var callReceiveTimeoutMs: Int = 0
 
@@ -126,18 +121,20 @@ class TLConfig() : TLObject() {
 
     var baseLangPackVersion: Int? = null
 
-    private val _constructor: String = "config#330b4067"
+    var reactionsDefault: TLAbsReaction? = null
+
+    var autologinToken: String? = null
+
+    private val _constructor: String = "config#cc1a241e"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
-            phonecallsEnabled: Boolean,
             defaultP2pContacts: Boolean,
             preloadFeaturedStickers: Boolean,
-            ignorePhoneEntities: Boolean,
             revokePmInbox: Boolean,
             blockedMode: Boolean,
-            pfsEnabled: Boolean,
+            forceTryIpv6: Boolean,
             date: Int,
             expires: Int,
             testMode: Boolean,
@@ -155,17 +152,13 @@ class TLConfig() : TLObject() {
             notifyDefaultDelayMs: Int,
             pushChatPeriodMs: Int,
             pushChatLimit: Int,
-            savedGifsLimit: Int,
             editTimeLimit: Int,
             revokeTimeLimit: Int,
             revokePmTimeLimit: Int,
             ratingEDecay: Int,
             stickersRecentLimit: Int,
-            stickersFavedLimit: Int,
             channelsReadMediaPeriod: Int,
             tmpSessions: Int?,
-            pinnedDialogsCountMax: Int,
-            pinnedInfolderCountMax: Int,
             callReceiveTimeoutMs: Int,
             callRingTimeoutMs: Int,
             callConnectTimeoutMs: Int,
@@ -181,15 +174,15 @@ class TLConfig() : TLObject() {
             webfileDcId: Int,
             suggestedLangCode: String?,
             langPackVersion: Int?,
-            baseLangPackVersion: Int?
+            baseLangPackVersion: Int?,
+            reactionsDefault: TLAbsReaction?,
+            autologinToken: String?
     ) : this() {
-        this.phonecallsEnabled = phonecallsEnabled
         this.defaultP2pContacts = defaultP2pContacts
         this.preloadFeaturedStickers = preloadFeaturedStickers
-        this.ignorePhoneEntities = ignorePhoneEntities
         this.revokePmInbox = revokePmInbox
         this.blockedMode = blockedMode
-        this.pfsEnabled = pfsEnabled
+        this.forceTryIpv6 = forceTryIpv6
         this.date = date
         this.expires = expires
         this.testMode = testMode
@@ -207,17 +200,13 @@ class TLConfig() : TLObject() {
         this.notifyDefaultDelayMs = notifyDefaultDelayMs
         this.pushChatPeriodMs = pushChatPeriodMs
         this.pushChatLimit = pushChatLimit
-        this.savedGifsLimit = savedGifsLimit
         this.editTimeLimit = editTimeLimit
         this.revokeTimeLimit = revokeTimeLimit
         this.revokePmTimeLimit = revokePmTimeLimit
         this.ratingEDecay = ratingEDecay
         this.stickersRecentLimit = stickersRecentLimit
-        this.stickersFavedLimit = stickersFavedLimit
         this.channelsReadMediaPeriod = channelsReadMediaPeriod
         this.tmpSessions = tmpSessions
-        this.pinnedDialogsCountMax = pinnedDialogsCountMax
-        this.pinnedInfolderCountMax = pinnedInfolderCountMax
         this.callReceiveTimeoutMs = callReceiveTimeoutMs
         this.callRingTimeoutMs = callRingTimeoutMs
         this.callConnectTimeoutMs = callConnectTimeoutMs
@@ -234,17 +223,17 @@ class TLConfig() : TLObject() {
         this.suggestedLangCode = suggestedLangCode
         this.langPackVersion = langPackVersion
         this.baseLangPackVersion = baseLangPackVersion
+        this.reactionsDefault = reactionsDefault
+        this.autologinToken = autologinToken
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
-        updateFlags(phonecallsEnabled, 2)
         updateFlags(defaultP2pContacts, 8)
         updateFlags(preloadFeaturedStickers, 16)
-        updateFlags(ignorePhoneEntities, 32)
         updateFlags(revokePmInbox, 64)
         updateFlags(blockedMode, 256)
-        updateFlags(pfsEnabled, 8192)
+        updateFlags(forceTryIpv6, 16384)
         updateFlags(tmpSessions, 1)
         updateFlags(autoupdateUrlPrefix, 128)
         updateFlags(gifSearchUsername, 512)
@@ -254,6 +243,8 @@ class TLConfig() : TLObject() {
         updateFlags(suggestedLangCode, 4)
         updateFlags(langPackVersion, 4)
         updateFlags(baseLangPackVersion, 4)
+        updateFlags(reactionsDefault, 32768)
+        updateFlags(autologinToken, 65536)
     }
 
     @Throws(IOException::class)
@@ -278,17 +269,13 @@ class TLConfig() : TLObject() {
         writeInt(notifyDefaultDelayMs)
         writeInt(pushChatPeriodMs)
         writeInt(pushChatLimit)
-        writeInt(savedGifsLimit)
         writeInt(editTimeLimit)
         writeInt(revokeTimeLimit)
         writeInt(revokePmTimeLimit)
         writeInt(ratingEDecay)
         writeInt(stickersRecentLimit)
-        writeInt(stickersFavedLimit)
         writeInt(channelsReadMediaPeriod)
         doIfMask(tmpSessions, 1) { writeInt(it) }
-        writeInt(pinnedDialogsCountMax)
-        writeInt(pinnedInfolderCountMax)
         writeInt(callReceiveTimeoutMs)
         writeInt(callRingTimeoutMs)
         writeInt(callConnectTimeoutMs)
@@ -305,18 +292,18 @@ class TLConfig() : TLObject() {
         doIfMask(suggestedLangCode, 4) { writeString(it) }
         doIfMask(langPackVersion, 4) { writeInt(it) }
         doIfMask(baseLangPackVersion, 4) { writeInt(it) }
+        doIfMask(reactionsDefault, 32768) { writeTLObject(it) }
+        doIfMask(autologinToken, 65536) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        phonecallsEnabled = isMask(2)
         defaultP2pContacts = isMask(8)
         preloadFeaturedStickers = isMask(16)
-        ignorePhoneEntities = isMask(32)
         revokePmInbox = isMask(64)
         blockedMode = isMask(256)
-        pfsEnabled = isMask(8192)
+        forceTryIpv6 = isMask(16384)
         date = readInt()
         expires = readInt()
         testMode = readBoolean()
@@ -334,17 +321,13 @@ class TLConfig() : TLObject() {
         notifyDefaultDelayMs = readInt()
         pushChatPeriodMs = readInt()
         pushChatLimit = readInt()
-        savedGifsLimit = readInt()
         editTimeLimit = readInt()
         revokeTimeLimit = readInt()
         revokePmTimeLimit = readInt()
         ratingEDecay = readInt()
         stickersRecentLimit = readInt()
-        stickersFavedLimit = readInt()
         channelsReadMediaPeriod = readInt()
         tmpSessions = readIfMask(1) { readInt() }
-        pinnedDialogsCountMax = readInt()
-        pinnedInfolderCountMax = readInt()
         callReceiveTimeoutMs = readInt()
         callRingTimeoutMs = readInt()
         callConnectTimeoutMs = readInt()
@@ -361,6 +344,8 @@ class TLConfig() : TLObject() {
         suggestedLangCode = readIfMask(4) { readString() }
         langPackVersion = readIfMask(4) { readInt() }
         baseLangPackVersion = readIfMask(4) { readInt() }
+        reactionsDefault = readIfMask(32768) { readTLObject<TLAbsReaction>() }
+        autologinToken = readIfMask(65536) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -391,11 +376,7 @@ class TLConfig() : TLObject() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
-        size += SIZE_INT32
-        size += SIZE_INT32
         size += getIntIfMask(tmpSessions, 1) { SIZE_INT32 }
-        size += SIZE_INT32
-        size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
@@ -412,6 +393,8 @@ class TLConfig() : TLObject() {
         size += getIntIfMask(suggestedLangCode, 4) { computeTLStringSerializedSize(it) }
         size += getIntIfMask(langPackVersion, 4) { SIZE_INT32 }
         size += getIntIfMask(baseLangPackVersion, 4) { SIZE_INT32 }
+        size += getIntIfMask(reactionsDefault, 32768) { it.computeSerializedSize() }
+        size += getIntIfMask(autologinToken, 65536) { computeTLStringSerializedSize(it) }
         return size
     }
 
@@ -422,13 +405,11 @@ class TLConfig() : TLObject() {
         if (other === this) return true
 
         return _flags == other._flags
-                && phonecallsEnabled == other.phonecallsEnabled
                 && defaultP2pContacts == other.defaultP2pContacts
                 && preloadFeaturedStickers == other.preloadFeaturedStickers
-                && ignorePhoneEntities == other.ignorePhoneEntities
                 && revokePmInbox == other.revokePmInbox
                 && blockedMode == other.blockedMode
-                && pfsEnabled == other.pfsEnabled
+                && forceTryIpv6 == other.forceTryIpv6
                 && date == other.date
                 && expires == other.expires
                 && testMode == other.testMode
@@ -446,17 +427,13 @@ class TLConfig() : TLObject() {
                 && notifyDefaultDelayMs == other.notifyDefaultDelayMs
                 && pushChatPeriodMs == other.pushChatPeriodMs
                 && pushChatLimit == other.pushChatLimit
-                && savedGifsLimit == other.savedGifsLimit
                 && editTimeLimit == other.editTimeLimit
                 && revokeTimeLimit == other.revokeTimeLimit
                 && revokePmTimeLimit == other.revokePmTimeLimit
                 && ratingEDecay == other.ratingEDecay
                 && stickersRecentLimit == other.stickersRecentLimit
-                && stickersFavedLimit == other.stickersFavedLimit
                 && channelsReadMediaPeriod == other.channelsReadMediaPeriod
                 && tmpSessions == other.tmpSessions
-                && pinnedDialogsCountMax == other.pinnedDialogsCountMax
-                && pinnedInfolderCountMax == other.pinnedInfolderCountMax
                 && callReceiveTimeoutMs == other.callReceiveTimeoutMs
                 && callRingTimeoutMs == other.callRingTimeoutMs
                 && callConnectTimeoutMs == other.callConnectTimeoutMs
@@ -473,8 +450,10 @@ class TLConfig() : TLObject() {
                 && suggestedLangCode == other.suggestedLangCode
                 && langPackVersion == other.langPackVersion
                 && baseLangPackVersion == other.baseLangPackVersion
+                && reactionsDefault == other.reactionsDefault
+                && autologinToken == other.autologinToken
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x330b4067
+        const val CONSTRUCTOR_ID: Int = 0xcc1a241e.toInt()
     }
 }

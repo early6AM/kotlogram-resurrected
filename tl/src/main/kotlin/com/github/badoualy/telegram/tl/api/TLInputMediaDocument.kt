@@ -1,11 +1,21 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * inputMediaDocument#33473058
@@ -14,6 +24,9 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLInputMediaDocument() : TLAbsInputMedia() {
+    @Transient
+    var spoiler: Boolean = false
+
     var id: TLAbsInputDocument = TLInputDocumentEmpty()
 
     var ttlSeconds: Int? = null
@@ -25,17 +38,20 @@ class TLInputMediaDocument() : TLAbsInputMedia() {
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
+            spoiler: Boolean,
             id: TLAbsInputDocument,
             ttlSeconds: Int?,
             query: String?
     ) : this() {
+        this.spoiler = spoiler
         this.id = id
         this.ttlSeconds = ttlSeconds
         this.query = query
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
+        updateFlags(spoiler, 4)
         updateFlags(ttlSeconds, 1)
         updateFlags(query, 2)
     }
@@ -53,6 +69,7 @@ class TLInputMediaDocument() : TLAbsInputMedia() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
+        spoiler = isMask(4)
         id = readTLObject<TLAbsInputDocument>()
         ttlSeconds = readIfMask(1) { readInt() }
         query = readIfMask(2) { readString() }
@@ -76,11 +93,12 @@ class TLInputMediaDocument() : TLAbsInputMedia() {
         if (other === this) return true
 
         return _flags == other._flags
+                && spoiler == other.spoiler
                 && id == other.id
                 && ttlSeconds == other.ttlSeconds
                 && query == other.query
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x33473058
+        const val CONSTRUCTOR_ID: Int = 0x33473058.toInt()
     }
 }

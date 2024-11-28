@@ -1,11 +1,20 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
  * botInlineMediaResult#17db940b
@@ -50,7 +59,7 @@ class TLBotInlineMediaResult() : TLAbsBotInlineResult() {
         this.sendMessage = sendMessage
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(photo, 1)
         updateFlags(document, 2)
@@ -115,6 +124,6 @@ class TLBotInlineMediaResult() : TLAbsBotInlineResult() {
                 && sendMessage == other.sendMessage
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x17db940b
+        const val CONSTRUCTOR_ID: Int = 0x17db940b.toInt()
     }
 }

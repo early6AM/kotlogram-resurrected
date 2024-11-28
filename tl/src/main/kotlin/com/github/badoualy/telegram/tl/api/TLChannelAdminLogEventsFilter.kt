@@ -1,11 +1,22 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * channelAdminLogEventsFilter#ea107ae4
@@ -65,6 +76,12 @@ class TLChannelAdminLogEventsFilter() : TLObject() {
     @Transient
     var send: Boolean = false
 
+    @Transient
+    var forums: Boolean = false
+
+    @Transient
+    var subExtend: Boolean = false
+
     private val _constructor: String = "channelAdminLogEventsFilter#ea107ae4"
 
     override val constructorId: Int = CONSTRUCTOR_ID
@@ -86,7 +103,9 @@ class TLChannelAdminLogEventsFilter() : TLObject() {
             delete: Boolean,
             groupCall: Boolean,
             invites: Boolean,
-            send: Boolean
+            send: Boolean,
+            forums: Boolean,
+            subExtend: Boolean
     ) : this() {
         this.join = join
         this.leave = leave
@@ -105,9 +124,11 @@ class TLChannelAdminLogEventsFilter() : TLObject() {
         this.groupCall = groupCall
         this.invites = invites
         this.send = send
+        this.forums = forums
+        this.subExtend = subExtend
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(join, 1)
         updateFlags(leave, 2)
@@ -126,6 +147,8 @@ class TLChannelAdminLogEventsFilter() : TLObject() {
         updateFlags(groupCall, 16384)
         updateFlags(invites, 32768)
         updateFlags(send, 65536)
+        updateFlags(forums, 131072)
+        updateFlags(subExtend, 262144)
     }
 
     @Throws(IOException::class)
@@ -155,6 +178,8 @@ class TLChannelAdminLogEventsFilter() : TLObject() {
         groupCall = isMask(16384)
         invites = isMask(32768)
         send = isMask(65536)
+        forums = isMask(131072)
+        subExtend = isMask(262144)
     }
 
     override fun computeSerializedSize(): Int {
@@ -189,6 +214,8 @@ class TLChannelAdminLogEventsFilter() : TLObject() {
                 && groupCall == other.groupCall
                 && invites == other.invites
                 && send == other.send
+                && forums == other.forums
+                && subExtend == other.subExtend
     }
     companion object  {
         const val CONSTRUCTOR_ID: Int = 0xea107ae4.toInt()

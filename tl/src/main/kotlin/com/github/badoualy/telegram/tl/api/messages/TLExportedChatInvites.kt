@@ -1,14 +1,24 @@
 package com.github.badoualy.telegram.tl.api.messages
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
+import com.github.badoualy.telegram.tl.api.TLAbsExportedChatInvite
 import com.github.badoualy.telegram.tl.api.TLAbsUser
-import com.github.badoualy.telegram.tl.api.TLChatInviteExported
 import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
  * messages.exportedChatInvites#bdc62dcc
@@ -19,7 +29,7 @@ import java.io.IOException
 class TLExportedChatInvites() : TLObject() {
     var count: Int = 0
 
-    var invites: TLObjectVector<TLChatInviteExported> = TLObjectVector()
+    var invites: TLObjectVector<TLAbsExportedChatInvite> = TLObjectVector()
 
     var users: TLObjectVector<TLAbsUser> = TLObjectVector()
 
@@ -29,7 +39,7 @@ class TLExportedChatInvites() : TLObject() {
 
     constructor(
             count: Int,
-            invites: TLObjectVector<TLChatInviteExported>,
+            invites: TLObjectVector<TLAbsExportedChatInvite>,
             users: TLObjectVector<TLAbsUser>
     ) : this() {
         this.count = count
@@ -47,7 +57,7 @@ class TLExportedChatInvites() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         count = readInt()
-        invites = readTLVector<TLChatInviteExported>()
+        invites = readTLVector<TLAbsExportedChatInvite>()
         users = readTLVector<TLAbsUser>()
     }
 

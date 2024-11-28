@@ -1,10 +1,21 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * inputMediaPhoto#b3ba0635
@@ -13,6 +24,9 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLInputMediaPhoto() : TLAbsInputMedia() {
+    @Transient
+    var spoiler: Boolean = false
+
     var id: TLAbsInputPhoto = TLInputPhotoEmpty()
 
     var ttlSeconds: Int? = null
@@ -21,13 +35,19 @@ class TLInputMediaPhoto() : TLAbsInputMedia() {
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(id: TLAbsInputPhoto, ttlSeconds: Int?) : this() {
+    constructor(
+            spoiler: Boolean,
+            id: TLAbsInputPhoto,
+            ttlSeconds: Int?
+    ) : this() {
+        this.spoiler = spoiler
         this.id = id
         this.ttlSeconds = ttlSeconds
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
+        updateFlags(spoiler, 2)
         updateFlags(ttlSeconds, 1)
     }
 
@@ -43,6 +63,7 @@ class TLInputMediaPhoto() : TLAbsInputMedia() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
+        spoiler = isMask(2)
         id = readTLObject<TLAbsInputPhoto>()
         ttlSeconds = readIfMask(1) { readInt() }
     }
@@ -64,6 +85,7 @@ class TLInputMediaPhoto() : TLAbsInputMedia() {
         if (other === this) return true
 
         return _flags == other._flags
+                && spoiler == other.spoiler
                 && id == other.id
                 && ttlSeconds == other.ttlSeconds
     }

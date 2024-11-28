@@ -1,11 +1,21 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * documentAttributeSticker#6319d612
@@ -39,7 +49,7 @@ class TLDocumentAttributeSticker() : TLAbsDocumentAttribute() {
         this.maskCoords = maskCoords
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(mask, 2)
         updateFlags(maskCoords, 1)
@@ -88,6 +98,6 @@ class TLDocumentAttributeSticker() : TLAbsDocumentAttribute() {
                 && maskCoords == other.maskCoords
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x6319d612
+        const val CONSTRUCTOR_ID: Int = 0x6319d612.toInt()
     }
 }

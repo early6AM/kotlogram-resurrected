@@ -1,16 +1,26 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
- * user#3ff6ecb0
+ * user#215c4438
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -61,6 +71,27 @@ class TLUser() : TLAbsUser() {
     @Transient
     var fake: Boolean = false
 
+    @Transient
+    var botAttachMenu: Boolean = false
+
+    @Transient
+    var premium: Boolean = false
+
+    @Transient
+    var attachMenuEnabled: Boolean = false
+
+    @Transient
+    var botCanEdit: Boolean = false
+
+    @Transient
+    var closeFriend: Boolean = false
+
+    @Transient
+    var storiesHidden: Boolean = false
+
+    @Transient
+    var storiesUnavailable: Boolean = false
+
     override var id: Long = 0L
 
     var accessHash: Long? = null
@@ -85,7 +116,17 @@ class TLUser() : TLAbsUser() {
 
     var langCode: String? = null
 
-    private val _constructor: String = "user#3ff6ecb0"
+    var emojiStatus: TLAbsEmojiStatus? = null
+
+    var usernames: TLObjectVector<TLUsername>? = TLObjectVector()
+
+    var storiesMaxId: Int? = null
+
+    var color: TLPeerColor? = null
+
+    var profileColor: TLPeerColor? = null
+
+    private val _constructor: String = "user#215c4438"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -105,6 +146,13 @@ class TLUser() : TLAbsUser() {
             scam: Boolean,
             applyMinPhoto: Boolean,
             fake: Boolean,
+            botAttachMenu: Boolean,
+            premium: Boolean,
+            attachMenuEnabled: Boolean,
+            botCanEdit: Boolean,
+            closeFriend: Boolean,
+            storiesHidden: Boolean,
+            storiesUnavailable: Boolean,
             id: Long,
             accessHash: Long?,
             firstName: String?,
@@ -116,7 +164,12 @@ class TLUser() : TLAbsUser() {
             botInfoVersion: Int?,
             restrictionReason: TLObjectVector<TLRestrictionReason>?,
             botInlinePlaceholder: String?,
-            langCode: String?
+            langCode: String?,
+            emojiStatus: TLAbsEmojiStatus?,
+            usernames: TLObjectVector<TLUsername>?,
+            storiesMaxId: Int?,
+            color: TLPeerColor?,
+            profileColor: TLPeerColor?
     ) : this() {
         this.self = self
         this.contact = contact
@@ -133,6 +186,13 @@ class TLUser() : TLAbsUser() {
         this.scam = scam
         this.applyMinPhoto = applyMinPhoto
         this.fake = fake
+        this.botAttachMenu = botAttachMenu
+        this.premium = premium
+        this.attachMenuEnabled = attachMenuEnabled
+        this.botCanEdit = botCanEdit
+        this.closeFriend = closeFriend
+        this.storiesHidden = storiesHidden
+        this.storiesUnavailable = storiesUnavailable
         this.id = id
         this.accessHash = accessHash
         this.firstName = firstName
@@ -145,9 +205,14 @@ class TLUser() : TLAbsUser() {
         this.restrictionReason = restrictionReason
         this.botInlinePlaceholder = botInlinePlaceholder
         this.langCode = langCode
+        this.emojiStatus = emojiStatus
+        this.usernames = usernames
+        this.storiesMaxId = storiesMaxId
+        this.color = color
+        this.profileColor = profileColor
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(self, 1024)
         updateFlags(contact, 2048)
@@ -164,6 +229,13 @@ class TLUser() : TLAbsUser() {
         updateFlags(scam, 16777216)
         updateFlags(applyMinPhoto, 33554432)
         updateFlags(fake, 67108864)
+        updateFlags(botAttachMenu, 134217728)
+        updateFlags(premium, 268435456)
+        updateFlags(attachMenuEnabled, 536870912)
+        updateFlags(botCanEdit, 2)
+        updateFlags(closeFriend, 4)
+        updateFlags(storiesHidden, 8)
+        updateFlags(storiesUnavailable, 16)
         updateFlags(accessHash, 1)
         updateFlags(firstName, 2)
         updateFlags(lastName, 4)
@@ -175,16 +247,26 @@ class TLUser() : TLAbsUser() {
         updateFlags(restrictionReason, 262144)
         updateFlags(botInlinePlaceholder, 524288)
         updateFlags(langCode, 4194304)
+        updateFlags(emojiStatus, 1073741824)
+        updateFlags(usernames, 1)
+        updateFlags(storiesMaxId, 32)
+        updateFlags(color, 256)
+        updateFlags(profileColor, 512)
 
         // Following parameters might be forced to true by another field that updated the flags
         bot = isMask(16384)
         restricted = isMask(262144)
+        botCanEdit = isMask(2)
+        closeFriend = isMask(4)
+        storiesHidden = isMask(8)
+        storiesUnavailable = isMask(16)
     }
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
         computeFlags()
 
+        writeInt(_flags)
         writeInt(_flags)
         writeLong(id)
         doIfMask(accessHash, 1) { writeLong(it) }
@@ -198,6 +280,11 @@ class TLUser() : TLAbsUser() {
         doIfMask(restrictionReason, 262144) { writeTLVector(it) }
         doIfMask(botInlinePlaceholder, 524288) { writeString(it) }
         doIfMask(langCode, 4194304) { writeString(it) }
+        doIfMask(emojiStatus, 1073741824) { writeTLObject(it) }
+        doIfMask(usernames, 1) { writeTLVector(it) }
+        doIfMask(storiesMaxId, 32) { writeInt(it) }
+        doIfMask(color, 256) { writeTLObject(it) }
+        doIfMask(profileColor, 512) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
@@ -218,6 +305,14 @@ class TLUser() : TLAbsUser() {
         scam = isMask(16777216)
         applyMinPhoto = isMask(33554432)
         fake = isMask(67108864)
+        botAttachMenu = isMask(134217728)
+        premium = isMask(268435456)
+        attachMenuEnabled = isMask(536870912)
+        _flags = readInt()
+        botCanEdit = isMask(2)
+        closeFriend = isMask(4)
+        storiesHidden = isMask(8)
+        storiesUnavailable = isMask(16)
         id = readLong()
         accessHash = readIfMask(1) { readLong() }
         firstName = readIfMask(2) { readString() }
@@ -230,12 +325,18 @@ class TLUser() : TLAbsUser() {
         restrictionReason = readIfMask(262144) { readTLVector<TLRestrictionReason>() }
         botInlinePlaceholder = readIfMask(524288) { readString() }
         langCode = readIfMask(4194304) { readString() }
+        emojiStatus = readIfMask(1073741824) { readTLObject<TLAbsEmojiStatus>() }
+        usernames = readIfMask(1) { readTLVector<TLUsername>() }
+        storiesMaxId = readIfMask(32) { readInt() }
+        color = readIfMask(256) { readTLObject<TLPeerColor>(TLPeerColor::class, TLPeerColor.CONSTRUCTOR_ID) }
+        profileColor = readIfMask(512) { readTLObject<TLPeerColor>(TLPeerColor::class, TLPeerColor.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
         computeFlags()
 
         var size = SIZE_CONSTRUCTOR_ID
+        size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT64
         size += getIntIfMask(accessHash, 1) { SIZE_INT64 }
@@ -249,6 +350,11 @@ class TLUser() : TLAbsUser() {
         size += getIntIfMask(restrictionReason, 262144) { it.computeSerializedSize() }
         size += getIntIfMask(botInlinePlaceholder, 524288) { computeTLStringSerializedSize(it) }
         size += getIntIfMask(langCode, 4194304) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(emojiStatus, 1073741824) { it.computeSerializedSize() }
+        size += getIntIfMask(usernames, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(storiesMaxId, 32) { SIZE_INT32 }
+        size += getIntIfMask(color, 256) { it.computeSerializedSize() }
+        size += getIntIfMask(profileColor, 512) { it.computeSerializedSize() }
         return size
     }
 
@@ -274,6 +380,14 @@ class TLUser() : TLAbsUser() {
                 && scam == other.scam
                 && applyMinPhoto == other.applyMinPhoto
                 && fake == other.fake
+                && botAttachMenu == other.botAttachMenu
+                && premium == other.premium
+                && attachMenuEnabled == other.attachMenuEnabled
+                && _flags == other._flags
+                && botCanEdit == other.botCanEdit
+                && closeFriend == other.closeFriend
+                && storiesHidden == other.storiesHidden
+                && storiesUnavailable == other.storiesUnavailable
                 && id == other.id
                 && accessHash == other.accessHash
                 && firstName == other.firstName
@@ -286,8 +400,13 @@ class TLUser() : TLAbsUser() {
                 && restrictionReason == other.restrictionReason
                 && botInlinePlaceholder == other.botInlinePlaceholder
                 && langCode == other.langCode
+                && emojiStatus == other.emojiStatus
+                && usernames == other.usernames
+                && storiesMaxId == other.storiesMaxId
+                && color == other.color
+                && profileColor == other.profileColor
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3ff6ecb0
+        const val CONSTRUCTOR_ID: Int = 0x215c4438.toInt()
     }
 }

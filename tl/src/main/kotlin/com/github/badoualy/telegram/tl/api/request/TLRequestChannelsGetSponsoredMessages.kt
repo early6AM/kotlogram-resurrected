@@ -1,19 +1,30 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputChannel
 import com.github.badoualy.telegram.tl.api.TLInputChannelEmpty
-import com.github.badoualy.telegram.tl.api.messages.TLSponsoredMessages
+import com.github.badoualy.telegram.tl.api.messages.TLAbsSponsoredMessages
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
-class TLRequestChannelsGetSponsoredMessages() : TLMethod<TLSponsoredMessages>() {
+class TLRequestChannelsGetSponsoredMessages() : TLMethod<TLAbsSponsoredMessages>() {
     var channel: TLAbsInputChannel = TLInputChannelEmpty()
 
     private val _constructor: String = "channels.getSponsoredMessages#ec210fbf"
@@ -23,9 +34,6 @@ class TLRequestChannelsGetSponsoredMessages() : TLMethod<TLSponsoredMessages>() 
     constructor(channel: TLAbsInputChannel) : this() {
         this.channel = channel
     }
-
-    @Throws(IOException::class)
-    override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLSponsoredMessages = tlDeserializer.readTLObject(TLSponsoredMessages::class, TLSponsoredMessages.CONSTRUCTOR_ID)
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {

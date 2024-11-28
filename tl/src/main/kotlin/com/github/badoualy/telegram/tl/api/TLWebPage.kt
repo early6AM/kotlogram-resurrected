@@ -1,13 +1,23 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * webPage#e89c45b2
@@ -16,6 +26,9 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLWebPage() : TLAbsWebPage() {
+    @Transient
+    var hasLargeMedia: Boolean = false
+
     var id: Long = 0L
 
     var url: String = ""
@@ -50,13 +63,14 @@ class TLWebPage() : TLAbsWebPage() {
 
     var cachedPage: TLPage? = null
 
-    var attributes: TLObjectVector<TLWebPageAttributeTheme>? = TLObjectVector()
+    var attributes: TLObjectVector<TLAbsWebPageAttribute>? = TLObjectVector()
 
     private val _constructor: String = "webPage#e89c45b2"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
+            hasLargeMedia: Boolean,
             id: Long,
             url: String,
             displayUrl: String,
@@ -74,8 +88,9 @@ class TLWebPage() : TLAbsWebPage() {
             author: String?,
             document: TLAbsDocument?,
             cachedPage: TLPage?,
-            attributes: TLObjectVector<TLWebPageAttributeTheme>?
+            attributes: TLObjectVector<TLAbsWebPageAttribute>?
     ) : this() {
+        this.hasLargeMedia = hasLargeMedia
         this.id = id
         this.url = url
         this.displayUrl = displayUrl
@@ -96,8 +111,9 @@ class TLWebPage() : TLAbsWebPage() {
         this.attributes = attributes
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
+        updateFlags(hasLargeMedia, 8192)
         updateFlags(type, 1)
         updateFlags(siteName, 2)
         updateFlags(title, 4)
@@ -142,6 +158,7 @@ class TLWebPage() : TLAbsWebPage() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
+        hasLargeMedia = isMask(8192)
         id = readLong()
         url = readString()
         displayUrl = readString()
@@ -159,7 +176,7 @@ class TLWebPage() : TLAbsWebPage() {
         author = readIfMask(256) { readString() }
         document = readIfMask(512) { readTLObject<TLAbsDocument>() }
         cachedPage = readIfMask(1024) { readTLObject<TLPage>(TLPage::class, TLPage.CONSTRUCTOR_ID) }
-        attributes = readIfMask(4096) { readTLVector<TLWebPageAttributeTheme>() }
+        attributes = readIfMask(4096) { readTLVector<TLAbsWebPageAttribute>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -195,6 +212,7 @@ class TLWebPage() : TLAbsWebPage() {
         if (other === this) return true
 
         return _flags == other._flags
+                && hasLargeMedia == other.hasLargeMedia
                 && id == other.id
                 && url == other.url
                 && displayUrl == other.displayUrl

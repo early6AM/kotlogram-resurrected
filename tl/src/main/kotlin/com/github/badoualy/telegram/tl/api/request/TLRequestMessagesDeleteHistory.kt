@@ -1,7 +1,12 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
 import com.github.badoualy.telegram.tl.api.TLInputPeerEmpty
 import com.github.badoualy.telegram.tl.api.messages.TLAffectedHistory
@@ -9,6 +14,12 @@ import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
@@ -25,7 +36,11 @@ class TLRequestMessagesDeleteHistory() : TLMethod<TLAffectedHistory>() {
 
     var maxId: Int = 0
 
-    private val _constructor: String = "messages.deleteHistory#1c015b09"
+    var minDate: Int? = null
+
+    var maxDate: Int? = null
+
+    private val _constructor: String = "messages.deleteHistory#b08f922a"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -33,21 +48,27 @@ class TLRequestMessagesDeleteHistory() : TLMethod<TLAffectedHistory>() {
             justClear: Boolean,
             revoke: Boolean,
             peer: TLAbsInputPeer,
-            maxId: Int
+            maxId: Int,
+            minDate: Int?,
+            maxDate: Int?
     ) : this() {
         this.justClear = justClear
         this.revoke = revoke
         this.peer = peer
         this.maxId = maxId
+        this.minDate = minDate
+        this.maxDate = maxDate
     }
 
     @Throws(IOException::class)
     override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLAffectedHistory = tlDeserializer.readTLObject(TLAffectedHistory::class, TLAffectedHistory.CONSTRUCTOR_ID)
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(justClear, 1)
         updateFlags(revoke, 2)
+        updateFlags(minDate, 4)
+        updateFlags(maxDate, 8)
     }
 
     @Throws(IOException::class)
@@ -57,6 +78,8 @@ class TLRequestMessagesDeleteHistory() : TLMethod<TLAffectedHistory>() {
         writeInt(_flags)
         writeTLObject(peer)
         writeInt(maxId)
+        doIfMask(minDate, 4) { writeInt(it) }
+        doIfMask(maxDate, 8) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -66,6 +89,8 @@ class TLRequestMessagesDeleteHistory() : TLMethod<TLAffectedHistory>() {
         revoke = isMask(2)
         peer = readTLObject<TLAbsInputPeer>()
         maxId = readInt()
+        minDate = readIfMask(4) { readInt() }
+        maxDate = readIfMask(8) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -75,6 +100,8 @@ class TLRequestMessagesDeleteHistory() : TLMethod<TLAffectedHistory>() {
         size += SIZE_INT32
         size += peer.computeSerializedSize()
         size += SIZE_INT32
+        size += getIntIfMask(minDate, 4) { SIZE_INT32 }
+        size += getIntIfMask(maxDate, 8) { SIZE_INT32 }
         return size
     }
 
@@ -89,8 +116,10 @@ class TLRequestMessagesDeleteHistory() : TLMethod<TLAffectedHistory>() {
                 && revoke == other.revoke
                 && peer == other.peer
                 && maxId == other.maxId
+                && minDate == other.minDate
+                && maxDate == other.maxDate
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x1c015b09
+        const val CONSTRUCTOR_ID: Int = 0xb08f922a.toInt()
     }
 }

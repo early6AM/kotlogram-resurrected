@@ -1,14 +1,24 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLBytes
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * photo#fb197a65
@@ -30,7 +40,7 @@ class TLPhoto() : TLAbsPhoto() {
 
     var sizes: TLObjectVector<TLAbsPhotoSize> = TLObjectVector()
 
-    var videoSizes: TLObjectVector<TLVideoSize>? = TLObjectVector()
+    var videoSizes: TLObjectVector<TLAbsVideoSize>? = TLObjectVector()
 
     var dcId: Int = 0
 
@@ -45,7 +55,7 @@ class TLPhoto() : TLAbsPhoto() {
             fileReference: TLBytes,
             date: Int,
             sizes: TLObjectVector<TLAbsPhotoSize>,
-            videoSizes: TLObjectVector<TLVideoSize>?,
+            videoSizes: TLObjectVector<TLAbsVideoSize>?,
             dcId: Int
     ) : this() {
         this.hasStickers = hasStickers
@@ -58,7 +68,7 @@ class TLPhoto() : TLAbsPhoto() {
         this.dcId = dcId
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(hasStickers, 1)
         updateFlags(videoSizes, 2)
@@ -87,7 +97,7 @@ class TLPhoto() : TLAbsPhoto() {
         fileReference = readTLBytes()
         date = readInt()
         sizes = readTLVector<TLAbsPhotoSize>()
-        videoSizes = readIfMask(2) { readTLVector<TLVideoSize>() }
+        videoSizes = readIfMask(2) { readTLVector<TLAbsVideoSize>() }
         dcId = readInt()
     }
 

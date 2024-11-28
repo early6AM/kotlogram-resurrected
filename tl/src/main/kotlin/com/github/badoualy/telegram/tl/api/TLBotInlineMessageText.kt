@@ -1,12 +1,22 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * botInlineMessageText#8c7f65e2
@@ -17,6 +27,9 @@ import java.io.IOException
 class TLBotInlineMessageText() : TLAbsBotInlineMessage() {
     @Transient
     var noWebpage: Boolean = false
+
+    @Transient
+    var invertMedia: Boolean = false
 
     var message: String = ""
 
@@ -30,19 +43,22 @@ class TLBotInlineMessageText() : TLAbsBotInlineMessage() {
 
     constructor(
             noWebpage: Boolean,
+            invertMedia: Boolean,
             message: String,
             entities: TLObjectVector<TLAbsMessageEntity>?,
             replyMarkup: TLAbsReplyMarkup?
     ) : this() {
         this.noWebpage = noWebpage
+        this.invertMedia = invertMedia
         this.message = message
         this.entities = entities
         this.replyMarkup = replyMarkup
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(noWebpage, 1)
+        updateFlags(invertMedia, 8)
         updateFlags(entities, 2)
         updateFlags(replyMarkup, 4)
     }
@@ -61,6 +77,7 @@ class TLBotInlineMessageText() : TLAbsBotInlineMessage() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         noWebpage = isMask(1)
+        invertMedia = isMask(8)
         message = readString()
         entities = readIfMask(2) { readTLVector<TLAbsMessageEntity>() }
         replyMarkup = readIfMask(4) { readTLObject<TLAbsReplyMarkup>() }
@@ -85,6 +102,7 @@ class TLBotInlineMessageText() : TLAbsBotInlineMessage() {
 
         return _flags == other._flags
                 && noWebpage == other.noWebpage
+                && invertMedia == other.invertMedia
                 && message == other.message
                 && entities == other.entities
                 && replyMarkup == other.replyMarkup

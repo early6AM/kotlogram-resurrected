@@ -1,8 +1,11 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
 import com.github.badoualy.telegram.tl.api.TLAbsMessagesFilter
@@ -13,6 +16,12 @@ import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
@@ -24,6 +33,8 @@ class TLRequestMessagesSearch() : TLMethod<TLAbsMessages>() {
     var q: String = ""
 
     var fromId: TLAbsInputPeer? = null
+
+    var savedPeerId: TLAbsInputPeer? = null
 
     var topMsgId: Int? = null
 
@@ -45,7 +56,7 @@ class TLRequestMessagesSearch() : TLMethod<TLAbsMessages>() {
 
     var hash: Long = 0L
 
-    private val _constructor: String = "messages.search#a0fda762"
+    private val _constructor: String = "messages.search#a7b4e929"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -53,6 +64,7 @@ class TLRequestMessagesSearch() : TLMethod<TLAbsMessages>() {
             peer: TLAbsInputPeer,
             q: String,
             fromId: TLAbsInputPeer?,
+            savedPeerId: TLAbsInputPeer?,
             topMsgId: Int?,
             filter: TLAbsMessagesFilter,
             minDate: Int,
@@ -67,6 +79,7 @@ class TLRequestMessagesSearch() : TLMethod<TLAbsMessages>() {
         this.peer = peer
         this.q = q
         this.fromId = fromId
+        this.savedPeerId = savedPeerId
         this.topMsgId = topMsgId
         this.filter = filter
         this.minDate = minDate
@@ -79,9 +92,10 @@ class TLRequestMessagesSearch() : TLMethod<TLAbsMessages>() {
         this.hash = hash
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(fromId, 1)
+        updateFlags(savedPeerId, 4)
         updateFlags(topMsgId, 2)
     }
 
@@ -93,6 +107,7 @@ class TLRequestMessagesSearch() : TLMethod<TLAbsMessages>() {
         writeTLObject(peer)
         writeString(q)
         doIfMask(fromId, 1) { writeTLObject(it) }
+        doIfMask(savedPeerId, 4) { writeTLObject(it) }
         doIfMask(topMsgId, 2) { writeInt(it) }
         writeTLObject(filter)
         writeInt(minDate)
@@ -111,6 +126,7 @@ class TLRequestMessagesSearch() : TLMethod<TLAbsMessages>() {
         peer = readTLObject<TLAbsInputPeer>()
         q = readString()
         fromId = readIfMask(1) { readTLObject<TLAbsInputPeer>() }
+        savedPeerId = readIfMask(4) { readTLObject<TLAbsInputPeer>() }
         topMsgId = readIfMask(2) { readInt() }
         filter = readTLObject<TLAbsMessagesFilter>()
         minDate = readInt()
@@ -131,6 +147,7 @@ class TLRequestMessagesSearch() : TLMethod<TLAbsMessages>() {
         size += peer.computeSerializedSize()
         size += computeTLStringSerializedSize(q)
         size += getIntIfMask(fromId, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(savedPeerId, 4) { it.computeSerializedSize() }
         size += getIntIfMask(topMsgId, 2) { SIZE_INT32 }
         size += filter.computeSerializedSize()
         size += SIZE_INT32
@@ -154,6 +171,7 @@ class TLRequestMessagesSearch() : TLMethod<TLAbsMessages>() {
                 && peer == other.peer
                 && q == other.q
                 && fromId == other.fromId
+                && savedPeerId == other.savedPeerId
                 && topMsgId == other.topMsgId
                 && filter == other.filter
                 && minDate == other.minDate
@@ -166,6 +184,6 @@ class TLRequestMessagesSearch() : TLMethod<TLAbsMessages>() {
                 && hash == other.hash
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xa0fda762.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xa7b4e929.toInt()
     }
 }

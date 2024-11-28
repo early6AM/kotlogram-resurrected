@@ -1,11 +1,21 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
  * updateChatParticipant#d087663a
@@ -26,7 +36,7 @@ class TLUpdateChatParticipant() : TLAbsUpdate() {
 
     var newParticipant: TLAbsChatParticipant? = null
 
-    var invite: TLChatInviteExported? = null
+    var invite: TLAbsExportedChatInvite? = null
 
     var qts: Int = 0
 
@@ -41,7 +51,7 @@ class TLUpdateChatParticipant() : TLAbsUpdate() {
             userId: Long,
             prevParticipant: TLAbsChatParticipant?,
             newParticipant: TLAbsChatParticipant?,
-            invite: TLChatInviteExported?,
+            invite: TLAbsExportedChatInvite?,
             qts: Int
     ) : this() {
         this.chatId = chatId
@@ -54,7 +64,7 @@ class TLUpdateChatParticipant() : TLAbsUpdate() {
         this.qts = qts
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(prevParticipant, 1)
         updateFlags(newParticipant, 2)
@@ -85,7 +95,7 @@ class TLUpdateChatParticipant() : TLAbsUpdate() {
         userId = readLong()
         prevParticipant = readIfMask(1) { readTLObject<TLAbsChatParticipant>() }
         newParticipant = readIfMask(2) { readTLObject<TLAbsChatParticipant>() }
-        invite = readIfMask(4) { readTLObject<TLChatInviteExported>(TLChatInviteExported::class, TLChatInviteExported.CONSTRUCTOR_ID) }
+        invite = readIfMask(4) { readTLObject<TLAbsExportedChatInvite>() }
         qts = readInt()
     }
 

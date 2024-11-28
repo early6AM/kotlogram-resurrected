@@ -1,45 +1,59 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputStickerSet
 import com.github.badoualy.telegram.tl.api.TLInputStickerSetEmpty
-import com.github.badoualy.telegram.tl.api.messages.TLStickerSet
+import com.github.badoualy.telegram.tl.api.messages.TLAbsStickerSet
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
-class TLRequestMessagesGetStickerSet() : TLMethod<TLStickerSet>() {
+class TLRequestMessagesGetStickerSet() : TLMethod<TLAbsStickerSet>() {
     var stickerset: TLAbsInputStickerSet = TLInputStickerSetEmpty()
 
-    private val _constructor: String = "messages.getStickerSet#2619a90e"
+    var hash: Int = 0
+
+    private val _constructor: String = "messages.getStickerSet#c8a0ec74"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(stickerset: TLAbsInputStickerSet) : this() {
+    constructor(stickerset: TLAbsInputStickerSet, hash: Int) : this() {
         this.stickerset = stickerset
+        this.hash = hash
     }
-
-    @Throws(IOException::class)
-    override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLStickerSet = tlDeserializer.readTLObject(TLStickerSet::class, TLStickerSet.CONSTRUCTOR_ID)
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
         writeTLObject(stickerset)
+        writeInt(hash)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         stickerset = readTLObject<TLAbsInputStickerSet>()
+        hash = readInt()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
         size += stickerset.computeSerializedSize()
+        size += SIZE_INT32
         return size
     }
 
@@ -50,8 +64,9 @@ class TLRequestMessagesGetStickerSet() : TLMethod<TLStickerSet>() {
         if (other === this) return true
 
         return stickerset == other.stickerset
+                && hash == other.hash
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x2619a90e
+        const val CONSTRUCTOR_ID: Int = 0xc8a0ec74.toInt()
     }
 }

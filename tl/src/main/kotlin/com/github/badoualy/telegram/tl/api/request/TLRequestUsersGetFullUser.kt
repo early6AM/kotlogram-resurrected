@@ -1,13 +1,24 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputUser
 import com.github.badoualy.telegram.tl.api.TLInputUserEmpty
-import com.github.badoualy.telegram.tl.api.TLUserFull
+import com.github.badoualy.telegram.tl.api.users.TLUserFull
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
@@ -16,7 +27,7 @@ import java.io.IOException
 class TLRequestUsersGetFullUser() : TLMethod<TLUserFull>() {
     var id: TLAbsInputUser = TLInputUserEmpty()
 
-    private val _constructor: String = "users.getFullUser#ca30a5b1"
+    private val _constructor: String = "users.getFullUser#b60f5918"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -52,6 +63,6 @@ class TLRequestUsersGetFullUser() : TLMethod<TLUserFull>() {
         return id == other.id
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xca30a5b1.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xb60f5918.toInt()
     }
 }

@@ -1,12 +1,22 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * chat#41cbf256
@@ -17,9 +27,6 @@ import java.io.IOException
 class TLChat() : TLAbsChat() {
     @Transient
     var creator: Boolean = false
-
-    @Transient
-    var kicked: Boolean = false
 
     @Transient
     var left: Boolean = false
@@ -60,7 +67,6 @@ class TLChat() : TLAbsChat() {
 
     constructor(
             creator: Boolean,
-            kicked: Boolean,
             left: Boolean,
             deactivated: Boolean,
             callActive: Boolean,
@@ -77,7 +83,6 @@ class TLChat() : TLAbsChat() {
             defaultBannedRights: TLChatBannedRights?
     ) : this() {
         this.creator = creator
-        this.kicked = kicked
         this.left = left
         this.deactivated = deactivated
         this.callActive = callActive
@@ -94,10 +99,9 @@ class TLChat() : TLAbsChat() {
         this.defaultBannedRights = defaultBannedRights
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(creator, 1)
-        updateFlags(kicked, 2)
         updateFlags(left, 4)
         updateFlags(deactivated, 32)
         updateFlags(callActive, 8388608)
@@ -128,7 +132,6 @@ class TLChat() : TLAbsChat() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         creator = isMask(1)
-        kicked = isMask(2)
         left = isMask(4)
         deactivated = isMask(32)
         callActive = isMask(8388608)
@@ -170,7 +173,6 @@ class TLChat() : TLAbsChat() {
 
         return _flags == other._flags
                 && creator == other.creator
-                && kicked == other.kicked
                 && left == other.left
                 && deactivated == other.deactivated
                 && callActive == other.callActive
@@ -187,6 +189,6 @@ class TLChat() : TLAbsChat() {
                 && defaultBannedRights == other.defaultBannedRights
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x41cbf256
+        const val CONSTRUCTOR_ID: Int = 0x41cbf256.toInt()
     }
 }

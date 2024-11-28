@@ -1,9 +1,20 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
  * channelAdminLogEventActionExportedInviteDelete#5a50fca4
@@ -12,13 +23,13 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLChannelAdminLogEventActionExportedInviteDelete() : TLAbsChannelAdminLogEventAction() {
-    var invite: TLChatInviteExported = TLChatInviteExported()
+    var invite: TLAbsExportedChatInvite = TLChatInvitePublicJoinRequests()
 
     private val _constructor: String = "channelAdminLogEventActionExportedInviteDelete#5a50fca4"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(invite: TLChatInviteExported) : this() {
+    constructor(invite: TLAbsExportedChatInvite) : this() {
         this.invite = invite
     }
 
@@ -29,7 +40,7 @@ class TLChannelAdminLogEventActionExportedInviteDelete() : TLAbsChannelAdminLogE
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        invite = readTLObject<TLChatInviteExported>(TLChatInviteExported::class, TLChatInviteExported.CONSTRUCTOR_ID)
+        invite = readTLObject<TLAbsExportedChatInvite>()
     }
 
     override fun computeSerializedSize(): Int {
@@ -47,6 +58,6 @@ class TLChannelAdminLogEventActionExportedInviteDelete() : TLAbsChannelAdminLogE
         return invite == other.invite
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x5a50fca4
+        const val CONSTRUCTOR_ID: Int = 0x5a50fca4.toInt()
     }
 }

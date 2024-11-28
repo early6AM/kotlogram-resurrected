@@ -1,13 +1,23 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * authorization#ad01d61d
@@ -30,6 +40,9 @@ class TLAuthorization() : TLObject() {
 
     @Transient
     var callRequestsDisabled: Boolean = false
+
+    @Transient
+    var unconfirmed: Boolean = false
 
     var hash: Long = 0L
 
@@ -65,6 +78,7 @@ class TLAuthorization() : TLObject() {
             passwordPending: Boolean,
             encryptedRequestsDisabled: Boolean,
             callRequestsDisabled: Boolean,
+            unconfirmed: Boolean,
             hash: Long,
             deviceModel: String,
             platform: String,
@@ -83,6 +97,7 @@ class TLAuthorization() : TLObject() {
         this.passwordPending = passwordPending
         this.encryptedRequestsDisabled = encryptedRequestsDisabled
         this.callRequestsDisabled = callRequestsDisabled
+        this.unconfirmed = unconfirmed
         this.hash = hash
         this.deviceModel = deviceModel
         this.platform = platform
@@ -97,13 +112,14 @@ class TLAuthorization() : TLObject() {
         this.region = region
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(current, 1)
         updateFlags(officialApp, 2)
         updateFlags(passwordPending, 4)
         updateFlags(encryptedRequestsDisabled, 8)
         updateFlags(callRequestsDisabled, 16)
+        updateFlags(unconfirmed, 32)
     }
 
     @Throws(IOException::class)
@@ -133,6 +149,7 @@ class TLAuthorization() : TLObject() {
         passwordPending = isMask(4)
         encryptedRequestsDisabled = isMask(8)
         callRequestsDisabled = isMask(16)
+        unconfirmed = isMask(32)
         hash = readLong()
         deviceModel = readString()
         platform = readString()
@@ -179,6 +196,7 @@ class TLAuthorization() : TLObject() {
                 && passwordPending == other.passwordPending
                 && encryptedRequestsDisabled == other.encryptedRequestsDisabled
                 && callRequestsDisabled == other.callRequestsDisabled
+                && unconfirmed == other.unconfirmed
                 && hash == other.hash
                 && deviceModel == other.deviceModel
                 && platform == other.platform

@@ -130,5 +130,5 @@ fun Collection<TLAbsPhotoSize>?.getMinSize(): TLAbsPhotoSize? {
     else -> null
 }*/
 
-data class MediaInput(val inputFileLocation: InputFileLocation, val size: Int, val mimeType: String, val cached: TLBytes? = null)
+data class MediaInput(val inputFileLocation: InputFileLocation, val size: Long, val mimeType: String, val cached: TLBytes? = null)
 data class InputFileLocation(val inputFileLocation: TLAbsInputFileLocation, val dcId: Int)

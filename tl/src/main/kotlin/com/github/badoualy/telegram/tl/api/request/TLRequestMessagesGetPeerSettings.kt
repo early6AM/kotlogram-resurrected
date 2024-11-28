@@ -1,13 +1,24 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
 import com.github.badoualy.telegram.tl.api.TLInputPeerEmpty
-import com.github.badoualy.telegram.tl.api.TLPeerSettings
+import com.github.badoualy.telegram.tl.api.messages.TLPeerSettings
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
@@ -16,7 +27,7 @@ import java.io.IOException
 class TLRequestMessagesGetPeerSettings() : TLMethod<TLPeerSettings>() {
     var peer: TLAbsInputPeer = TLInputPeerEmpty()
 
-    private val _constructor: String = "messages.getPeerSettings#3672e09c"
+    private val _constructor: String = "messages.getPeerSettings#efd9a6a2"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -52,6 +63,6 @@ class TLRequestMessagesGetPeerSettings() : TLMethod<TLPeerSettings>() {
         return peer == other.peer
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3672e09c
+        const val CONSTRUCTOR_ID: Int = 0xefd9a6a2.toInt()
     }
 }

@@ -1,14 +1,25 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
+import com.github.badoualy.telegram.tl.api.TLAbsBaseTheme
 import com.github.badoualy.telegram.tl.api.TLAbsInputTheme
 import com.github.badoualy.telegram.tl.core.TLBool
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
@@ -18,29 +29,34 @@ class TLRequestAccountInstallTheme() : TLMethod<TLBool>() {
     @Transient
     var dark: Boolean = false
 
-    var format: String? = null
-
     var theme: TLAbsInputTheme? = null
 
-    private val _constructor: String = "account.installTheme#7ae43737"
+    var format: String? = null
+
+    var baseTheme: TLAbsBaseTheme? = null
+
+    private val _constructor: String = "account.installTheme#c727bb3b"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             dark: Boolean,
+            theme: TLAbsInputTheme?,
             format: String?,
-            theme: TLAbsInputTheme?
+            baseTheme: TLAbsBaseTheme?
     ) : this() {
         this.dark = dark
-        this.format = format
         this.theme = theme
+        this.format = format
+        this.baseTheme = baseTheme
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(dark, 1)
-        updateFlags(format, 2)
         updateFlags(theme, 2)
+        updateFlags(format, 4)
+        updateFlags(baseTheme, 8)
     }
 
     @Throws(IOException::class)
@@ -48,16 +64,18 @@ class TLRequestAccountInstallTheme() : TLMethod<TLBool>() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(format, 2) { writeString(it) }
         doIfMask(theme, 2) { writeTLObject(it) }
+        doIfMask(format, 4) { writeString(it) }
+        doIfMask(baseTheme, 8) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         dark = isMask(1)
-        format = readIfMask(2) { readString() }
         theme = readIfMask(2) { readTLObject<TLAbsInputTheme>() }
+        format = readIfMask(4) { readString() }
+        baseTheme = readIfMask(8) { readTLObject<TLAbsBaseTheme>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -65,8 +83,9 @@ class TLRequestAccountInstallTheme() : TLMethod<TLBool>() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(format, 2) { computeTLStringSerializedSize(it) }
         size += getIntIfMask(theme, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(format, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(baseTheme, 8) { it.computeSerializedSize() }
         return size
     }
 
@@ -78,10 +97,11 @@ class TLRequestAccountInstallTheme() : TLMethod<TLBool>() {
 
         return _flags == other._flags
                 && dark == other.dark
-                && format == other.format
                 && theme == other.theme
+                && format == other.format
+                && baseTheme == other.baseTheme
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x7ae43737
+        const val CONSTRUCTOR_ID: Int = 0xc727bb3b.toInt()
     }
 }

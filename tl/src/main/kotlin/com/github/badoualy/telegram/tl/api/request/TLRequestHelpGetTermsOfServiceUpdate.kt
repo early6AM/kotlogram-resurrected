@@ -1,7 +1,18 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.help.TLAbsTermsOfServiceUpdate
 import com.github.badoualy.telegram.tl.core.TLMethod
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
@@ -21,6 +32,6 @@ class TLRequestHelpGetTermsOfServiceUpdate : TLMethod<TLAbsTermsOfServiceUpdate>
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x2ca51fd1
+        const val CONSTRUCTOR_ID: Int = 0x2ca51fd1.toInt()
     }
 }

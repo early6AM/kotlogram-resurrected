@@ -1,5 +1,17 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+
 /**
  * documentAttributeAnimated#11b58939
  *
@@ -20,6 +32,6 @@ class TLDocumentAttributeAnimated : TLAbsDocumentAttribute() {
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x11b58939
+        const val CONSTRUCTOR_ID: Int = 0x11b58939.toInt()
     }
 }

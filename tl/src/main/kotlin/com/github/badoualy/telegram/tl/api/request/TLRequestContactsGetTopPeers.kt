@@ -1,13 +1,24 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.contacts.TLAbsTopPeers
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
@@ -38,6 +49,9 @@ class TLRequestContactsGetTopPeers() : TLMethod<TLAbsTopPeers>() {
     @Transient
     var channels: Boolean = false
 
+    @Transient
+    var botsApp: Boolean = false
+
     var offset: Int = 0
 
     var limit: Int = 0
@@ -57,6 +71,7 @@ class TLRequestContactsGetTopPeers() : TLMethod<TLAbsTopPeers>() {
             forwardChats: Boolean,
             groups: Boolean,
             channels: Boolean,
+            botsApp: Boolean,
             offset: Int,
             limit: Int,
             hash: Long
@@ -69,12 +84,13 @@ class TLRequestContactsGetTopPeers() : TLMethod<TLAbsTopPeers>() {
         this.forwardChats = forwardChats
         this.groups = groups
         this.channels = channels
+        this.botsApp = botsApp
         this.offset = offset
         this.limit = limit
         this.hash = hash
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(correspondents, 1)
         updateFlags(botsPm, 2)
@@ -84,6 +100,7 @@ class TLRequestContactsGetTopPeers() : TLMethod<TLAbsTopPeers>() {
         updateFlags(forwardChats, 32)
         updateFlags(groups, 1024)
         updateFlags(channels, 32768)
+        updateFlags(botsApp, 65536)
     }
 
     @Throws(IOException::class)
@@ -107,6 +124,7 @@ class TLRequestContactsGetTopPeers() : TLMethod<TLAbsTopPeers>() {
         forwardChats = isMask(32)
         groups = isMask(1024)
         channels = isMask(32768)
+        botsApp = isMask(65536)
         offset = readInt()
         limit = readInt()
         hash = readLong()
@@ -138,6 +156,7 @@ class TLRequestContactsGetTopPeers() : TLMethod<TLAbsTopPeers>() {
                 && forwardChats == other.forwardChats
                 && groups == other.groups
                 && channels == other.channels
+                && botsApp == other.botsApp
                 && offset == other.offset
                 && limit == other.limit
                 && hash == other.hash

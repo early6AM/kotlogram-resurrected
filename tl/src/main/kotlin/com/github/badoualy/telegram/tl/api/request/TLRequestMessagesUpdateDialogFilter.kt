@@ -1,13 +1,23 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
-import com.github.badoualy.telegram.tl.api.TLDialogFilter
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
+import com.github.badoualy.telegram.tl.api.TLAbsDialogFilter
 import com.github.badoualy.telegram.tl.core.TLBool
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
@@ -16,18 +26,18 @@ import java.io.IOException
 class TLRequestMessagesUpdateDialogFilter() : TLMethod<TLBool>() {
     var id: Int = 0
 
-    var filter: TLDialogFilter? = null
+    var filter: TLAbsDialogFilter? = null
 
     private val _constructor: String = "messages.updateDialogFilter#1ad4a04a"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(id: Int, filter: TLDialogFilter?) : this() {
+    constructor(id: Int, filter: TLAbsDialogFilter?) : this() {
         this.id = id
         this.filter = filter
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(filter, 1)
     }
@@ -45,7 +55,7 @@ class TLRequestMessagesUpdateDialogFilter() : TLMethod<TLBool>() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         id = readInt()
-        filter = readIfMask(1) { readTLObject<TLDialogFilter>(TLDialogFilter::class, TLDialogFilter.CONSTRUCTOR_ID) }
+        filter = readIfMask(1) { readTLObject<TLAbsDialogFilter>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -69,6 +79,6 @@ class TLRequestMessagesUpdateDialogFilter() : TLMethod<TLBool>() {
                 && filter == other.filter
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x1ad4a04a
+        const val CONSTRUCTOR_ID: Int = 0x1ad4a04a.toInt()
     }
 }

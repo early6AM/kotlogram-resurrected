@@ -1,12 +1,22 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * updateServiceNotification#ebe46819
@@ -17,6 +27,9 @@ import java.io.IOException
 class TLUpdateServiceNotification() : TLAbsUpdate() {
     @Transient
     var popup: Boolean = false
+
+    @Transient
+    var invertMedia: Boolean = false
 
     var inboxDate: Int? = null
 
@@ -34,6 +47,7 @@ class TLUpdateServiceNotification() : TLAbsUpdate() {
 
     constructor(
             popup: Boolean,
+            invertMedia: Boolean,
             inboxDate: Int?,
             type: String,
             message: String,
@@ -41,6 +55,7 @@ class TLUpdateServiceNotification() : TLAbsUpdate() {
             entities: TLObjectVector<TLAbsMessageEntity>
     ) : this() {
         this.popup = popup
+        this.invertMedia = invertMedia
         this.inboxDate = inboxDate
         this.type = type
         this.message = message
@@ -48,9 +63,10 @@ class TLUpdateServiceNotification() : TLAbsUpdate() {
         this.entities = entities
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(popup, 1)
+        updateFlags(invertMedia, 4)
         updateFlags(inboxDate, 2)
     }
 
@@ -70,6 +86,7 @@ class TLUpdateServiceNotification() : TLAbsUpdate() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         popup = isMask(1)
+        invertMedia = isMask(4)
         inboxDate = readIfMask(2) { readInt() }
         type = readString()
         message = readString()
@@ -98,6 +115,7 @@ class TLUpdateServiceNotification() : TLAbsUpdate() {
 
         return _flags == other._flags
                 && popup == other.popup
+                && invertMedia == other.invertMedia
                 && inboxDate == other.inboxDate
                 && type == other.type
                 && message == other.message

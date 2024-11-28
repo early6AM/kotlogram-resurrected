@@ -1,13 +1,23 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLBytes
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * userProfilePhoto#82d1f706
@@ -18,6 +28,9 @@ import java.io.IOException
 class TLUserProfilePhoto() : TLAbsUserProfilePhoto() {
     @Transient
     var hasVideo: Boolean = false
+
+    @Transient
+    var personal: Boolean = false
 
     var photoId: Long = 0L
 
@@ -31,19 +44,22 @@ class TLUserProfilePhoto() : TLAbsUserProfilePhoto() {
 
     constructor(
             hasVideo: Boolean,
+            personal: Boolean,
             photoId: Long,
             strippedThumb: TLBytes?,
             dcId: Int
     ) : this() {
         this.hasVideo = hasVideo
+        this.personal = personal
         this.photoId = photoId
         this.strippedThumb = strippedThumb
         this.dcId = dcId
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(hasVideo, 1)
+        updateFlags(personal, 4)
         updateFlags(strippedThumb, 2)
     }
 
@@ -61,6 +77,7 @@ class TLUserProfilePhoto() : TLAbsUserProfilePhoto() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         hasVideo = isMask(1)
+        personal = isMask(4)
         photoId = readLong()
         strippedThumb = readIfMask(2) { readTLBytes() }
         dcId = readInt()
@@ -85,6 +102,7 @@ class TLUserProfilePhoto() : TLAbsUserProfilePhoto() {
 
         return _flags == other._flags
                 && hasVideo == other.hasVideo
+                && personal == other.personal
                 && photoId == other.photoId
                 && strippedThumb == other.strippedThumb
                 && dcId == other.dcId

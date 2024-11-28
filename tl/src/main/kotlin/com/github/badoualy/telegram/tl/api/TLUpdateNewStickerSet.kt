@@ -1,10 +1,22 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
-import com.github.badoualy.telegram.tl.api.messages.TLStickerSet
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
+import com.github.badoualy.telegram.tl.api.messages.TLAbsStickerSet
+import com.github.badoualy.telegram.tl.api.messages.TLStickerSetNotModified
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
  * updateNewStickerSet#688a30aa
@@ -13,13 +25,13 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLUpdateNewStickerSet() : TLAbsUpdate() {
-    var stickerset: TLStickerSet = TLStickerSet()
+    var stickerset: TLAbsStickerSet = TLStickerSetNotModified()
 
     private val _constructor: String = "updateNewStickerSet#688a30aa"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(stickerset: TLStickerSet) : this() {
+    constructor(stickerset: TLAbsStickerSet) : this() {
         this.stickerset = stickerset
     }
 
@@ -30,7 +42,7 @@ class TLUpdateNewStickerSet() : TLAbsUpdate() {
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        stickerset = readTLObject<TLStickerSet>(TLStickerSet::class, TLStickerSet.CONSTRUCTOR_ID)
+        stickerset = readTLObject<TLAbsStickerSet>()
     }
 
     override fun computeSerializedSize(): Int {
@@ -48,6 +60,6 @@ class TLUpdateNewStickerSet() : TLAbsUpdate() {
         return stickerset == other.stickerset
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x688a30aa
+        const val CONSTRUCTOR_ID: Int = 0x688a30aa.toInt()
     }
 }

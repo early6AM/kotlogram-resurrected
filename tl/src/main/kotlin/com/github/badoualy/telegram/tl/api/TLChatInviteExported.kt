@@ -1,26 +1,38 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
-import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
- * chatInviteExported#b18105e8
+ * chatInviteExported#ab4a819
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
-class TLChatInviteExported() : TLObject() {
+class TLChatInviteExported() : TLAbsExportedChatInvite() {
     @Transient
     var revoked: Boolean = false
 
     @Transient
     var permanent: Boolean = false
+
+    @Transient
+    var requestNeeded: Boolean = false
 
     var link: String = ""
 
@@ -36,23 +48,31 @@ class TLChatInviteExported() : TLObject() {
 
     var usage: Int? = null
 
-    private val _constructor: String = "chatInviteExported#b18105e8"
+    var requested: Int? = null
+
+    var title: String? = null
+
+    private val _constructor: String = "chatInviteExported#ab4a819"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             revoked: Boolean,
             permanent: Boolean,
+            requestNeeded: Boolean,
             link: String,
             adminId: Long,
             date: Int,
             startDate: Int?,
             expireDate: Int?,
             usageLimit: Int?,
-            usage: Int?
+            usage: Int?,
+            requested: Int?,
+            title: String?
     ) : this() {
         this.revoked = revoked
         this.permanent = permanent
+        this.requestNeeded = requestNeeded
         this.link = link
         this.adminId = adminId
         this.date = date
@@ -60,16 +80,21 @@ class TLChatInviteExported() : TLObject() {
         this.expireDate = expireDate
         this.usageLimit = usageLimit
         this.usage = usage
+        this.requested = requested
+        this.title = title
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(revoked, 1)
         updateFlags(permanent, 32)
+        updateFlags(requestNeeded, 64)
         updateFlags(startDate, 16)
         updateFlags(expireDate, 2)
         updateFlags(usageLimit, 4)
         updateFlags(usage, 8)
+        updateFlags(requested, 128)
+        updateFlags(title, 256)
     }
 
     @Throws(IOException::class)
@@ -84,6 +109,8 @@ class TLChatInviteExported() : TLObject() {
         doIfMask(expireDate, 2) { writeInt(it) }
         doIfMask(usageLimit, 4) { writeInt(it) }
         doIfMask(usage, 8) { writeInt(it) }
+        doIfMask(requested, 128) { writeInt(it) }
+        doIfMask(title, 256) { writeString(it) }
     }
 
     @Throws(IOException::class)
@@ -91,6 +118,7 @@ class TLChatInviteExported() : TLObject() {
         _flags = readInt()
         revoked = isMask(1)
         permanent = isMask(32)
+        requestNeeded = isMask(64)
         link = readString()
         adminId = readLong()
         date = readInt()
@@ -98,6 +126,8 @@ class TLChatInviteExported() : TLObject() {
         expireDate = readIfMask(2) { readInt() }
         usageLimit = readIfMask(4) { readInt() }
         usage = readIfMask(8) { readInt() }
+        requested = readIfMask(128) { readInt() }
+        title = readIfMask(256) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -112,6 +142,8 @@ class TLChatInviteExported() : TLObject() {
         size += getIntIfMask(expireDate, 2) { SIZE_INT32 }
         size += getIntIfMask(usageLimit, 4) { SIZE_INT32 }
         size += getIntIfMask(usage, 8) { SIZE_INT32 }
+        size += getIntIfMask(requested, 128) { SIZE_INT32 }
+        size += getIntIfMask(title, 256) { computeTLStringSerializedSize(it) }
         return size
     }
 
@@ -124,6 +156,7 @@ class TLChatInviteExported() : TLObject() {
         return _flags == other._flags
                 && revoked == other.revoked
                 && permanent == other.permanent
+                && requestNeeded == other.requestNeeded
                 && link == other.link
                 && adminId == other.adminId
                 && date == other.date
@@ -131,8 +164,10 @@ class TLChatInviteExported() : TLObject() {
                 && expireDate == other.expireDate
                 && usageLimit == other.usageLimit
                 && usage == other.usage
+                && requested == other.requested
+                && title == other.title
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xb18105e8.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xab4a819.toInt()
     }
 }

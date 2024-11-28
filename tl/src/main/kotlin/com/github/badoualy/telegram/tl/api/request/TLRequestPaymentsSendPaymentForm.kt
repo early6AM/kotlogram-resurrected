@@ -1,18 +1,27 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
+import com.github.badoualy.telegram.tl.api.TLAbsInputInvoice
 import com.github.badoualy.telegram.tl.api.TLAbsInputPaymentCredentials
-import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
+import com.github.badoualy.telegram.tl.api.TLInputInvoiceSlug
 import com.github.badoualy.telegram.tl.api.TLInputPaymentCredentialsApplePay
-import com.github.badoualy.telegram.tl.api.TLInputPeerEmpty
 import com.github.badoualy.telegram.tl.api.payments.TLAbsPaymentResult
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
@@ -21,9 +30,7 @@ import java.io.IOException
 class TLRequestPaymentsSendPaymentForm() : TLMethod<TLAbsPaymentResult>() {
     var formId: Long = 0L
 
-    var peer: TLAbsInputPeer = TLInputPeerEmpty()
-
-    var msgId: Int = 0
+    var invoice: TLAbsInputInvoice = TLInputInvoiceSlug()
 
     var requestedInfoId: String? = null
 
@@ -33,29 +40,27 @@ class TLRequestPaymentsSendPaymentForm() : TLMethod<TLAbsPaymentResult>() {
 
     var tipAmount: Long? = null
 
-    private val _constructor: String = "payments.sendPaymentForm#30c3bc9d"
+    private val _constructor: String = "payments.sendPaymentForm#2d03522f"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             formId: Long,
-            peer: TLAbsInputPeer,
-            msgId: Int,
+            invoice: TLAbsInputInvoice,
             requestedInfoId: String?,
             shippingOptionId: String?,
             credentials: TLAbsInputPaymentCredentials,
             tipAmount: Long?
     ) : this() {
         this.formId = formId
-        this.peer = peer
-        this.msgId = msgId
+        this.invoice = invoice
         this.requestedInfoId = requestedInfoId
         this.shippingOptionId = shippingOptionId
         this.credentials = credentials
         this.tipAmount = tipAmount
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(requestedInfoId, 1)
         updateFlags(shippingOptionId, 2)
@@ -68,8 +73,7 @@ class TLRequestPaymentsSendPaymentForm() : TLMethod<TLAbsPaymentResult>() {
 
         writeInt(_flags)
         writeLong(formId)
-        writeTLObject(peer)
-        writeInt(msgId)
+        writeTLObject(invoice)
         doIfMask(requestedInfoId, 1) { writeString(it) }
         doIfMask(shippingOptionId, 2) { writeString(it) }
         writeTLObject(credentials)
@@ -80,8 +84,7 @@ class TLRequestPaymentsSendPaymentForm() : TLMethod<TLAbsPaymentResult>() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         formId = readLong()
-        peer = readTLObject<TLAbsInputPeer>()
-        msgId = readInt()
+        invoice = readTLObject<TLAbsInputInvoice>()
         requestedInfoId = readIfMask(1) { readString() }
         shippingOptionId = readIfMask(2) { readString() }
         credentials = readTLObject<TLAbsInputPaymentCredentials>()
@@ -94,8 +97,7 @@ class TLRequestPaymentsSendPaymentForm() : TLMethod<TLAbsPaymentResult>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT64
-        size += peer.computeSerializedSize()
-        size += SIZE_INT32
+        size += invoice.computeSerializedSize()
         size += getIntIfMask(requestedInfoId, 1) { computeTLStringSerializedSize(it) }
         size += getIntIfMask(shippingOptionId, 2) { computeTLStringSerializedSize(it) }
         size += credentials.computeSerializedSize()
@@ -111,14 +113,13 @@ class TLRequestPaymentsSendPaymentForm() : TLMethod<TLAbsPaymentResult>() {
 
         return _flags == other._flags
                 && formId == other.formId
-                && peer == other.peer
-                && msgId == other.msgId
+                && invoice == other.invoice
                 && requestedInfoId == other.requestedInfoId
                 && shippingOptionId == other.shippingOptionId
                 && credentials == other.credentials
                 && tipAmount == other.tipAmount
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x30c3bc9d
+        const val CONSTRUCTOR_ID: Int = 0x2d03522f.toInt()
     }
 }

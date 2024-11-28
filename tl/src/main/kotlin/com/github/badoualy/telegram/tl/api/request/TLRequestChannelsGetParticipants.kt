@@ -1,17 +1,27 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsChannelParticipantsFilter
 import com.github.badoualy.telegram.tl.api.TLAbsInputChannel
-import com.github.badoualy.telegram.tl.api.TLChannelParticipantsRecent
+import com.github.badoualy.telegram.tl.api.TLChannelParticipantsAdmins
 import com.github.badoualy.telegram.tl.api.TLInputChannelEmpty
 import com.github.badoualy.telegram.tl.api.channels.TLAbsChannelParticipants
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
@@ -20,7 +30,7 @@ import java.io.IOException
 class TLRequestChannelsGetParticipants() : TLMethod<TLAbsChannelParticipants>() {
     var channel: TLAbsInputChannel = TLInputChannelEmpty()
 
-    var filter: TLAbsChannelParticipantsFilter = TLChannelParticipantsRecent()
+    var filter: TLAbsChannelParticipantsFilter = TLChannelParticipantsAdmins()
 
     var offset: Int = 0
 
@@ -87,6 +97,6 @@ class TLRequestChannelsGetParticipants() : TLMethod<TLAbsChannelParticipants>() 
                 && hash == other.hash
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x77ced9d0
+        const val CONSTRUCTOR_ID: Int = 0x77ced9d0.toInt()
     }
 }

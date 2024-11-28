@@ -1,9 +1,20 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
  * channelAdminLogEventActionExportedInviteEdit#e90ebb59
@@ -12,15 +23,15 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLChannelAdminLogEventActionExportedInviteEdit() : TLAbsChannelAdminLogEventAction() {
-    var prevInvite: TLChatInviteExported = TLChatInviteExported()
+    var prevInvite: TLAbsExportedChatInvite = TLChatInvitePublicJoinRequests()
 
-    var newInvite: TLChatInviteExported = TLChatInviteExported()
+    var newInvite: TLAbsExportedChatInvite = TLChatInvitePublicJoinRequests()
 
     private val _constructor: String = "channelAdminLogEventActionExportedInviteEdit#e90ebb59"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(prevInvite: TLChatInviteExported, newInvite: TLChatInviteExported) : this() {
+    constructor(prevInvite: TLAbsExportedChatInvite, newInvite: TLAbsExportedChatInvite) : this() {
         this.prevInvite = prevInvite
         this.newInvite = newInvite
     }
@@ -33,8 +44,8 @@ class TLChannelAdminLogEventActionExportedInviteEdit() : TLAbsChannelAdminLogEve
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        prevInvite = readTLObject<TLChatInviteExported>(TLChatInviteExported::class, TLChatInviteExported.CONSTRUCTOR_ID)
-        newInvite = readTLObject<TLChatInviteExported>(TLChatInviteExported::class, TLChatInviteExported.CONSTRUCTOR_ID)
+        prevInvite = readTLObject<TLAbsExportedChatInvite>()
+        newInvite = readTLObject<TLAbsExportedChatInvite>()
     }
 
     override fun computeSerializedSize(): Int {

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="TELEGRAM" class="com.github.paolodenti.telegram.logback.TelegramAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level><onMatch>ACCEPT</onMatch><onMismatch>DENY</onMismatch>
+        </filter>
+        <botToken>1129606247:AAH_uf6AVAUA6Ma_qErwHJi9ffNN8oEf3uY</botToken> <!-- tgb_panel_bot -->
+        <chatId>253223004</chatId> <!-- @Harmonizr -->
+        <messageParseMode>markdown</messageParseMode>
+        <Layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>[%thread] **%-5level** %logger{36}: %msg%n</Pattern>
+        </Layout>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="CONSOLE" />
+        <!--appender-ref ref="TELEGRAM" /-->
+    </root>
+</configuration>

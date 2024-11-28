@@ -1,13 +1,25 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Double
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
- * documentAttributeVideo#ef02ce6
+ * documentAttributeVideo#d38ff1c2
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -19,34 +31,45 @@ class TLDocumentAttributeVideo() : TLAbsDocumentAttribute() {
     @Transient
     var supportsStreaming: Boolean = false
 
-    var duration: Int = 0
+    @Transient
+    var nosound: Boolean = false
+
+    var duration: Double = 0.0
 
     var w: Int = 0
 
     var h: Int = 0
 
-    private val _constructor: String = "documentAttributeVideo#ef02ce6"
+    var preloadPrefixSize: Int? = null
+
+    private val _constructor: String = "documentAttributeVideo#d38ff1c2"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             roundMessage: Boolean,
             supportsStreaming: Boolean,
-            duration: Int,
+            nosound: Boolean,
+            duration: Double,
             w: Int,
-            h: Int
+            h: Int,
+            preloadPrefixSize: Int?
     ) : this() {
         this.roundMessage = roundMessage
         this.supportsStreaming = supportsStreaming
+        this.nosound = nosound
         this.duration = duration
         this.w = w
         this.h = h
+        this.preloadPrefixSize = preloadPrefixSize
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(roundMessage, 1)
         updateFlags(supportsStreaming, 2)
+        updateFlags(nosound, 8)
+        updateFlags(preloadPrefixSize, 4)
     }
 
     @Throws(IOException::class)
@@ -54,9 +77,10 @@ class TLDocumentAttributeVideo() : TLAbsDocumentAttribute() {
         computeFlags()
 
         writeInt(_flags)
-        writeInt(duration)
+        writeDouble(duration)
         writeInt(w)
         writeInt(h)
+        doIfMask(preloadPrefixSize, 4) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -64,9 +88,11 @@ class TLDocumentAttributeVideo() : TLAbsDocumentAttribute() {
         _flags = readInt()
         roundMessage = isMask(1)
         supportsStreaming = isMask(2)
-        duration = readInt()
+        nosound = isMask(8)
+        duration = readDouble()
         w = readInt()
         h = readInt()
+        preloadPrefixSize = readIfMask(4) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -74,9 +100,10 @@ class TLDocumentAttributeVideo() : TLAbsDocumentAttribute() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
+        size += SIZE_DOUBLE
         size += SIZE_INT32
         size += SIZE_INT32
-        size += SIZE_INT32
+        size += getIntIfMask(preloadPrefixSize, 4) { SIZE_INT32 }
         return size
     }
 
@@ -89,11 +116,13 @@ class TLDocumentAttributeVideo() : TLAbsDocumentAttribute() {
         return _flags == other._flags
                 && roundMessage == other.roundMessage
                 && supportsStreaming == other.supportsStreaming
+                && nosound == other.nosound
                 && duration == other.duration
                 && w == other.w
                 && h == other.h
+                && preloadPrefixSize == other.preloadPrefixSize
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xef02ce6
+        const val CONSTRUCTOR_ID: Int = 0xd38ff1c2.toInt()
     }
 }

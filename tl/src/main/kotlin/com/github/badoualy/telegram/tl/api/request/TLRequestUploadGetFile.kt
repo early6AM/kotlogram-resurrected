@@ -1,7 +1,12 @@
 package com.github.badoualy.telegram.tl.api.request
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputFileLocation
 import com.github.badoualy.telegram.tl.api.TLInputTakeoutFileLocation
 import com.github.badoualy.telegram.tl.api.upload.TLAbsFile
@@ -9,6 +14,13 @@ import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
@@ -23,11 +35,11 @@ class TLRequestUploadGetFile() : TLMethod<TLAbsFile>() {
 
     var location: TLAbsInputFileLocation = TLInputTakeoutFileLocation()
 
-    var offset: Int = 0
+    var offset: Long = 0L
 
     var limit: Int = 0
 
-    private val _constructor: String = "upload.getFile#b15a9afc"
+    private val _constructor: String = "upload.getFile#be5335be"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -35,7 +47,7 @@ class TLRequestUploadGetFile() : TLMethod<TLAbsFile>() {
             precise: Boolean,
             cdnSupported: Boolean,
             location: TLAbsInputFileLocation,
-            offset: Int,
+            offset: Long,
             limit: Int
     ) : this() {
         this.precise = precise
@@ -45,7 +57,7 @@ class TLRequestUploadGetFile() : TLMethod<TLAbsFile>() {
         this.limit = limit
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(precise, 1)
         updateFlags(cdnSupported, 2)
@@ -57,7 +69,7 @@ class TLRequestUploadGetFile() : TLMethod<TLAbsFile>() {
 
         writeInt(_flags)
         writeTLObject(location)
-        writeInt(offset)
+        writeLong(offset)
         writeInt(limit)
     }
 
@@ -67,7 +79,7 @@ class TLRequestUploadGetFile() : TLMethod<TLAbsFile>() {
         precise = isMask(1)
         cdnSupported = isMask(2)
         location = readTLObject<TLAbsInputFileLocation>()
-        offset = readInt()
+        offset = readLong()
         limit = readInt()
     }
 
@@ -77,7 +89,7 @@ class TLRequestUploadGetFile() : TLMethod<TLAbsFile>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += location.computeSerializedSize()
-        size += SIZE_INT32
+        size += SIZE_INT64
         size += SIZE_INT32
         return size
     }
@@ -96,6 +108,6 @@ class TLRequestUploadGetFile() : TLMethod<TLAbsFile>() {
                 && limit == other.limit
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xb15a9afc.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xbe5335be.toInt()
     }
 }

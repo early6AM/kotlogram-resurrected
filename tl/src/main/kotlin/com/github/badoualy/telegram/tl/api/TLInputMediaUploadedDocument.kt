@@ -1,12 +1,22 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * inputMediaUploadedDocument#5b38c6c1
@@ -20,6 +30,9 @@ class TLInputMediaUploadedDocument() : TLAbsInputMedia() {
 
     @Transient
     var forceFile: Boolean = false
+
+    @Transient
+    var spoiler: Boolean = false
 
     var file: TLAbsInputFile = TLInputFileBig()
 
@@ -40,6 +53,7 @@ class TLInputMediaUploadedDocument() : TLAbsInputMedia() {
     constructor(
             nosoundVideo: Boolean,
             forceFile: Boolean,
+            spoiler: Boolean,
             file: TLAbsInputFile,
             thumb: TLAbsInputFile?,
             mimeType: String,
@@ -49,6 +63,7 @@ class TLInputMediaUploadedDocument() : TLAbsInputMedia() {
     ) : this() {
         this.nosoundVideo = nosoundVideo
         this.forceFile = forceFile
+        this.spoiler = spoiler
         this.file = file
         this.thumb = thumb
         this.mimeType = mimeType
@@ -57,10 +72,11 @@ class TLInputMediaUploadedDocument() : TLAbsInputMedia() {
         this.ttlSeconds = ttlSeconds
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(nosoundVideo, 8)
         updateFlags(forceFile, 16)
+        updateFlags(spoiler, 32)
         updateFlags(thumb, 4)
         updateFlags(stickers, 1)
         updateFlags(ttlSeconds, 2)
@@ -84,6 +100,7 @@ class TLInputMediaUploadedDocument() : TLAbsInputMedia() {
         _flags = readInt()
         nosoundVideo = isMask(8)
         forceFile = isMask(16)
+        spoiler = isMask(32)
         file = readTLObject<TLAbsInputFile>()
         thumb = readIfMask(4) { readTLObject<TLAbsInputFile>() }
         mimeType = readString()
@@ -115,6 +132,7 @@ class TLInputMediaUploadedDocument() : TLAbsInputMedia() {
         return _flags == other._flags
                 && nosoundVideo == other.nosoundVideo
                 && forceFile == other.forceFile
+                && spoiler == other.spoiler
                 && file == other.file
                 && thumb == other.thumb
                 && mimeType == other.mimeType
@@ -123,6 +141,6 @@ class TLInputMediaUploadedDocument() : TLAbsInputMedia() {
                 && ttlSeconds == other.ttlSeconds
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x5b38c6c1
+        const val CONSTRUCTOR_ID: Int = 0x5b38c6c1.toInt()
     }
 }

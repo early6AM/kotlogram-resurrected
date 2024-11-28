@@ -1,11 +1,21 @@
 package com.github.badoualy.telegram.tl.api.auth
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.help.TLTermsOfService
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
  * auth.authorizationSignUpRequired#44747e9a
@@ -24,7 +34,7 @@ class TLAuthorizationSignUpRequired() : TLAbsAuthorization() {
         this.termsOfService = termsOfService
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(termsOfService, 1)
     }
@@ -62,6 +72,6 @@ class TLAuthorizationSignUpRequired() : TLAbsAuthorization() {
                 && termsOfService == other.termsOfService
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x44747e9a
+        const val CONSTRUCTOR_ID: Int = 0x44747e9a.toInt()
     }
 }

@@ -1,10 +1,20 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
  * updateDialogFilter#26ffde7d
@@ -15,18 +25,18 @@ import java.io.IOException
 class TLUpdateDialogFilter() : TLAbsUpdate() {
     var id: Int = 0
 
-    var filter: TLDialogFilter? = null
+    var filter: TLAbsDialogFilter? = null
 
     private val _constructor: String = "updateDialogFilter#26ffde7d"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(id: Int, filter: TLDialogFilter?) : this() {
+    constructor(id: Int, filter: TLAbsDialogFilter?) : this() {
         this.id = id
         this.filter = filter
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(filter, 1)
     }
@@ -44,7 +54,7 @@ class TLUpdateDialogFilter() : TLAbsUpdate() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         id = readInt()
-        filter = readIfMask(1) { readTLObject<TLDialogFilter>(TLDialogFilter::class, TLDialogFilter.CONSTRUCTOR_ID) }
+        filter = readIfMask(1) { readTLObject<TLAbsDialogFilter>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -68,6 +78,6 @@ class TLUpdateDialogFilter() : TLAbsUpdate() {
                 && filter == other.filter
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x26ffde7d
+        const val CONSTRUCTOR_ID: Int = 0x26ffde7d.toInt()
     }
 }

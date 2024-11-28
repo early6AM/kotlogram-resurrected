@@ -1,11 +1,21 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
  * dialogFilterSuggested#77744d4a
@@ -14,7 +24,7 @@ import java.io.IOException
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLDialogFilterSuggested() : TLObject() {
-    var filter: TLDialogFilter = TLDialogFilter()
+    var filter: TLAbsDialogFilter = TLDialogFilterDefault()
 
     var description: String = ""
 
@@ -22,7 +32,7 @@ class TLDialogFilterSuggested() : TLObject() {
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(filter: TLDialogFilter, description: String) : this() {
+    constructor(filter: TLAbsDialogFilter, description: String) : this() {
         this.filter = filter
         this.description = description
     }
@@ -35,7 +45,7 @@ class TLDialogFilterSuggested() : TLObject() {
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        filter = readTLObject<TLDialogFilter>(TLDialogFilter::class, TLDialogFilter.CONSTRUCTOR_ID)
+        filter = readTLObject<TLAbsDialogFilter>()
         description = readString()
     }
 
@@ -56,6 +66,6 @@ class TLDialogFilterSuggested() : TLObject() {
                 && description == other.description
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x77744d4a
+        const val CONSTRUCTOR_ID: Int = 0x77744d4a.toInt()
     }
 }

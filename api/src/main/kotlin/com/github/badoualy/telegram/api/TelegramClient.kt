@@ -62,54 +62,110 @@ abstract class TelegramClient : TelegramApiWrapper(), TelegramApi, Closeable {
 
     /** Convenience method wrapping the argument with [TelegramApp] values */
     fun authSendCode(allowFlashcall: Boolean, phoneNumber: String, currentNumber: Boolean?) =
-            with(app) {
-                @Suppress("DEPRECATION")
-                authSendCode(phoneNumber, apiId, apiHash, TLCodeSettings(allowFlashcall, currentNumber ?: true, true))
-            }
+        with(app) {
+            @Suppress("DEPRECATION")
+            authSendCode(
+                phoneNumber, apiId, apiHash, TLCodeSettings(
+                    allowFlashcall = allowFlashcall,
+                    currentNumber = currentNumber ?: true,
+                    allowAppHash = true,
+                    allowMissedCall = true,
+                    allowFirebase = true,
+                    logoutTokens = null,
+                    token = null,
+                    appSandbox = null
+                )
+            )
+        }
 
-    @Deprecated("Use one of the overload for more convenience",
-                ReplaceWith("authSendCode(phoneNumber)"))
-    fun authSendCode(allowFlashcall: Boolean, phoneNumber: String, currentNumber: Boolean?, apiId: Int, apiHash: String) =
-            super.authSendCode(phoneNumber, apiId, apiHash, TLCodeSettings(allowFlashcall, currentNumber ?: true, true))
+    @Deprecated(
+        "Use one of the overload for more convenience",
+        ReplaceWith("authSendCode(phoneNumber)")
+    )
+    fun authSendCode(
+        allowFlashcall: Boolean,
+        phoneNumber: String,
+        currentNumber: Boolean?,
+        apiId: Int,
+        apiHash: String
+    ) =
+        super.authSendCode(
+            phoneNumber, apiId, apiHash, TLCodeSettings(
+                allowFlashcall = allowFlashcall,
+                currentNumber = currentNumber ?: true,
+                allowAppHash = true,
+                allowMissedCall = true,
+                allowFirebase = true,
+                logoutTokens = null,
+                token = null,
+                appSandbox = null
+            )
+        )
 
     /** Convenience method wrapping the argument with salt */
     @Deprecated("IDK WTF has happened to this", level = DeprecationLevel.ERROR)
     fun authCheckPassword(password: String): Nothing =
         throw UnsupportedOperationException()
-            /*accountGetPassword()
-                    .flatMap { tlPassword ->
-                        tlPassword as? TLPassword ?: throw RpcErrorException(400, "NO_PASSWORD")
-                        CryptoUtils.encodePasswordHash(tlPassword.currentSalt.data,
-                                                       password)?.let { hash ->
-                            @Suppress("DEPRECATION")
-                            authCheckPassword(TLBytes(hash))
-                        }
-                    }*/
+    /*accountGetPassword()
+            .flatMap { tlPassword ->
+                tlPassword as? TLPassword ?: throw RpcErrorException(400, "NO_PASSWORD")
+                CryptoUtils.encodePasswordHash(tlPassword.currentSalt.data,
+                                               password)?.let { hash ->
+                    @Suppress("DEPRECATION")
+                    authCheckPassword(TLBytes(hash))
+                }
+            }*/
 
-    @Deprecated("Use authCheckPassword for more convenience", ReplaceWith("authCheckPassword(password)"), DeprecationLevel.ERROR)
+    @Deprecated(
+        "Use authCheckPassword for more convenience",
+        ReplaceWith("authCheckPassword(password)"),
+        DeprecationLevel.ERROR
+    )
     fun authCheckPassword(passwordHash: TLBytes): Nothing = throw UnsupportedOperationException()
 
     /** Convenience method wrapping the argument with TelegramApp values and casting result with good type */
     fun <T : TLObject> initConnection(query: TLMethod<T>) = with(app) {
         @Suppress("DEPRECATION")
-        initConnection(apiId, deviceModel,
-                       systemVersion, appVersion,
-                       systemLangCode, langPack, langCode,
-                       query)
+        initConnection(
+            apiId, deviceModel,
+            systemVersion, appVersion,
+            systemLangCode, langPack, langCode,
+            query
+        )
     }
 
     @Deprecated("Use initConnection for more convenience", ReplaceWith("initConnection(query)"))
-    fun <T : TLObject> initConnection(apiId: Int,
-                                               deviceModel: String,
-                                               systemVersion: String, appVersion: String,
-                                               systemLangCode: String,
-                                               langPack: String,
-                                               langCode: String,
-                                               query: TLMethod<T>?) =
-            super.initConnection(apiId, deviceModel, systemVersion, appVersion,
-                                 systemLangCode, langPack, langCode, null, null, query)
+    fun <T : TLObject> initConnection(
+        apiId: Int,
+        deviceModel: String,
+        systemVersion: String, appVersion: String,
+        systemLangCode: String,
+        langPack: String,
+        langCode: String,
+        query: TLMethod<T>?
+    ) =
+        super.initConnection(
+            apiId, deviceModel, systemVersion, appVersion,
+            systemLangCode, langPack, langCode, null, null, query
+        )
 
     /** Convenience method wrapping the argument for a plain text message */
     fun messagesSendMessage(peer: TLAbsInputPeer, message: String, randomId: Long) =
-            super.messagesSendMessage(true, false, false, false, peer, null, message, randomId, null, null, null)
+        super.messagesSendMessage(
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            peer,
+            null,
+            message,
+            randomId,
+            null,
+            null,
+            null,
+            null
+        )
 }

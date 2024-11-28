@@ -1,13 +1,24 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
- * dialog#2c171f72
+ * dialog#d58a08c6
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -18,6 +29,9 @@ class TLDialog() : TLAbsDialog() {
 
     @Transient
     var unreadMark: Boolean = false
+
+    @Transient
+    var viewForumAsMessages: Boolean = false
 
     override var peer: TLAbsPeer = TLPeerChat()
 
@@ -31,6 +45,8 @@ class TLDialog() : TLAbsDialog() {
 
     var unreadMentionsCount: Int = 0
 
+    var unreadReactionsCount: Int = 0
+
     var notifySettings: TLPeerNotifySettings = TLPeerNotifySettings()
 
     var pts: Int? = null
@@ -39,45 +55,55 @@ class TLDialog() : TLAbsDialog() {
 
     var folderId: Int? = null
 
-    private val _constructor: String = "dialog#2c171f72"
+    var ttlPeriod: Int? = null
+
+    private val _constructor: String = "dialog#d58a08c6"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             pinned: Boolean,
             unreadMark: Boolean,
+            viewForumAsMessages: Boolean,
             peer: TLAbsPeer,
             topMessage: Int,
             readInboxMaxId: Int,
             readOutboxMaxId: Int,
             unreadCount: Int,
             unreadMentionsCount: Int,
+            unreadReactionsCount: Int,
             notifySettings: TLPeerNotifySettings,
             pts: Int?,
             draft: TLAbsDraftMessage?,
-            folderId: Int?
+            folderId: Int?,
+            ttlPeriod: Int?
     ) : this() {
         this.pinned = pinned
         this.unreadMark = unreadMark
+        this.viewForumAsMessages = viewForumAsMessages
         this.peer = peer
         this.topMessage = topMessage
         this.readInboxMaxId = readInboxMaxId
         this.readOutboxMaxId = readOutboxMaxId
         this.unreadCount = unreadCount
         this.unreadMentionsCount = unreadMentionsCount
+        this.unreadReactionsCount = unreadReactionsCount
         this.notifySettings = notifySettings
         this.pts = pts
         this.draft = draft
         this.folderId = folderId
+        this.ttlPeriod = ttlPeriod
     }
 
-    override fun computeFlags() {
+    protected override fun computeFlags() {
         _flags = 0
         updateFlags(pinned, 4)
         updateFlags(unreadMark, 8)
+        updateFlags(viewForumAsMessages, 64)
         updateFlags(pts, 1)
         updateFlags(draft, 2)
         updateFlags(folderId, 16)
+        updateFlags(ttlPeriod, 32)
     }
 
     @Throws(IOException::class)
@@ -91,10 +117,12 @@ class TLDialog() : TLAbsDialog() {
         writeInt(readOutboxMaxId)
         writeInt(unreadCount)
         writeInt(unreadMentionsCount)
+        writeInt(unreadReactionsCount)
         writeTLObject(notifySettings)
         doIfMask(pts, 1) { writeInt(it) }
         doIfMask(draft, 2) { writeTLObject(it) }
         doIfMask(folderId, 16) { writeInt(it) }
+        doIfMask(ttlPeriod, 32) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -102,16 +130,19 @@ class TLDialog() : TLAbsDialog() {
         _flags = readInt()
         pinned = isMask(4)
         unreadMark = isMask(8)
+        viewForumAsMessages = isMask(64)
         peer = readTLObject<TLAbsPeer>()
         topMessage = readInt()
         readInboxMaxId = readInt()
         readOutboxMaxId = readInt()
         unreadCount = readInt()
         unreadMentionsCount = readInt()
+        unreadReactionsCount = readInt()
         notifySettings = readTLObject<TLPeerNotifySettings>(TLPeerNotifySettings::class, TLPeerNotifySettings.CONSTRUCTOR_ID)
         pts = readIfMask(1) { readInt() }
         draft = readIfMask(2) { readTLObject<TLAbsDraftMessage>() }
         folderId = readIfMask(16) { readInt() }
+        ttlPeriod = readIfMask(32) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -125,10 +156,12 @@ class TLDialog() : TLAbsDialog() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
+        size += SIZE_INT32
         size += notifySettings.computeSerializedSize()
         size += getIntIfMask(pts, 1) { SIZE_INT32 }
         size += getIntIfMask(draft, 2) { it.computeSerializedSize() }
         size += getIntIfMask(folderId, 16) { SIZE_INT32 }
+        size += getIntIfMask(ttlPeriod, 32) { SIZE_INT32 }
         return size
     }
 
@@ -141,18 +174,21 @@ class TLDialog() : TLAbsDialog() {
         return _flags == other._flags
                 && pinned == other.pinned
                 && unreadMark == other.unreadMark
+                && viewForumAsMessages == other.viewForumAsMessages
                 && peer == other.peer
                 && topMessage == other.topMessage
                 && readInboxMaxId == other.readInboxMaxId
                 && readOutboxMaxId == other.readOutboxMaxId
                 && unreadCount == other.unreadCount
                 && unreadMentionsCount == other.unreadMentionsCount
+                && unreadReactionsCount == other.unreadReactionsCount
                 && notifySettings == other.notifySettings
                 && pts == other.pts
                 && draft == other.draft
                 && folderId == other.folderId
+                && ttlPeriod == other.ttlPeriod
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x2c171f72
+        const val CONSTRUCTOR_ID: Int = 0xd58a08c6.toInt()
     }
 }

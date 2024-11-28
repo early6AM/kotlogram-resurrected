@@ -1,14 +1,25 @@
 package com.github.badoualy.telegram.tl.api
 
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
+import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.jvm.Throws
 
 /**
- * updateUserName#c3f202e0
+ * updateUserName#a7848924
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -20,9 +31,9 @@ class TLUpdateUserName() : TLAbsUpdate() {
 
     var lastName: String = ""
 
-    var username: String = ""
+    var usernames: TLObjectVector<TLUsername> = TLObjectVector()
 
-    private val _constructor: String = "updateUserName#c3f202e0"
+    private val _constructor: String = "updateUserName#a7848924"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -30,12 +41,12 @@ class TLUpdateUserName() : TLAbsUpdate() {
             userId: Long,
             firstName: String,
             lastName: String,
-            username: String
+            usernames: TLObjectVector<TLUsername>
     ) : this() {
         this.userId = userId
         this.firstName = firstName
         this.lastName = lastName
-        this.username = username
+        this.usernames = usernames
     }
 
     @Throws(IOException::class)
@@ -43,7 +54,7 @@ class TLUpdateUserName() : TLAbsUpdate() {
         writeLong(userId)
         writeString(firstName)
         writeString(lastName)
-        writeString(username)
+        writeTLVector(usernames)
     }
 
     @Throws(IOException::class)
@@ -51,7 +62,7 @@ class TLUpdateUserName() : TLAbsUpdate() {
         userId = readLong()
         firstName = readString()
         lastName = readString()
-        username = readString()
+        usernames = readTLVector<TLUsername>()
     }
 
     override fun computeSerializedSize(): Int {
@@ -59,7 +70,7 @@ class TLUpdateUserName() : TLAbsUpdate() {
         size += SIZE_INT64
         size += computeTLStringSerializedSize(firstName)
         size += computeTLStringSerializedSize(lastName)
-        size += computeTLStringSerializedSize(username)
+        size += usernames.computeSerializedSize()
         return size
     }
 
@@ -72,9 +83,9 @@ class TLUpdateUserName() : TLAbsUpdate() {
         return userId == other.userId
                 && firstName == other.firstName
                 && lastName == other.lastName
-                && username == other.username
+                && usernames == other.usernames
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xc3f202e0.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xa7848924.toInt()
     }
 }
