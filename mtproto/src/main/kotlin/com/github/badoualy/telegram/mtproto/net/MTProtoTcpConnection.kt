@@ -47,20 +47,20 @@ internal class MTProtoTcpConnection
             try {
                 socketChannel.connect(InetSocketAddress(dataCenter.ipv4, dataCenter.port))
                 if (!socketChannel.finishConnect()) {
-                    logger.error(tag, "finishConnect() returned false, this should not happen!!")
+                    println("${Thread.currentThread().id} $tag finishConnect() returned false, this should not happen!!")
                 }
 
                 if (abridgedProtocol) {
                     // @see https://core.telegram.org/mtproto/samples-auth_key
-                    logger.debug(tag, "Using abridged protocol")
+                    println("${Thread.currentThread().id} $tag Using abridged protocol")
                     writeBytes(ByteBuffer.wrap(byteArrayOf(0xef.toByte())))
                 }
-                logger.info(tag, "Connected to $dataCenter")
+                println("${Thread.currentThread().id} $tag Connected to $dataCenter")
                 socketChannel.socket().sendBufferSize = BUFFER_SIZE
                 socketChannel.socket().receiveBufferSize = BUFFER_SIZE
                 break
             } catch (e: Exception) {
-                logger.error(tag, "Failed to connect", e)
+                println("${Thread.currentThread().id} $tag Failed to connect $e")
                 try {
                     socketChannel.close()
                 } catch (e: Exception) {
@@ -82,14 +82,14 @@ internal class MTProtoTcpConnection
 
         // Read message length
         var length = readByteAsInt(readBytes(1, msgHeaderBuffer))
-        logger.debug(tag, "Length first byte ${Integer.toHexString(length)}")
+        println("${Thread.currentThread().id} $tag Length first byte ${Integer.toHexString(length)}")
         if (length == 0x7f) {
             length = readInt24(readBytes(3, msgLengthBuffer))
-            logger.debug(tag, "Long length bytes ${Integer.toHexString(length)}")
+            println("${Thread.currentThread().id} $tag Long length bytes ${Integer.toHexString(length)}")
         }
         length *= 4
 
-        logger.debug(tag, "About to read a message of length $length")
+        println("${Thread.currentThread().id} $tag About to read a message of length $length")
         val buffer = readBytes(length, msgBuffer)
 
         // Convert to a ByteArray
@@ -138,7 +138,7 @@ internal class MTProtoTcpConnection
     override fun getMessageObservable() = MTProtoWatchdog.getMessageObservable(this)
 
     override fun close() {
-        logger.debug(tag, "Closing connection")
+        println("${Thread.currentThread().id} $tag Closing connection")
         try {
             socketChannel.close()
         } catch (e: IOException) {
@@ -157,7 +157,7 @@ internal class MTProtoTcpConnection
         buffer.limit(length)
 
         var totalRead = 0
-        logger.trace(tag, "readBytes(): $length, bufferSize: ${buffer.capacity()}")
+        println("${Thread.currentThread().id} $tag readBytes(): $length, bufferSize: ${buffer.capacity()}")
         while (totalRead < length) {
             val read = socketChannel.read(buffer)
 
@@ -175,10 +175,11 @@ internal class MTProtoTcpConnection
         }
 
         if (totalRead != length) {
-            logger.error("Read $totalRead instead of $length")
+            println("${Thread.currentThread().id} Read $totalRead instead of $length")
         }
 
         buffer.flip()
+        println("${Thread.currentThread().id} bufferRead() result $buffer")
         return buffer
     }
 

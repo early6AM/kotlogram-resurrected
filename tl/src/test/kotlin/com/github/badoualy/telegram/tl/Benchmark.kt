@@ -58,7 +58,7 @@ object Benchmark {
         }
 
         val file = File("./result.txt")
-        println("Write results to " + file.absolutePath)
+        println("${Thread.currentThread().id} Write results to " + file.absolutePath)
         FileUtils.writeStringToFile(file, builder.toString(), Charset.forName("UTF-8"))
 
         var averageSerialize = totalTimeSerialize.toDouble() / totalTestCount
@@ -68,9 +68,9 @@ object Benchmark {
         averageDeserialize /= 1000.0
         averageComplete /= 1000.0
 
-        println("Final results: ")
-        println("\tSerialize $totalTestCount objects in average (ms) $averageSerialize")
-        println("\tDeserialized $totalTestCount objects in average (ms) $averageDeserialize")
-        println("\tSerialize and Deserialized $totalTestCount objects in average (ms) $averageComplete")
+        println("${Thread.currentThread().id} Final results: ")
+        println("${Thread.currentThread().id} \tSerialize $totalTestCount objects in average (ms) $averageSerialize")
+        println("${Thread.currentThread().id} \tDeserialized $totalTestCount objects in average (ms) $averageDeserialize")
+        println("${Thread.currentThread().id} \tSerialize and Deserialized $totalTestCount objects in average (ms) $averageComplete")
     }
 }

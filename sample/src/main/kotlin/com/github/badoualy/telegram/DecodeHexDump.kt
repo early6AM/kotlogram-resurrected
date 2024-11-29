@@ -17,18 +17,18 @@ object DecodeHexDump {
     @JvmStatic
     fun main(args: Array<String>) {
         if (args.size != 1) {
-            System.err.println("Usage: java -jar tl-decoder.jar <input>")
+            System.err.println("${Thread.currentThread().id} Usage: java -jar tl-decoder.jar <input>")
             System.exit(-1)
         }
         val file = File(args[0])
-        println("Using input ${file.absolutePath}")
+        println("${Thread.currentThread().id} Using input ${file.absolutePath}")
 
         val payload = Hex(Charsets.UTF_8).decode(file.readText()) as ByteArray
 
         val tlObject = TLStreamSerializerFactory.createDeserializer(payload, TLApiContext)
                 .readTLObject<TLObject>()
 
-        println("Found ${tlObject.javaClass.canonicalName}\n\n")
+        println("${Thread.currentThread().id} Found ${tlObject.javaClass.canonicalName}\n\n")
         println(gson.toJson(tlObject))
     }
 }

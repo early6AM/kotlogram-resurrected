@@ -32,7 +32,7 @@ object TLSchemaParser {
                 line == "---types---" -> parsingMethods = false
                 line == "---functions---" -> parsingMethods = true
                 !tlTypeRegex.matches(line.trim()) ->
-                    System.err.println("Line not matching tlTypeRegex:\n$line")
+                    System.err.println("${Thread.currentThread().id} Line not matching tlTypeRegex:\n$line")
                 else -> {
                     (if (!parsingMethods)
                         nodes.first

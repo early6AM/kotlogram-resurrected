@@ -73,7 +73,7 @@ class MTProtoHandler {
         session.salt = authResult.serverSalt
         connection.tag = session.tag
         ackBuffer.tag = session.tag
-        logger.debug(tag, "Created from auth result ${authKey.keyIdAsLong}")
+        println("${Thread.currentThread().id} $tag Created from auth result ${authKey.keyIdAsLong}")
     }
 
     @Throws(IOException::class)
@@ -82,43 +82,42 @@ class MTProtoHandler {
         this.session = session ?: newSession(dataCenter)
         connection = connectionFactory.create(dataCenter, this.session.tag)
         ackBuffer.tag = this.session.tag
-        logger.debug(tag,
-                     "Created from existing key (new session? ${session == null}}  ${authKey.keyIdAsLong}")
+        println("${Thread.currentThread().id} $tag Created from existing key (new session? ${session == null}}  ${authKey.keyIdAsLong}")
     }
 
     /** Start listening for incoming messages. You need to call this before executing any method */
     fun start() {
         if (messageSubject.hasObservers()) {
-            logger.error(tag, "Handler already started")
+            println("${Thread.currentThread().id} $tag Handler already started")
             return
         }
 
-        logger.info(tag, "startWatchdog()")
+        println("${Thread.currentThread().id} $tag startWatchdog()")
         connection.getMessageObservable()
-                .observeOn(Schedulers.computation())
-                .flatMap { flatMapMessage(it) }
-                .map { deserializePayload(it) }
-                .subscribeBy(messageSubject::onError, messageSubject::onComplete, messageSubject::onNext)
-                .let(compositeDisposable::add)
+            .observeOn(Schedulers.computation())
+            .flatMap { flatMapMessage(it) }
+            .map { deserializePayload(it) }
+            .subscribeBy(messageSubject::onError, messageSubject::onComplete, messageSubject::onNext)
+            .let(compositeDisposable::add)
 
         messageSubject
-                .observeOn(Schedulers.computation())
-                .subscribeBy(onNext = onMessageReceived(),
-                             onError = {
-                                 logger.error(tag, "messageSubject onErrorReceived()", it)
-                                 // TODO: enable?
-                                 //resetConnection()
-                             },
-                             onComplete = {
-                                 logger.info(tag, "messageSubject onComplete()")
-                             })
-                .let { compositeDisposable.add(it) }
+            .observeOn(Schedulers.computation())
+            .subscribeBy(onNext = onMessageReceived(),
+                onError = {
+                    println("${Thread.currentThread().id} $tag messageSubject onErrorReceived() $it")
+                    // TODO: enable?
+                    //resetConnection()
+                },
+                onComplete = {
+                    println("${Thread.currentThread().id} $tag messageSubject onComplete()")
+                })
+            .let { compositeDisposable.add(it) }
 
         ackBuffer.observable
-                .map { newAckMessage(it) }
-                .observeOn(Schedulers.io())
-                .subscribeBy(onNext = { sendMessage(it) })
-                .let { compositeDisposable.add(it) }
+            .map { newAckMessage(it) }
+            .observeOn(Schedulers.io())
+            .subscribeBy(onNext = { sendMessage(it) })
+            .let { compositeDisposable.add(it) }
     }
 
     /** Closes the connection and re-open another one immediately, this should fix most connection issues */
@@ -134,13 +133,14 @@ class MTProtoHandler {
 
     /** Closes the connection and associated resources. The handler can still be used after being closed. */
     fun close() {
-        logger.warn(tag, "close()")
+        println("${Thread.currentThread().id} $tag close()")
         dispose() // Dispose before closing to avoid propagating errors!
         connection.close()
 
         requestByIdMap.clear()
         sentMessageList.clear()
         ackBuffer.reset()
+        println("${Thread.currentThread().id} $tag close() full")
     }
 
     private fun dispose() {
@@ -150,46 +150,49 @@ class MTProtoHandler {
 
     @Deprecated(message = "TO REMOVE", replaceWith = ReplaceWith("rx"))
     fun <T : TLObject> executeMethodSync(method: TLMethod<T>): T =
-            executeMethod(method).blockingGet()
+        executeMethod(method).blockingGet()
 
     @Deprecated(message = "TO REMOVE", replaceWith = ReplaceWith("rx"))
     fun <T : TLObject> executeMethodsSync(methods: List<TLMethod<T>>): List<T> =
-            executeMethods(methods).blockingIterable().toList()
+        executeMethods(methods).blockingIterable().toList()
 
     /**
      * @return a Single emitting the response upon success.
      * The rpc call will be made only when subscribing to the returned [Single]
      */
     fun <T : TLObject> executeMethod(method: TLMethod<T>): Single<T> = executeMethods(
-            listOf(method)).singleOrError()
+        listOf(method)
+    ).singleOrError()
 
     /**
      * @return an [Observable] emitting one object per method (the original ordered is not assured!!)
      * or throwing an [RpcErrorException] if an error was returned.
      * The rpc call will be made only when subscribing to the returned [Observable]
      */
-    fun <T : TLObject> executeMethods(methods: List<TLMethod<T>>): Observable<T> =
-            methods.takeIf { it.isNotEmpty() }?.let {
-                rpcResultSubject
-                        .filter { methods.contains(requestByIdMap[it.messageId]) }
-                        .take(methods.size.toLong())
-                        .doOnSubscribe { executeMethods_(methods) }
-                        .subscribeOn(Schedulers.io())
-                        .flatMapMaybe { mapResult(it) }
-                        .sorted { o1, o2 ->
-                            val index1 = methods.indexOfFirst { it.response === o1 }
-                            val index2 = methods.indexOfFirst { it.response === o2 }
-                            Integer.compare(index1, index2)
-                        }
-                        .map {
-                            @Suppress("UNCHECKED_CAST")
-                            it as T
-                        }
-            } ?: Observable.empty<T>()
+    fun <T : TLObject> executeMethods(methods: List<TLMethod<T>>): Observable<T> {
+        println(methods)
+        return methods.takeIf { it.isNotEmpty() }?.let {
+            rpcResultSubject
+                .filter { methods.contains(requestByIdMap[it.messageId]) }
+                .take(methods.size.toLong())
+                .doOnSubscribe { executeMethods_(methods) }
+                .subscribeOn(Schedulers.io())
+                .flatMapMaybe { mapResult(it) }
+                .sorted { o1, o2 ->
+                    val index1 = methods.indexOfFirst { it.response === o1 }
+                    val index2 = methods.indexOfFirst { it.response === o2 }
+                    Integer.compare(index1, index2)
+                }
+                .map {
+                    @Suppress("UNCHECKED_CAST")
+                    it as T
+                }
+        } ?: Observable.empty<T>()
+    }
 
     /** Runs the code to execute the given methods (actually sends them NOW) */
     private fun executeMethods_(methods: List<TLMethod<*>>) {
-        logger.trace("executeMethods ${methods.joinToString { it.toString() }}")
+        println("${Thread.currentThread().id} executeMethods ${methods.joinToString { it.toString() }}")
 
         val messages = ArrayList<MTProtoMessage>(methods.size)
 
@@ -204,13 +207,13 @@ class MTProtoHandler {
 
         // Wrap in container or send as single
         val message =
-                if (messages.size > 1) {
-                    logger.trace("Sending container with ${messages.size} items")
-                    newMessage(MTMessagesContainer(messages))
-                } else {
-                    logger.trace(tag, "Sending only one message")
-                    messages.first()
-                }
+            if (messages.size > 1) {
+                println("${Thread.currentThread().id} Sending container with ${messages.size} items")
+                newMessage(MTMessagesContainer(messages))
+            } else {
+                println("${Thread.currentThread().id} $tag Sending only one message")
+                messages.first()
+            }
 
         sendMessage(message)
     }
@@ -218,13 +221,14 @@ class MTProtoHandler {
     /** Sends the given [MTProtoMessage] after encrypting it */
     @Throws(IOException::class)
     private fun sendMessage(message: MTProtoMessage) {
-        logger.debug(tag,
-                     "Sending message with msgId ${message.messageId} and seqNo ${message.seqNo}")
+        println("${Thread.currentThread().id} $tag Sending message with msgId ${message.messageId} and seqNo ${message.seqNo}")
 
-        val encryptedMessage = MTProtoMessageEncryption.generateEncryptedMessage(authKey,
-                                                                                 session.id,
-                                                                                 session.salt,
-                                                                                 message)
+        val encryptedMessage = MTProtoMessageEncryption.generateEncryptedMessage(
+            authKey,
+            session.id,
+            session.salt,
+            message
+        )
 
         sendMessage(encryptedMessage.data)
         sentMessageList.add(message)
@@ -254,11 +258,10 @@ class MTProtoHandler {
                 requestByIdMap.put(sentMessage.messageId, request)
             }
 
-            logger.debug(tag,
-                         "Re-sending message $messageId with msgId ${sentMessage.messageId}")
+            println("${Thread.currentThread().id} ${tag} Re-sending message $messageId with msgId ${sentMessage.messageId}")
             sendMessage(sentMessage)
         } else {
-            logger.error(tag, "Couldn't find sentMessage in history with msgId $messageId")
+            println("${Thread.currentThread().id} $tag Couldn't find sentMessage in history with msgId $messageId")
         }
     }
 
@@ -281,14 +284,16 @@ class MTProtoHandler {
 
         return try {
             val message = MTProtoMessageEncryption.extractMessage(authKey, session.id, bytes)
-            logger.debug(tag, "Received msg ${message.messageId} with seqNo ${message.seqNo}")
+            println("${Thread.currentThread().id} $tag Received msg ${message.messageId} with seqNo ${message.seqNo}")
 
             when (message.payload.readConstructorId()) {
                 MTMessagesContainer.CONSTRUCTOR_ID -> {
-                    val container = readTLObject(message.payload, mtProtoContext,
-                                                 MTMessagesContainer::class,
-                                                 MTMessagesContainer.CONSTRUCTOR_ID)
-                    logger.trace(tag, "Container has ${container.messages.size} items")
+                    val container = readTLObject(
+                        message.payload, mtProtoContext,
+                        MTMessagesContainer::class,
+                        MTMessagesContainer.CONSTRUCTOR_ID
+                    )
+                    println("${Thread.currentThread().id} $tag Container has ${container.messages.size} items")
 
                     // Ensure valid container
                     container.messages.toList().foldRight(message.messageId, { m, id ->
@@ -297,12 +302,13 @@ class MTProtoHandler {
 
                     container.messages.toObservable()
                 }
+
                 else -> Observable.just(message)
             }
         } catch (e: Exception) {
             // This is not a terminal event, don't kill observable
-            logger.error(tag, "Error while extracting message", e)
-            logger.error(tag, "Dump:\n" + bytes.toHexString())
+            println("${Thread.currentThread().id} $tag Error while extracting message $e")
+            println("${Thread.currentThread().id} $tag Dump:\n" + bytes.toHexString())
             Observable.empty<MTProtoMessage>()
         }
     }
@@ -313,16 +319,17 @@ class MTProtoHandler {
      */
     private fun deserializePayload(message: MTProtoMessage): Pair<MTProtoMessage, TLObject> {
         val clazzId = message.payload.readConstructorId()
-        logger.trace(session.tag, "Payload constructor id: #${Integer.toHexString(clazzId)}")
+        println("${Thread.currentThread().id} ${session.tag} Payload: #${message.payload}")
+        println("${Thread.currentThread().id} ${session.tag} Payload constructor id: #${Integer.toHexString(clazzId)}")
 
         val context =
-                if (mtProtoContext.contains(clazzId)) {
-                    logger.trace(tag, "$clazzId is supported by MTProtoContext")
-                    mtProtoContext
-                } else {
-                    logger.trace(tag, "$clazzId is not supported by MTProtoContext")
-                    apiContext
-                }
+            if (mtProtoContext.contains(clazzId)) {
+                println("${Thread.currentThread().id} $tag $clazzId is supported by MTProtoContext")
+                mtProtoContext
+            } else {
+                println("${Thread.currentThread().id} $tag $clazzId is not supported by MTProtoContext")
+                apiContext
+            }
 
         return Pair(message, readTLObject(message.payload, context))
     }
@@ -335,53 +342,63 @@ class MTProtoHandler {
      */
     @Throws(IOException::class)
     private fun onMessageReceived(): (Pair<MTProtoMessage, TLObject>) -> Unit = { (message, payload) ->
-        logger.debug(tag, "handle $payload")
+        println("${Thread.currentThread().id} $tag handle $payload")
 
         when (payload) {
             is MTMsgsAck -> {
                 // TODO: MessageACK will not get an ack, it'll stack in sentMessageList...
                 sentMessageList.removeAll { payload.messages.contains(it.messageId) }
-                logger.debug(tag, "Received ack for ${payload.messages.joinToString()}")
+                println("${Thread.currentThread().id} $tag Received ack for ${payload.messages.joinToString()}")
             }
+
             is MTRpcResult -> {
                 queueMessageAck(message.messageId)
                 rpcResultSubject.onNext(payload)
             }
+
             is TLAbsUpdates -> {
                 queueMessageAck(message.messageId)
                 updateSubject.onNext(payload)
             }
+
             is MTNewSessionCreated -> {
                 //session.salt = messageContent.serverSalt
                 queueMessageAck(message.messageId)
             }
+
             is MTBadMessageNotification -> {
                 handleBadMessage(payload, message)
             }
+
             is MTBadServerSalt -> {
-                logger.error(tag, payload.toPrettyString())
+                println("${Thread.currentThread().id} $tag ${payload.toPrettyString()}")
 
                 // Message contains a good salt to use
                 session.salt = payload.newSalt
                 resendMessage(payload.badMsgId, false)
             }
+
             is MTNeedResendMessage -> {
-                logger.warn(tag, "TODO MTNeedResendMessage")
+                println("${Thread.currentThread().id} $tag TODO MTNeedResendMessage")
                 // TODO
             }
+
             is MTNewMessageDetailedInfo -> {
-                logger.warn(tag, "TODO MTNewMessageDetailedInfo")
+                println("${Thread.currentThread().id} $tag TODO MTNewMessageDetailedInfo")
                 // TODO
             }
+
             is MTMessageDetailedInfo -> {
-                logger.warn(tag, "TODO MTMessageDetailedInfo")
+                println("${Thread.currentThread().id} $tag TODO MTMessageDetailedInfo")
                 // TODO
             }
+
             is MTFutureSalts -> {
-                logger.warn(tag, "TODO MTFutureSalts")
+                println("${Thread.currentThread().id} $tag TODO MTFutureSalts")
                 // TODO
             }
-            else -> logger.error(tag, "Unsupported constructor in handleMessage() $payload")
+
+            else -> println("${Thread.currentThread().id} $tag Unsupported constructor in handleMessage() $payload")
         }
     }
 
@@ -392,40 +409,40 @@ class MTProtoHandler {
      */
     @Throws(RpcErrorException::class)
     internal fun mapResult(result: MTRpcResult): Maybe<out TLObject> {
-        logger.debug(tag, "Got result for msgId ${result.messageId}")
+        println("${Thread.currentThread().id} $tag Got result for msgId ${result.messageId}")
 
         val request =
-                if (requestByIdMap.containsKey(result.messageId)) {
-                    requestByIdMap.remove(result.messageId)!!
-                } else {
-                    logger.warn(tag, "No request found for msgId ${result.messageId}")
-                    null
-                }
+            if (requestByIdMap.containsKey(result.messageId)) {
+                requestByIdMap.remove(result.messageId)!!
+            } else {
+                println("${Thread.currentThread().id} $tag No request found for msgId ${result.messageId}")
+                null
+            }
 
         val clazzId = result.content.readConstructorId()
-        logger.trace(tag, "Response constructor id: #${Integer.toHexString(clazzId)}")
+        println("${Thread.currentThread().id} $tag Response constructor id: #${Integer.toHexString(clazzId)}")
 
         val resultObject = when {
             mtProtoContext.contains(clazzId) -> {
                 val content = readTLObject<TLObject>(result.content, mtProtoContext)
                 if (content is MTRpcError) {
-                    logger.error(tag,
-                                 "rpcError ${content.code}: ${content.message}")
+                    println("${Thread.currentThread().id} ${tag} rpcError ${content.code}: ${content.message}")
                     throw RpcErrorException(content.code, content.message)
                 } else {
-                    logger.error(tag, "Unsupported content $content")
+                    println("${Thread.currentThread().id} $tag Unsupported content $content")
                     null
                 }
             }
+
             request != null -> request.deserializeResponse(result.content, apiContext)
             else -> {
                 // Fallback, this will error if object is a non-TLObject vector (int, long, String)
-                logger.warn(tag, "Attempting to deserialize without knowing the type")
+                println("${Thread.currentThread().id} $tag Attempting to deserialize without knowing the type")
                 readTLObject(result.content, apiContext)
             }
         }
 
-        logger.debug("result: $resultObject")
+        println("${Thread.currentThread().id} result: $resultObject")
         return resultObject?.let { Maybe.just(it) } ?: Maybe.empty()
     }
 
@@ -437,7 +454,7 @@ class MTProtoHandler {
      */
     @Throws(IOException::class)
     private fun handleBadMessage(badMessage: MTBadMessageNotification, container: MTProtoMessage) {
-        logger.error(tag, badMessage.toPrettyString())
+        println("${Thread.currentThread().id} $tag ${badMessage.toPrettyString()}")
 
         when (badMessage.errorCode) {
             MTBadMessage.ERROR_MSG_ID_TOO_LOW, MTBadMessage.ERROR_MSG_ID_TOO_HIGH -> {
@@ -447,6 +464,7 @@ class MTProtoHandler {
                 // Resend message with good id
                 resendMessage(badMessage.badMsgId, true)
             }
+
             MTBadMessage.ERROR_SEQNO_TOO_LOW, MTBadMessage.ERROR_SEQNO_TOO_HIGH -> {
                 if (badMessage.errorCode == MTBadMessage.ERROR_MSG_ID_TOO_LOW)
                     session.contentRelatedCount++
@@ -456,19 +474,23 @@ class MTProtoHandler {
                 // Resend message with good seqno
                 resendMessage(badMessage.badMsgId, true)
             }
+
             MTBadMessage.ERROR_SEQNO_EXPECTED_EVEN -> {
                 // Should never happen
-                logger.error(tag, "ERROR_SEQNO_EXPECTED_EVEN for ${badMessage.badMsgId}")
+                println("${Thread.currentThread().id} $tag ERROR_SEQNO_EXPECTED_EVEN for ${badMessage.badMsgId}")
             }
+
             MTBadMessage.ERROR_SEQNO_EXPECTED_ODD -> {
                 // Should never happen
-                logger.error(tag, "ERROR_SEQNO_EXPECTED_ODD for ${badMessage.badMsgId}")
+                println("${Thread.currentThread().id} $tag ERROR_SEQNO_EXPECTED_ODD for ${badMessage.badMsgId}")
             }
+
             MTBadMessage.ERROR_MSG_ID_MODULO -> {
                 // Should never happen
-                logger.error(tag, "ERROR_MSG_ID_MODULO for ${badMessage.badMsgId}")
+                println("${Thread.currentThread().id} $tag ERROR_MSG_ID_MODULO for ${badMessage.badMsgId}")
             }
-            else -> logger.error(tag, "Unknown error ${badMessage.toPrettyString()}")
+
+            else -> println("${Thread.currentThread().id} $tag Unknown error ${badMessage.toPrettyString()}")
         }
     }
 
@@ -496,14 +518,16 @@ class MTProtoHandler {
 
     /** @return a [MTProtoMessage] with the given [TLMethod] as a payload */
     private fun newMethodMessage(method: TLMethod<*>) = newMessage(method).also {
-        logger.trace(tag, "Sending $method with msgId ${it.messageId} and seqNo ${it.seqNo}")
+        println("${Thread.currentThread().id} $tag Sending $method with msgId ${it.messageId} and seqNo ${it.seqNo}")
         requestByIdMap.put(it.messageId, method)
     }
 
     /** @return a [MTProtoMessage] with the given [TLObject] as a payload */
-    private fun newMessage(payload: TLObject) = MTProtoMessage(session.generateMessageId(),
-                                                               session.generateSeqNo(payload),
-                                                               payload.serialize())
+    private fun newMessage(payload: TLObject) = MTProtoMessage(
+        session.generateMessageId(),
+        session.generateSeqNo(payload),
+        payload.serialize()
+    )
 
     companion object {
 
@@ -520,11 +544,16 @@ class MTProtoHandler {
 
         /** Convenience method to create a [com.github.badoualy.telegram.tl.serialization.TLDeserializer] and read a [TLObject] from it */
         private inline fun <reified T : TLObject> readTLObject(payload: ByteArray, context: TLContext): T =
-                tlSerializerFactory.createDeserializer(payload, context).readTLObject()
+            tlSerializerFactory.createDeserializer(payload, context).readTLObject()
 
         /** Convenience method to create a [com.github.badoualy.telegram.tl.serialization.TLDeserializer] and read a [TLObject] from it */
-        private inline fun <reified T : TLObject> readTLObject(payload: ByteArray, context: TLContext, expectedClazz: KClass<T>?, expectedConstructorId: Int): T =
-                tlSerializerFactory.createDeserializer(payload, context)
-                        .readTLObject(expectedClazz, expectedConstructorId)
+        private inline fun <reified T : TLObject> readTLObject(
+            payload: ByteArray,
+            context: TLContext,
+            expectedClazz: KClass<T>?,
+            expectedConstructorId: Int
+        ): T =
+            tlSerializerFactory.createDeserializer(payload, context)
+                .readTLObject(expectedClazz, expectedConstructorId)
     }
 }

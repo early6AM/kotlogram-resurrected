@@ -44,7 +44,7 @@ object GetDialogsSample {
                         else if (topMessage is TLMessageService) "Service: ${topMessage.action}"
                         else "Empty message (TLMessageEmpty)"
 
-                println("${nameMap[dialog.peer.id]}: $topMessageContent")
+                println("${Thread.currentThread().id} ${nameMap[dialog.peer.id]}: $topMessageContent")
             }*/
 
             //client.pfs()

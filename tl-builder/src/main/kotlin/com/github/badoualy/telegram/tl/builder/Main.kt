@@ -12,7 +12,7 @@ val OUTPUT = "./tl/src/main/kotlin"
 val OUTPUT_TEST = "./tl/src/test/kotlin"
 
 fun main(args: Array<String>) {
-    println("TL Compiler developed by Yannick Badoual, Kotlogram (c) 2016 v2.0")
+    println("${Thread.currentThread().id} TL Compiler developed by Yannick Badoual, Kotlogram (c) 2016 v2.0")
 
     val tlSchemaFile = File(TL_SCHEMA_PATH)
 

@@ -51,10 +51,10 @@ object DownloadMessageMediaSample {
                     }
                 }
 
-                println("Download ${mediaInput.inputFileLocation}")
+                println("${Thread.currentThread().id} Download ${mediaInput.inputFileLocation}")
                 val fos = FileOutputStream(File(Config.ROOT_DIR, fileName))
                 client.sync().downloadFile(mediaInput.inputFileLocation, mediaInput.size, fos)
-            } else println("Nothing to download for this media...")*/
+            } else println("${Thread.currentThread().id} Nothing to download for this media...")*/
         } catch (e: RpcErrorException) {
             e.printStackTrace()
         } catch (e: IOException) {

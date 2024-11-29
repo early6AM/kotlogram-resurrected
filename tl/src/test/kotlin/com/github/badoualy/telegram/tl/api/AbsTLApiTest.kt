@@ -183,7 +183,7 @@ abstract class AbsTLApiTest {
 
         init {
 
-            println("Looking for tl api classes in package " + BASE_PACKAGE)
+            println("${Thread.currentThread().id} Looking for tl api classes in package " + BASE_PACKAGE)
             val urls = ArrayList<URL>()
             urls.addAll(ClasspathHelper.forPackage(BASE_PACKAGE))
             urls.addAll(ClasspathHelper.forPackage(BASE_PACKAGE + ".account"))
@@ -200,7 +200,7 @@ abstract class AbsTLApiTest {
             reflections = Reflections(urls)
 
             val classList = reflections.getSubTypesOf(TLObject::class.java)
-            println("Found " + classList.size + " classes")
+            println("${Thread.currentThread().id} Found " + classList.size + " classes")
             constructorList = ArrayList()
 
             classList
@@ -212,7 +212,7 @@ abstract class AbsTLApiTest {
                     .toCollection(constructorList)
             Collections.sort(constructorList) { o1, o2 -> o1.simpleName.compareTo(o2.simpleName) }
 
-            println("Found " + constructorList.size + " non abstract classes")
+            println("${Thread.currentThread().id} Found " + constructorList.size + " non abstract classes")
         }
     }
 }

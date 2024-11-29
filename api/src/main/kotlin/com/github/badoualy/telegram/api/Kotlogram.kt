@@ -19,7 +19,7 @@ object Kotlogram {
     var defaultTestDc = 2
 
     @JvmField
-    var defaultProdDc = 4
+    var defaultProdDc = 2
 
     private val prodDcByIdMap = mapOf(
             1 to DataCenter(1, "149.154.175.50", "2001:0b28:f23d:f001:0000:0000:0000:000a", 443),

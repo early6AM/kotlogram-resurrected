@@ -94,7 +94,7 @@ object AuthKeyCreation {
             }
         }
 
-        logger.error("Key creation failed $AUTH_ATTEMPT_COUNT times")
+        println("${Thread.currentThread().id} Key creation failed $AUTH_ATTEMPT_COUNT times")
         return null
     }
 
@@ -128,28 +128,27 @@ object AuthKeyCreation {
         // Step 1 https://core.telegram.org/mtproto/auth_key#dh-exchange-initiation
         val nonce = RandomUtils.randomInt128() // int128
         val resPQ = executeMethod(ReqPQ(nonce))
-        logger.trace(connection!!.tag,
-                     "Got resPQ with ${resPQ.fingerprints.size} fingerprints")
-        logger.trace(connection!!.tag, "Step1 done")
+        println("${Thread.currentThread().id} ${connection!!.tag} Got resPQ with ${resPQ.fingerprints.size} fingerprints")
+        println("${Thread.currentThread().id} ${connection!!.tag} Step1 done")
 
         // Step 2
         val publicKey = Key.AVAILABLE_KEYS.firstOrNull { k ->
             resPQ.fingerprints.contains(k.fingerprint)
         } ?: throw FingerprintNotFoundException(resPQ.fingerprints.joinToString())
-        logger.trace(connection!!.tag, "Step2 done")
+        println("${Thread.currentThread().id} ${connection!!.tag} Step2 done")
 
         // Step 3 https://core.telegram.org/mtproto/auth_key#proof-of-work
         val solvedPQ = PQSolver.solve(BigInteger(1, resPQ.pq))
-        logger.trace(connection!!.tag, "Step3 done")
+        println("${Thread.currentThread().id} ${connection!!.tag} Step3 done")
 
         // Step 4 https://core.telegram.org/mtproto/auth_key#presenting-proof-of-work-server-authentication
         val pair = createStep4Request(resPQ, solvedPQ, publicKey, tmpKey)
         val reqDhParams = pair.first
         val newNonce = pair.second
-        logger.trace(connection!!.tag, "Step4 request created")
+        println("${Thread.currentThread().id} ${connection!!.tag} Step4 request created")
 
         val dhParams = executeMethod(reqDhParams)
-        logger.trace(connection!!.tag, "Step4 done")
+        println("${Thread.currentThread().id} ${connection!!.tag} Step4 done")
 
         // Step 5
         if (dhParams is ServerDhFailure) {
@@ -161,7 +160,7 @@ object AuthKeyCreation {
         }
 
         val serverDhParams = dhParams as ServerDhOk
-        logger.trace(connection!!.tag, "Step5 done")
+        println("${Thread.currentThread().id} ${connection!!.tag} Step5 done")
 
         // -------------------------
         // PQ-Auth end
@@ -169,7 +168,7 @@ object AuthKeyCreation {
         // -------------------------
         val keySaltPair = lastStep(resPQ, newNonce, serverDhParams)
 
-        logger.trace(connection!!.tag, "Step6 to 9 done")
+        println("${Thread.currentThread().id} ${connection!!.tag} Step6 to 9 done")
         val authKey =
                 if (!tmpKey) {
                     AuthKey(keySaltPair.first)
@@ -263,13 +262,13 @@ object AuthKeyCreation {
 
                 return Pair(authKey, serverSalt)
             } else if (result is DhGenRetry) {
-                logger.warn(connection!!.tag, "Received ${result.javaClass.simpleName}")
+                println("${Thread.currentThread().id} ${connection!!.tag} Received ${result.javaClass.simpleName}")
                 val newNonceHash = substring(SHA1(newNonce, byteArrayOf(2), authAuxHash), 4, 16)
 
                 if (!Arrays.equals(result.newNonceHash, newNonceHash))
                     throw SecurityException("newNonceHash from result don't match generated one")
             } else if (result is DhGenFailure) {
-                logger.warn(connection!!.tag, "Received ${result.javaClass.simpleName}")
+                println("${Thread.currentThread().id} ${connection!!.tag} Received ${result.javaClass.simpleName}")
                 val newNonceHash = substring(SHA1(newNonce, byteArrayOf(3), authAuxHash), 4, 16)
 
                 if (!Arrays.equals(result.newNonceHash, newNonceHash))

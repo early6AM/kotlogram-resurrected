@@ -56,12 +56,12 @@ class TLClassGenerator(tlDefinition: TLDefinition, val config: Config) {
                 .map { it to it.typeName() }
                 .toMap(constructorTypeNameMap)
 
-        println("Generating types")
+        println("${Thread.currentThread().id} Generating types")
         generateTypesClasses()
-        println("Generating methods")
+        println("${Thread.currentThread().id} Generating methods")
         generateMethodsClasses()
 
-        println("Generating context")
+        println("${Thread.currentThread().id} Generating context")
         generateContextClass(TL_API_CONTEXT, types, config.outputMain)
         generateContextClass(TL_API_TEST_CONTEXT, types.union(methods), config.outputTest)
     }

@@ -24,6 +24,7 @@ abstract class TLMethod<T : TLObject> : TLObject() {
     @Throws(IOException::class)
     fun deserializeResponse(tlDeserializer: TLDeserializer): T {
         response = deserializeResponse_(tlDeserializer)
+        println(response)
         return response!!
     }
 

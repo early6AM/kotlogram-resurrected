@@ -44,6 +44,8 @@ object RpcErrors {
     @JvmField val ACTIVE_USER_REQUIRED = RpcError(401, "ACTIVE_USER_REQUIRED", "The method is only available to already activated users")
     @JvmField val AUTH_KEY_PERM_EMPTY = RpcError(401, "AUTH_KEY_PERM_EMPTY", "The method is unavailble for temporary authorization key, not bound to permanent")
     @JvmField val FLOOD_WAIT_X = RpcError(401, "FLOOD_WAIT_X", "A wait of X seconds is required (where X is a number)")
+
+    @JvmField val FLOOD_WAIT_3 = RpcError(420, "FLOOD_WAIT_X", "A wait of X seconds is required (where X is a number)")
 }
 
 data class RpcError(val code: Int, val type: String, val description: String) {

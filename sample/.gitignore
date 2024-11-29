@@ -3,7 +3,7 @@
 # Files containing secret/personnal values
 auth.key
 dc.save
-config.properties
+src/main/resources/config.properties
 temp_auth.key
 
 # Downloaded files...

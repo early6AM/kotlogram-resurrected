@@ -39,7 +39,7 @@ object SendStickerSample {
             val tlStickerSet = tlAllStickers.sets.firstOrNull { it.count > 0 } ?:
                     throw RuntimeException("Found no stickers")
 
-            println("Using sticker set: ${tlStickerSet.title}")
+            println("${Thread.currentThread().id} Using sticker set: ${tlStickerSet.title}")
             // We have 2 different classes called TLStickerSet, one in message subpackage
             val set = client.messagesGetStickerSet(TLInputStickerSetID(tlStickerSet.id,
                                                                        tlStickerSet.accessHash)).blockingGet()

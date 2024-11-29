@@ -1,6 +1,5 @@
 package com.github.badoualy.telegram.sample.config
 
-import com.github.badoualy.telegram.api.Kotlogram
 import com.github.badoualy.telegram.api.TelegramApp
 import java.io.File
 import java.io.FileInputStream
@@ -8,7 +7,7 @@ import java.util.*
 
 object Config {
 
-    val ROOT_DIR = File("sample${File.separator}")
+    val ROOT_DIR = File("sample${File.separator}src${File.separator}main${File.separator}resources${File.separator}")
     private val CONFIG_FILE = "config.properties"
     val AUTH_KEY_FILE = File(ROOT_DIR, "auth.key")
     val TEMP_AUTH_KEY_FILE = File(ROOT_DIR, "temp_auth.key")
@@ -19,19 +18,24 @@ object Config {
                                   CONFIG_FILE)))
     }
 
-    val apiId = getProp("apiId", "0").toIntOrNull() ?: 0
-    val apiHash = getProp("apiHash", "")
+    val apiId: Int
+        get() {
+            val prop = getProp("apiId", "21394225").toIntOrNull() ?: 0
+            println("${Thread.currentThread().id} apiId: $prop")
+            return prop
+        }
+    val apiHash = getProp("apiHash", "6a4cd2bbb452b95a96692f86ccd2eeda")
 
     val deviceModel = getProp("deviceModel",
-                              "DeviceModel")
+                              "Nexus 5X")
     val systemVersion = getProp("systemVersion",
-                                "SysVer")
+                                "Android 8.1")
     val appVersion = getProp("appVersion",
-                             "AppVersion")
+                             "0.0.1")
     val langCode = getProp("langCode", "en")
 
     val phoneNumber = getProp("phoneNumber",
-                              "+33000000000")
+                              "+79093394929")
 
     val application = TelegramApp(apiId,
                                   apiHash,
@@ -43,7 +47,7 @@ object Config {
                                   langCode)
 
     init {
-        println("Application config: $application")
+        println("${Thread.currentThread().id} Application config: $application")
         //Kotlogram.testMode = true
     }
 

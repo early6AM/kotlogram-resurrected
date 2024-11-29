@@ -11,7 +11,7 @@
 // TODO: re-update to fit new model
 
 //fun buildFromJson(root: JsonNode): TLDefinition {
-//    println("Reading TL-Schema...")
+//    println("${Thread.currentThread().id} Reading TL-Schema...")
 //    val constructorsNode = root["constructors"].filterNot { c ->
 //        IgnoredTypes.contains(c["type"].textValue())
 //    }
@@ -28,7 +28,7 @@
 //            .forEach { tl -> types.put(tl.name, tl) }
 //
 //    // Build constructors: type classes
-//    println("Reading constructors...")
+//    println("${Thread.currentThread().id} Reading constructors...")
 //    for (constructor in constructorsNode) {
 //        val name = constructor["predicate"].textValue()
 //        val id = try {
@@ -52,7 +52,7 @@
 //    }
 //
 //    // Build constructors: type classes
-//    println("Reading methods...")
+//    println("${Thread.currentThread().id} Reading methods...")
 //    for (method in methodsNode) {
 //        val name = method.get("method").textValue()
 //        val id = try {

@@ -14,7 +14,7 @@ object TLDefinitionBuilder {
 
     fun build(pair: Pair<List<TLSchemaParser.ConstructorDef>, List<TLSchemaParser.ConstructorDef>>): TLDefinition {
         typeMap.clear()
-        println("Reading TL-Schema...")
+        println("${Thread.currentThread().id} Reading TL-Schema...")
 
         val (typesDef, methodsDef) = pair
 
@@ -65,10 +65,10 @@ object TLDefinitionBuilder {
             TLAbstractConstructor(tlType.name, params, tlType, forEmptyConstructor)
         }
 
-        println("Found ${typesConstructors.size} types")
-        println("Found ${methodsConstructors.size} methods")
-        println("Found ${supertypesConstructors.size} supertypes")
-        println("Found ${supertypesConstructors.count { it.forEmptyConstructor }} (for-empty) supertypes")
+        println("${Thread.currentThread().id} Found ${typesConstructors.size} types")
+        println("${Thread.currentThread().id} Found ${methodsConstructors.size} methods")
+        println("${Thread.currentThread().id} Found ${supertypesConstructors.size} supertypes")
+        println("${Thread.currentThread().id} Found ${supertypesConstructors.count { it.forEmptyConstructor }} (for-empty) supertypes")
 
         return TLDefinition(supertypesConstructors.sorted(),
                             typesConstructors.sorted(),

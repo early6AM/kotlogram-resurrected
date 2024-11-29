@@ -21,7 +21,7 @@ class MTBuffer<T>(var bufferSize: Int,
     private val subject: Subject<List<T>> = PublishSubject.create()
     val observable: Observable<List<T>>
         get() = subject.hide()
-                .doOnNext { logger.trace(tag, "doOnNext ${it.joinToString()}") }
+                .doOnNext { println("${Thread.currentThread().id} $tag doOnNext ${it.joinToString()}") }
 
     fun add(item: T) {
         var flush = false
@@ -33,7 +33,7 @@ class MTBuffer<T>(var bufferSize: Int,
             this.list.add(item)
             list = this.list
             id = bufferId
-            logger.trace(tag, "Adding msgId $item to bufferId $bufferId")
+            println("${Thread.currentThread().id} $tag Adding msgId $item to bufferId $bufferId")
 
             when {
                 list.size == 1 -> startTimer = true
@@ -54,7 +54,7 @@ class MTBuffer<T>(var bufferSize: Int,
         }
 
         if (flush) {
-            logger.info(tag, "Flushing buffer $bufferId")
+            println("${Thread.currentThread().id} $tag Flushing buffer $bufferId")
             subject.onNext(list)
         }
     }

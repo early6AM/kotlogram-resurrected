@@ -23,6 +23,7 @@ internal object MTProtoWatchdog : Runnable {
 
     /** [Selector.select] operation timeout */
     private const val SELECT_TIMEOUT_DELAY = 10 * 1000L // 10 seconds
+
     /** If no connection are registered since this delay, the listening thread will stop itself */
     private const val IDLE_SHUTDOWN_DELAY = 60 * 1000L // 1 min
 
@@ -30,42 +31,62 @@ internal object MTProtoWatchdog : Runnable {
     private val subject: Subject<SelectionKey> = PublishSubject.create()
     private val registerQueue = ArrayList<MTProtoSelectableConnection>()
 
-    private val executor = Executors.newSingleThreadExecutor(NamedThreadFactory(javaClass.simpleName,
-                                                                                singleThread = true,
-                                                                                daemon = true))
-    private val pool = Executors.newCachedThreadPool(NamedThreadFactory("${javaClass.simpleName}-exec",
-                                                                        singleThread = false,
-                                                                        daemon = true))
+    private val executor = Executors.newSingleThreadExecutor(
+        NamedThreadFactory(
+            javaClass.simpleName,
+            singleThread = true,
+            daemon = true
+        )
+    )
+    private val pool = Executors.newCachedThreadPool(
+        NamedThreadFactory(
+            "${javaClass.simpleName}-exec",
+            singleThread = false,
+            daemon = true
+        )
+    )
 
     @Volatile
     private var running = false
     private var lastBusyTime: Long = 0
 
     override fun run() {
-        logger.trace("Starting watchdog")
+        println("${Thread.currentThread().id} Starting watchdog")
         lastBusyTime = System.currentTimeMillis()
         while (running) {
             // Register new connections
             synchronized(this) {
-                if (registerQueue.isNotEmpty()) {
-                    registerQueue.forEach { it.register(selector, SelectionKey.OP_READ) }
-                    registerQueue.clear()
+                try {
+                    if (registerQueue.isNotEmpty()) {
+                        registerQueue.forEach { it.register(selector, SelectionKey.OP_READ) }
+                        registerQueue.clear()
+                    }
+                    println("${Thread.currentThread().id} has ${selector.keys().size} keys")
+                } catch (e: Exception) {
+                    println("${Thread.currentThread().id} Error registering keys: ${e.message}")
                 }
-                logger.debug("has ${selector.keys().size} keys")
             }
 
             // Blocking select call
             if (selector.select(SELECT_TIMEOUT_DELAY) > 0) {
-                logger.trace("select() returned with results")
+                println("${Thread.currentThread().id} select() returned with results")
                 // We have key(s) ready to read
                 synchronized(this) {
-                    selector.selectedKeys().forEach { key ->
-                        key.noOps()
-                        subject.onNext(key)
+                    try {
+                        selector.selectedKeys().forEach { key ->
+                            key.noOps()
+                            subject.onNext(key)
+                        }
+                    } catch (e: Exception) {
+                        println("${Thread.currentThread().id} Error in watchdog: ${e.message}")
                     }
                 }
-                selector.selectedKeys().clear()
-            } else logger.trace("select() returned with nothing")
+                try {
+                    selector.selectedKeys().clear()
+                } catch (e: Exception) {
+                    println("${Thread.currentThread().id} Error clearing selected keys: ${e.message}")
+                }
+            } else println("${Thread.currentThread().id} select() returned with nothing")
 
             // Check if should stop
             // Avoid synchronizing each loop
@@ -74,7 +95,7 @@ internal object MTProtoWatchdog : Runnable {
                     synchronized(this) {
                         if (selector.selectedKeys().isEmpty()) {
                             running = false
-                            logger.trace("Stopping watchdog")
+                            println("${Thread.currentThread().id} Stopping watchdog")
                             return
                         }
                     }
@@ -93,33 +114,33 @@ internal object MTProtoWatchdog : Runnable {
      */
     // TODO: ha
     fun getMessageObservable(connection: MTProtoSelectableConnection): Observable<ByteArray> = subject
-            .filter { it.attachment() === connection }
-            .observeOn(Schedulers.from(pool))
-            .map { key -> connection.readMessage().also { listen(key) } }
-            .doOnSubscribe {
-                logger.info(connection.tag, "adding to registerQueue")
-                synchronized(this) {
-                    if (connection.channel.keyFor(selector) == null) {
-                        registerQueue.add(connection)
-                        runOrWakeup()
-                    }
+        .filter { it.attachment() === connection }
+        .observeOn(Schedulers.from(pool))
+        .map { key -> connection.readMessage().also { listen(key) } }
+        .doOnSubscribe {
+            println("${Thread.currentThread().id} ${connection.tag} adding to registerQueue")
+            synchronized(this) {
+                if (connection.channel.keyFor(selector) == null) {
+                    registerQueue.add(connection)
+                    runOrWakeup()
                 }
             }
-            .doOnError {
-                logger.error(connection.tag, "onError: cancel selectionKey")
-                cancelByTag(connection)
-                synchronized(this) {
-                    registerQueue.remove(connection)
-                }
+        }
+        .doOnError {
+            println("${Thread.currentThread().id} ${connection.tag} onError: cancel selectionKey ${it.message}")
+            cancelByTag(connection)
+            synchronized(this) {
+                registerQueue.remove(connection)
             }
-            .doOnDispose {
-                logger.debug(connection.tag, "onDispose: cancel selectionKey")
-                cancelByTag(connection)
-                synchronized(this) {
-                    registerQueue.remove(connection)
-                }
+        }
+        .doOnDispose {
+            println("${Thread.currentThread().id} ${connection.tag} onDispose: cancel selectionKey")
+            cancelByTag(connection)
+            synchronized(this) {
+                registerQueue.remove(connection)
             }
-            .observeOn(Schedulers.computation())!! // Ensure pool private usage
+        }
+        .observeOn(Schedulers.computation())!! // Ensure pool private usage
 
     /**
      * Start listening on the [executor] thread or wakeup [selector]
