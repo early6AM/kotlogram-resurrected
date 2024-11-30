@@ -78,6 +78,7 @@ object MTProtoMessageEncryption {
     @Throws(IOException::class)
     @JvmStatic
     fun generateEncryptedMessage(authKey: AuthKey, sessionId: ByteArray, serverSalt: Long, message: MTProtoMessage): EncryptedMessage {
+        println("${Thread.currentThread().id} generateEncryptedMessage() start")
         // Build message body
         val unencryptedStream = ByteArrayOutputStream().apply {
             writeLong(serverSalt)
@@ -103,7 +104,7 @@ object MTProtoMessageEncryption {
             writeByteArray(msgKey)
             writeByteArray(encryptedData)
         }
-
+        println("${Thread.currentThread().id} generateEncryptedMessage() end")
         return EncryptedMessage(message, out.toByteArray())
     }
 

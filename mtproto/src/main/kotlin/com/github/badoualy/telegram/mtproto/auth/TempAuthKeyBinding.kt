@@ -2,7 +2,6 @@ package com.github.badoualy.telegram.mtproto.auth
 
 
 import com.github.badoualy.telegram.mtproto.MTProtoHandler
-import com.github.badoualy.telegram.mtproto.log.Logger
 import com.github.badoualy.telegram.mtproto.secure.MTProtoMessageEncryption
 import com.github.badoualy.telegram.mtproto.secure.RandomUtils
 import com.github.badoualy.telegram.mtproto.tl.MTProtoMessage
@@ -21,8 +20,6 @@ import java.util.*
  * @see <a href="https://core.telegram.org/method/auth.bindTempAuthKey">MTProto description - Bind auth key</a>
  */
 object TempAuthKeyBinding {
-
-    private val logger = Logger.Factory.create(TempAuthKeyBinding::class)
 
     /**
      * Binds a temporary authorization key temp_auth_key_id to the permanent authorization key perm_auth_key_id.

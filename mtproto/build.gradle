@@ -8,7 +8,7 @@ dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     api 'io.reactivex.rxjava2:rxkotlin:2.4.0'
-    api 'org.slf4j:slf4j-api:1.7.32'
+//    api 'org.slf4j:slf4j-api:1.7.32'
 }
 
 task fatJar(type: Jar) {

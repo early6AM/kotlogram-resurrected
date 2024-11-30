@@ -12,7 +12,6 @@ import com.github.badoualy.telegram.mtproto.exception.RpcErrors.PHONE_MIGRATE_X
 import com.github.badoualy.telegram.mtproto.exception.SecurityException
 import com.github.badoualy.telegram.mtproto.exception.getError
 import com.github.badoualy.telegram.mtproto.log.LogTag
-import com.github.badoualy.telegram.mtproto.log.Logger
 import com.github.badoualy.telegram.mtproto.model.DataCenter
 import com.github.badoualy.telegram.mtproto.model.MTSession
 import com.github.badoualy.telegram.mtproto.rx.flatZip
@@ -31,7 +30,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.zipWith
 import io.reactivex.schedulers.Schedulers
 import java.lang.Math.ceil
-import java.nio.channels.ClosedChannelException
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
 class TelegramClientImpl internal constructor(
@@ -41,15 +40,16 @@ class TelegramClientImpl internal constructor(
     tag: String
 ) : TelegramClient() {
 
+    @Volatile
     private var mtProtoHandler: MTProtoHandler? = null
     private var authKey: AuthKey? = null
     private var tempAuthKey: TempAuthKey? = null
     private var dataCenter: DataCenter = preferredDataCenter
     override var closed: Boolean = false
 
-    private val authKeyMap = HashMap<Int, AuthKey>()
-    private val exportedHandlerMap = HashMap<Int, MTProtoHandler>()
-    private val exportedHandlerTimeoutMap = HashMap<Int, Long>()
+    private val authKeyMap = ConcurrentHashMap<Int, AuthKey>()
+    private val exportedHandlerMap = ConcurrentHashMap<Int, MTProtoHandler>()
+    private val exportedHandlerTimeoutMap = ConcurrentHashMap<Int, Long>()
 
     override var timeout: Long = TimeUnit.SECONDS.toMillis(5)
     override var exportedClientTimeout: Long = TimeUnit.MINUTES.toMillis(1)
@@ -129,8 +129,11 @@ class TelegramClientImpl internal constructor(
             handlerObservable
                 .observeOn(Schedulers.io())
                 .subscribeOn(Schedulers.io())
-                .doOnSuccess { mtProtoHandler = it }
                 .doOnSuccess {
+                    mtProtoHandler = it
+                }
+                .doOnSuccess {
+                    println("MTProtoHandler there: $mtProtoHandler ensureNearestDc $ensureNearestDc")
                     try {
                         initConnection(mtProtoHandler!!, ensureNearestDc)
                     } catch (e: NoSuchElementException) {
@@ -155,8 +158,14 @@ class TelegramClientImpl internal constructor(
                 }
         }
 
-    private fun <T : TLObject> executeMethod(method: TLMethod<T>, mtProtoHandler: MTProtoHandler): Single<T> =
-        executeMethods(listOf(method), mtProtoHandler).singleOrError()
+    private fun <T : TLObject> executeMethod(method: TLMethod<T>, mtProtoHandler: MTProtoHandler): Single<T> {
+        try {
+            return executeMethods(listOf(method), mtProtoHandler).singleOrError()
+        } catch (e: java.util.NoSuchElementException) {
+            println("executeMethod() catch exception")
+            throw e
+        }
+    }
 
     override fun <T : TLObject> executeMethods(methods: List<TLMethod<T>>): Observable<T> =
         executeMethods(methods, mtProtoHandler!!)
@@ -176,9 +185,14 @@ class TelegramClientImpl internal constructor(
         methods: List<TLMethod<T>>,
         mtProtoHandler: MTProtoHandler
     ): Observable<T> {
-        println(methods.toString())
+        println("${Thread.currentThread().id} methods toString $methods")
+        println("${Thread.currentThread().id} Current Thread stacktrace size ${Thread.currentThread().stackTrace.size}")
         return Thread.currentThread().stackTrace.drop(1).let { stackTrace ->
+            println("${Thread.currentThread().id} Current stacktrace: $stackTrace")
             mtProtoHandler.executeMethods(methods)
+                .doOnEach {
+                    println("${Thread.currentThread().id} notification: $it")
+                }
                 .timeout(timeout, TimeUnit.MILLISECONDS)
                 .retryWhen {
                     // Retry with same parameters
@@ -352,6 +366,8 @@ class TelegramClientImpl internal constructor(
                     // TODO: replace with getDifference for updates
                     initConnection(TLRequestUpdatesGetState(), mtProtoHandler)
                     return
+                } catch (e: java.util.NoSuchElementException) {
+                    println("${Thread.currentThread().id} Ooops, some error here...")
                 } catch (e: RpcErrorException) {
                     when (e.getError()) {
                         AUTH_KEY_UNREGISTERED -> {
@@ -364,7 +380,13 @@ class TelegramClientImpl internal constructor(
                     }
                 }
 
-                else -> initConnection(TLRequestHelpGetNearestDc(), mtProtoHandler)
+                else -> {
+                    try {
+                        initConnection(TLRequestHelpGetNearestDc(), mtProtoHandler)
+                    } catch (e: java.util.NoSuchElementException) {
+                        println("${Thread.currentThread().id} idk wintd")
+                    }
+                }
             }
             println("${Thread.currentThread().id} init connection end")
         } catch (e: Exception) {
@@ -400,16 +422,22 @@ class TelegramClientImpl internal constructor(
         }
 
         val request = TLRequestInvokeWithLayer(Kotlogram.apiLayer, initConnectionRequest)
-        return executeSync { executeMethod(request, mtProtoHandler) }
+        return executeSync {
+            executeMethod(request, mtProtoHandler)
+        }
     }
 
     private fun ensureNearestDc(nearestDc: TLNearestDc) {
-        println("${Thread.currentThread().id} $tag ensureNearestDc()")
-        if (nearestDc.thisDc != nearestDc.nearestDc) {
-            println("${Thread.currentThread().id} ${tag} Current DC${nearestDc.thisDc} is not the nearest (DC${nearestDc.nearestDc})")
-            migrate(nearestDc.nearestDc).subscribe()
-        } else {
-            println("${Thread.currentThread().id} $tag Connected to the nearest DC${nearestDc.thisDc}")
+        try {
+            println("${Thread.currentThread().id} $tag ensureNearestDc()")
+            if (nearestDc.thisDc != nearestDc.nearestDc) {
+                println("${Thread.currentThread().id} ${tag} Current DC${nearestDc.thisDc} is not the nearest (DC${nearestDc.nearestDc})")
+                migrate(nearestDc.nearestDc).subscribe()
+            } else {
+                println("${Thread.currentThread().id} $tag Connected to the nearest DC${nearestDc.thisDc}")
+            }
+        } catch (e: java.util.NoSuchElementException) {
+            println("${Thread.currentThread().id} $tag no such element in ensureNearestDc() $nearestDc")
         }
     }
 
@@ -492,8 +520,6 @@ class TelegramClientImpl internal constructor(
             }
 
     companion object {
-        private val logger = Logger.Factory.create(TelegramClient::class)
-
         private const val DEFAULT_RETRY_COUNT = 2
 
         private const val DOWNLOAD_PART_SIZE = 128 * 1024

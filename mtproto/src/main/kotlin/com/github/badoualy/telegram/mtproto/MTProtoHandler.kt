@@ -5,7 +5,6 @@ import com.github.badoualy.telegram.mtproto.auth.AuthResult
 import com.github.badoualy.telegram.mtproto.exception.AuthKeyInvalidException
 import com.github.badoualy.telegram.mtproto.exception.ContainerInvalidException
 import com.github.badoualy.telegram.mtproto.log.LogTag
-import com.github.badoualy.telegram.mtproto.log.Logger
 import com.github.badoualy.telegram.mtproto.model.DataCenter
 import com.github.badoualy.telegram.mtproto.model.MTSession
 import com.github.badoualy.telegram.mtproto.net.MTProtoConnection
@@ -36,6 +35,8 @@ import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import java.io.IOException
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
@@ -47,13 +48,13 @@ class MTProtoHandler {
     var session: MTSession
         private set
 
-    private val requestByIdMap = Hashtable<Long, TLMethod<*>>(10)
-    private val sentMessageList = ArrayList<MTProtoMessage>(10)
+    private val requestByIdMap = ConcurrentHashMap<Long, TLMethod<*>>(10)
+    private val sentMessageList = CopyOnWriteArrayList<MTProtoMessage>()
     private var ackBuffer = MTBuffer<Long>(ACK_BUFFER_SIZE, ACK_BUFFER_TIMEOUT, TimeUnit.SECONDS)
 
-    private var messageSubject: Subject<Pair<MTProtoMessage, TLObject>> = PublishSubject.create()
-    private var updateSubject: Subject<TLAbsUpdates> = PublishSubject.create()
-    private var rpcResultSubject: Subject<MTRpcResult> = PublishSubject.create()
+    private var messageSubject: Subject<Pair<MTProtoMessage, TLObject>> = PublishSubject.create<Pair<MTProtoMessage, TLObject>>().toSerialized()
+    private var updateSubject: Subject<TLAbsUpdates> = PublishSubject.create<TLAbsUpdates>().toSerialized()
+    private var rpcResultSubject: Subject<MTRpcResult> = PublishSubject.create<MTRpcResult>().toSerialized()
     private val compositeDisposable = CompositeDisposable()
 
     private val tag: LogTag
@@ -122,7 +123,7 @@ class MTProtoHandler {
 
     /** Closes the connection and re-open another one immediately, this should fix most connection issues */
     fun resetConnection() {
-        logger.warn(session.tag, "resetConnection()")
+        println("${session.tag} resetConnection()")
         close()
 
         session = newSession(connection.dataCenter)
@@ -170,24 +171,38 @@ class MTProtoHandler {
      * The rpc call will be made only when subscribing to the returned [Observable]
      */
     fun <T : TLObject> executeMethods(methods: List<TLMethod<T>>): Observable<T> {
-        println(methods)
-        return methods.takeIf { it.isNotEmpty() }?.let {
-            rpcResultSubject
-                .filter { methods.contains(requestByIdMap[it.messageId]) }
-                .take(methods.size.toLong())
-                .doOnSubscribe { executeMethods_(methods) }
-                .subscribeOn(Schedulers.io())
-                .flatMapMaybe { mapResult(it) }
-                .sorted { o1, o2 ->
-                    val index1 = methods.indexOfFirst { it.response === o1 }
-                    val index2 = methods.indexOfFirst { it.response === o2 }
-                    Integer.compare(index1, index2)
+        println("${Thread.currentThread().id} methods for observable $methods")
+        try {
+            return methods.takeIf {
+                println("${Thread.currentThread().id} check is not empty: $it")
+                it.isNotEmpty()
+            }?.let {
+                rpcResultSubject.filter {
+                    true
+                }.map {
+                    println("messageId: ${it.messageId}")
+                    println("requestByIdMap messageId: ${requestByIdMap[it.messageId]}")
                 }
-                .map {
-                    @Suppress("UNCHECKED_CAST")
-                    it as T
-                }
-        } ?: Observable.empty<T>()
+                rpcResultSubject
+                    .filter { methods.contains(requestByIdMap[it.messageId]) }
+                    .take(methods.size.toLong())
+                    .doOnSubscribe { executeMethods_(methods) }
+                    .subscribeOn(Schedulers.io())
+                    .flatMapMaybe { mapResult(it) }
+                    .sorted { o1, o2 ->
+                        val index1 = methods.indexOfFirst { it.response === o1 }
+                        val index2 = methods.indexOfFirst { it.response === o2 }
+                        Integer.compare(index1, index2)
+                    }
+                    .map {
+                        @Suppress("UNCHECKED_CAST")
+                        it as T
+                    }
+            } ?: Observable.empty<T>()
+        } catch (e: java.util.NoSuchElementException) {
+            println("executeMethods() catch exception and we don't know $methods")
+            throw e
+        }
     }
 
     /** Runs the code to execute the given methods (actually sends them NOW) */
@@ -246,8 +261,9 @@ class MTProtoHandler {
      * @param updateMessageId if true the message id will be updated, else the same message id is kept
      */
     @Throws(IOException::class)
+    @Synchronized
     private fun resendMessage(messageId: Long, updateMessageId: Boolean) {
-        logger.info("resendMessage $messageId")
+        println("${Thread.currentThread().id} resendMessage $messageId")
 
         val sentMessage = sentMessageList.firstOrNull { it.messageId == messageId }
         if (sentMessage != null) {
@@ -255,7 +271,7 @@ class MTProtoHandler {
                 // Update map and generate new msgId
                 val request = requestByIdMap.remove(sentMessage.messageId)
                 sentMessage.messageId = session.generateMessageId()
-                requestByIdMap.put(sentMessage.messageId, request)
+                request?.let { requestByIdMap.put(sentMessage.messageId, it) }
             }
 
             println("${Thread.currentThread().id} ${tag} Re-sending message $messageId with msgId ${sentMessage.messageId}")
@@ -510,7 +526,7 @@ class MTProtoHandler {
 
     /** @return a new session for the given [DataCenter] (with no salt, reset seqno value ...) */
     private fun newSession(dataCenter: DataCenter) = MTSession(dataCenter).also {
-        logger.info(it.tag, "New session created")
+        println("${Thread.currentThread().id} ${it.tag} New session created")
     }
 
     /** @return a [MTProtoMessage] with a [MTMsgsAck] payload for the given message ids */
@@ -530,8 +546,6 @@ class MTProtoHandler {
     )
 
     companion object {
-
-        private val logger = Logger.Factory.create(MTProtoHandler::class)
 
         private const val ACK_BUFFER_SIZE = 30
         private const val ACK_BUFFER_TIMEOUT = 5L

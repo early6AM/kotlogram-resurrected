@@ -1,6 +1,5 @@
 package com.github.badoualy.telegram.mtproto
 
-import com.github.badoualy.telegram.mtproto.log.Logger
 import com.github.badoualy.telegram.mtproto.net.MTProtoSelectableConnection
 import com.github.badoualy.telegram.mtproto.util.NamedThreadFactory
 import io.reactivex.Observable
@@ -18,8 +17,6 @@ import java.util.concurrent.Executors
  * (but still be usable, and restart itself when a new connection is registered).
  * */
 internal object MTProtoWatchdog : Runnable {
-
-    private val logger = Logger.Factory.create(MTProtoWatchdog::class)
 
     /** [Selector.select] operation timeout */
     private const val SELECT_TIMEOUT_DELAY = 10 * 1000L // 10 seconds

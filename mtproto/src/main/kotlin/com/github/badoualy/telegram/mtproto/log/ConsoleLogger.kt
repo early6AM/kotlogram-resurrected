@@ -43,7 +43,7 @@ class ConsoleLogger(val name: String) {
 
     private fun log(level: String, tag: LogTag?, message: String, exception: Throwable? = null) {
         val date = simpleDateFormat.format(Date())
-        val logContent = "$date - [${Thread.currentThread().name}] ${level.toUpperCase()} $name - ${tag?.marker?.name ?: ""} - $message"
+        val logContent = "$date - [${Thread.currentThread().name}] ${level.toUpperCase()} $name - $message"
         if (level.equals("error", true))
             System.err.println(logContent)
         else

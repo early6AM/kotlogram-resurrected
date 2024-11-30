@@ -2,7 +2,6 @@ package com.github.badoualy.telegram.mtproto.net
 
 import com.github.badoualy.telegram.mtproto.MTProtoWatchdog
 import com.github.badoualy.telegram.mtproto.log.LogTag
-import com.github.badoualy.telegram.mtproto.log.Logger
 import com.github.badoualy.telegram.mtproto.model.DataCenter
 import com.github.badoualy.telegram.tl.ByteBufferUtils.*
 import java.io.EOFException
@@ -100,6 +99,7 @@ internal class MTProtoTcpConnection
 
     @Throws(IOException::class)
     override fun sendMessage(request: ByteArray) {
+        println("${Thread.currentThread().id} sendMessage()")
         val length = request.size / 4
         val headerLength = if (length >= 127) 4 else 1
         val totalLength = headerLength + request.size
@@ -122,6 +122,7 @@ internal class MTProtoTcpConnection
         buffer.put(request)
         buffer.flip()
         writeBytes(buffer)
+        println("${Thread.currentThread().id} sendMessage() end")
     }
 
     @Throws(IOException::class)
@@ -189,8 +190,6 @@ internal class MTProtoTcpConnection
     }
 
     companion object {
-        private val logger = Logger.Factory.create(MTProtoTcpConnection::class)
-
         /** Initial connection attempt count before considering failure */
         private const val ATTEMPT_COUNT = 3
 

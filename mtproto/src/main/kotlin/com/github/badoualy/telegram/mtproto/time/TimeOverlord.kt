@@ -1,6 +1,5 @@
 package com.github.badoualy.telegram.mtproto.time
 
-import com.github.badoualy.telegram.mtproto.log.Logger
 import com.github.badoualy.telegram.mtproto.model.DataCenter
 import java.util.*
 
@@ -9,8 +8,6 @@ import java.util.*
  * (Actually remembers the delta between device time and server time).
  */
 internal object TimeOverlord {
-
-    private val logger = Logger.Factory.create(TimeOverlord::class)
 
     /** Delta between server time and client time in ms for each [DataCenter] */
     private val deltaByDcMap = HashMap<DataCenter, Long>()
@@ -28,8 +25,8 @@ internal object TimeOverlord {
     /** Set the current server time for the given to the given time in ms */
     fun setServerTime(dataCenter: DataCenter, serverTime: Long) {
         deltaByDcMap.put(dataCenter, serverTime - localTime)
-        logger.warn("New server time for $dataCenter is $serverTime")
-        logger.warn("New time delta for $dataCenter is ${deltaByDcMap[dataCenter]}")
+        println("${Thread.currentThread().id} New server time for $dataCenter is $serverTime")
+        println("${Thread.currentThread().id} New time delta for $dataCenter is ${deltaByDcMap[dataCenter]}")
     }
 
     /** Update server time for the given [DataCenter] from the given messageId (supposed to be received just now) */
