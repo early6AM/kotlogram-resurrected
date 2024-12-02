@@ -162,7 +162,7 @@ class TelegramClientImpl internal constructor(
         try {
             return executeMethods(listOf(method), mtProtoHandler).singleOrError()
         } catch (e: java.util.NoSuchElementException) {
-            println("executeMethod() catch exception")
+            System.err.println("executeMethod() catch exception")
             throw e
         }
     }
@@ -203,7 +203,10 @@ class TelegramClientImpl internal constructor(
                     // Retry with some other parameters
                     resumeIfNeeded(throwable, methods, mtProtoHandler)
                 }
-                .doOnError { (it as? RpcErrorException)?.stackTrace = stackTrace.toTypedArray() }
+                .doOnError {
+                    it.printStackTrace()
+                    (it as? RpcErrorException)?.stackTrace = stackTrace.toTypedArray()
+                }
         }
     }
 
@@ -247,7 +250,8 @@ class TelegramClientImpl internal constructor(
                         when {
                             error.oneOf(FLOOD_WAIT_3) -> {
                                 println("${Thread.currentThread().id} $tag Error 420 encountered, retrying after 3 seconds")
-                                Single.timer(3, TimeUnit.SECONDS)
+//                                Single.timer(3, TimeUnit.SECONDS)
+                                Single.error(exception)
                             }
 
                             else -> Single.error(exception)
@@ -301,10 +305,11 @@ class TelegramClientImpl internal constructor(
 
                     error.oneOf(FLOOD_WAIT_3) -> {
                         println("${Thread.currentThread().id} $tag Attempting to retry after 3 seconds")
-                        Single.timer(3, TimeUnit.SECONDS).flatMapObservable {
-                            println("${Thread.currentThread().id} $tag Retrying after 3 seconds")
-                            executeMethods(methods, mtProtoHandler)
-                        }
+//                        Single.timer(3, TimeUnit.SECONDS).flatMapObservable {
+//                            println("${Thread.currentThread().id} $tag Retrying after 3 seconds")
+//                            executeMethods(methods, mtProtoHandler)
+//                        }
+                        Observable.error(exception)
                     }
 
                     else -> Observable.error(exception)
@@ -367,7 +372,7 @@ class TelegramClientImpl internal constructor(
                     initConnection(TLRequestUpdatesGetState(), mtProtoHandler)
                     return
                 } catch (e: java.util.NoSuchElementException) {
-                    println("${Thread.currentThread().id} Ooops, some error here...")
+                    System.err.println("${Thread.currentThread().id} Ooops, some error here...")
                 } catch (e: RpcErrorException) {
                     when (e.getError()) {
                         AUTH_KEY_UNREGISTERED -> {
@@ -384,17 +389,17 @@ class TelegramClientImpl internal constructor(
                     try {
                         initConnection(TLRequestHelpGetNearestDc(), mtProtoHandler)
                     } catch (e: java.util.NoSuchElementException) {
-                        println("${Thread.currentThread().id} idk wintd")
+                        System.err.println("${Thread.currentThread().id} idk wintd")
                     }
                 }
             }
             println("${Thread.currentThread().id} init connection end")
         } catch (e: Exception) {
-            println("${Thread.currentThread().id} Error in init connection: ${e.message}")
+            System.err.println("${Thread.currentThread().id} Error in init connection: ${e.message}")
             mtProtoHandler.close()
             println("${Thread.currentThread().id} mtProtoHandler closed")
             if (e is RpcErrorException) {
-                println("${Thread.currentThread().id} rpcError init connection ${e.code}")
+                System.err.println("${Thread.currentThread().id} rpcError init connection ${e.code}")
                 if (e.code == -404)
                     throw SecurityException("Authorization key is invalid (error $e)")
             }
@@ -437,7 +442,7 @@ class TelegramClientImpl internal constructor(
                 println("${Thread.currentThread().id} $tag Connected to the nearest DC${nearestDc.thisDc}")
             }
         } catch (e: java.util.NoSuchElementException) {
-            println("${Thread.currentThread().id} $tag no such element in ensureNearestDc() $nearestDc")
+            System.err.println("${Thread.currentThread().id} $tag no such element in ensureNearestDc() $nearestDc")
         }
     }
 

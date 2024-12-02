@@ -2,6 +2,7 @@ package com.github.badoualy.telegram.mtproto
 
 import com.github.badoualy.telegram.mtproto.net.MTProtoSelectableConnection
 import com.github.badoualy.telegram.mtproto.util.NamedThreadFactory
+import com.github.badoualy.telegram.tl.stream.readInt
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -75,7 +76,7 @@ internal object MTProtoWatchdog : Runnable {
                             subject.onNext(key)
                         }
                     } catch (e: Exception) {
-                        println("${Thread.currentThread().id} Error in watchdog: ${e.message}")
+                        System.err.println("${Thread.currentThread().id} Error in watchdog: ${e.message}")
                     }
                 }
                 try {
@@ -113,10 +114,16 @@ internal object MTProtoWatchdog : Runnable {
     fun getMessageObservable(connection: MTProtoSelectableConnection): Observable<ByteArray> = subject
         .filter { it.attachment() === connection }
         .observeOn(Schedulers.from(pool))
-        .map { key -> connection.readMessage().also { listen(key) } }
+        .map { key ->
+            println("${Thread.currentThread().id} ${connection.tag} key here: $key")
+            connection.readMessage().also {
+                println("${Thread.currentThread().id} ${connection.tag} message with key: $key message: ${it.readInt()}")
+                listen(key)
+            }
+        }
         .doOnSubscribe {
-            println("${Thread.currentThread().id} ${connection.tag} adding to registerQueue")
             synchronized(this) {
+                println("${Thread.currentThread().id} ${connection.tag} adding to registerQueue")
                 if (connection.channel.keyFor(selector) == null) {
                     registerQueue.add(connection)
                     runOrWakeup()

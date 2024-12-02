@@ -52,7 +52,8 @@ class MTProtoHandler {
     private val sentMessageList = CopyOnWriteArrayList<MTProtoMessage>()
     private var ackBuffer = MTBuffer<Long>(ACK_BUFFER_SIZE, ACK_BUFFER_TIMEOUT, TimeUnit.SECONDS)
 
-    private var messageSubject: Subject<Pair<MTProtoMessage, TLObject>> = PublishSubject.create<Pair<MTProtoMessage, TLObject>>().toSerialized()
+    private var messageSubject: Subject<Pair<MTProtoMessage, TLObject>> =
+        PublishSubject.create<Pair<MTProtoMessage, TLObject>>().toSerialized()
     private var updateSubject: Subject<TLAbsUpdates> = PublishSubject.create<TLAbsUpdates>().toSerialized()
     private var rpcResultSubject: Subject<MTRpcResult> = PublishSubject.create<MTRpcResult>().toSerialized()
     private val compositeDisposable = CompositeDisposable()
@@ -96,16 +97,25 @@ class MTProtoHandler {
         println("${Thread.currentThread().id} $tag startWatchdog()")
         connection.getMessageObservable()
             .observeOn(Schedulers.computation())
-            .flatMap { flatMapMessage(it) }
-            .map { deserializePayload(it) }
-            .subscribeBy(messageSubject::onError, messageSubject::onComplete, messageSubject::onNext)
+            .flatMap {
+                flatMapMessage(it)
+            }
+            .map {
+                deserializePayload(it)
+            }
+            .subscribeBy(
+                onError = messageSubject::onError,
+                onComplete = messageSubject::onComplete,
+                onNext = messageSubject::onNext
+            )
             .let(compositeDisposable::add)
 
         messageSubject
             .observeOn(Schedulers.computation())
-            .subscribeBy(onNext = onMessageReceived(),
+            .subscribeBy(
+                onNext = onMessageReceived(),
                 onError = {
-                    println("${Thread.currentThread().id} $tag messageSubject onErrorReceived() $it")
+                    System.err.println("${Thread.currentThread().id} $tag messageSubject onErrorReceived() $it")
                     // TODO: enable?
                     //resetConnection()
                 },
@@ -177,18 +187,25 @@ class MTProtoHandler {
                 println("${Thread.currentThread().id} check is not empty: $it")
                 it.isNotEmpty()
             }?.let {
-                rpcResultSubject.filter {
-                    true
-                }.map {
-                    println("messageId: ${it.messageId}")
-                    println("requestByIdMap messageId: ${requestByIdMap[it.messageId]}")
-                }
                 rpcResultSubject
                     .filter { methods.contains(requestByIdMap[it.messageId]) }
                     .take(methods.size.toLong())
                     .doOnSubscribe { executeMethods_(methods) }
                     .subscribeOn(Schedulers.io())
-                    .flatMapMaybe { mapResult(it) }
+                    .flatMapMaybe {
+                        try {
+                            mapResult(it)
+                        } catch (e: RpcErrorException) {
+                            System.err.println("${Thread.currentThread().id} $tag mapResult() error: $e")
+                            if (e.code == 420) {
+                                System.err.println("${Thread.currentThread().id} $tag Too many requests, retrying...")
+                                Observable.timer(5, TimeUnit.SECONDS)
+                                    .blockingSubscribe()
+                                executeMethods_(methods)
+                            }
+                            Maybe.empty()
+                        }
+                    }
                     .sorted { o1, o2 ->
                         val index1 = methods.indexOfFirst { it.response === o1 }
                         val index2 = methods.indexOfFirst { it.response === o2 }
@@ -200,7 +217,7 @@ class MTProtoHandler {
                     }
             } ?: Observable.empty<T>()
         } catch (e: java.util.NoSuchElementException) {
-            println("executeMethods() catch exception and we don't know $methods")
+            System.err.println("executeMethods() catch exception and we don't know $methods")
             throw e
         }
     }
@@ -252,6 +269,7 @@ class MTProtoHandler {
     /** Sends the given [ByteArray] message as is*/
     @Throws(IOException::class)
     internal fun sendMessage(message: ByteArray) {
+        println("${Thread.currentThread().id} sendMessage() as ${message.readConstructorId()}")
         connection.sendMessage(message)
     }
 
