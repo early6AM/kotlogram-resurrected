@@ -418,16 +418,24 @@ class TelegramClientImpl internal constructor(
         println("${Thread.currentThread().id} $tag Init connection with $method")
         val initConnectionRequest = with(app) {
             TLRequestInitConnection(
-                apiId,
-                deviceModel,
-                systemVersion, appVersion,
-                systemLangCode, langPack, langCode,
-                null, null, method
+                apiId = apiId,
+                deviceModel = deviceModel,
+                systemVersion = systemVersion,
+                appVersion = appVersion,
+                systemLangCode = systemLangCode,
+                langPack = langPack,
+                langCode = langCode,
+                proxy = null,
+                params = null,
+                query = method
             )
         }
 
+        println("${Thread.currentThread().id} $tag Init connection initConnectionRequest $initConnectionRequest")
         val request = TLRequestInvokeWithLayer(Kotlogram.apiLayer, initConnectionRequest)
+        println("${Thread.currentThread().id} $tag Init connection request $request")
         return executeSync {
+            println("${Thread.currentThread().id} $tag Init connection request sync start")
             executeMethod(request, mtProtoHandler)
         }
     }
@@ -535,7 +543,7 @@ class TelegramClientImpl internal constructor(
         private inline fun <T> executeSync(body: () -> Single<T>): T = try {
             body.invoke().blockingGet()
         } catch (e: RuntimeException) {
-            println("${Thread.currentThread().id} execute sync error ${e.message} ${e.stackTrace}")
+            println("${Thread.currentThread().id} execute sync error ${e.cause} ${e.stackTrace}")
             e.printStackTrace()
             when (e.cause) {
                 is RpcErrorException -> throw e.cause as RpcErrorException

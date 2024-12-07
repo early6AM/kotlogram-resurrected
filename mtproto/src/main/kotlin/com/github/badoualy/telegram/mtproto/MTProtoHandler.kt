@@ -378,7 +378,7 @@ class MTProtoHandler {
      */
     @Throws(IOException::class)
     private fun onMessageReceived(): (Pair<MTProtoMessage, TLObject>) -> Unit = { (message, payload) ->
-        println("${Thread.currentThread().id} $tag handle $payload")
+        println("${Thread.currentThread().id} $tag onMessageReceived() handle payload: $payload")
 
         when (payload) {
             is MTMsgsAck -> {
@@ -388,6 +388,7 @@ class MTProtoHandler {
             }
 
             is MTRpcResult -> {
+                println("${Thread.currentThread().id} $tag onMessageReceived() handle payload for MTRpcResult: $payload")
                 queueMessageAck(message.messageId)
                 rpcResultSubject.onNext(payload)
             }
