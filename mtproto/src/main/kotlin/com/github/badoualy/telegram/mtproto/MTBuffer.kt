@@ -1,11 +1,11 @@
 package com.github.badoualy.telegram.mtproto
 
 import com.github.badoualy.telegram.mtproto.log.LogTag
-import io.reactivex.Maybe
-import io.reactivex.Observable
-import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.core.Maybe
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.Subject
+import io.reactivex.rxjava3.schedulers.Schedulers
+import io.reactivex.rxjava3.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
 class MTBuffer<T>(var bufferSize: Int,

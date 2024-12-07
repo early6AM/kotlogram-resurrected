@@ -727,7 +727,7 @@ import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.core.TLStringVector
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Single
 import kotlin.Boolean
 import kotlin.Double
 import kotlin.Int

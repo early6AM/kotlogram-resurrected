@@ -22,8 +22,8 @@ import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.serialization.TLSerializerFactory
 import com.github.badoualy.telegram.tl.serialization.TLStreamSerializerFactory
 import com.github.badoualy.telegram.tl.stream.readLong
-import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
 import java.io.IOException
 import java.math.BigInteger
 import java.util.*

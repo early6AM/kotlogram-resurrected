@@ -2,7 +2,7 @@ package com.github.badoualy.telegram.mtproto.net
 
 import com.github.badoualy.telegram.mtproto.log.LogTag
 import com.github.badoualy.telegram.mtproto.model.DataCenter
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 import java.io.IOException
 
 /**

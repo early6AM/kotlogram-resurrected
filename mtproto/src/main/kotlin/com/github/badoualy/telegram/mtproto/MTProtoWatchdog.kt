@@ -3,10 +3,10 @@ package com.github.badoualy.telegram.mtproto
 import com.github.badoualy.telegram.mtproto.net.MTProtoSelectableConnection
 import com.github.badoualy.telegram.mtproto.util.NamedThreadFactory
 import com.github.badoualy.telegram.tl.stream.readInt
-import io.reactivex.Observable
-import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.schedulers.Schedulers
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 import java.nio.channels.SelectionKey
 import java.nio.channels.Selector
 import java.util.concurrent.Executors
