@@ -30,19 +30,28 @@ class TLRequestChannelsGetAdminedPublicChannels() : TLMethod<TLAbsChats>() {
     @Transient
     var checkLimit: Boolean = false
 
+    @Transient
+    var forPersonal: Boolean = false
+
     private val _constructor: String = "channels.getAdminedPublicChannels#f8b036af"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(byLocation: Boolean, checkLimit: Boolean) : this() {
+    constructor(
+            byLocation: Boolean,
+            checkLimit: Boolean,
+            forPersonal: Boolean
+    ) : this() {
         this.byLocation = byLocation
         this.checkLimit = checkLimit
+        this.forPersonal = forPersonal
     }
 
     protected override fun computeFlags() {
         _flags = 0
         updateFlags(byLocation, 1)
         updateFlags(checkLimit, 2)
+        updateFlags(forPersonal, 4)
     }
 
     @Throws(IOException::class)
@@ -57,6 +66,7 @@ class TLRequestChannelsGetAdminedPublicChannels() : TLMethod<TLAbsChats>() {
         _flags = readInt()
         byLocation = isMask(1)
         checkLimit = isMask(2)
+        forPersonal = isMask(4)
     }
 
     override fun computeSerializedSize(): Int {
@@ -76,6 +86,7 @@ class TLRequestChannelsGetAdminedPublicChannels() : TLMethod<TLAbsChats>() {
         return _flags == other._flags
                 && byLocation == other.byLocation
                 && checkLimit == other.checkLimit
+                && forPersonal == other.forPersonal
     }
     companion object  {
         const val CONSTRUCTOR_ID: Int = 0xf8b036af.toInt()

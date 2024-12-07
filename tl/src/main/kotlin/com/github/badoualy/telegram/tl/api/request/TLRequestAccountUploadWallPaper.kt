@@ -9,7 +9,7 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSiz
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputFile
 import com.github.badoualy.telegram.tl.api.TLAbsWallPaper
-import com.github.badoualy.telegram.tl.api.TLInputFileBig
+import com.github.badoualy.telegram.tl.api.TLInputFileStoryDocument
 import com.github.badoualy.telegram.tl.api.TLWallPaperSettings
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
@@ -30,7 +30,7 @@ class TLRequestAccountUploadWallPaper() : TLMethod<TLAbsWallPaper>() {
     @Transient
     var forChat: Boolean = false
 
-    var file: TLAbsInputFile = TLInputFileBig()
+    var file: TLAbsInputFile = TLInputFileStoryDocument()
 
     var mimeType: String = ""
 

@@ -14,6 +14,7 @@ import com.github.badoualy.telegram.tl.core.TLObject
  * * [channelAdminLogEventActionChangeAbout#55188a2e][TLChannelAdminLogEventActionChangeAbout]
  * * [channelAdminLogEventActionChangeAvailableReactions#be4e0ef8][TLChannelAdminLogEventActionChangeAvailableReactions]
  * * [channelAdminLogEventActionChangeEmojiStatus#3ea9feb1][TLChannelAdminLogEventActionChangeEmojiStatus]
+ * * [channelAdminLogEventActionChangeEmojiStickerSet#46d840ab][TLChannelAdminLogEventActionChangeEmojiStickerSet]
  * * [channelAdminLogEventActionChangeHistoryTTL#6e941a38][TLChannelAdminLogEventActionChangeHistoryTTL]
  * * [channelAdminLogEventActionChangeLinkedChat#50c7ac8][TLChannelAdminLogEventActionChangeLinkedChat]
  * * [channelAdminLogEventActionChangeLocation#e6b76ae][TLChannelAdminLogEventActionChangeLocation]

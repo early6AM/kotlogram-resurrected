@@ -16,11 +16,14 @@ import com.github.badoualy.telegram.tl.api.account.TLAbsThemes
 import com.github.badoualy.telegram.tl.api.account.TLAbsWallPapers
 import com.github.badoualy.telegram.tl.api.account.TLAuthorizationForm
 import com.github.badoualy.telegram.tl.api.account.TLAuthorizations
+import com.github.badoualy.telegram.tl.api.account.TLBusinessChatLinks
+import com.github.badoualy.telegram.tl.api.account.TLConnectedBots
 import com.github.badoualy.telegram.tl.api.account.TLContentSettings
 import com.github.badoualy.telegram.tl.api.account.TLPassword
 import com.github.badoualy.telegram.tl.api.account.TLPasswordInputSettings
 import com.github.badoualy.telegram.tl.api.account.TLPasswordSettings
 import com.github.badoualy.telegram.tl.api.account.TLPrivacyRules
+import com.github.badoualy.telegram.tl.api.account.TLResolvedBusinessChatLinks
 import com.github.badoualy.telegram.tl.api.account.TLSentEmailCode
 import com.github.badoualy.telegram.tl.api.account.TLTakeout
 import com.github.badoualy.telegram.tl.api.account.TLTmpPassword
@@ -32,7 +35,10 @@ import com.github.badoualy.telegram.tl.api.auth.TLExportedAuthorization
 import com.github.badoualy.telegram.tl.api.auth.TLLoggedOut
 import com.github.badoualy.telegram.tl.api.auth.TLPasswordRecovery
 import com.github.badoualy.telegram.tl.api.bots.TLBotInfo
+import com.github.badoualy.telegram.tl.api.bots.TLPopularAppBots
+import com.github.badoualy.telegram.tl.api.bots.TLPreviewInfo
 import com.github.badoualy.telegram.tl.api.channels.TLAbsChannelParticipants
+import com.github.badoualy.telegram.tl.api.channels.TLAbsSponsoredMessageReportResult
 import com.github.badoualy.telegram.tl.api.channels.TLAdminLogResults
 import com.github.badoualy.telegram.tl.api.channels.TLChannelParticipant
 import com.github.badoualy.telegram.tl.api.channels.TLSendAsPeers
@@ -42,9 +48,11 @@ import com.github.badoualy.telegram.tl.api.chatlists.TLExportedInvites
 import com.github.badoualy.telegram.tl.api.contacts.TLAbsBlocked
 import com.github.badoualy.telegram.tl.api.contacts.TLAbsContacts
 import com.github.badoualy.telegram.tl.api.contacts.TLAbsTopPeers
+import com.github.badoualy.telegram.tl.api.contacts.TLContactBirthdays
 import com.github.badoualy.telegram.tl.api.contacts.TLFound
 import com.github.badoualy.telegram.tl.api.contacts.TLImportedContacts
 import com.github.badoualy.telegram.tl.api.contacts.TLResolvedPeer
+import com.github.badoualy.telegram.tl.api.fragment.TLCollectibleInfo
 import com.github.badoualy.telegram.tl.api.help.TLAbsAppConfig
 import com.github.badoualy.telegram.tl.api.help.TLAbsAppUpdate
 import com.github.badoualy.telegram.tl.api.help.TLAbsCountriesList
@@ -53,6 +61,7 @@ import com.github.badoualy.telegram.tl.api.help.TLAbsPassportConfig
 import com.github.badoualy.telegram.tl.api.help.TLAbsPeerColors
 import com.github.badoualy.telegram.tl.api.help.TLAbsPromoData
 import com.github.badoualy.telegram.tl.api.help.TLAbsTermsOfServiceUpdate
+import com.github.badoualy.telegram.tl.api.help.TLAbsTimezonesList
 import com.github.badoualy.telegram.tl.api.help.TLAbsUserInfo
 import com.github.badoualy.telegram.tl.api.help.TLInviteText
 import com.github.badoualy.telegram.tl.api.help.TLPremiumPromo
@@ -60,6 +69,7 @@ import com.github.badoualy.telegram.tl.api.help.TLRecentMeUrls
 import com.github.badoualy.telegram.tl.api.help.TLSupport
 import com.github.badoualy.telegram.tl.api.help.TLSupportName
 import com.github.badoualy.telegram.tl.api.messages.TLAbsAllStickers
+import com.github.badoualy.telegram.tl.api.messages.TLAbsAvailableEffects
 import com.github.badoualy.telegram.tl.api.messages.TLAbsAvailableReactions
 import com.github.badoualy.telegram.tl.api.messages.TLAbsChats
 import com.github.badoualy.telegram.tl.api.messages.TLAbsDhConfig
@@ -69,10 +79,12 @@ import com.github.badoualy.telegram.tl.api.messages.TLAbsFavedStickers
 import com.github.badoualy.telegram.tl.api.messages.TLAbsFeaturedStickers
 import com.github.badoualy.telegram.tl.api.messages.TLAbsFoundStickerSets
 import com.github.badoualy.telegram.tl.api.messages.TLAbsMessages
+import com.github.badoualy.telegram.tl.api.messages.TLAbsQuickReplies
 import com.github.badoualy.telegram.tl.api.messages.TLAbsReactions
 import com.github.badoualy.telegram.tl.api.messages.TLAbsRecentStickers
 import com.github.badoualy.telegram.tl.api.messages.TLAbsSavedDialogs
 import com.github.badoualy.telegram.tl.api.messages.TLAbsSavedGifs
+import com.github.badoualy.telegram.tl.api.messages.TLAbsSavedReactionTags
 import com.github.badoualy.telegram.tl.api.messages.TLAbsSentEncryptedMessage
 import com.github.badoualy.telegram.tl.api.messages.TLAbsSponsoredMessages
 import com.github.badoualy.telegram.tl.api.messages.TLAbsStickerSet
@@ -89,6 +101,7 @@ import com.github.badoualy.telegram.tl.api.messages.TLChatAdminsWithInvites
 import com.github.badoualy.telegram.tl.api.messages.TLChatFull
 import com.github.badoualy.telegram.tl.api.messages.TLChatInviteImporters
 import com.github.badoualy.telegram.tl.api.messages.TLCheckedHistoryImportPeer
+import com.github.badoualy.telegram.tl.api.messages.TLDialogFilters
 import com.github.badoualy.telegram.tl.api.messages.TLDiscussionMessage
 import com.github.badoualy.telegram.tl.api.messages.TLExportedChatInvites
 import com.github.badoualy.telegram.tl.api.messages.TLForumTopics
@@ -96,9 +109,11 @@ import com.github.badoualy.telegram.tl.api.messages.TLHighScores
 import com.github.badoualy.telegram.tl.api.messages.TLHistoryImport
 import com.github.badoualy.telegram.tl.api.messages.TLHistoryImportParsed
 import com.github.badoualy.telegram.tl.api.messages.TLInactiveChats
+import com.github.badoualy.telegram.tl.api.messages.TLInvitedUsers
 import com.github.badoualy.telegram.tl.api.messages.TLMessageEditData
 import com.github.badoualy.telegram.tl.api.messages.TLMessageReactionsList
 import com.github.badoualy.telegram.tl.api.messages.TLMessageViews
+import com.github.badoualy.telegram.tl.api.messages.TLMyStickers
 import com.github.badoualy.telegram.tl.api.messages.TLPeerDialogs
 import com.github.badoualy.telegram.tl.api.messages.TLPeerSettings
 import com.github.badoualy.telegram.tl.api.messages.TLSearchCounter
@@ -109,13 +124,17 @@ import com.github.badoualy.telegram.tl.api.messages.TLTranslateResult
 import com.github.badoualy.telegram.tl.api.messages.TLVotesList
 import com.github.badoualy.telegram.tl.api.messages.TLWebPage
 import com.github.badoualy.telegram.tl.api.payments.TLAbsGiveawayInfo
+import com.github.badoualy.telegram.tl.api.payments.TLAbsPaymentForm
+import com.github.badoualy.telegram.tl.api.payments.TLAbsPaymentReceipt
 import com.github.badoualy.telegram.tl.api.payments.TLAbsPaymentResult
 import com.github.badoualy.telegram.tl.api.payments.TLBankCardData
 import com.github.badoualy.telegram.tl.api.payments.TLCheckedGiftCode
 import com.github.badoualy.telegram.tl.api.payments.TLExportedInvoice
-import com.github.badoualy.telegram.tl.api.payments.TLPaymentForm
-import com.github.badoualy.telegram.tl.api.payments.TLPaymentReceipt
 import com.github.badoualy.telegram.tl.api.payments.TLSavedInfo
+import com.github.badoualy.telegram.tl.api.payments.TLStarsRevenueAdsAccountUrl
+import com.github.badoualy.telegram.tl.api.payments.TLStarsRevenueStats
+import com.github.badoualy.telegram.tl.api.payments.TLStarsRevenueWithdrawalUrl
+import com.github.badoualy.telegram.tl.api.payments.TLStarsStatus
 import com.github.badoualy.telegram.tl.api.payments.TLValidatedRequestedInfo
 import com.github.badoualy.telegram.tl.api.phone.TLExportedGroupCallInvite
 import com.github.badoualy.telegram.tl.api.phone.TLGroupCall
@@ -129,6 +148,11 @@ import com.github.badoualy.telegram.tl.api.photos.TLPhoto
 import com.github.badoualy.telegram.tl.api.premium.TLBoostsList
 import com.github.badoualy.telegram.tl.api.premium.TLBoostsStatus
 import com.github.badoualy.telegram.tl.api.premium.TLMyBoosts
+import com.github.badoualy.telegram.tl.api.smsjobs.TLEligibleToJoin
+import com.github.badoualy.telegram.tl.api.smsjobs.TLStatus
+import com.github.badoualy.telegram.tl.api.stats.TLBroadcastRevenueStats
+import com.github.badoualy.telegram.tl.api.stats.TLBroadcastRevenueTransactions
+import com.github.badoualy.telegram.tl.api.stats.TLBroadcastRevenueWithdrawalUrl
 import com.github.badoualy.telegram.tl.api.stats.TLBroadcastStats
 import com.github.badoualy.telegram.tl.api.stats.TLMegagroupStats
 import com.github.badoualy.telegram.tl.api.stats.TLMessageStats
@@ -136,6 +160,7 @@ import com.github.badoualy.telegram.tl.api.stats.TLPublicForwards
 import com.github.badoualy.telegram.tl.api.stats.TLStoryStats
 import com.github.badoualy.telegram.tl.api.stickers.TLSuggestedShortName
 import com.github.badoualy.telegram.tl.api.stories.TLAbsAllStories
+import com.github.badoualy.telegram.tl.api.stories.TLFoundStories
 import com.github.badoualy.telegram.tl.api.stories.TLPeerStories
 import com.github.badoualy.telegram.tl.api.stories.TLStories
 import com.github.badoualy.telegram.tl.api.stories.TLStoryReactionsList
@@ -196,6 +221,8 @@ interface TelegramApi {
 
     fun accountConfirmPhone(phoneCodeHash: String, phoneCode: String): Single<TLBool>
 
+    fun accountCreateBusinessChatLink(link: TLInputBusinessChatLink): Single<TLBusinessChatLink>
+
     fun accountCreateTheme(
             slug: String,
             title: String,
@@ -209,7 +236,13 @@ interface TelegramApi {
 
     fun accountDeleteAutoSaveExceptions(): Single<TLBool>
 
+    fun accountDeleteBusinessChatLink(slug: String): Single<TLBool>
+
     fun accountDeleteSecureValue(types: TLObjectVector<TLAbsSecureValueType>): Single<TLBool>
+
+    fun accountDisablePeerConnectedBot(peer: TLAbsInputPeer): Single<TLBool>
+
+    fun accountEditBusinessChatLink(slug: String, link: TLInputBusinessChatLink): Single<TLBusinessChatLink>
 
     fun accountFinishTakeoutSession(success: Boolean): Single<TLBool>
 
@@ -229,11 +262,17 @@ interface TelegramApi {
 
     fun accountGetAutoSaveSettings(): Single<com.github.badoualy.telegram.tl.api.account.TLAutoSaveSettings>
 
+    fun accountGetBotBusinessConnection(connectionId: String): Single<TLAbsUpdates>
+
+    fun accountGetBusinessChatLinks(): Single<TLBusinessChatLinks>
+
     fun accountGetChannelDefaultEmojiStatuses(hash: Long): Single<TLAbsEmojiStatuses>
 
     fun accountGetChannelRestrictedStatusEmojis(hash: Long): Single<TLAbsEmojiList>
 
     fun accountGetChatThemes(hash: Long): Single<TLAbsThemes>
+
+    fun accountGetConnectedBots(): Single<TLConnectedBots>
 
     fun accountGetContactSignUpNotification(): Single<TLBool>
 
@@ -264,6 +303,8 @@ interface TelegramApi {
     fun accountGetPasswordSettings(password: TLAbsInputCheckPasswordSRP): Single<TLPasswordSettings>
 
     fun accountGetPrivacy(key: TLAbsInputPrivacyKey): Single<TLPrivacyRules>
+
+    fun accountGetReactionsNotifySettings(): Single<TLReactionsNotifySettings>
 
     fun accountGetRecentEmojiStatuses(hash: Long): Single<TLAbsEmojiStatuses>
 
@@ -342,6 +383,8 @@ interface TelegramApi {
 
     fun accountResetWebAuthorizations(): Single<TLBool>
 
+    fun accountResolveBusinessChatLink(slug: String): Single<TLResolvedBusinessChatLinks>
+
     fun accountSaveAutoDownloadSettings(
             low: Boolean,
             high: Boolean,
@@ -388,6 +431,12 @@ interface TelegramApi {
 
     fun accountSetPrivacy(key: TLAbsInputPrivacyKey, rules: TLObjectVector<TLAbsInputPrivacyRule>): Single<TLPrivacyRules>
 
+    fun accountSetReactionsNotifySettings(settings: TLReactionsNotifySettings): Single<TLReactionsNotifySettings>
+
+    fun accountToggleConnectedBotPaused(peer: TLAbsInputPeer, paused: Boolean): Single<TLBool>
+
+    fun accountToggleSponsoredMessages(enabled: Boolean): Single<TLBool>
+
     fun accountToggleUsername(username: String, active: Boolean): Single<TLBool>
 
     fun accountUnregisterDevice(
@@ -396,11 +445,30 @@ interface TelegramApi {
             otherUids: TLLongVector
     ): Single<TLBool>
 
+    fun accountUpdateBirthday(birthday: TLBirthday?): Single<TLBool>
+
+    fun accountUpdateBusinessAwayMessage(message: TLInputBusinessAwayMessage?): Single<TLBool>
+
+    fun accountUpdateBusinessGreetingMessage(message: TLInputBusinessGreetingMessage?): Single<TLBool>
+
+    fun accountUpdateBusinessIntro(intro: TLInputBusinessIntro?): Single<TLBool>
+
+    fun accountUpdateBusinessLocation(geoPoint: TLAbsInputGeoPoint?, address: String?): Single<TLBool>
+
+    fun accountUpdateBusinessWorkHours(businessWorkHours: TLBusinessWorkHours?): Single<TLBool>
+
     fun accountUpdateColor(
             forProfile: Boolean,
             color: Int?,
             backgroundEmojiId: Long?
     ): Single<TLBool>
+
+    fun accountUpdateConnectedBot(
+            canReply: Boolean,
+            deleted: Boolean,
+            bot: TLAbsInputUser,
+            recipients: TLInputBusinessBotRecipients
+    ): Single<TLAbsUpdates>
 
     fun accountUpdateDeviceLocked(period: Int): Single<TLBool>
 
@@ -409,6 +477,8 @@ interface TelegramApi {
     fun accountUpdateNotifySettings(peer: TLAbsInputNotifyPeer, settings: TLInputPeerNotifySettings): Single<TLBool>
 
     fun accountUpdatePasswordSettings(password: TLAbsInputCheckPasswordSRP, newSettings: TLPasswordInputSettings): Single<TLBool>
+
+    fun accountUpdatePersonalChannel(channel: TLAbsInputChannel): Single<TLBool>
 
     fun accountUpdateProfile(
             firstName: String?,
@@ -503,16 +573,27 @@ interface TelegramApi {
 
     fun authRecoverPassword(code: String, newSettings: TLPasswordInputSettings?): Single<TLAbsAuthorization>
 
+    fun authReportMissingCode(
+            phoneNumber: String,
+            phoneCodeHash: String,
+            mnc: String
+    ): Single<TLBool>
+
     fun authRequestFirebaseSms(
             phoneNumber: String,
             phoneCodeHash: String,
             safetyNetToken: String?,
+            playIntegrityToken: String?,
             iosPushSecret: String?
     ): Single<TLBool>
 
     fun authRequestPasswordRecovery(): Single<TLPasswordRecovery>
 
-    fun authResendCode(phoneNumber: String, phoneCodeHash: String): Single<TLAbsSentCode>
+    fun authResendCode(
+            phoneNumber: String,
+            phoneCodeHash: String,
+            reason: String?
+    ): Single<TLAbsSentCode>
 
     fun authResetAuthorizations(): Single<TLBool>
 
@@ -533,11 +614,18 @@ interface TelegramApi {
     ): Single<TLAbsAuthorization>
 
     fun authSignUp(
+            noJoinedNotifications: Boolean,
             phoneNumber: String,
             phoneCodeHash: String,
             firstName: String,
             lastName: String
     ): Single<TLAbsAuthorization>
+
+    fun botsAddPreviewMedia(
+            bot: TLAbsInputUser,
+            langCode: String,
+            media: TLAbsInputMedia
+    ): Single<TLBotPreviewMedia>
 
     fun botsAllowSendMessage(bot: TLAbsInputUser): Single<TLAbsUpdates>
 
@@ -545,17 +633,42 @@ interface TelegramApi {
 
     fun botsCanSendMessage(bot: TLAbsInputUser): Single<TLBool>
 
+    fun botsDeletePreviewMedia(
+            bot: TLAbsInputUser,
+            langCode: String,
+            media: TLObjectVector<TLAbsInputMedia>
+    ): Single<TLBool>
+
+    fun botsEditPreviewMedia(
+            bot: TLAbsInputUser,
+            langCode: String,
+            media: TLAbsInputMedia,
+            newMedia: TLAbsInputMedia
+    ): Single<TLBotPreviewMedia>
+
     fun botsGetBotCommands(scope: TLAbsBotCommandScope, langCode: String): Single<TLObjectVector<TLBotCommand>>
 
     fun botsGetBotInfo(bot: TLAbsInputUser?, langCode: String): Single<TLBotInfo>
 
     fun botsGetBotMenuButton(userId: TLAbsInputUser): Single<TLAbsBotMenuButton>
 
+    fun botsGetPopularAppBots(offset: String, limit: Int): Single<TLPopularAppBots>
+
+    fun botsGetPreviewInfo(bot: TLAbsInputUser, langCode: String): Single<TLPreviewInfo>
+
+    fun botsGetPreviewMedias(bot: TLAbsInputUser): Single<TLObjectVector<TLBotPreviewMedia>>
+
     fun botsInvokeWebViewCustomMethod(
             bot: TLAbsInputUser,
             customMethod: String,
             params: TLDataJSON
     ): Single<TLDataJSON>
+
+    fun botsReorderPreviewMedias(
+            bot: TLAbsInputUser,
+            langCode: String,
+            order: TLObjectVector<TLAbsInputMedia>
+    ): Single<TLBool>
 
     fun botsReorderUsernames(bot: TLAbsInputUser, order: TLStringVector): Single<TLBool>
 
@@ -687,9 +800,13 @@ interface TelegramApi {
             limit: Int
     ): Single<TLAdminLogResults>
 
-    fun channelsGetAdminedPublicChannels(byLocation: Boolean, checkLimit: Boolean): Single<TLAbsChats>
+    fun channelsGetAdminedPublicChannels(
+            byLocation: Boolean,
+            checkLimit: Boolean,
+            forPersonal: Boolean
+    ): Single<TLAbsChats>
 
-    fun channelsGetChannelRecommendations(channel: TLAbsInputChannel): Single<TLAbsChats>
+    fun channelsGetChannelRecommendations(channel: TLAbsInputChannel?): Single<TLAbsChats>
 
     fun channelsGetChannels(id: TLObjectVector<TLAbsInputChannel>): Single<TLAbsChats>
 
@@ -728,7 +845,7 @@ interface TelegramApi {
 
     fun channelsGetSponsoredMessages(channel: TLAbsInputChannel): Single<TLAbsSponsoredMessages>
 
-    fun channelsInviteToChannel(channel: TLAbsInputChannel, users: TLObjectVector<TLAbsInputUser>): Single<TLAbsUpdates>
+    fun channelsInviteToChannel(channel: TLAbsInputChannel, users: TLObjectVector<TLAbsInputUser>): Single<TLInvitedUsers>
 
     fun channelsJoinChannel(channel: TLAbsInputChannel): Single<TLAbsUpdates>
 
@@ -754,7 +871,27 @@ interface TelegramApi {
             id: TLIntVector
     ): Single<TLBool>
 
+    fun channelsReportSponsoredMessage(
+            channel: TLAbsInputChannel,
+            randomId: TLBytes,
+            option: TLBytes
+    ): Single<TLAbsSponsoredMessageReportResult>
+
+    fun channelsRestrictSponsoredMessages(channel: TLAbsInputChannel, restricted: Boolean): Single<TLAbsUpdates>
+
+    fun channelsSearchPosts(
+            hashtag: String,
+            offsetRate: Int,
+            offsetPeer: TLAbsInputPeer,
+            offsetId: Int,
+            limit: Int
+    ): Single<TLAbsMessages>
+
+    fun channelsSetBoostsToUnblockRestrictions(channel: TLAbsInputChannel, boosts: Int): Single<TLAbsUpdates>
+
     fun channelsSetDiscussionGroup(broadcast: TLAbsInputChannel, group: TLAbsInputChannel): Single<TLBool>
+
+    fun channelsSetEmojiStickers(channel: TLAbsInputChannel, stickerset: TLAbsInputStickerSet): Single<TLBool>
 
     fun channelsSetStickers(channel: TLAbsInputChannel, stickerset: TLAbsInputStickerSet): Single<TLBool>
 
@@ -859,6 +996,8 @@ interface TelegramApi {
 
     fun contactsExportContactToken(): Single<TLExportedContactToken>
 
+    fun contactsGetBirthdays(): Single<TLContactBirthdays>
+
     fun contactsGetBlocked(
             myStoriesFrom: Boolean,
             offset: Int,
@@ -920,6 +1059,8 @@ interface TelegramApi {
 
     fun foldersEditPeerFolders(folderPeers: TLObjectVector<TLInputFolderPeer>): Single<TLAbsUpdates>
 
+    fun fragmentGetCollectibleInfo(collectible: TLAbsInputCollectible): Single<TLCollectibleInfo>
+
     fun helpAcceptTermsOfService(id: TLDataJSON): Single<TLBool>
 
     fun helpDismissSuggestion(peer: TLAbsInputPeer, suggestion: String): Single<TLBool>
@@ -964,6 +1105,8 @@ interface TelegramApi {
 
     fun helpGetTermsOfServiceUpdate(): Single<TLAbsTermsOfServiceUpdate>
 
+    fun helpGetTimezonesList(hash: Int): Single<TLAbsTimezonesList>
+
     fun helpGetUserInfo(userId: TLAbsInputUser): Single<TLAbsUserInfo>
 
     fun helpHidePromoData(peer: TLAbsInputPeer): Single<TLBool>
@@ -988,6 +1131,20 @@ interface TelegramApi {
     fun <T : TLObject> invokeAfterMsg(msgId: Long, query: TLMethod<T>?): Single<T>
 
     fun <T : TLObject> invokeAfterMsgs(msgIds: TLLongVector, query: TLMethod<T>?): Single<T>
+
+    fun <T : TLObject> invokeWithApnsSecret(
+            nonce: String,
+            secret: String,
+            query: TLMethod<T>?
+    ): Single<T>
+
+    fun <T : TLObject> invokeWithBusinessConnection(connectionId: String, query: TLMethod<T>?): Single<T>
+
+    fun <T : TLObject> invokeWithGooglePlayIntegrity(
+            nonce: String,
+            token: String,
+            query: TLMethod<T>?
+    ): Single<T>
 
     fun <T : TLObject> invokeWithLayer(layer: Int, query: TLMethod<T>?): Single<T>
 
@@ -1033,13 +1190,15 @@ interface TelegramApi {
             chatId: Long,
             userId: TLAbsInputUser,
             fwdLimit: Int
-    ): Single<TLAbsUpdates>
+    ): Single<TLInvitedUsers>
 
     fun messagesCheckChatInvite(hash: String): Single<TLAbsChatInvite>
 
     fun messagesCheckHistoryImport(importHead: String): Single<TLHistoryImportParsed>
 
     fun messagesCheckHistoryImportPeer(peer: TLAbsInputPeer): Single<TLCheckedHistoryImportPeer>
+
+    fun messagesCheckQuickReplyShortcut(shortcut: String): Single<TLBool>
 
     fun messagesClearAllDrafts(): Single<TLBool>
 
@@ -1051,7 +1210,7 @@ interface TelegramApi {
             users: TLObjectVector<TLAbsInputUser>,
             title: String,
             ttlPeriod: Int?
-    ): Single<TLAbsUpdates>
+    ): Single<TLInvitedUsers>
 
     fun messagesDeleteChat(chatId: Long): Single<TLBool>
 
@@ -1062,6 +1221,8 @@ interface TelegramApi {
     ): Single<TLAbsUpdates>
 
     fun messagesDeleteExportedChatInvite(peer: TLAbsInputPeer, link: String): Single<TLBool>
+
+    fun messagesDeleteFactCheck(peer: TLAbsInputPeer, msgId: Int): Single<TLAbsUpdates>
 
     fun messagesDeleteHistory(
             justClear: Boolean,
@@ -1075,6 +1236,10 @@ interface TelegramApi {
     fun messagesDeleteMessages(revoke: Boolean, id: TLIntVector): Single<TLAffectedMessages>
 
     fun messagesDeletePhoneCallHistory(revoke: Boolean): Single<TLAffectedFoundMessages>
+
+    fun messagesDeleteQuickReplyMessages(shortcutId: Int, id: TLIntVector): Single<TLAbsUpdates>
+
+    fun messagesDeleteQuickReplyShortcut(shortcutId: Int): Single<TLBool>
 
     fun messagesDeleteRevokedExportedChatInvites(peer: TLAbsInputPeer, adminId: TLAbsInputUser): Single<TLBool>
 
@@ -1113,6 +1278,12 @@ interface TelegramApi {
             title: String?
     ): Single<com.github.badoualy.telegram.tl.api.messages.TLAbsExportedChatInvite>
 
+    fun messagesEditFactCheck(
+            peer: TLAbsInputPeer,
+            msgId: Int,
+            text: TLTextWithEntities
+    ): Single<TLAbsUpdates>
+
     fun messagesEditInlineBotMessage(
             noWebpage: Boolean,
             invertMedia: Boolean,
@@ -1132,8 +1303,11 @@ interface TelegramApi {
             media: TLAbsInputMedia?,
             replyMarkup: TLAbsReplyMarkup?,
             entities: TLObjectVector<TLAbsMessageEntity>?,
-            scheduleDate: Int?
+            scheduleDate: Int?,
+            quickReplyShortcutId: Int?
     ): Single<TLAbsUpdates>
+
+    fun messagesEditQuickReplyShortcut(shortcutId: Int, shortcut: String): Single<TLBool>
 
     fun messagesExportChatInvite(
             legacyRevokePermanent: Boolean,
@@ -1159,7 +1333,8 @@ interface TelegramApi {
             toPeer: TLAbsInputPeer,
             topMsgId: Int?,
             scheduleDate: Int?,
-            sendAs: TLAbsInputPeer?
+            sendAs: TLAbsInputPeer?,
+            quickReplyShortcut: TLAbsInputQuickReplyShortcut?
     ): Single<TLAbsUpdates>
 
     fun messagesGetAdminsWithInvites(peer: TLAbsInputPeer): Single<TLChatAdminsWithInvites>
@@ -1180,6 +1355,8 @@ interface TelegramApi {
     fun messagesGetAttachMenuBots(hash: Long): Single<TLAbsAttachMenuBots>
 
     fun messagesGetAttachedStickers(media: TLAbsInputStickeredMedia): Single<TLObjectVector<TLAbsStickerSetCovered>>
+
+    fun messagesGetAvailableEffects(hash: Int): Single<TLAbsAvailableEffects>
 
     fun messagesGetAvailableReactions(hash: Int): Single<TLAbsAvailableReactions>
 
@@ -1216,9 +1393,11 @@ interface TelegramApi {
 
     fun messagesGetDefaultHistoryTTL(): Single<TLDefaultHistoryTTL>
 
+    fun messagesGetDefaultTagReactions(hash: Long): Single<TLAbsReactions>
+
     fun messagesGetDhConfig(version: Int, randomLength: Int): Single<TLAbsDhConfig>
 
-    fun messagesGetDialogFilters(): Single<TLObjectVector<TLAbsDialogFilter>>
+    fun messagesGetDialogFilters(): Single<TLDialogFilters>
 
     fun messagesGetDialogUnreadMarks(): Single<TLObjectVector<TLAbsDialogPeer>>
 
@@ -1252,6 +1431,8 @@ interface TelegramApi {
 
     fun messagesGetEmojiStatusGroups(hash: Int): Single<TLAbsEmojiGroups>
 
+    fun messagesGetEmojiStickerGroups(hash: Int): Single<TLAbsEmojiGroups>
+
     fun messagesGetEmojiStickers(hash: Long): Single<TLAbsAllStickers>
 
     fun messagesGetEmojiURL(langCode: String): Single<TLEmojiURL>
@@ -1268,6 +1449,8 @@ interface TelegramApi {
     ): Single<TLExportedChatInvites>
 
     fun messagesGetExtendedMedia(peer: TLAbsInputPeer, id: TLIntVector): Single<TLAbsUpdates>
+
+    fun messagesGetFactCheck(peer: TLAbsInputPeer, msgId: TLIntVector): Single<TLObjectVector<TLFactCheck>>
 
     fun messagesGetFavedStickers(hash: Long): Single<TLAbsFavedStickers>
 
@@ -1328,6 +1511,8 @@ interface TelegramApi {
             increment: Boolean
     ): Single<TLMessageViews>
 
+    fun messagesGetMyStickers(offsetId: Long, limit: Int): Single<TLMyStickers>
+
     fun messagesGetOldFeaturedStickers(
             offset: Int,
             limit: Int,
@@ -1335,6 +1520,8 @@ interface TelegramApi {
     ): Single<TLAbsFeaturedStickers>
 
     fun messagesGetOnlines(peer: TLAbsInputPeer): Single<TLChatOnlines>
+
+    fun messagesGetOutboxReadDate(peer: TLAbsInputPeer, msgId: Int): Single<TLOutboxReadDate>
 
     fun messagesGetPeerDialogs(peers: TLObjectVector<TLAbsInputDialogPeer>): Single<TLPeerDialogs>
 
@@ -1353,6 +1540,14 @@ interface TelegramApi {
             offset: String?,
             limit: Int
     ): Single<TLVotesList>
+
+    fun messagesGetQuickReplies(hash: Long): Single<TLAbsQuickReplies>
+
+    fun messagesGetQuickReplyMessages(
+            shortcutId: Int,
+            id: TLIntVector?,
+            hash: Long
+    ): Single<TLAbsMessages>
 
     fun messagesGetRecentLocations(
             peer: TLAbsInputPeer,
@@ -1397,6 +1592,8 @@ interface TelegramApi {
             minId: Int,
             hash: Long
     ): Single<TLAbsMessages>
+
+    fun messagesGetSavedReactionTags(peer: TLAbsInputPeer?, hash: Long): Single<TLAbsSavedReactionTags>
 
     fun messagesGetScheduledHistory(peer: TLAbsInputPeer, hash: Long): Single<TLAbsMessages>
 
@@ -1533,6 +1730,8 @@ interface TelegramApi {
 
     fun messagesReorderPinnedSavedDialogs(force: Boolean, order: TLObjectVector<TLAbsInputDialogPeer>): Single<TLBool>
 
+    fun messagesReorderQuickReplies(order: TLIntVector): Single<TLBool>
+
     fun messagesReorderStickerSets(
             masks: Boolean,
             emojis: Boolean,
@@ -1558,12 +1757,13 @@ interface TelegramApi {
 
     fun messagesRequestAppWebView(
             writeAllowed: Boolean,
+            compact: Boolean,
             peer: TLAbsInputPeer,
             app: TLAbsInputBotApp,
             startParam: String?,
             themeParams: TLDataJSON?,
             platform: String
-    ): Single<TLAppWebViewResultUrl>
+    ): Single<TLWebViewResultUrl>
 
     fun messagesRequestEncryption(
             userId: TLAbsInputUser,
@@ -1571,15 +1771,25 @@ interface TelegramApi {
             gA: TLBytes
     ): Single<TLAbsEncryptedChat>
 
+    fun messagesRequestMainWebView(
+            compact: Boolean,
+            peer: TLAbsInputPeer,
+            bot: TLAbsInputUser,
+            startParam: String?,
+            themeParams: TLDataJSON?,
+            platform: String
+    ): Single<TLWebViewResultUrl>
+
     fun messagesRequestSimpleWebView(
             fromSwitchWebview: Boolean,
             fromSideMenu: Boolean,
+            compact: Boolean,
             bot: TLAbsInputUser,
             url: String?,
             startParam: String?,
             themeParams: TLDataJSON?,
             platform: String
-    ): Single<TLSimpleWebViewResultUrl>
+    ): Single<TLWebViewResultUrl>
 
     fun messagesRequestUrlAuth(
             peer: TLAbsInputPeer?,
@@ -1591,6 +1801,7 @@ interface TelegramApi {
     fun messagesRequestWebView(
             fromBotMenu: Boolean,
             silent: Boolean,
+            compact: Boolean,
             peer: TLAbsInputPeer,
             bot: TLAbsInputUser,
             url: String?,
@@ -1610,7 +1821,8 @@ interface TelegramApi {
             peer: TLAbsInputPeer,
             message: String,
             entities: TLObjectVector<TLAbsMessageEntity>?,
-            media: TLAbsInputMedia?
+            media: TLAbsInputMedia?,
+            effect: Long?
     ): Single<TLBool>
 
     fun messagesSaveGif(id: TLAbsInputDocument, unsave: Boolean): Single<TLBool>
@@ -1626,6 +1838,7 @@ interface TelegramApi {
             q: String,
             fromId: TLAbsInputPeer?,
             savedPeerId: TLAbsInputPeer?,
+            savedReaction: TLObjectVector<TLAbsReaction>?,
             topMsgId: Int?,
             filter: TLAbsMessagesFilter,
             minDate: Int,
@@ -1710,7 +1923,8 @@ interface TelegramApi {
             queryId: Long,
             id: String,
             scheduleDate: Int?,
-            sendAs: TLAbsInputPeer?
+            sendAs: TLAbsInputPeer?,
+            quickReplyShortcut: TLAbsInputQuickReplyShortcut?
     ): Single<TLAbsUpdates>
 
     fun messagesSendMedia(
@@ -1728,7 +1942,9 @@ interface TelegramApi {
             replyMarkup: TLAbsReplyMarkup?,
             entities: TLObjectVector<TLAbsMessageEntity>?,
             scheduleDate: Int?,
-            sendAs: TLAbsInputPeer?
+            sendAs: TLAbsInputPeer?,
+            quickReplyShortcut: TLAbsInputQuickReplyShortcut?,
+            effect: Long?
     ): Single<TLAbsUpdates>
 
     fun messagesSendMessage(
@@ -1746,7 +1962,9 @@ interface TelegramApi {
             replyMarkup: TLAbsReplyMarkup?,
             entities: TLObjectVector<TLAbsMessageEntity>?,
             scheduleDate: Int?,
-            sendAs: TLAbsInputPeer?
+            sendAs: TLAbsInputPeer?,
+            quickReplyShortcut: TLAbsInputQuickReplyShortcut?,
+            effect: Long?
     ): Single<TLAbsUpdates>
 
     fun messagesSendMultiMedia(
@@ -1760,7 +1978,16 @@ interface TelegramApi {
             replyTo: TLAbsInputReplyTo?,
             multiMedia: TLObjectVector<TLInputSingleMedia>,
             scheduleDate: Int?,
-            sendAs: TLAbsInputPeer?
+            sendAs: TLAbsInputPeer?,
+            quickReplyShortcut: TLAbsInputQuickReplyShortcut?,
+            effect: Long?
+    ): Single<TLAbsUpdates>
+
+    fun messagesSendQuickReplyMessages(
+            peer: TLAbsInputPeer,
+            shortcutId: Int,
+            id: TLIntVector,
+            randomId: TLLongVector
     ): Single<TLAbsUpdates>
 
     fun messagesSendReaction(
@@ -1814,7 +2041,11 @@ interface TelegramApi {
             shippingOptions: TLObjectVector<TLShippingOption>?
     ): Single<TLBool>
 
-    fun messagesSetChatAvailableReactions(peer: TLAbsInputPeer, availableReactions: TLAbsChatReactions): Single<TLAbsUpdates>
+    fun messagesSetChatAvailableReactions(
+            peer: TLAbsInputPeer,
+            availableReactions: TLAbsChatReactions,
+            reactionsLimit: Int?
+    ): Single<TLAbsUpdates>
 
     fun messagesSetChatTheme(peer: TLAbsInputPeer, emoticon: String): Single<TLAbsUpdates>
 
@@ -1884,6 +2115,8 @@ interface TelegramApi {
             enabled: Boolean
     ): Single<TLBool>
 
+    fun messagesToggleDialogFilterTags(enabled: Boolean): Single<TLBool>
+
     fun messagesToggleDialogPin(pinned: Boolean, peer: TLAbsInputDialogPeer): Single<TLBool>
 
     fun messagesToggleNoForwards(peer: TLAbsInputPeer, enabled: Boolean): Single<TLAbsUpdates>
@@ -1924,6 +2157,8 @@ interface TelegramApi {
             id: Int
     ): Single<TLAbsUpdates>
 
+    fun messagesUpdateSavedReactionTag(reaction: TLAbsReaction, title: String?): Single<TLBool>
+
     fun messagesUploadEncryptedFile(peer: TLInputEncryptedChat, file: TLAbsInputEncryptedFile): Single<TLAbsEncryptedFile>
 
     fun messagesUploadImportedMedia(
@@ -1933,7 +2168,11 @@ interface TelegramApi {
             media: TLAbsInputMedia
     ): Single<TLAbsMessageMedia>
 
-    fun messagesUploadMedia(peer: TLAbsInputPeer, media: TLAbsInputMedia): Single<TLAbsMessageMedia>
+    fun messagesUploadMedia(
+            businessConnectionId: String?,
+            peer: TLAbsInputPeer,
+            media: TLAbsInputMedia
+    ): Single<TLAbsMessageMedia>
 
     fun paymentsApplyGiftCode(slug: String): Single<TLAbsUpdates>
 
@@ -1953,19 +2192,48 @@ interface TelegramApi {
 
     fun paymentsGetGiveawayInfo(peer: TLAbsInputPeer, msgId: Int): Single<TLAbsGiveawayInfo>
 
-    fun paymentsGetPaymentForm(invoice: TLAbsInputInvoice, themeParams: TLDataJSON?): Single<TLPaymentForm>
+    fun paymentsGetPaymentForm(invoice: TLAbsInputInvoice, themeParams: TLDataJSON?): Single<TLAbsPaymentForm>
 
-    fun paymentsGetPaymentReceipt(peer: TLAbsInputPeer, msgId: Int): Single<TLPaymentReceipt>
+    fun paymentsGetPaymentReceipt(peer: TLAbsInputPeer, msgId: Int): Single<TLAbsPaymentReceipt>
 
     fun paymentsGetPremiumGiftCodeOptions(boostPeer: TLAbsInputPeer?): Single<TLObjectVector<TLPremiumGiftCodeOption>>
 
     fun paymentsGetSavedInfo(): Single<TLSavedInfo>
+
+    fun paymentsGetStarsGiftOptions(userId: TLAbsInputUser?): Single<TLObjectVector<TLStarsGiftOption>>
+
+    fun paymentsGetStarsRevenueAdsAccountUrl(peer: TLAbsInputPeer): Single<TLStarsRevenueAdsAccountUrl>
+
+    fun paymentsGetStarsRevenueStats(dark: Boolean, peer: TLAbsInputPeer): Single<TLStarsRevenueStats>
+
+    fun paymentsGetStarsRevenueWithdrawalUrl(
+            peer: TLAbsInputPeer,
+            stars: Long,
+            password: TLAbsInputCheckPasswordSRP
+    ): Single<TLStarsRevenueWithdrawalUrl>
+
+    fun paymentsGetStarsStatus(peer: TLAbsInputPeer): Single<TLStarsStatus>
+
+    fun paymentsGetStarsTopupOptions(): Single<TLObjectVector<TLStarsTopupOption>>
+
+    fun paymentsGetStarsTransactions(
+            inbound: Boolean,
+            outbound: Boolean,
+            ascending: Boolean,
+            peer: TLAbsInputPeer,
+            offset: String,
+            limit: Int
+    ): Single<TLStarsStatus>
+
+    fun paymentsGetStarsTransactionsByID(peer: TLAbsInputPeer, id: TLObjectVector<TLInputStarsTransaction>): Single<TLStarsStatus>
 
     fun paymentsLaunchPrepaidGiveaway(
             peer: TLAbsInputPeer,
             giveawayId: Long,
             purpose: TLAbsInputStorePaymentPurpose
     ): Single<TLAbsUpdates>
+
+    fun paymentsRefundStarsCharge(userId: TLAbsInputUser, chargeId: String): Single<TLAbsUpdates>
 
     fun paymentsSendPaymentForm(
             formId: Long,
@@ -1975,6 +2243,8 @@ interface TelegramApi {
             credentials: TLAbsInputPaymentCredentials,
             tipAmount: Long?
     ): Single<TLAbsPaymentResult>
+
+    fun paymentsSendStarsForm(formId: Long, invoice: TLAbsInputInvoice): Single<TLAbsPaymentResult>
 
     fun paymentsValidateRequestedInfo(
             save: Boolean,
@@ -2157,6 +2427,30 @@ interface TelegramApi {
 
     fun premiumGetUserBoosts(peer: TLAbsInputPeer, userId: TLAbsInputUser): Single<TLBoostsList>
 
+    fun smsjobsFinishJob(jobId: String, error: String?): Single<TLBool>
+
+    fun smsjobsGetSmsJob(jobId: String): Single<TLSmsJob>
+
+    fun smsjobsGetStatus(): Single<TLStatus>
+
+    fun smsjobsIsEligibleToJoin(): Single<TLEligibleToJoin>
+
+    fun smsjobsJoin(): Single<TLBool>
+
+    fun smsjobsLeave(): Single<TLBool>
+
+    fun smsjobsUpdateSettings(allowInternational: Boolean): Single<TLBool>
+
+    fun statsGetBroadcastRevenueStats(dark: Boolean, channel: TLAbsInputChannel): Single<TLBroadcastRevenueStats>
+
+    fun statsGetBroadcastRevenueTransactions(
+            channel: TLAbsInputChannel,
+            offset: Int,
+            limit: Int
+    ): Single<TLBroadcastRevenueTransactions>
+
+    fun statsGetBroadcastRevenueWithdrawalUrl(channel: TLAbsInputChannel, password: TLAbsInputCheckPasswordSRP): Single<TLBroadcastRevenueWithdrawalUrl>
+
     fun statsGetBroadcastStats(dark: Boolean, channel: TLAbsInputChannel): Single<TLBroadcastStats>
 
     fun statsGetMegagroupStats(dark: Boolean, channel: TLAbsInputChannel): Single<TLMegagroupStats>
@@ -2204,8 +2498,6 @@ interface TelegramApi {
 
     fun stickersCreateStickerSet(
             masks: Boolean,
-            animated: Boolean,
-            videos: Boolean,
             emojis: Boolean,
             textColor: Boolean,
             userId: TLAbsInputUser,
@@ -2221,6 +2513,8 @@ interface TelegramApi {
     fun stickersRemoveStickerFromSet(sticker: TLAbsInputDocument): Single<TLAbsStickerSet>
 
     fun stickersRenameStickerSet(stickerset: TLAbsInputStickerSet, title: String): Single<TLAbsStickerSet>
+
+    fun stickersReplaceSticker(sticker: TLAbsInputDocument, newSticker: TLInputStickerSetItem): Single<TLAbsStickerSet>
 
     fun stickersSetStickerSetThumb(
             stickerset: TLAbsInputStickerSet,
@@ -2309,6 +2603,13 @@ interface TelegramApi {
             message: String
     ): Single<TLBool>
 
+    fun storiesSearchPosts(
+            hashtag: String?,
+            area: TLAbsMediaArea?,
+            offset: String,
+            limit: Int
+    ): Single<TLFoundStories>
+
     fun storiesSendReaction(
             addToRecent: Boolean,
             peer: TLAbsInputPeer,
@@ -2341,6 +2642,8 @@ interface TelegramApi {
             id: TLIntVector,
             pinned: Boolean
     ): Single<TLIntVector>
+
+    fun storiesTogglePinnedToTop(peer: TLAbsInputPeer, id: TLIntVector): Single<TLBool>
 
     fun updatesGetChannelDifference(
             force: Boolean,
@@ -2401,6 +2704,8 @@ interface TelegramApi {
     ): Single<TLBool>
 
     fun usersGetFullUser(id: TLAbsInputUser): Single<TLUserFull>
+
+    fun usersGetIsPremiumRequiredToContact(id: TLObjectVector<TLAbsInputUser>): Single<TLObjectVector<TLBool>>
 
     fun usersGetUsers(id: TLObjectVector<TLAbsInputUser>): Single<TLObjectVector<TLAbsUser>>
 

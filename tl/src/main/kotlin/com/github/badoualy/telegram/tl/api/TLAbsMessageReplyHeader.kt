@@ -12,7 +12,7 @@ import com.github.badoualy.telegram.tl.core.TLObject
 /**
  * Abstraction level for the following constructors:
  * * [messageReplyHeader#afbc09db][TLMessageReplyHeader]
- * * [messageReplyStoryHeader#9c98bfc1][TLMessageReplyStoryHeader]
+ * * [messageReplyStoryHeader#e5af939][TLMessageReplyStoryHeader]
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>

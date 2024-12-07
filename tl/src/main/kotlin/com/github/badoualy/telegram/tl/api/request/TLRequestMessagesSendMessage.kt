@@ -8,6 +8,7 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
+import com.github.badoualy.telegram.tl.api.TLAbsInputQuickReplyShortcut
 import com.github.badoualy.telegram.tl.api.TLAbsInputReplyTo
 import com.github.badoualy.telegram.tl.api.TLAbsMessageEntity
 import com.github.badoualy.telegram.tl.api.TLAbsReplyMarkup
@@ -68,7 +69,11 @@ class TLRequestMessagesSendMessage() : TLMethod<TLAbsUpdates>() {
 
     var sendAs: TLAbsInputPeer? = null
 
-    private val _constructor: String = "messages.sendMessage#280d096f"
+    var quickReplyShortcut: TLAbsInputQuickReplyShortcut? = null
+
+    var effect: Long? = null
+
+    private val _constructor: String = "messages.sendMessage#983f9745"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -87,7 +92,9 @@ class TLRequestMessagesSendMessage() : TLMethod<TLAbsUpdates>() {
             replyMarkup: TLAbsReplyMarkup?,
             entities: TLObjectVector<TLAbsMessageEntity>?,
             scheduleDate: Int?,
-            sendAs: TLAbsInputPeer?
+            sendAs: TLAbsInputPeer?,
+            quickReplyShortcut: TLAbsInputQuickReplyShortcut?,
+            effect: Long?
     ) : this() {
         this.noWebpage = noWebpage
         this.silent = silent
@@ -104,6 +111,8 @@ class TLRequestMessagesSendMessage() : TLMethod<TLAbsUpdates>() {
         this.entities = entities
         this.scheduleDate = scheduleDate
         this.sendAs = sendAs
+        this.quickReplyShortcut = quickReplyShortcut
+        this.effect = effect
     }
 
     protected override fun computeFlags() {
@@ -120,6 +129,8 @@ class TLRequestMessagesSendMessage() : TLMethod<TLAbsUpdates>() {
         updateFlags(entities, 8)
         updateFlags(scheduleDate, 1024)
         updateFlags(sendAs, 8192)
+        updateFlags(quickReplyShortcut, 131072)
+        updateFlags(effect, 262144)
     }
 
     @Throws(IOException::class)
@@ -135,6 +146,8 @@ class TLRequestMessagesSendMessage() : TLMethod<TLAbsUpdates>() {
         doIfMask(entities, 8) { writeTLVector(it) }
         doIfMask(scheduleDate, 1024) { writeInt(it) }
         doIfMask(sendAs, 8192) { writeTLObject(it) }
+        doIfMask(quickReplyShortcut, 131072) { writeTLObject(it) }
+        doIfMask(effect, 262144) { writeLong(it) }
     }
 
     @Throws(IOException::class)
@@ -155,6 +168,8 @@ class TLRequestMessagesSendMessage() : TLMethod<TLAbsUpdates>() {
         entities = readIfMask(8) { readTLVector<TLAbsMessageEntity>() }
         scheduleDate = readIfMask(1024) { readInt() }
         sendAs = readIfMask(8192) { readTLObject<TLAbsInputPeer>() }
+        quickReplyShortcut = readIfMask(131072) { readTLObject<TLAbsInputQuickReplyShortcut>() }
+        effect = readIfMask(262144) { readLong() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -170,6 +185,8 @@ class TLRequestMessagesSendMessage() : TLMethod<TLAbsUpdates>() {
         size += getIntIfMask(entities, 8) { it.computeSerializedSize() }
         size += getIntIfMask(scheduleDate, 1024) { SIZE_INT32 }
         size += getIntIfMask(sendAs, 8192) { it.computeSerializedSize() }
+        size += getIntIfMask(quickReplyShortcut, 131072) { it.computeSerializedSize() }
+        size += getIntIfMask(effect, 262144) { SIZE_INT64 }
         return size
     }
 
@@ -195,8 +212,10 @@ class TLRequestMessagesSendMessage() : TLMethod<TLAbsUpdates>() {
                 && entities == other.entities
                 && scheduleDate == other.scheduleDate
                 && sendAs == other.sendAs
+                && quickReplyShortcut == other.quickReplyShortcut
+                && effect == other.effect
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x280d096f.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x983f9745.toInt()
     }
 }

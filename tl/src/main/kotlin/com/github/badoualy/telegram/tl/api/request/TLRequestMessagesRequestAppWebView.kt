@@ -9,10 +9,10 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSiz
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputBotApp
 import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
-import com.github.badoualy.telegram.tl.api.TLAppWebViewResultUrl
 import com.github.badoualy.telegram.tl.api.TLDataJSON
 import com.github.badoualy.telegram.tl.api.TLInputBotAppShortName
 import com.github.badoualy.telegram.tl.api.TLInputPeerEmpty
+import com.github.badoualy.telegram.tl.api.TLWebViewResultUrl
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
@@ -28,9 +28,12 @@ import kotlin.jvm.Transient
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
-class TLRequestMessagesRequestAppWebView() : TLMethod<TLAppWebViewResultUrl>() {
+class TLRequestMessagesRequestAppWebView() : TLMethod<TLWebViewResultUrl>() {
     @Transient
     var writeAllowed: Boolean = false
+
+    @Transient
+    var compact: Boolean = false
 
     var peer: TLAbsInputPeer = TLInputPeerEmpty()
 
@@ -42,12 +45,13 @@ class TLRequestMessagesRequestAppWebView() : TLMethod<TLAppWebViewResultUrl>() {
 
     var platform: String = ""
 
-    private val _constructor: String = "messages.requestAppWebView#8c5a3b3c"
+    private val _constructor: String = "messages.requestAppWebView#53618bce"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             writeAllowed: Boolean,
+            compact: Boolean,
             peer: TLAbsInputPeer,
             app: TLAbsInputBotApp,
             startParam: String?,
@@ -55,6 +59,7 @@ class TLRequestMessagesRequestAppWebView() : TLMethod<TLAppWebViewResultUrl>() {
             platform: String
     ) : this() {
         this.writeAllowed = writeAllowed
+        this.compact = compact
         this.peer = peer
         this.app = app
         this.startParam = startParam
@@ -63,11 +68,12 @@ class TLRequestMessagesRequestAppWebView() : TLMethod<TLAppWebViewResultUrl>() {
     }
 
     @Throws(IOException::class)
-    override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLAppWebViewResultUrl = tlDeserializer.readTLObject(TLAppWebViewResultUrl::class, TLAppWebViewResultUrl.CONSTRUCTOR_ID)
+    override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLWebViewResultUrl = tlDeserializer.readTLObject(TLWebViewResultUrl::class, TLWebViewResultUrl.CONSTRUCTOR_ID)
 
     protected override fun computeFlags() {
         _flags = 0
         updateFlags(writeAllowed, 1)
+        updateFlags(compact, 128)
         updateFlags(startParam, 2)
         updateFlags(themeParams, 4)
     }
@@ -88,6 +94,7 @@ class TLRequestMessagesRequestAppWebView() : TLMethod<TLAppWebViewResultUrl>() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         writeAllowed = isMask(1)
+        compact = isMask(128)
         peer = readTLObject<TLAbsInputPeer>()
         app = readTLObject<TLAbsInputBotApp>()
         startParam = readIfMask(2) { readString() }
@@ -116,6 +123,7 @@ class TLRequestMessagesRequestAppWebView() : TLMethod<TLAppWebViewResultUrl>() {
 
         return _flags == other._flags
                 && writeAllowed == other.writeAllowed
+                && compact == other.compact
                 && peer == other.peer
                 && app == other.app
                 && startParam == other.startParam
@@ -123,6 +131,6 @@ class TLRequestMessagesRequestAppWebView() : TLMethod<TLAppWebViewResultUrl>() {
                 && platform == other.platform
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x8c5a3b3c.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x53618bce.toInt()
     }
 }

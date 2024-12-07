@@ -14,7 +14,7 @@ import kotlin.Int
  * Abstraction level for the following constructors:
  * * [inputMessageEntityMentionName#208e68c9][TLInputMessageEntityMentionName]
  * * [messageEntityBankCard#761e6af4][TLMessageEntityBankCard]
- * * [messageEntityBlockquote#20df5d0][TLMessageEntityBlockquote]
+ * * [messageEntityBlockquote#f1ccaaac][TLMessageEntityBlockquote]
  * * [messageEntityBold#bd610bc9][TLMessageEntityBold]
  * * [messageEntityBotCommand#6cef8ac7][TLMessageEntityBotCommand]
  * * [messageEntityCashtag#4c4e743f][TLMessageEntityCashtag]

@@ -7,7 +7,6 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
-import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.core.TLStringVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
@@ -25,10 +24,10 @@ import kotlin.jvm.Throws
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
-class TLEmojiGroup() : TLObject() {
-    var title: String = ""
+class TLEmojiGroup() : TLAbsEmojiGroup() {
+    override var title: String = ""
 
-    var iconEmojiId: Long = 0L
+    override var iconEmojiId: Long = 0L
 
     var emoticons: TLStringVector = TLStringVector()
 

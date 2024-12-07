@@ -14,12 +14,13 @@ import java.io.IOException
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
+import kotlin.Long
 import kotlin.String
 import kotlin.jvm.Throws
 import kotlin.jvm.Transient
 
 /**
- * draftMessage#3fccf7ef
+ * draftMessage#2d65321f
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -41,7 +42,9 @@ class TLDraftMessage() : TLAbsDraftMessage() {
 
     var date: Int = 0
 
-    private val _constructor: String = "draftMessage#3fccf7ef"
+    var effect: Long? = null
+
+    private val _constructor: String = "draftMessage#2d65321f"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -52,7 +55,8 @@ class TLDraftMessage() : TLAbsDraftMessage() {
             message: String,
             entities: TLObjectVector<TLAbsMessageEntity>?,
             media: TLAbsInputMedia?,
-            date: Int
+            date: Int,
+            effect: Long?
     ) : this() {
         this.noWebpage = noWebpage
         this.invertMedia = invertMedia
@@ -61,6 +65,7 @@ class TLDraftMessage() : TLAbsDraftMessage() {
         this.entities = entities
         this.media = media
         this.date = date
+        this.effect = effect
     }
 
     protected override fun computeFlags() {
@@ -70,6 +75,7 @@ class TLDraftMessage() : TLAbsDraftMessage() {
         updateFlags(replyTo, 16)
         updateFlags(entities, 8)
         updateFlags(media, 32)
+        updateFlags(effect, 128)
     }
 
     @Throws(IOException::class)
@@ -82,6 +88,7 @@ class TLDraftMessage() : TLAbsDraftMessage() {
         doIfMask(entities, 8) { writeTLVector(it) }
         doIfMask(media, 32) { writeTLObject(it) }
         writeInt(date)
+        doIfMask(effect, 128) { writeLong(it) }
     }
 
     @Throws(IOException::class)
@@ -94,6 +101,7 @@ class TLDraftMessage() : TLAbsDraftMessage() {
         entities = readIfMask(8) { readTLVector<TLAbsMessageEntity>() }
         media = readIfMask(32) { readTLObject<TLAbsInputMedia>() }
         date = readInt()
+        effect = readIfMask(128) { readLong() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -106,6 +114,7 @@ class TLDraftMessage() : TLAbsDraftMessage() {
         size += getIntIfMask(entities, 8) { it.computeSerializedSize() }
         size += getIntIfMask(media, 32) { it.computeSerializedSize() }
         size += SIZE_INT32
+        size += getIntIfMask(effect, 128) { SIZE_INT64 }
         return size
     }
 
@@ -123,8 +132,9 @@ class TLDraftMessage() : TLAbsDraftMessage() {
                 && entities == other.entities
                 && media == other.media
                 && date == other.date
+                && effect == other.effect
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3fccf7ef.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x2d65321f.toInt()
     }
 }

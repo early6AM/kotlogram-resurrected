@@ -34,7 +34,7 @@ class TLInputMediaUploadedDocument() : TLAbsInputMedia() {
     @Transient
     var spoiler: Boolean = false
 
-    var file: TLAbsInputFile = TLInputFileBig()
+    var file: TLAbsInputFile = TLInputFileStoryDocument()
 
     var thumb: TLAbsInputFile? = null
 

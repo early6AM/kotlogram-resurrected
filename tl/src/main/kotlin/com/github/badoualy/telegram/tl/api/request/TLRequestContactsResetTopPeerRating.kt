@@ -10,7 +10,7 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSi
 import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
 import com.github.badoualy.telegram.tl.api.TLAbsTopPeerCategory
 import com.github.badoualy.telegram.tl.api.TLInputPeerEmpty
-import com.github.badoualy.telegram.tl.api.TLTopPeerCategoryBotsPM
+import com.github.badoualy.telegram.tl.api.TLTopPeerCategoryBotsApp
 import com.github.badoualy.telegram.tl.core.TLBool
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
@@ -27,7 +27,7 @@ import kotlin.jvm.Throws
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLRequestContactsResetTopPeerRating() : TLMethod<TLBool>() {
-    var category: TLAbsTopPeerCategory = TLTopPeerCategoryBotsPM()
+    var category: TLAbsTopPeerCategory = TLTopPeerCategoryBotsApp()
 
     var peer: TLAbsInputPeer = TLInputPeerEmpty()
 

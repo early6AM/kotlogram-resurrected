@@ -19,7 +19,7 @@ import kotlin.jvm.Throws
 import kotlin.jvm.Transient
 
 /**
- * storyItem#af6365a1
+ * storyItem#79b26a24
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -56,6 +56,8 @@ class TLStoryItem() : TLAbsStoryItem() {
 
     var date: Int = 0
 
+    var fromId: TLAbsPeer? = null
+
     var fwdFrom: TLStoryFwdHeader? = null
 
     var expireDate: Int = 0
@@ -74,7 +76,7 @@ class TLStoryItem() : TLAbsStoryItem() {
 
     var sentReaction: TLAbsReaction? = null
 
-    private val _constructor: String = "storyItem#af6365a1"
+    private val _constructor: String = "storyItem#79b26a24"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -90,6 +92,7 @@ class TLStoryItem() : TLAbsStoryItem() {
             out: Boolean,
             id: Int,
             date: Int,
+            fromId: TLAbsPeer?,
             fwdFrom: TLStoryFwdHeader?,
             expireDate: Int,
             caption: String?,
@@ -111,6 +114,7 @@ class TLStoryItem() : TLAbsStoryItem() {
         this.out = out
         this.id = id
         this.date = date
+        this.fromId = fromId
         this.fwdFrom = fwdFrom
         this.expireDate = expireDate
         this.caption = caption
@@ -133,6 +137,7 @@ class TLStoryItem() : TLAbsStoryItem() {
         updateFlags(contacts, 4096)
         updateFlags(selectedContacts, 8192)
         updateFlags(out, 65536)
+        updateFlags(fromId, 262144)
         updateFlags(fwdFrom, 131072)
         updateFlags(caption, 1)
         updateFlags(entities, 2)
@@ -149,6 +154,7 @@ class TLStoryItem() : TLAbsStoryItem() {
         writeInt(_flags)
         writeInt(id)
         writeInt(date)
+        doIfMask(fromId, 262144) { writeTLObject(it) }
         doIfMask(fwdFrom, 131072) { writeTLObject(it) }
         writeInt(expireDate)
         doIfMask(caption, 1) { writeString(it) }
@@ -174,6 +180,7 @@ class TLStoryItem() : TLAbsStoryItem() {
         out = isMask(65536)
         id = readInt()
         date = readInt()
+        fromId = readIfMask(262144) { readTLObject<TLAbsPeer>() }
         fwdFrom = readIfMask(131072) { readTLObject<TLStoryFwdHeader>(TLStoryFwdHeader::class, TLStoryFwdHeader.CONSTRUCTOR_ID) }
         expireDate = readInt()
         caption = readIfMask(1) { readString() }
@@ -192,6 +199,7 @@ class TLStoryItem() : TLAbsStoryItem() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
+        size += getIntIfMask(fromId, 262144) { it.computeSerializedSize() }
         size += getIntIfMask(fwdFrom, 131072) { it.computeSerializedSize() }
         size += SIZE_INT32
         size += getIntIfMask(caption, 1) { computeTLStringSerializedSize(it) }
@@ -222,6 +230,7 @@ class TLStoryItem() : TLAbsStoryItem() {
                 && out == other.out
                 && id == other.id
                 && date == other.date
+                && fromId == other.fromId
                 && fwdFrom == other.fwdFrom
                 && expireDate == other.expireDate
                 && caption == other.caption
@@ -233,6 +242,6 @@ class TLStoryItem() : TLAbsStoryItem() {
                 && sentReaction == other.sentReaction
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xaf6365a1.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x79b26a24.toInt()
     }
 }

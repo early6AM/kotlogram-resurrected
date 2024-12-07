@@ -15,6 +15,7 @@ import com.github.badoualy.telegram.tl.core.TLObject
  * * [privacyValueAllowChatParticipants#6b134e8e][TLPrivacyValueAllowChatParticipants]
  * * [privacyValueAllowCloseFriends#f7e8d89b][TLPrivacyValueAllowCloseFriends]
  * * [privacyValueAllowContacts#fffe1bac][TLPrivacyValueAllowContacts]
+ * * [privacyValueAllowPremium#ece9814b][TLPrivacyValueAllowPremium]
  * * [privacyValueAllowUsers#b8905fb2][TLPrivacyValueAllowUsers]
  * * [privacyValueDisallowAll#8b73e763][TLPrivacyValueDisallowAll]
  * * [privacyValueDisallowChatParticipants#41c87565][TLPrivacyValueDisallowChatParticipants]

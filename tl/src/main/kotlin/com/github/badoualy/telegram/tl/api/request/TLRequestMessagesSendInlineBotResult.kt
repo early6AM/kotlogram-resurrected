@@ -8,6 +8,7 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
+import com.github.badoualy.telegram.tl.api.TLAbsInputQuickReplyShortcut
 import com.github.badoualy.telegram.tl.api.TLAbsInputReplyTo
 import com.github.badoualy.telegram.tl.api.TLAbsUpdates
 import com.github.badoualy.telegram.tl.api.TLInputPeerEmpty
@@ -54,7 +55,9 @@ class TLRequestMessagesSendInlineBotResult() : TLMethod<TLAbsUpdates>() {
 
     var sendAs: TLAbsInputPeer? = null
 
-    private val _constructor: String = "messages.sendInlineBotResult#f7bc68ba"
+    var quickReplyShortcut: TLAbsInputQuickReplyShortcut? = null
+
+    private val _constructor: String = "messages.sendInlineBotResult#3ebee86a"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -69,7 +72,8 @@ class TLRequestMessagesSendInlineBotResult() : TLMethod<TLAbsUpdates>() {
             queryId: Long,
             id: String,
             scheduleDate: Int?,
-            sendAs: TLAbsInputPeer?
+            sendAs: TLAbsInputPeer?,
+            quickReplyShortcut: TLAbsInputQuickReplyShortcut?
     ) : this() {
         this.silent = silent
         this.background = background
@@ -82,6 +86,7 @@ class TLRequestMessagesSendInlineBotResult() : TLMethod<TLAbsUpdates>() {
         this.id = id
         this.scheduleDate = scheduleDate
         this.sendAs = sendAs
+        this.quickReplyShortcut = quickReplyShortcut
     }
 
     protected override fun computeFlags() {
@@ -93,6 +98,7 @@ class TLRequestMessagesSendInlineBotResult() : TLMethod<TLAbsUpdates>() {
         updateFlags(replyTo, 1)
         updateFlags(scheduleDate, 1024)
         updateFlags(sendAs, 8192)
+        updateFlags(quickReplyShortcut, 131072)
     }
 
     @Throws(IOException::class)
@@ -107,6 +113,7 @@ class TLRequestMessagesSendInlineBotResult() : TLMethod<TLAbsUpdates>() {
         writeString(id)
         doIfMask(scheduleDate, 1024) { writeInt(it) }
         doIfMask(sendAs, 8192) { writeTLObject(it) }
+        doIfMask(quickReplyShortcut, 131072) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
@@ -123,6 +130,7 @@ class TLRequestMessagesSendInlineBotResult() : TLMethod<TLAbsUpdates>() {
         id = readString()
         scheduleDate = readIfMask(1024) { readInt() }
         sendAs = readIfMask(8192) { readTLObject<TLAbsInputPeer>() }
+        quickReplyShortcut = readIfMask(131072) { readTLObject<TLAbsInputQuickReplyShortcut>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -137,6 +145,7 @@ class TLRequestMessagesSendInlineBotResult() : TLMethod<TLAbsUpdates>() {
         size += computeTLStringSerializedSize(id)
         size += getIntIfMask(scheduleDate, 1024) { SIZE_INT32 }
         size += getIntIfMask(sendAs, 8192) { it.computeSerializedSize() }
+        size += getIntIfMask(quickReplyShortcut, 131072) { it.computeSerializedSize() }
         return size
     }
 
@@ -158,8 +167,9 @@ class TLRequestMessagesSendInlineBotResult() : TLMethod<TLAbsUpdates>() {
                 && id == other.id
                 && scheduleDate == other.scheduleDate
                 && sendAs == other.sendAs
+                && quickReplyShortcut == other.quickReplyShortcut
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xf7bc68ba.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x3ebee86a.toInt()
     }
 }

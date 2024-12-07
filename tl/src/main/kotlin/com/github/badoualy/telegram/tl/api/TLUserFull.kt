@@ -21,7 +21,7 @@ import kotlin.jvm.Throws
 import kotlin.jvm.Transient
 
 /**
- * userFull#b9b12c6c
+ * userFull#cc997720
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -59,6 +59,15 @@ class TLUserFull() : TLObject() {
 
     @Transient
     var wallpaperOverridden: Boolean = false
+
+    @Transient
+    var contactRequirePremium: Boolean = false
+
+    @Transient
+    var readDatesPrivate: Boolean = false
+
+    @Transient
+    var sponsoredEnabled: Boolean = false
 
     var id: Long = 0L
 
@@ -98,7 +107,23 @@ class TLUserFull() : TLObject() {
 
     var stories: TLPeerStories? = null
 
-    private val _constructor: String = "userFull#b9b12c6c"
+    var businessWorkHours: TLBusinessWorkHours? = null
+
+    var businessLocation: TLBusinessLocation? = null
+
+    var businessGreetingMessage: TLBusinessGreetingMessage? = null
+
+    var businessAwayMessage: TLBusinessAwayMessage? = null
+
+    var businessIntro: TLBusinessIntro? = null
+
+    var birthday: TLBirthday? = null
+
+    var personalChannelId: Long? = null
+
+    var personalChannelMessage: Int? = null
+
+    private val _constructor: String = "userFull#cc997720"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -114,6 +139,9 @@ class TLUserFull() : TLObject() {
             storiesPinnedAvailable: Boolean,
             blockedMyStoriesFrom: Boolean,
             wallpaperOverridden: Boolean,
+            contactRequirePremium: Boolean,
+            readDatesPrivate: Boolean,
+            sponsoredEnabled: Boolean,
             id: Long,
             about: String?,
             settings: TLPeerSettings,
@@ -132,7 +160,15 @@ class TLUserFull() : TLObject() {
             botBroadcastAdminRights: TLChatAdminRights?,
             premiumGifts: TLObjectVector<TLPremiumGiftOption>?,
             wallpaper: TLAbsWallPaper?,
-            stories: TLPeerStories?
+            stories: TLPeerStories?,
+            businessWorkHours: TLBusinessWorkHours?,
+            businessLocation: TLBusinessLocation?,
+            businessGreetingMessage: TLBusinessGreetingMessage?,
+            businessAwayMessage: TLBusinessAwayMessage?,
+            businessIntro: TLBusinessIntro?,
+            birthday: TLBirthday?,
+            personalChannelId: Long?,
+            personalChannelMessage: Int?
     ) : this() {
         this.blocked = blocked
         this.phoneCallsAvailable = phoneCallsAvailable
@@ -145,6 +181,9 @@ class TLUserFull() : TLObject() {
         this.storiesPinnedAvailable = storiesPinnedAvailable
         this.blockedMyStoriesFrom = blockedMyStoriesFrom
         this.wallpaperOverridden = wallpaperOverridden
+        this.contactRequirePremium = contactRequirePremium
+        this.readDatesPrivate = readDatesPrivate
+        this.sponsoredEnabled = sponsoredEnabled
         this.id = id
         this.about = about
         this.settings = settings
@@ -164,6 +203,14 @@ class TLUserFull() : TLObject() {
         this.premiumGifts = premiumGifts
         this.wallpaper = wallpaper
         this.stories = stories
+        this.businessWorkHours = businessWorkHours
+        this.businessLocation = businessLocation
+        this.businessGreetingMessage = businessGreetingMessage
+        this.businessAwayMessage = businessAwayMessage
+        this.businessIntro = businessIntro
+        this.birthday = birthday
+        this.personalChannelId = personalChannelId
+        this.personalChannelMessage = personalChannelMessage
     }
 
     protected override fun computeFlags() {
@@ -179,6 +226,9 @@ class TLUserFull() : TLObject() {
         updateFlags(storiesPinnedAvailable, 67108864)
         updateFlags(blockedMyStoriesFrom, 134217728)
         updateFlags(wallpaperOverridden, 268435456)
+        updateFlags(contactRequirePremium, 536870912)
+        updateFlags(readDatesPrivate, 1073741824)
+        updateFlags(sponsoredEnabled, 128)
         updateFlags(about, 2)
         updateFlags(personalPhoto, 2097152)
         updateFlags(profilePhoto, 4)
@@ -194,12 +244,28 @@ class TLUserFull() : TLObject() {
         updateFlags(premiumGifts, 524288)
         updateFlags(wallpaper, 16777216)
         updateFlags(stories, 33554432)
+        updateFlags(businessWorkHours, 1)
+        updateFlags(businessLocation, 2)
+        updateFlags(businessGreetingMessage, 4)
+        updateFlags(businessAwayMessage, 8)
+        updateFlags(businessIntro, 16)
+        updateFlags(birthday, 32)
+        updateFlags(personalChannelId, 64)
+        updateFlags(personalChannelMessage, 64)
+
+        // Following parameters might be forced to true by another field that updated the flags
+        blocked = isMask(1)
+        phoneCallsAvailable = isMask(16)
+        phoneCallsPrivate = isMask(32)
+        canPinMessage = isMask(128)
+        sponsoredEnabled = isMask(128)
     }
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
         computeFlags()
 
+        writeInt(_flags)
         writeInt(_flags)
         writeLong(id)
         doIfMask(about, 2) { writeString(it) }
@@ -220,6 +286,14 @@ class TLUserFull() : TLObject() {
         doIfMask(premiumGifts, 524288) { writeTLVector(it) }
         doIfMask(wallpaper, 16777216) { writeTLObject(it) }
         doIfMask(stories, 33554432) { writeTLObject(it) }
+        doIfMask(businessWorkHours, 1) { writeTLObject(it) }
+        doIfMask(businessLocation, 2) { writeTLObject(it) }
+        doIfMask(businessGreetingMessage, 4) { writeTLObject(it) }
+        doIfMask(businessAwayMessage, 8) { writeTLObject(it) }
+        doIfMask(businessIntro, 16) { writeTLObject(it) }
+        doIfMask(birthday, 32) { writeTLObject(it) }
+        doIfMask(personalChannelId, 64) { writeLong(it) }
+        doIfMask(personalChannelMessage, 64) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -236,6 +310,10 @@ class TLUserFull() : TLObject() {
         storiesPinnedAvailable = isMask(67108864)
         blockedMyStoriesFrom = isMask(134217728)
         wallpaperOverridden = isMask(268435456)
+        contactRequirePremium = isMask(536870912)
+        readDatesPrivate = isMask(1073741824)
+        _flags = readInt()
+        sponsoredEnabled = isMask(128)
         id = readLong()
         about = readIfMask(2) { readString() }
         settings = readTLObject<TLPeerSettings>(TLPeerSettings::class, TLPeerSettings.CONSTRUCTOR_ID)
@@ -255,12 +333,21 @@ class TLUserFull() : TLObject() {
         premiumGifts = readIfMask(524288) { readTLVector<TLPremiumGiftOption>() }
         wallpaper = readIfMask(16777216) { readTLObject<TLAbsWallPaper>() }
         stories = readIfMask(33554432) { readTLObject<TLPeerStories>(TLPeerStories::class, TLPeerStories.CONSTRUCTOR_ID) }
+        businessWorkHours = readIfMask(1) { readTLObject<TLBusinessWorkHours>(TLBusinessWorkHours::class, TLBusinessWorkHours.CONSTRUCTOR_ID) }
+        businessLocation = readIfMask(2) { readTLObject<TLBusinessLocation>(TLBusinessLocation::class, TLBusinessLocation.CONSTRUCTOR_ID) }
+        businessGreetingMessage = readIfMask(4) { readTLObject<TLBusinessGreetingMessage>(TLBusinessGreetingMessage::class, TLBusinessGreetingMessage.CONSTRUCTOR_ID) }
+        businessAwayMessage = readIfMask(8) { readTLObject<TLBusinessAwayMessage>(TLBusinessAwayMessage::class, TLBusinessAwayMessage.CONSTRUCTOR_ID) }
+        businessIntro = readIfMask(16) { readTLObject<TLBusinessIntro>(TLBusinessIntro::class, TLBusinessIntro.CONSTRUCTOR_ID) }
+        birthday = readIfMask(32) { readTLObject<TLBirthday>(TLBirthday::class, TLBirthday.CONSTRUCTOR_ID) }
+        personalChannelId = readIfMask(64) { readLong() }
+        personalChannelMessage = readIfMask(64) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
         computeFlags()
 
         var size = SIZE_CONSTRUCTOR_ID
+        size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT64
         size += getIntIfMask(about, 2) { computeTLStringSerializedSize(it) }
@@ -281,6 +368,14 @@ class TLUserFull() : TLObject() {
         size += getIntIfMask(premiumGifts, 524288) { it.computeSerializedSize() }
         size += getIntIfMask(wallpaper, 16777216) { it.computeSerializedSize() }
         size += getIntIfMask(stories, 33554432) { it.computeSerializedSize() }
+        size += getIntIfMask(businessWorkHours, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(businessLocation, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(businessGreetingMessage, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(businessAwayMessage, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(businessIntro, 16) { it.computeSerializedSize() }
+        size += getIntIfMask(birthday, 32) { it.computeSerializedSize() }
+        size += getIntIfMask(personalChannelId, 64) { SIZE_INT64 }
+        size += getIntIfMask(personalChannelMessage, 64) { SIZE_INT32 }
         return size
     }
 
@@ -302,6 +397,10 @@ class TLUserFull() : TLObject() {
                 && storiesPinnedAvailable == other.storiesPinnedAvailable
                 && blockedMyStoriesFrom == other.blockedMyStoriesFrom
                 && wallpaperOverridden == other.wallpaperOverridden
+                && contactRequirePremium == other.contactRequirePremium
+                && readDatesPrivate == other.readDatesPrivate
+                && _flags == other._flags
+                && sponsoredEnabled == other.sponsoredEnabled
                 && id == other.id
                 && about == other.about
                 && settings == other.settings
@@ -321,8 +420,16 @@ class TLUserFull() : TLObject() {
                 && premiumGifts == other.premiumGifts
                 && wallpaper == other.wallpaper
                 && stories == other.stories
+                && businessWorkHours == other.businessWorkHours
+                && businessLocation == other.businessLocation
+                && businessGreetingMessage == other.businessGreetingMessage
+                && businessAwayMessage == other.businessAwayMessage
+                && businessIntro == other.businessIntro
+                && birthday == other.birthday
+                && personalChannelId == other.personalChannelId
+                && personalChannelMessage == other.personalChannelMessage
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xb9b12c6c.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xcc997720.toInt()
     }
 }

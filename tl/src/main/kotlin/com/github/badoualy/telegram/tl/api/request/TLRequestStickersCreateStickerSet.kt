@@ -33,12 +33,6 @@ class TLRequestStickersCreateStickerSet() : TLMethod<TLAbsStickerSet>() {
     var masks: Boolean = false
 
     @Transient
-    var animated: Boolean = false
-
-    @Transient
-    var videos: Boolean = false
-
-    @Transient
     var emojis: Boolean = false
 
     @Transient
@@ -62,8 +56,6 @@ class TLRequestStickersCreateStickerSet() : TLMethod<TLAbsStickerSet>() {
 
     constructor(
             masks: Boolean,
-            animated: Boolean,
-            videos: Boolean,
             emojis: Boolean,
             textColor: Boolean,
             userId: TLAbsInputUser,
@@ -74,8 +66,6 @@ class TLRequestStickersCreateStickerSet() : TLMethod<TLAbsStickerSet>() {
             software: String?
     ) : this() {
         this.masks = masks
-        this.animated = animated
-        this.videos = videos
         this.emojis = emojis
         this.textColor = textColor
         this.userId = userId
@@ -89,8 +79,6 @@ class TLRequestStickersCreateStickerSet() : TLMethod<TLAbsStickerSet>() {
     protected override fun computeFlags() {
         _flags = 0
         updateFlags(masks, 1)
-        updateFlags(animated, 2)
-        updateFlags(videos, 16)
         updateFlags(emojis, 32)
         updateFlags(textColor, 64)
         updateFlags(thumb, 4)
@@ -114,8 +102,6 @@ class TLRequestStickersCreateStickerSet() : TLMethod<TLAbsStickerSet>() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         masks = isMask(1)
-        animated = isMask(2)
-        videos = isMask(16)
         emojis = isMask(32)
         textColor = isMask(64)
         userId = readTLObject<TLAbsInputUser>()
@@ -148,8 +134,6 @@ class TLRequestStickersCreateStickerSet() : TLMethod<TLAbsStickerSet>() {
 
         return _flags == other._flags
                 && masks == other.masks
-                && animated == other.animated
-                && videos == other.videos
                 && emojis == other.emojis
                 && textColor == other.textColor
                 && userId == other.userId

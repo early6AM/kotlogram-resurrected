@@ -9,8 +9,8 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSiz
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputInvoice
 import com.github.badoualy.telegram.tl.api.TLDataJSON
-import com.github.badoualy.telegram.tl.api.TLInputInvoiceSlug
-import com.github.badoualy.telegram.tl.api.payments.TLPaymentForm
+import com.github.badoualy.telegram.tl.api.TLInputInvoiceStars
+import com.github.badoualy.telegram.tl.api.payments.TLAbsPaymentForm
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
@@ -25,8 +25,8 @@ import kotlin.jvm.Throws
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
-class TLRequestPaymentsGetPaymentForm() : TLMethod<TLPaymentForm>() {
-    var invoice: TLAbsInputInvoice = TLInputInvoiceSlug()
+class TLRequestPaymentsGetPaymentForm() : TLMethod<TLAbsPaymentForm>() {
+    var invoice: TLAbsInputInvoice = TLInputInvoiceStars()
 
     var themeParams: TLDataJSON? = null
 
@@ -38,9 +38,6 @@ class TLRequestPaymentsGetPaymentForm() : TLMethod<TLPaymentForm>() {
         this.invoice = invoice
         this.themeParams = themeParams
     }
-
-    @Throws(IOException::class)
-    override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLPaymentForm = tlDeserializer.readTLObject(TLPaymentForm::class, TLPaymentForm.CONSTRUCTOR_ID)
 
     protected override fun computeFlags() {
         _flags = 0

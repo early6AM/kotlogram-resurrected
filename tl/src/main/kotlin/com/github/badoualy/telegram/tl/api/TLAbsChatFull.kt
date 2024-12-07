@@ -14,8 +14,8 @@ import kotlin.String
 
 /**
  * Abstraction level for the following constructors:
- * * [channelFull#f2bcb6f][TLChannelFull]
- * * [chatFull#c9d31138][TLChatFull]
+ * * [channelFull#bbab348d][TLChannelFull]
+ * * [chatFull#2633421b][TLChatFull]
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>

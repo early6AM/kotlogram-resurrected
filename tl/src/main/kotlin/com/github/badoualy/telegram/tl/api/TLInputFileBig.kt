@@ -24,11 +24,11 @@ import kotlin.jvm.Throws
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLInputFileBig() : TLAbsInputFile() {
-    override var id: Long = 0L
+    var id: Long = 0L
 
-    override var parts: Int = 0
+    var parts: Int = 0
 
-    override var name: String = ""
+    var name: String = ""
 
     private val _constructor: String = "inputFileBig#fa4f0bb5"
 

@@ -10,6 +10,8 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSiz
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.account.TLAuthorizationForm
 import com.github.badoualy.telegram.tl.api.account.TLAuthorizations
+import com.github.badoualy.telegram.tl.api.account.TLBusinessChatLinks
+import com.github.badoualy.telegram.tl.api.account.TLConnectedBots
 import com.github.badoualy.telegram.tl.api.account.TLContentSettings
 import com.github.badoualy.telegram.tl.api.account.TLEmailVerified
 import com.github.badoualy.telegram.tl.api.account.TLEmailVerifiedLogin
@@ -22,6 +24,7 @@ import com.github.badoualy.telegram.tl.api.account.TLPrivacyRules
 import com.github.badoualy.telegram.tl.api.account.TLResetPasswordFailedWait
 import com.github.badoualy.telegram.tl.api.account.TLResetPasswordOk
 import com.github.badoualy.telegram.tl.api.account.TLResetPasswordRequestedWait
+import com.github.badoualy.telegram.tl.api.account.TLResolvedBusinessChatLinks
 import com.github.badoualy.telegram.tl.api.account.TLSavedRingtone
 import com.github.badoualy.telegram.tl.api.account.TLSavedRingtoneConverted
 import com.github.badoualy.telegram.tl.api.account.TLSavedRingtones
@@ -57,16 +60,24 @@ import com.github.badoualy.telegram.tl.api.auth.TLSentCodeTypeFragmentSms
 import com.github.badoualy.telegram.tl.api.auth.TLSentCodeTypeMissedCall
 import com.github.badoualy.telegram.tl.api.auth.TLSentCodeTypeSetUpEmailRequired
 import com.github.badoualy.telegram.tl.api.auth.TLSentCodeTypeSms
+import com.github.badoualy.telegram.tl.api.auth.TLSentCodeTypeSmsPhrase
+import com.github.badoualy.telegram.tl.api.auth.TLSentCodeTypeSmsWord
+import com.github.badoualy.telegram.tl.api.bots.TLPopularAppBots
+import com.github.badoualy.telegram.tl.api.bots.TLPreviewInfo
 import com.github.badoualy.telegram.tl.api.channels.TLAdminLogResults
 import com.github.badoualy.telegram.tl.api.channels.TLChannelParticipants
 import com.github.badoualy.telegram.tl.api.channels.TLChannelParticipantsNotModified
 import com.github.badoualy.telegram.tl.api.channels.TLSendAsPeers
+import com.github.badoualy.telegram.tl.api.channels.TLSponsoredMessageReportResultAdsHidden
+import com.github.badoualy.telegram.tl.api.channels.TLSponsoredMessageReportResultChooseOption
+import com.github.badoualy.telegram.tl.api.channels.TLSponsoredMessageReportResultReported
 import com.github.badoualy.telegram.tl.api.chatlists.TLChatlistInvite
 import com.github.badoualy.telegram.tl.api.chatlists.TLChatlistInviteAlready
 import com.github.badoualy.telegram.tl.api.chatlists.TLChatlistUpdates
 import com.github.badoualy.telegram.tl.api.chatlists.TLExportedInvites
 import com.github.badoualy.telegram.tl.api.contacts.TLBlocked
 import com.github.badoualy.telegram.tl.api.contacts.TLBlockedSlice
+import com.github.badoualy.telegram.tl.api.contacts.TLContactBirthdays
 import com.github.badoualy.telegram.tl.api.contacts.TLContacts
 import com.github.badoualy.telegram.tl.api.contacts.TLContactsNotModified
 import com.github.badoualy.telegram.tl.api.contacts.TLFound
@@ -75,6 +86,7 @@ import com.github.badoualy.telegram.tl.api.contacts.TLResolvedPeer
 import com.github.badoualy.telegram.tl.api.contacts.TLTopPeers
 import com.github.badoualy.telegram.tl.api.contacts.TLTopPeersDisabled
 import com.github.badoualy.telegram.tl.api.contacts.TLTopPeersNotModified
+import com.github.badoualy.telegram.tl.api.fragment.TLCollectibleInfo
 import com.github.badoualy.telegram.tl.api.help.TLAppConfig
 import com.github.badoualy.telegram.tl.api.help.TLAppConfigNotModified
 import com.github.badoualy.telegram.tl.api.help.TLAppUpdate
@@ -102,6 +114,8 @@ import com.github.badoualy.telegram.tl.api.help.TLSupportName
 import com.github.badoualy.telegram.tl.api.help.TLTermsOfService
 import com.github.badoualy.telegram.tl.api.help.TLTermsOfServiceUpdate
 import com.github.badoualy.telegram.tl.api.help.TLTermsOfServiceUpdateEmpty
+import com.github.badoualy.telegram.tl.api.help.TLTimezonesList
+import com.github.badoualy.telegram.tl.api.help.TLTimezonesListNotModified
 import com.github.badoualy.telegram.tl.api.help.TLUserInfo
 import com.github.badoualy.telegram.tl.api.help.TLUserInfoEmpty
 import com.github.badoualy.telegram.tl.api.messages.TLAffectedFoundMessages
@@ -110,6 +124,8 @@ import com.github.badoualy.telegram.tl.api.messages.TLAffectedMessages
 import com.github.badoualy.telegram.tl.api.messages.TLAllStickers
 import com.github.badoualy.telegram.tl.api.messages.TLAllStickersNotModified
 import com.github.badoualy.telegram.tl.api.messages.TLArchivedStickers
+import com.github.badoualy.telegram.tl.api.messages.TLAvailableEffects
+import com.github.badoualy.telegram.tl.api.messages.TLAvailableEffectsNotModified
 import com.github.badoualy.telegram.tl.api.messages.TLAvailableReactions
 import com.github.badoualy.telegram.tl.api.messages.TLAvailableReactionsNotModified
 import com.github.badoualy.telegram.tl.api.messages.TLBotCallbackAnswer
@@ -122,6 +138,7 @@ import com.github.badoualy.telegram.tl.api.messages.TLChatsSlice
 import com.github.badoualy.telegram.tl.api.messages.TLCheckedHistoryImportPeer
 import com.github.badoualy.telegram.tl.api.messages.TLDhConfig
 import com.github.badoualy.telegram.tl.api.messages.TLDhConfigNotModified
+import com.github.badoualy.telegram.tl.api.messages.TLDialogFilters
 import com.github.badoualy.telegram.tl.api.messages.TLDialogs
 import com.github.badoualy.telegram.tl.api.messages.TLDialogsNotModified
 import com.github.badoualy.telegram.tl.api.messages.TLDialogsSlice
@@ -142,12 +159,16 @@ import com.github.badoualy.telegram.tl.api.messages.TLHighScores
 import com.github.badoualy.telegram.tl.api.messages.TLHistoryImport
 import com.github.badoualy.telegram.tl.api.messages.TLHistoryImportParsed
 import com.github.badoualy.telegram.tl.api.messages.TLInactiveChats
+import com.github.badoualy.telegram.tl.api.messages.TLInvitedUsers
 import com.github.badoualy.telegram.tl.api.messages.TLMessageEditData
 import com.github.badoualy.telegram.tl.api.messages.TLMessageReactionsList
 import com.github.badoualy.telegram.tl.api.messages.TLMessages
 import com.github.badoualy.telegram.tl.api.messages.TLMessagesNotModified
 import com.github.badoualy.telegram.tl.api.messages.TLMessagesSlice
+import com.github.badoualy.telegram.tl.api.messages.TLMyStickers
 import com.github.badoualy.telegram.tl.api.messages.TLPeerDialogs
+import com.github.badoualy.telegram.tl.api.messages.TLQuickReplies
+import com.github.badoualy.telegram.tl.api.messages.TLQuickRepliesNotModified
 import com.github.badoualy.telegram.tl.api.messages.TLReactions
 import com.github.badoualy.telegram.tl.api.messages.TLReactionsNotModified
 import com.github.badoualy.telegram.tl.api.messages.TLRecentStickers
@@ -157,6 +178,8 @@ import com.github.badoualy.telegram.tl.api.messages.TLSavedDialogsNotModified
 import com.github.badoualy.telegram.tl.api.messages.TLSavedDialogsSlice
 import com.github.badoualy.telegram.tl.api.messages.TLSavedGifs
 import com.github.badoualy.telegram.tl.api.messages.TLSavedGifsNotModified
+import com.github.badoualy.telegram.tl.api.messages.TLSavedReactionTags
+import com.github.badoualy.telegram.tl.api.messages.TLSavedReactionTagsNotModified
 import com.github.badoualy.telegram.tl.api.messages.TLSearchCounter
 import com.github.badoualy.telegram.tl.api.messages.TLSearchResultsCalendar
 import com.github.badoualy.telegram.tl.api.messages.TLSearchResultsPositions
@@ -178,10 +201,16 @@ import com.github.badoualy.telegram.tl.api.payments.TLExportedInvoice
 import com.github.badoualy.telegram.tl.api.payments.TLGiveawayInfo
 import com.github.badoualy.telegram.tl.api.payments.TLGiveawayInfoResults
 import com.github.badoualy.telegram.tl.api.payments.TLPaymentForm
+import com.github.badoualy.telegram.tl.api.payments.TLPaymentFormStars
 import com.github.badoualy.telegram.tl.api.payments.TLPaymentReceipt
+import com.github.badoualy.telegram.tl.api.payments.TLPaymentReceiptStars
 import com.github.badoualy.telegram.tl.api.payments.TLPaymentResult
 import com.github.badoualy.telegram.tl.api.payments.TLPaymentVerificationNeeded
 import com.github.badoualy.telegram.tl.api.payments.TLSavedInfo
+import com.github.badoualy.telegram.tl.api.payments.TLStarsRevenueAdsAccountUrl
+import com.github.badoualy.telegram.tl.api.payments.TLStarsRevenueStats
+import com.github.badoualy.telegram.tl.api.payments.TLStarsRevenueWithdrawalUrl
+import com.github.badoualy.telegram.tl.api.payments.TLStarsStatus
 import com.github.badoualy.telegram.tl.api.payments.TLValidatedRequestedInfo
 import com.github.badoualy.telegram.tl.api.phone.TLExportedGroupCallInvite
 import com.github.badoualy.telegram.tl.api.phone.TLGroupCallStreamChannels
@@ -201,11 +230,15 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestAccountCheckUsername
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountClearRecentEmojiStatuses
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountConfirmPasswordEmail
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountConfirmPhone
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountCreateBusinessChatLink
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountCreateTheme
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountDeclinePasswordReset
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountDeleteAccount
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountDeleteAutoSaveExceptions
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountDeleteBusinessChatLink
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountDeleteSecureValue
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountDisablePeerConnectedBot
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountEditBusinessChatLink
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountFinishTakeoutSession
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetAccountTTL
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetAllSecureValues
@@ -213,9 +246,12 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetAuthorizat
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetAuthorizations
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetAutoDownloadSettings
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetAutoSaveSettings
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetBotBusinessConnection
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetBusinessChatLinks
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetChannelDefaultEmojiStatuses
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetChannelRestrictedStatusEmojis
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetChatThemes
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetConnectedBots
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetContactSignUpNotification
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetContentSettings
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetDefaultBackgroundEmojis
@@ -229,6 +265,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetNotifySett
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetPassword
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetPasswordSettings
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetPrivacy
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetReactionsNotifySettings
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetRecentEmojiStatuses
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetSavedRingtones
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetSecureValue
@@ -253,6 +290,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestAccountResetPassword
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountResetWallPapers
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountResetWebAuthorization
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountResetWebAuthorizations
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountResolveBusinessChatLink
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountSaveAutoDownloadSettings
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountSaveAutoSaveSettings
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountSaveRingtone
@@ -269,13 +307,24 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestAccountSetContactSig
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountSetContentSettings
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountSetGlobalPrivacySettings
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountSetPrivacy
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountSetReactionsNotifySettings
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountToggleConnectedBotPaused
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountToggleSponsoredMessages
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountToggleUsername
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUnregisterDevice
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateBirthday
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateBusinessAwayMessage
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateBusinessGreetingMessage
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateBusinessIntro
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateBusinessLocation
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateBusinessWorkHours
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateColor
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateConnectedBot
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateDeviceLocked
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateEmojiStatus
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateNotifySettings
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdatePasswordSettings
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdatePersonalChannel
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateProfile
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateStatus
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateTheme
@@ -299,6 +348,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestAuthImportLoginToken
 import com.github.badoualy.telegram.tl.api.request.TLRequestAuthImportWebTokenAuthorization
 import com.github.badoualy.telegram.tl.api.request.TLRequestAuthLogOut
 import com.github.badoualy.telegram.tl.api.request.TLRequestAuthRecoverPassword
+import com.github.badoualy.telegram.tl.api.request.TLRequestAuthReportMissingCode
 import com.github.badoualy.telegram.tl.api.request.TLRequestAuthRequestFirebaseSms
 import com.github.badoualy.telegram.tl.api.request.TLRequestAuthRequestPasswordRecovery
 import com.github.badoualy.telegram.tl.api.request.TLRequestAuthResendCode
@@ -307,13 +357,20 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestAuthResetLoginEmail
 import com.github.badoualy.telegram.tl.api.request.TLRequestAuthSendCode
 import com.github.badoualy.telegram.tl.api.request.TLRequestAuthSignIn
 import com.github.badoualy.telegram.tl.api.request.TLRequestAuthSignUp
+import com.github.badoualy.telegram.tl.api.request.TLRequestBotsAddPreviewMedia
 import com.github.badoualy.telegram.tl.api.request.TLRequestBotsAllowSendMessage
 import com.github.badoualy.telegram.tl.api.request.TLRequestBotsAnswerWebhookJSONQuery
 import com.github.badoualy.telegram.tl.api.request.TLRequestBotsCanSendMessage
+import com.github.badoualy.telegram.tl.api.request.TLRequestBotsDeletePreviewMedia
+import com.github.badoualy.telegram.tl.api.request.TLRequestBotsEditPreviewMedia
 import com.github.badoualy.telegram.tl.api.request.TLRequestBotsGetBotCommands
 import com.github.badoualy.telegram.tl.api.request.TLRequestBotsGetBotInfo
 import com.github.badoualy.telegram.tl.api.request.TLRequestBotsGetBotMenuButton
+import com.github.badoualy.telegram.tl.api.request.TLRequestBotsGetPopularAppBots
+import com.github.badoualy.telegram.tl.api.request.TLRequestBotsGetPreviewInfo
+import com.github.badoualy.telegram.tl.api.request.TLRequestBotsGetPreviewMedias
 import com.github.badoualy.telegram.tl.api.request.TLRequestBotsInvokeWebViewCustomMethod
+import com.github.badoualy.telegram.tl.api.request.TLRequestBotsReorderPreviewMedias
 import com.github.badoualy.telegram.tl.api.request.TLRequestBotsReorderUsernames
 import com.github.badoualy.telegram.tl.api.request.TLRequestBotsResetBotCommands
 import com.github.badoualy.telegram.tl.api.request.TLRequestBotsSendCustomRequest
@@ -366,7 +423,12 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsReorderPinne
 import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsReorderUsernames
 import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsReportAntiSpamFalsePositive
 import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsReportSpam
+import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsReportSponsoredMessage
+import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsRestrictSponsoredMessages
+import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsSearchPosts
+import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsSetBoostsToUnblockRestrictions
 import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsSetDiscussionGroup
+import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsSetEmojiStickers
 import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsSetStickers
 import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsToggleAntiSpam
 import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsToggleForum
@@ -402,6 +464,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestContactsDeleteByPhon
 import com.github.badoualy.telegram.tl.api.request.TLRequestContactsDeleteContacts
 import com.github.badoualy.telegram.tl.api.request.TLRequestContactsEditCloseFriends
 import com.github.badoualy.telegram.tl.api.request.TLRequestContactsExportContactToken
+import com.github.badoualy.telegram.tl.api.request.TLRequestContactsGetBirthdays
 import com.github.badoualy.telegram.tl.api.request.TLRequestContactsGetBlocked
 import com.github.badoualy.telegram.tl.api.request.TLRequestContactsGetContactIDs
 import com.github.badoualy.telegram.tl.api.request.TLRequestContactsGetContacts
@@ -420,6 +483,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestContactsSetBlocked
 import com.github.badoualy.telegram.tl.api.request.TLRequestContactsToggleTopPeers
 import com.github.badoualy.telegram.tl.api.request.TLRequestContactsUnblock
 import com.github.badoualy.telegram.tl.api.request.TLRequestFoldersEditPeerFolders
+import com.github.badoualy.telegram.tl.api.request.TLRequestFragmentGetCollectibleInfo
 import com.github.badoualy.telegram.tl.api.request.TLRequestHelpAcceptTermsOfService
 import com.github.badoualy.telegram.tl.api.request.TLRequestHelpDismissSuggestion
 import com.github.badoualy.telegram.tl.api.request.TLRequestHelpEditUserInfo
@@ -440,6 +504,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestHelpGetRecentMeUrls
 import com.github.badoualy.telegram.tl.api.request.TLRequestHelpGetSupport
 import com.github.badoualy.telegram.tl.api.request.TLRequestHelpGetSupportName
 import com.github.badoualy.telegram.tl.api.request.TLRequestHelpGetTermsOfServiceUpdate
+import com.github.badoualy.telegram.tl.api.request.TLRequestHelpGetTimezonesList
 import com.github.badoualy.telegram.tl.api.request.TLRequestHelpGetUserInfo
 import com.github.badoualy.telegram.tl.api.request.TLRequestHelpHidePromoData
 import com.github.badoualy.telegram.tl.api.request.TLRequestHelpSaveAppLog
@@ -447,6 +512,9 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestHelpSetBotUpdatesSta
 import com.github.badoualy.telegram.tl.api.request.TLRequestInitConnection
 import com.github.badoualy.telegram.tl.api.request.TLRequestInvokeAfterMsg
 import com.github.badoualy.telegram.tl.api.request.TLRequestInvokeAfterMsgs
+import com.github.badoualy.telegram.tl.api.request.TLRequestInvokeWithApnsSecret
+import com.github.badoualy.telegram.tl.api.request.TLRequestInvokeWithBusinessConnection
+import com.github.badoualy.telegram.tl.api.request.TLRequestInvokeWithGooglePlayIntegrity
 import com.github.badoualy.telegram.tl.api.request.TLRequestInvokeWithLayer
 import com.github.badoualy.telegram.tl.api.request.TLRequestInvokeWithMessagesRange
 import com.github.badoualy.telegram.tl.api.request.TLRequestInvokeWithTakeout
@@ -462,6 +530,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesAddChatUser
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesCheckChatInvite
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesCheckHistoryImport
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesCheckHistoryImportPeer
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesCheckQuickReplyShortcut
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesClearAllDrafts
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesClearRecentReactions
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesClearRecentStickers
@@ -469,9 +538,12 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesCreateChat
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesDeleteChat
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesDeleteChatUser
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesDeleteExportedChatInvite
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesDeleteFactCheck
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesDeleteHistory
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesDeleteMessages
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesDeletePhoneCallHistory
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesDeleteQuickReplyMessages
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesDeleteQuickReplyShortcut
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesDeleteRevokedExportedChatInvites
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesDeleteSavedHistory
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesDeleteScheduledMessages
@@ -482,8 +554,10 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesEditChatDefa
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesEditChatPhoto
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesEditChatTitle
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesEditExportedChatInvite
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesEditFactCheck
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesEditInlineBotMessage
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesEditMessage
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesEditQuickReplyShortcut
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesExportChatInvite
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesFaveSticker
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesForwardMessages
@@ -494,6 +568,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetArchivedS
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetAttachMenuBot
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetAttachMenuBots
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetAttachedStickers
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetAvailableEffects
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetAvailableReactions
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetBotApp
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetBotCallbackAnswer
@@ -502,6 +577,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetChats
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetCommonChats
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetCustomEmojiDocuments
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetDefaultHistoryTTL
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetDefaultTagReactions
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetDhConfig
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetDialogFilters
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetDialogUnreadMarks
@@ -514,11 +590,13 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetEmojiKeyw
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetEmojiKeywordsLanguages
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetEmojiProfilePhotoGroups
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetEmojiStatusGroups
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetEmojiStickerGroups
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetEmojiStickers
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetEmojiURL
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetExportedChatInvite
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetExportedChatInvites
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetExtendedMedia
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetFactCheck
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetFavedStickers
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetFeaturedEmojiStickers
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetFeaturedStickers
@@ -534,14 +612,18 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetMessageRe
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetMessages
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetMessagesReactions
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetMessagesViews
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetMyStickers
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetOldFeaturedStickers
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetOnlines
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetOutboxReadDate
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetPeerDialogs
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetPeerSettings
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetPinnedDialogs
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetPinnedSavedDialogs
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetPollResults
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetPollVotes
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetQuickReplies
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetQuickReplyMessages
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetRecentLocations
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetRecentReactions
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetRecentStickers
@@ -549,6 +631,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetReplies
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetSavedDialogs
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetSavedGifs
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetSavedHistory
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetSavedReactionTags
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetScheduledHistory
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetScheduledMessages
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetSearchCounters
@@ -584,6 +667,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesReceivedMess
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesReceivedQueue
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesReorderPinnedDialogs
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesReorderPinnedSavedDialogs
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesReorderQuickReplies
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesReorderStickerSets
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesReport
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesReportEncryptedSpam
@@ -591,6 +675,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesReportReacti
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesReportSpam
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesRequestAppWebView
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesRequestEncryption
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesRequestMainWebView
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesRequestSimpleWebView
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesRequestUrlAuth
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesRequestWebView
@@ -612,6 +697,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesSendInlineBo
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesSendMedia
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesSendMessage
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesSendMultiMedia
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesSendQuickReplyMessages
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesSendReaction
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesSendScheduledMessages
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesSendScreenshotNotification
@@ -635,6 +721,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesSetTyping
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesStartBot
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesStartHistoryImport
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesToggleBotInAttachMenu
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesToggleDialogFilterTags
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesToggleDialogPin
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesToggleNoForwards
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesTogglePeerTranslations
@@ -647,6 +734,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesUnpinAllMess
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesUpdateDialogFilter
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesUpdateDialogFiltersOrder
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesUpdatePinnedMessage
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesUpdateSavedReactionTag
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesUploadEncryptedFile
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesUploadImportedMedia
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesUploadMedia
@@ -663,8 +751,18 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsGetPaymentFo
 import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsGetPaymentReceipt
 import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsGetPremiumGiftCodeOptions
 import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsGetSavedInfo
+import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsGetStarsGiftOptions
+import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsGetStarsRevenueAdsAccountUrl
+import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsGetStarsRevenueStats
+import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsGetStarsRevenueWithdrawalUrl
+import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsGetStarsStatus
+import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsGetStarsTopupOptions
+import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsGetStarsTransactions
+import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsGetStarsTransactionsByID
 import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsLaunchPrepaidGiveaway
+import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsRefundStarsCharge
 import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsSendPaymentForm
+import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsSendStarsForm
 import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsValidateRequestedInfo
 import com.github.badoualy.telegram.tl.api.request.TLRequestPhoneAcceptCall
 import com.github.badoualy.telegram.tl.api.request.TLRequestPhoneCheckGroupCall
@@ -707,6 +805,16 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestPremiumGetBoostsList
 import com.github.badoualy.telegram.tl.api.request.TLRequestPremiumGetBoostsStatus
 import com.github.badoualy.telegram.tl.api.request.TLRequestPremiumGetMyBoosts
 import com.github.badoualy.telegram.tl.api.request.TLRequestPremiumGetUserBoosts
+import com.github.badoualy.telegram.tl.api.request.TLRequestSmsjobsFinishJob
+import com.github.badoualy.telegram.tl.api.request.TLRequestSmsjobsGetSmsJob
+import com.github.badoualy.telegram.tl.api.request.TLRequestSmsjobsGetStatus
+import com.github.badoualy.telegram.tl.api.request.TLRequestSmsjobsIsEligibleToJoin
+import com.github.badoualy.telegram.tl.api.request.TLRequestSmsjobsJoin
+import com.github.badoualy.telegram.tl.api.request.TLRequestSmsjobsLeave
+import com.github.badoualy.telegram.tl.api.request.TLRequestSmsjobsUpdateSettings
+import com.github.badoualy.telegram.tl.api.request.TLRequestStatsGetBroadcastRevenueStats
+import com.github.badoualy.telegram.tl.api.request.TLRequestStatsGetBroadcastRevenueTransactions
+import com.github.badoualy.telegram.tl.api.request.TLRequestStatsGetBroadcastRevenueWithdrawalUrl
 import com.github.badoualy.telegram.tl.api.request.TLRequestStatsGetBroadcastStats
 import com.github.badoualy.telegram.tl.api.request.TLRequestStatsGetMegagroupStats
 import com.github.badoualy.telegram.tl.api.request.TLRequestStatsGetMessagePublicForwards
@@ -722,6 +830,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestStickersCreateSticke
 import com.github.badoualy.telegram.tl.api.request.TLRequestStickersDeleteStickerSet
 import com.github.badoualy.telegram.tl.api.request.TLRequestStickersRemoveStickerFromSet
 import com.github.badoualy.telegram.tl.api.request.TLRequestStickersRenameStickerSet
+import com.github.badoualy.telegram.tl.api.request.TLRequestStickersReplaceSticker
 import com.github.badoualy.telegram.tl.api.request.TLRequestStickersSetStickerSetThumb
 import com.github.badoualy.telegram.tl.api.request.TLRequestStickersSuggestShortName
 import com.github.badoualy.telegram.tl.api.request.TLRequestStoriesActivateStealthMode
@@ -743,11 +852,13 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestStoriesGetStoryViews
 import com.github.badoualy.telegram.tl.api.request.TLRequestStoriesIncrementStoryViews
 import com.github.badoualy.telegram.tl.api.request.TLRequestStoriesReadStories
 import com.github.badoualy.telegram.tl.api.request.TLRequestStoriesReport
+import com.github.badoualy.telegram.tl.api.request.TLRequestStoriesSearchPosts
 import com.github.badoualy.telegram.tl.api.request.TLRequestStoriesSendReaction
 import com.github.badoualy.telegram.tl.api.request.TLRequestStoriesSendStory
 import com.github.badoualy.telegram.tl.api.request.TLRequestStoriesToggleAllStoriesHidden
 import com.github.badoualy.telegram.tl.api.request.TLRequestStoriesTogglePeerStoriesHidden
 import com.github.badoualy.telegram.tl.api.request.TLRequestStoriesTogglePinned
+import com.github.badoualy.telegram.tl.api.request.TLRequestStoriesTogglePinnedToTop
 import com.github.badoualy.telegram.tl.api.request.TLRequestUpdatesGetChannelDifference
 import com.github.badoualy.telegram.tl.api.request.TLRequestUpdatesGetDifference
 import com.github.badoualy.telegram.tl.api.request.TLRequestUpdatesGetState
@@ -760,8 +871,14 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestUploadReuploadCdnFil
 import com.github.badoualy.telegram.tl.api.request.TLRequestUploadSaveBigFilePart
 import com.github.badoualy.telegram.tl.api.request.TLRequestUploadSaveFilePart
 import com.github.badoualy.telegram.tl.api.request.TLRequestUsersGetFullUser
+import com.github.badoualy.telegram.tl.api.request.TLRequestUsersGetIsPremiumRequiredToContact
 import com.github.badoualy.telegram.tl.api.request.TLRequestUsersGetUsers
 import com.github.badoualy.telegram.tl.api.request.TLRequestUsersSetSecureValueErrors
+import com.github.badoualy.telegram.tl.api.smsjobs.TLEligibleToJoin
+import com.github.badoualy.telegram.tl.api.smsjobs.TLStatus
+import com.github.badoualy.telegram.tl.api.stats.TLBroadcastRevenueStats
+import com.github.badoualy.telegram.tl.api.stats.TLBroadcastRevenueTransactions
+import com.github.badoualy.telegram.tl.api.stats.TLBroadcastRevenueWithdrawalUrl
 import com.github.badoualy.telegram.tl.api.stats.TLBroadcastStats
 import com.github.badoualy.telegram.tl.api.stats.TLMegagroupStats
 import com.github.badoualy.telegram.tl.api.stats.TLMessageStats
@@ -780,6 +897,7 @@ import com.github.badoualy.telegram.tl.api.storage.TLFileUnknown
 import com.github.badoualy.telegram.tl.api.storage.TLFileWebp
 import com.github.badoualy.telegram.tl.api.stories.TLAllStories
 import com.github.badoualy.telegram.tl.api.stories.TLAllStoriesNotModified
+import com.github.badoualy.telegram.tl.api.stories.TLFoundStories
 import com.github.badoualy.telegram.tl.api.stories.TLStories
 import com.github.badoualy.telegram.tl.api.stories.TLStoryReactionsList
 import com.github.badoualy.telegram.tl.api.stories.TLStoryViewsList
@@ -797,7 +915,7 @@ import com.github.badoualy.telegram.tl.api.upload.TLFile
 import com.github.badoualy.telegram.tl.api.upload.TLFileCdnRedirect
 import com.github.badoualy.telegram.tl.api.upload.TLWebFile
 
-object TLApiTestContext : TLContext(1201) {
+object TLApiTestContext : TLContext(1330) {
     init {
         registerClasses()
     }
@@ -807,6 +925,8 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLAuthorizations.CONSTRUCTOR_ID, TLAuthorizations::class.java)
         registerClass(com.github.badoualy.telegram.tl.api.account.TLAutoDownloadSettings.CONSTRUCTOR_ID, com.github.badoualy.telegram.tl.api.account.TLAutoDownloadSettings::class.java)
         registerClass(com.github.badoualy.telegram.tl.api.account.TLAutoSaveSettings.CONSTRUCTOR_ID, com.github.badoualy.telegram.tl.api.account.TLAutoSaveSettings::class.java)
+        registerClass(TLBusinessChatLinks.CONSTRUCTOR_ID, TLBusinessChatLinks::class.java)
+        registerClass(TLConnectedBots.CONSTRUCTOR_ID, TLConnectedBots::class.java)
         registerClass(TLContentSettings.CONSTRUCTOR_ID, TLContentSettings::class.java)
         registerClass(TLEmailVerified.CONSTRUCTOR_ID, TLEmailVerified::class.java)
         registerClass(TLEmailVerifiedLogin.CONSTRUCTOR_ID, TLEmailVerifiedLogin::class.java)
@@ -819,6 +939,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLResetPasswordFailedWait.CONSTRUCTOR_ID, TLResetPasswordFailedWait::class.java)
         registerClass(TLResetPasswordOk.CONSTRUCTOR_ID, TLResetPasswordOk::class.java)
         registerClass(TLResetPasswordRequestedWait.CONSTRUCTOR_ID, TLResetPasswordRequestedWait::class.java)
+        registerClass(TLResolvedBusinessChatLinks.CONSTRUCTOR_ID, TLResolvedBusinessChatLinks::class.java)
         registerClass(TLSavedRingtone.CONSTRUCTOR_ID, TLSavedRingtone::class.java)
         registerClass(TLSavedRingtoneConverted.CONSTRUCTOR_ID, TLSavedRingtoneConverted::class.java)
         registerClass(TLSavedRingtones.CONSTRUCTOR_ID, TLSavedRingtones::class.java)
@@ -832,7 +953,6 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLWallPapersNotModified.CONSTRUCTOR_ID, TLWallPapersNotModified::class.java)
         registerClass(TLWebAuthorizations.CONSTRUCTOR_ID, TLWebAuthorizations::class.java)
         registerClass(TLAccountDaysTTL.CONSTRUCTOR_ID, TLAccountDaysTTL::class.java)
-        registerClass(TLAppWebViewResultUrl.CONSTRUCTOR_ID, TLAppWebViewResultUrl::class.java)
         registerClass(TLAttachMenuBot.CONSTRUCTOR_ID, TLAttachMenuBot::class.java)
         registerClass(TLAttachMenuBotIcon.CONSTRUCTOR_ID, TLAttachMenuBotIcon::class.java)
         registerClass(TLAttachMenuBotIconColor.CONSTRUCTOR_ID, TLAttachMenuBotIconColor::class.java)
@@ -868,10 +988,13 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLSentCodeTypeMissedCall.CONSTRUCTOR_ID, TLSentCodeTypeMissedCall::class.java)
         registerClass(TLSentCodeTypeSetUpEmailRequired.CONSTRUCTOR_ID, TLSentCodeTypeSetUpEmailRequired::class.java)
         registerClass(TLSentCodeTypeSms.CONSTRUCTOR_ID, TLSentCodeTypeSms::class.java)
+        registerClass(TLSentCodeTypeSmsPhrase.CONSTRUCTOR_ID, TLSentCodeTypeSmsPhrase::class.java)
+        registerClass(TLSentCodeTypeSmsWord.CONSTRUCTOR_ID, TLSentCodeTypeSmsWord::class.java)
         registerClass(TLAuthorization.CONSTRUCTOR_ID, TLAuthorization::class.java)
         registerClass(TLAutoDownloadSettings.CONSTRUCTOR_ID, TLAutoDownloadSettings::class.java)
         registerClass(TLAutoSaveException.CONSTRUCTOR_ID, TLAutoSaveException::class.java)
         registerClass(TLAutoSaveSettings.CONSTRUCTOR_ID, TLAutoSaveSettings::class.java)
+        registerClass(TLAvailableEffect.CONSTRUCTOR_ID, TLAvailableEffect::class.java)
         registerClass(TLAvailableReaction.CONSTRUCTOR_ID, TLAvailableReaction::class.java)
         registerClass(TLBankCardOpenUrl.CONSTRUCTOR_ID, TLBankCardOpenUrl::class.java)
         registerClass(TLBaseThemeArctic.CONSTRUCTOR_ID, TLBaseThemeArctic::class.java)
@@ -879,9 +1002,11 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLBaseThemeDay.CONSTRUCTOR_ID, TLBaseThemeDay::class.java)
         registerClass(TLBaseThemeNight.CONSTRUCTOR_ID, TLBaseThemeNight::class.java)
         registerClass(TLBaseThemeTinted.CONSTRUCTOR_ID, TLBaseThemeTinted::class.java)
+        registerClass(TLBirthday.CONSTRUCTOR_ID, TLBirthday::class.java)
         registerClass(TLBoost.CONSTRUCTOR_ID, TLBoost::class.java)
         registerClass(TLBotApp.CONSTRUCTOR_ID, TLBotApp::class.java)
         registerClass(TLBotAppNotModified.CONSTRUCTOR_ID, TLBotAppNotModified::class.java)
+        registerClass(TLBotBusinessConnection.CONSTRUCTOR_ID, TLBotBusinessConnection::class.java)
         registerClass(TLBotCommand.CONSTRUCTOR_ID, TLBotCommand::class.java)
         registerClass(TLBotCommandScopeChatAdmins.CONSTRUCTOR_ID, TLBotCommandScopeChatAdmins::class.java)
         registerClass(TLBotCommandScopeChats.CONSTRUCTOR_ID, TLBotCommandScopeChats::class.java)
@@ -903,7 +1028,26 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLBotMenuButton.CONSTRUCTOR_ID, TLBotMenuButton::class.java)
         registerClass(TLBotMenuButtonCommands.CONSTRUCTOR_ID, TLBotMenuButtonCommands::class.java)
         registerClass(TLBotMenuButtonDefault.CONSTRUCTOR_ID, TLBotMenuButtonDefault::class.java)
+        registerClass(TLBotPreviewMedia.CONSTRUCTOR_ID, TLBotPreviewMedia::class.java)
         registerClass(com.github.badoualy.telegram.tl.api.bots.TLBotInfo.CONSTRUCTOR_ID, com.github.badoualy.telegram.tl.api.bots.TLBotInfo::class.java)
+        registerClass(TLPopularAppBots.CONSTRUCTOR_ID, TLPopularAppBots::class.java)
+        registerClass(TLPreviewInfo.CONSTRUCTOR_ID, TLPreviewInfo::class.java)
+        registerClass(TLBroadcastRevenueBalances.CONSTRUCTOR_ID, TLBroadcastRevenueBalances::class.java)
+        registerClass(TLBroadcastRevenueTransactionProceeds.CONSTRUCTOR_ID, TLBroadcastRevenueTransactionProceeds::class.java)
+        registerClass(TLBroadcastRevenueTransactionRefund.CONSTRUCTOR_ID, TLBroadcastRevenueTransactionRefund::class.java)
+        registerClass(TLBroadcastRevenueTransactionWithdrawal.CONSTRUCTOR_ID, TLBroadcastRevenueTransactionWithdrawal::class.java)
+        registerClass(TLBusinessAwayMessage.CONSTRUCTOR_ID, TLBusinessAwayMessage::class.java)
+        registerClass(TLBusinessAwayMessageScheduleAlways.CONSTRUCTOR_ID, TLBusinessAwayMessageScheduleAlways::class.java)
+        registerClass(TLBusinessAwayMessageScheduleCustom.CONSTRUCTOR_ID, TLBusinessAwayMessageScheduleCustom::class.java)
+        registerClass(TLBusinessAwayMessageScheduleOutsideWorkHours.CONSTRUCTOR_ID, TLBusinessAwayMessageScheduleOutsideWorkHours::class.java)
+        registerClass(TLBusinessBotRecipients.CONSTRUCTOR_ID, TLBusinessBotRecipients::class.java)
+        registerClass(TLBusinessChatLink.CONSTRUCTOR_ID, TLBusinessChatLink::class.java)
+        registerClass(TLBusinessGreetingMessage.CONSTRUCTOR_ID, TLBusinessGreetingMessage::class.java)
+        registerClass(TLBusinessIntro.CONSTRUCTOR_ID, TLBusinessIntro::class.java)
+        registerClass(TLBusinessLocation.CONSTRUCTOR_ID, TLBusinessLocation::class.java)
+        registerClass(TLBusinessRecipients.CONSTRUCTOR_ID, TLBusinessRecipients::class.java)
+        registerClass(TLBusinessWeeklyOpen.CONSTRUCTOR_ID, TLBusinessWeeklyOpen::class.java)
+        registerClass(TLBusinessWorkHours.CONSTRUCTOR_ID, TLBusinessWorkHours::class.java)
         registerClass(TLCdnConfig.CONSTRUCTOR_ID, TLCdnConfig::class.java)
         registerClass(TLCdnPublicKey.CONSTRUCTOR_ID, TLCdnPublicKey::class.java)
         registerClass(TLChannel.CONSTRUCTOR_ID, TLChannel::class.java)
@@ -911,6 +1055,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLChannelAdminLogEventActionChangeAbout.CONSTRUCTOR_ID, TLChannelAdminLogEventActionChangeAbout::class.java)
         registerClass(TLChannelAdminLogEventActionChangeAvailableReactions.CONSTRUCTOR_ID, TLChannelAdminLogEventActionChangeAvailableReactions::class.java)
         registerClass(TLChannelAdminLogEventActionChangeEmojiStatus.CONSTRUCTOR_ID, TLChannelAdminLogEventActionChangeEmojiStatus::class.java)
+        registerClass(TLChannelAdminLogEventActionChangeEmojiStickerSet.CONSTRUCTOR_ID, TLChannelAdminLogEventActionChangeEmojiStickerSet::class.java)
         registerClass(TLChannelAdminLogEventActionChangeHistoryTTL.CONSTRUCTOR_ID, TLChannelAdminLogEventActionChangeHistoryTTL::class.java)
         registerClass(TLChannelAdminLogEventActionChangeLinkedChat.CONSTRUCTOR_ID, TLChannelAdminLogEventActionChangeLinkedChat::class.java)
         registerClass(TLChannelAdminLogEventActionChangeLocation.CONSTRUCTOR_ID, TLChannelAdminLogEventActionChangeLocation::class.java)
@@ -981,6 +1126,9 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLChannelParticipants.CONSTRUCTOR_ID, TLChannelParticipants::class.java)
         registerClass(TLChannelParticipantsNotModified.CONSTRUCTOR_ID, TLChannelParticipantsNotModified::class.java)
         registerClass(TLSendAsPeers.CONSTRUCTOR_ID, TLSendAsPeers::class.java)
+        registerClass(TLSponsoredMessageReportResultAdsHidden.CONSTRUCTOR_ID, TLSponsoredMessageReportResultAdsHidden::class.java)
+        registerClass(TLSponsoredMessageReportResultChooseOption.CONSTRUCTOR_ID, TLSponsoredMessageReportResultChooseOption::class.java)
+        registerClass(TLSponsoredMessageReportResultReported.CONSTRUCTOR_ID, TLSponsoredMessageReportResultReported::class.java)
         registerClass(TLChat.CONSTRUCTOR_ID, TLChat::class.java)
         registerClass(TLChatAdminRights.CONSTRUCTOR_ID, TLChatAdminRights::class.java)
         registerClass(TLChatAdminWithInvites.CONSTRUCTOR_ID, TLChatAdminWithInvites::class.java)
@@ -1012,10 +1160,13 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLExportedInvites.CONSTRUCTOR_ID, TLExportedInvites::class.java)
         registerClass(TLCodeSettings.CONSTRUCTOR_ID, TLCodeSettings::class.java)
         registerClass(TLConfig.CONSTRUCTOR_ID, TLConfig::class.java)
+        registerClass(TLConnectedBot.CONSTRUCTOR_ID, TLConnectedBot::class.java)
         registerClass(TLContact.CONSTRUCTOR_ID, TLContact::class.java)
+        registerClass(TLContactBirthday.CONSTRUCTOR_ID, TLContactBirthday::class.java)
         registerClass(TLContactStatus.CONSTRUCTOR_ID, TLContactStatus::class.java)
         registerClass(TLBlocked.CONSTRUCTOR_ID, TLBlocked::class.java)
         registerClass(TLBlockedSlice.CONSTRUCTOR_ID, TLBlockedSlice::class.java)
+        registerClass(TLContactBirthdays.CONSTRUCTOR_ID, TLContactBirthdays::class.java)
         registerClass(TLContacts.CONSTRUCTOR_ID, TLContacts::class.java)
         registerClass(TLContactsNotModified.CONSTRUCTOR_ID, TLContactsNotModified::class.java)
         registerClass(TLFound.CONSTRUCTOR_ID, TLFound::class.java)
@@ -1054,6 +1205,8 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLEmailVerifyPurposeLoginSetup.CONSTRUCTOR_ID, TLEmailVerifyPurposeLoginSetup::class.java)
         registerClass(TLEmailVerifyPurposePassport.CONSTRUCTOR_ID, TLEmailVerifyPurposePassport::class.java)
         registerClass(TLEmojiGroup.CONSTRUCTOR_ID, TLEmojiGroup::class.java)
+        registerClass(TLEmojiGroupGreeting.CONSTRUCTOR_ID, TLEmojiGroupGreeting::class.java)
+        registerClass(TLEmojiGroupPremium.CONSTRUCTOR_ID, TLEmojiGroupPremium::class.java)
         registerClass(TLEmojiKeyword.CONSTRUCTOR_ID, TLEmojiKeyword::class.java)
         registerClass(TLEmojiKeywordDeleted.CONSTRUCTOR_ID, TLEmojiKeywordDeleted::class.java)
         registerClass(TLEmojiKeywordsDifference.CONSTRUCTOR_ID, TLEmojiKeywordsDifference::class.java)
@@ -1077,13 +1230,17 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLExportedContactToken.CONSTRUCTOR_ID, TLExportedContactToken::class.java)
         registerClass(TLExportedMessageLink.CONSTRUCTOR_ID, TLExportedMessageLink::class.java)
         registerClass(TLExportedStoryLink.CONSTRUCTOR_ID, TLExportedStoryLink::class.java)
+        registerClass(TLFactCheck.CONSTRUCTOR_ID, TLFactCheck::class.java)
         registerClass(TLFileHash.CONSTRUCTOR_ID, TLFileHash::class.java)
         registerClass(TLFolder.CONSTRUCTOR_ID, TLFolder::class.java)
         registerClass(TLFolderPeer.CONSTRUCTOR_ID, TLFolderPeer::class.java)
         registerClass(TLForumTopic.CONSTRUCTOR_ID, TLForumTopic::class.java)
         registerClass(TLForumTopicDeleted.CONSTRUCTOR_ID, TLForumTopicDeleted::class.java)
+        registerClass(TLFoundStory.CONSTRUCTOR_ID, TLFoundStory::class.java)
+        registerClass(TLCollectibleInfo.CONSTRUCTOR_ID, TLCollectibleInfo::class.java)
         registerClass(TLGame.CONSTRUCTOR_ID, TLGame::class.java)
         registerClass(TLGeoPoint.CONSTRUCTOR_ID, TLGeoPoint::class.java)
+        registerClass(TLGeoPointAddress.CONSTRUCTOR_ID, TLGeoPointAddress::class.java)
         registerClass(TLGeoPointEmpty.CONSTRUCTOR_ID, TLGeoPointEmpty::class.java)
         registerClass(TLGlobalPrivacySettings.CONSTRUCTOR_ID, TLGlobalPrivacySettings::class.java)
         registerClass(TLGroupCall.CONSTRUCTOR_ID, TLGroupCall::class.java)
@@ -1119,6 +1276,8 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLTermsOfService.CONSTRUCTOR_ID, TLTermsOfService::class.java)
         registerClass(TLTermsOfServiceUpdate.CONSTRUCTOR_ID, TLTermsOfServiceUpdate::class.java)
         registerClass(TLTermsOfServiceUpdateEmpty.CONSTRUCTOR_ID, TLTermsOfServiceUpdateEmpty::class.java)
+        registerClass(TLTimezonesList.CONSTRUCTOR_ID, TLTimezonesList::class.java)
+        registerClass(TLTimezonesListNotModified.CONSTRUCTOR_ID, TLTimezonesListNotModified::class.java)
         registerClass(TLUserInfo.CONSTRUCTOR_ID, TLUserInfo::class.java)
         registerClass(TLUserInfoEmpty.CONSTRUCTOR_ID, TLUserInfoEmpty::class.java)
         registerClass(TLHighScore.CONSTRUCTOR_ID, TLHighScore::class.java)
@@ -1148,6 +1307,12 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLInputBotInlineResultDocument.CONSTRUCTOR_ID, TLInputBotInlineResultDocument::class.java)
         registerClass(TLInputBotInlineResultGame.CONSTRUCTOR_ID, TLInputBotInlineResultGame::class.java)
         registerClass(TLInputBotInlineResultPhoto.CONSTRUCTOR_ID, TLInputBotInlineResultPhoto::class.java)
+        registerClass(TLInputBusinessAwayMessage.CONSTRUCTOR_ID, TLInputBusinessAwayMessage::class.java)
+        registerClass(TLInputBusinessBotRecipients.CONSTRUCTOR_ID, TLInputBusinessBotRecipients::class.java)
+        registerClass(TLInputBusinessChatLink.CONSTRUCTOR_ID, TLInputBusinessChatLink::class.java)
+        registerClass(TLInputBusinessGreetingMessage.CONSTRUCTOR_ID, TLInputBusinessGreetingMessage::class.java)
+        registerClass(TLInputBusinessIntro.CONSTRUCTOR_ID, TLInputBusinessIntro::class.java)
+        registerClass(TLInputBusinessRecipients.CONSTRUCTOR_ID, TLInputBusinessRecipients::class.java)
         registerClass(TLInputChannel.CONSTRUCTOR_ID, TLInputChannel::class.java)
         registerClass(TLInputChannelEmpty.CONSTRUCTOR_ID, TLInputChannelEmpty::class.java)
         registerClass(TLInputChannelFromMessage.CONSTRUCTOR_ID, TLInputChannelFromMessage::class.java)
@@ -1158,6 +1323,8 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLInputCheckPasswordEmpty.CONSTRUCTOR_ID, TLInputCheckPasswordEmpty::class.java)
         registerClass(TLInputCheckPasswordSRP.CONSTRUCTOR_ID, TLInputCheckPasswordSRP::class.java)
         registerClass(TLInputClientProxy.CONSTRUCTOR_ID, TLInputClientProxy::class.java)
+        registerClass(TLInputCollectiblePhone.CONSTRUCTOR_ID, TLInputCollectiblePhone::class.java)
+        registerClass(TLInputCollectibleUsername.CONSTRUCTOR_ID, TLInputCollectibleUsername::class.java)
         registerClass(TLInputDialogPeer.CONSTRUCTOR_ID, TLInputDialogPeer::class.java)
         registerClass(TLInputDialogPeerFolder.CONSTRUCTOR_ID, TLInputDialogPeerFolder::class.java)
         registerClass(TLInputDocument.CONSTRUCTOR_ID, TLInputDocument::class.java)
@@ -1172,6 +1339,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLInputFile.CONSTRUCTOR_ID, TLInputFile::class.java)
         registerClass(TLInputFileBig.CONSTRUCTOR_ID, TLInputFileBig::class.java)
         registerClass(TLInputFileLocation.CONSTRUCTOR_ID, TLInputFileLocation::class.java)
+        registerClass(TLInputFileStoryDocument.CONSTRUCTOR_ID, TLInputFileStoryDocument::class.java)
         registerClass(TLInputFolderPeer.CONSTRUCTOR_ID, TLInputFolderPeer::class.java)
         registerClass(TLInputGameID.CONSTRUCTOR_ID, TLInputGameID::class.java)
         registerClass(TLInputGameShortName.CONSTRUCTOR_ID, TLInputGameShortName::class.java)
@@ -1182,6 +1350,8 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLInputInvoiceMessage.CONSTRUCTOR_ID, TLInputInvoiceMessage::class.java)
         registerClass(TLInputInvoicePremiumGiftCode.CONSTRUCTOR_ID, TLInputInvoicePremiumGiftCode::class.java)
         registerClass(TLInputInvoiceSlug.CONSTRUCTOR_ID, TLInputInvoiceSlug::class.java)
+        registerClass(TLInputInvoiceStars.CONSTRUCTOR_ID, TLInputInvoiceStars::class.java)
+        registerClass(TLInputKeyboardButtonRequestPeer.CONSTRUCTOR_ID, TLInputKeyboardButtonRequestPeer::class.java)
         registerClass(TLInputKeyboardButtonUrlAuth.CONSTRUCTOR_ID, TLInputKeyboardButtonUrlAuth::class.java)
         registerClass(TLInputKeyboardButtonUserProfile.CONSTRUCTOR_ID, TLInputKeyboardButtonUserProfile::class.java)
         registerClass(TLInputMediaAreaChannelPost.CONSTRUCTOR_ID, TLInputMediaAreaChannelPost::class.java)
@@ -1195,6 +1365,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLInputMediaGeoLive.CONSTRUCTOR_ID, TLInputMediaGeoLive::class.java)
         registerClass(TLInputMediaGeoPoint.CONSTRUCTOR_ID, TLInputMediaGeoPoint::class.java)
         registerClass(TLInputMediaInvoice.CONSTRUCTOR_ID, TLInputMediaInvoice::class.java)
+        registerClass(TLInputMediaPaidMedia.CONSTRUCTOR_ID, TLInputMediaPaidMedia::class.java)
         registerClass(TLInputMediaPhoto.CONSTRUCTOR_ID, TLInputMediaPhoto::class.java)
         registerClass(TLInputMediaPhotoExternal.CONSTRUCTOR_ID, TLInputMediaPhotoExternal::class.java)
         registerClass(TLInputMediaPoll.CONSTRUCTOR_ID, TLInputMediaPoll::class.java)
@@ -1251,6 +1422,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLInputPhotoLegacyFileLocation.CONSTRUCTOR_ID, TLInputPhotoLegacyFileLocation::class.java)
         registerClass(TLInputPrivacyKeyAbout.CONSTRUCTOR_ID, TLInputPrivacyKeyAbout::class.java)
         registerClass(TLInputPrivacyKeyAddedByPhone.CONSTRUCTOR_ID, TLInputPrivacyKeyAddedByPhone::class.java)
+        registerClass(TLInputPrivacyKeyBirthday.CONSTRUCTOR_ID, TLInputPrivacyKeyBirthday::class.java)
         registerClass(TLInputPrivacyKeyChatInvite.CONSTRUCTOR_ID, TLInputPrivacyKeyChatInvite::class.java)
         registerClass(TLInputPrivacyKeyForwards.CONSTRUCTOR_ID, TLInputPrivacyKeyForwards::class.java)
         registerClass(TLInputPrivacyKeyPhoneCall.CONSTRUCTOR_ID, TLInputPrivacyKeyPhoneCall::class.java)
@@ -1263,11 +1435,14 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLInputPrivacyValueAllowChatParticipants.CONSTRUCTOR_ID, TLInputPrivacyValueAllowChatParticipants::class.java)
         registerClass(TLInputPrivacyValueAllowCloseFriends.CONSTRUCTOR_ID, TLInputPrivacyValueAllowCloseFriends::class.java)
         registerClass(TLInputPrivacyValueAllowContacts.CONSTRUCTOR_ID, TLInputPrivacyValueAllowContacts::class.java)
+        registerClass(TLInputPrivacyValueAllowPremium.CONSTRUCTOR_ID, TLInputPrivacyValueAllowPremium::class.java)
         registerClass(TLInputPrivacyValueAllowUsers.CONSTRUCTOR_ID, TLInputPrivacyValueAllowUsers::class.java)
         registerClass(TLInputPrivacyValueDisallowAll.CONSTRUCTOR_ID, TLInputPrivacyValueDisallowAll::class.java)
         registerClass(TLInputPrivacyValueDisallowChatParticipants.CONSTRUCTOR_ID, TLInputPrivacyValueDisallowChatParticipants::class.java)
         registerClass(TLInputPrivacyValueDisallowContacts.CONSTRUCTOR_ID, TLInputPrivacyValueDisallowContacts::class.java)
         registerClass(TLInputPrivacyValueDisallowUsers.CONSTRUCTOR_ID, TLInputPrivacyValueDisallowUsers::class.java)
+        registerClass(TLInputQuickReplyShortcut.CONSTRUCTOR_ID, TLInputQuickReplyShortcut::class.java)
+        registerClass(TLInputQuickReplyShortcutId.CONSTRUCTOR_ID, TLInputQuickReplyShortcutId::class.java)
         registerClass(TLInputReplyToMessage.CONSTRUCTOR_ID, TLInputReplyToMessage::class.java)
         registerClass(TLInputReplyToStory.CONSTRUCTOR_ID, TLInputReplyToStory::class.java)
         registerClass(TLInputReportReasonChildAbuse.CONSTRUCTOR_ID, TLInputReportReasonChildAbuse::class.java)
@@ -1285,6 +1460,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLInputSecureFileUploaded.CONSTRUCTOR_ID, TLInputSecureFileUploaded::class.java)
         registerClass(TLInputSecureValue.CONSTRUCTOR_ID, TLInputSecureValue::class.java)
         registerClass(TLInputSingleMedia.CONSTRUCTOR_ID, TLInputSingleMedia::class.java)
+        registerClass(TLInputStarsTransaction.CONSTRUCTOR_ID, TLInputStarsTransaction::class.java)
         registerClass(TLInputStickerSetAnimatedEmoji.CONSTRUCTOR_ID, TLInputStickerSetAnimatedEmoji::class.java)
         registerClass(TLInputStickerSetAnimatedEmojiAnimations.CONSTRUCTOR_ID, TLInputStickerSetAnimatedEmojiAnimations::class.java)
         registerClass(TLInputStickerSetDice.CONSTRUCTOR_ID, TLInputStickerSetDice::class.java)
@@ -1304,6 +1480,8 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLInputStorePaymentPremiumGiftCode.CONSTRUCTOR_ID, TLInputStorePaymentPremiumGiftCode::class.java)
         registerClass(TLInputStorePaymentPremiumGiveaway.CONSTRUCTOR_ID, TLInputStorePaymentPremiumGiveaway::class.java)
         registerClass(TLInputStorePaymentPremiumSubscription.CONSTRUCTOR_ID, TLInputStorePaymentPremiumSubscription::class.java)
+        registerClass(TLInputStorePaymentStarsGift.CONSTRUCTOR_ID, TLInputStorePaymentStarsGift::class.java)
+        registerClass(TLInputStorePaymentStarsTopup.CONSTRUCTOR_ID, TLInputStorePaymentStarsTopup::class.java)
         registerClass(TLInputTakeoutFileLocation.CONSTRUCTOR_ID, TLInputTakeoutFileLocation::class.java)
         registerClass(TLInputTheme.CONSTRUCTOR_ID, TLInputTheme::class.java)
         registerClass(TLInputThemeSettings.CONSTRUCTOR_ID, TLInputThemeSettings::class.java)
@@ -1353,8 +1531,11 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLMediaAreaCoordinates.CONSTRUCTOR_ID, TLMediaAreaCoordinates::class.java)
         registerClass(TLMediaAreaGeoPoint.CONSTRUCTOR_ID, TLMediaAreaGeoPoint::class.java)
         registerClass(TLMediaAreaSuggestedReaction.CONSTRUCTOR_ID, TLMediaAreaSuggestedReaction::class.java)
+        registerClass(TLMediaAreaUrl.CONSTRUCTOR_ID, TLMediaAreaUrl::class.java)
         registerClass(TLMediaAreaVenue.CONSTRUCTOR_ID, TLMediaAreaVenue::class.java)
+        registerClass(TLMediaAreaWeather.CONSTRUCTOR_ID, TLMediaAreaWeather::class.java)
         registerClass(TLMessage.CONSTRUCTOR_ID, TLMessage::class.java)
+        registerClass(TLMessageActionBoostApply.CONSTRUCTOR_ID, TLMessageActionBoostApply::class.java)
         registerClass(TLMessageActionBotAllowed.CONSTRUCTOR_ID, TLMessageActionBotAllowed::class.java)
         registerClass(TLMessageActionChannelCreate.CONSTRUCTOR_ID, TLMessageActionChannelCreate::class.java)
         registerClass(TLMessageActionChannelMigrateFrom.CONSTRUCTOR_ID, TLMessageActionChannelMigrateFrom::class.java)
@@ -1374,17 +1555,20 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLMessageActionGeoProximityReached.CONSTRUCTOR_ID, TLMessageActionGeoProximityReached::class.java)
         registerClass(TLMessageActionGiftCode.CONSTRUCTOR_ID, TLMessageActionGiftCode::class.java)
         registerClass(TLMessageActionGiftPremium.CONSTRUCTOR_ID, TLMessageActionGiftPremium::class.java)
+        registerClass(TLMessageActionGiftStars.CONSTRUCTOR_ID, TLMessageActionGiftStars::class.java)
         registerClass(TLMessageActionGiveawayLaunch.CONSTRUCTOR_ID, TLMessageActionGiveawayLaunch::class.java)
         registerClass(TLMessageActionGiveawayResults.CONSTRUCTOR_ID, TLMessageActionGiveawayResults::class.java)
         registerClass(TLMessageActionGroupCall.CONSTRUCTOR_ID, TLMessageActionGroupCall::class.java)
         registerClass(TLMessageActionGroupCallScheduled.CONSTRUCTOR_ID, TLMessageActionGroupCallScheduled::class.java)
         registerClass(TLMessageActionHistoryClear.CONSTRUCTOR_ID, TLMessageActionHistoryClear::class.java)
         registerClass(TLMessageActionInviteToGroupCall.CONSTRUCTOR_ID, TLMessageActionInviteToGroupCall::class.java)
+        registerClass(TLMessageActionPaymentRefunded.CONSTRUCTOR_ID, TLMessageActionPaymentRefunded::class.java)
         registerClass(TLMessageActionPaymentSent.CONSTRUCTOR_ID, TLMessageActionPaymentSent::class.java)
         registerClass(TLMessageActionPaymentSentMe.CONSTRUCTOR_ID, TLMessageActionPaymentSentMe::class.java)
         registerClass(TLMessageActionPhoneCall.CONSTRUCTOR_ID, TLMessageActionPhoneCall::class.java)
         registerClass(TLMessageActionPinMessage.CONSTRUCTOR_ID, TLMessageActionPinMessage::class.java)
         registerClass(TLMessageActionRequestedPeer.CONSTRUCTOR_ID, TLMessageActionRequestedPeer::class.java)
+        registerClass(TLMessageActionRequestedPeerSentMe.CONSTRUCTOR_ID, TLMessageActionRequestedPeerSentMe::class.java)
         registerClass(TLMessageActionScreenshotTaken.CONSTRUCTOR_ID, TLMessageActionScreenshotTaken::class.java)
         registerClass(TLMessageActionSecureValuesSent.CONSTRUCTOR_ID, TLMessageActionSecureValuesSent::class.java)
         registerClass(TLMessageActionSecureValuesSentMe.CONSTRUCTOR_ID, TLMessageActionSecureValuesSentMe::class.java)
@@ -1430,6 +1614,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLMessageMediaGiveaway.CONSTRUCTOR_ID, TLMessageMediaGiveaway::class.java)
         registerClass(TLMessageMediaGiveawayResults.CONSTRUCTOR_ID, TLMessageMediaGiveawayResults::class.java)
         registerClass(TLMessageMediaInvoice.CONSTRUCTOR_ID, TLMessageMediaInvoice::class.java)
+        registerClass(TLMessageMediaPaidMedia.CONSTRUCTOR_ID, TLMessageMediaPaidMedia::class.java)
         registerClass(TLMessageMediaPhoto.CONSTRUCTOR_ID, TLMessageMediaPhoto::class.java)
         registerClass(TLMessageMediaPoll.CONSTRUCTOR_ID, TLMessageMediaPoll::class.java)
         registerClass(TLMessageMediaStory.CONSTRUCTOR_ID, TLMessageMediaStory::class.java)
@@ -1453,6 +1638,8 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLAllStickers.CONSTRUCTOR_ID, TLAllStickers::class.java)
         registerClass(TLAllStickersNotModified.CONSTRUCTOR_ID, TLAllStickersNotModified::class.java)
         registerClass(TLArchivedStickers.CONSTRUCTOR_ID, TLArchivedStickers::class.java)
+        registerClass(TLAvailableEffects.CONSTRUCTOR_ID, TLAvailableEffects::class.java)
+        registerClass(TLAvailableEffectsNotModified.CONSTRUCTOR_ID, TLAvailableEffectsNotModified::class.java)
         registerClass(TLAvailableReactions.CONSTRUCTOR_ID, TLAvailableReactions::class.java)
         registerClass(TLAvailableReactionsNotModified.CONSTRUCTOR_ID, TLAvailableReactionsNotModified::class.java)
         registerClass(com.github.badoualy.telegram.tl.api.messages.TLBotApp.CONSTRUCTOR_ID, com.github.badoualy.telegram.tl.api.messages.TLBotApp::class.java)
@@ -1467,6 +1654,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLCheckedHistoryImportPeer.CONSTRUCTOR_ID, TLCheckedHistoryImportPeer::class.java)
         registerClass(TLDhConfig.CONSTRUCTOR_ID, TLDhConfig::class.java)
         registerClass(TLDhConfigNotModified.CONSTRUCTOR_ID, TLDhConfigNotModified::class.java)
+        registerClass(TLDialogFilters.CONSTRUCTOR_ID, TLDialogFilters::class.java)
         registerClass(TLDialogs.CONSTRUCTOR_ID, TLDialogs::class.java)
         registerClass(TLDialogsNotModified.CONSTRUCTOR_ID, TLDialogsNotModified::class.java)
         registerClass(TLDialogsSlice.CONSTRUCTOR_ID, TLDialogsSlice::class.java)
@@ -1487,14 +1675,18 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLHistoryImport.CONSTRUCTOR_ID, TLHistoryImport::class.java)
         registerClass(TLHistoryImportParsed.CONSTRUCTOR_ID, TLHistoryImportParsed::class.java)
         registerClass(TLInactiveChats.CONSTRUCTOR_ID, TLInactiveChats::class.java)
+        registerClass(TLInvitedUsers.CONSTRUCTOR_ID, TLInvitedUsers::class.java)
         registerClass(TLMessageEditData.CONSTRUCTOR_ID, TLMessageEditData::class.java)
         registerClass(TLMessageReactionsList.CONSTRUCTOR_ID, TLMessageReactionsList::class.java)
         registerClass(com.github.badoualy.telegram.tl.api.messages.TLMessageViews.CONSTRUCTOR_ID, com.github.badoualy.telegram.tl.api.messages.TLMessageViews::class.java)
         registerClass(TLMessages.CONSTRUCTOR_ID, TLMessages::class.java)
         registerClass(TLMessagesNotModified.CONSTRUCTOR_ID, TLMessagesNotModified::class.java)
         registerClass(TLMessagesSlice.CONSTRUCTOR_ID, TLMessagesSlice::class.java)
+        registerClass(TLMyStickers.CONSTRUCTOR_ID, TLMyStickers::class.java)
         registerClass(TLPeerDialogs.CONSTRUCTOR_ID, TLPeerDialogs::class.java)
         registerClass(com.github.badoualy.telegram.tl.api.messages.TLPeerSettings.CONSTRUCTOR_ID, com.github.badoualy.telegram.tl.api.messages.TLPeerSettings::class.java)
+        registerClass(TLQuickReplies.CONSTRUCTOR_ID, TLQuickReplies::class.java)
+        registerClass(TLQuickRepliesNotModified.CONSTRUCTOR_ID, TLQuickRepliesNotModified::class.java)
         registerClass(TLReactions.CONSTRUCTOR_ID, TLReactions::class.java)
         registerClass(TLReactionsNotModified.CONSTRUCTOR_ID, TLReactionsNotModified::class.java)
         registerClass(TLRecentStickers.CONSTRUCTOR_ID, TLRecentStickers::class.java)
@@ -1504,6 +1696,8 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLSavedDialogsSlice.CONSTRUCTOR_ID, TLSavedDialogsSlice::class.java)
         registerClass(TLSavedGifs.CONSTRUCTOR_ID, TLSavedGifs::class.java)
         registerClass(TLSavedGifsNotModified.CONSTRUCTOR_ID, TLSavedGifsNotModified::class.java)
+        registerClass(TLSavedReactionTags.CONSTRUCTOR_ID, TLSavedReactionTags::class.java)
+        registerClass(TLSavedReactionTagsNotModified.CONSTRUCTOR_ID, TLSavedReactionTagsNotModified::class.java)
         registerClass(TLSearchCounter.CONSTRUCTOR_ID, TLSearchCounter::class.java)
         registerClass(TLSearchResultsCalendar.CONSTRUCTOR_ID, TLSearchResultsCalendar::class.java)
         registerClass(TLSearchResultsPositions.CONSTRUCTOR_ID, TLSearchResultsPositions::class.java)
@@ -1521,6 +1715,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLTranslateResult.CONSTRUCTOR_ID, TLTranslateResult::class.java)
         registerClass(TLVotesList.CONSTRUCTOR_ID, TLVotesList::class.java)
         registerClass(com.github.badoualy.telegram.tl.api.messages.TLWebPage.CONSTRUCTOR_ID, com.github.badoualy.telegram.tl.api.messages.TLWebPage::class.java)
+        registerClass(TLMissingInvitee.CONSTRUCTOR_ID, TLMissingInvitee::class.java)
         registerClass(TLMyBoost.CONSTRUCTOR_ID, TLMyBoost::class.java)
         registerClass(TLNearestDc.CONSTRUCTOR_ID, TLNearestDc::class.java)
         registerClass(TLNotificationSoundDefault.CONSTRUCTOR_ID, TLNotificationSoundDefault::class.java)
@@ -1532,6 +1727,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLNotifyForumTopic.CONSTRUCTOR_ID, TLNotifyForumTopic::class.java)
         registerClass(TLNotifyPeer.CONSTRUCTOR_ID, TLNotifyPeer::class.java)
         registerClass(TLNotifyUsers.CONSTRUCTOR_ID, TLNotifyUsers::class.java)
+        registerClass(TLOutboxReadDate.CONSTRUCTOR_ID, TLOutboxReadDate::class.java)
         registerClass(TLPage.CONSTRUCTOR_ID, TLPage::class.java)
         registerClass(TLPageBlockAnchor.CONSTRUCTOR_ID, TLPageBlockAnchor::class.java)
         registerClass(TLPageBlockAudio.CONSTRUCTOR_ID, TLPageBlockAudio::class.java)
@@ -1582,10 +1778,16 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLGiveawayInfo.CONSTRUCTOR_ID, TLGiveawayInfo::class.java)
         registerClass(TLGiveawayInfoResults.CONSTRUCTOR_ID, TLGiveawayInfoResults::class.java)
         registerClass(TLPaymentForm.CONSTRUCTOR_ID, TLPaymentForm::class.java)
+        registerClass(TLPaymentFormStars.CONSTRUCTOR_ID, TLPaymentFormStars::class.java)
         registerClass(TLPaymentReceipt.CONSTRUCTOR_ID, TLPaymentReceipt::class.java)
+        registerClass(TLPaymentReceiptStars.CONSTRUCTOR_ID, TLPaymentReceiptStars::class.java)
         registerClass(TLPaymentResult.CONSTRUCTOR_ID, TLPaymentResult::class.java)
         registerClass(TLPaymentVerificationNeeded.CONSTRUCTOR_ID, TLPaymentVerificationNeeded::class.java)
         registerClass(TLSavedInfo.CONSTRUCTOR_ID, TLSavedInfo::class.java)
+        registerClass(TLStarsRevenueAdsAccountUrl.CONSTRUCTOR_ID, TLStarsRevenueAdsAccountUrl::class.java)
+        registerClass(TLStarsRevenueStats.CONSTRUCTOR_ID, TLStarsRevenueStats::class.java)
+        registerClass(TLStarsRevenueWithdrawalUrl.CONSTRUCTOR_ID, TLStarsRevenueWithdrawalUrl::class.java)
+        registerClass(TLStarsStatus.CONSTRUCTOR_ID, TLStarsStatus::class.java)
         registerClass(TLValidatedRequestedInfo.CONSTRUCTOR_ID, TLValidatedRequestedInfo::class.java)
         registerClass(TLPeerBlocked.CONSTRUCTOR_ID, TLPeerBlocked::class.java)
         registerClass(TLPeerChannel.CONSTRUCTOR_ID, TLPeerChannel::class.java)
@@ -1645,6 +1847,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLPrepaidGiveaway.CONSTRUCTOR_ID, TLPrepaidGiveaway::class.java)
         registerClass(TLPrivacyKeyAbout.CONSTRUCTOR_ID, TLPrivacyKeyAbout::class.java)
         registerClass(TLPrivacyKeyAddedByPhone.CONSTRUCTOR_ID, TLPrivacyKeyAddedByPhone::class.java)
+        registerClass(TLPrivacyKeyBirthday.CONSTRUCTOR_ID, TLPrivacyKeyBirthday::class.java)
         registerClass(TLPrivacyKeyChatInvite.CONSTRUCTOR_ID, TLPrivacyKeyChatInvite::class.java)
         registerClass(TLPrivacyKeyForwards.CONSTRUCTOR_ID, TLPrivacyKeyForwards::class.java)
         registerClass(TLPrivacyKeyPhoneCall.CONSTRUCTOR_ID, TLPrivacyKeyPhoneCall::class.java)
@@ -1657,6 +1860,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLPrivacyValueAllowChatParticipants.CONSTRUCTOR_ID, TLPrivacyValueAllowChatParticipants::class.java)
         registerClass(TLPrivacyValueAllowCloseFriends.CONSTRUCTOR_ID, TLPrivacyValueAllowCloseFriends::class.java)
         registerClass(TLPrivacyValueAllowContacts.CONSTRUCTOR_ID, TLPrivacyValueAllowContacts::class.java)
+        registerClass(TLPrivacyValueAllowPremium.CONSTRUCTOR_ID, TLPrivacyValueAllowPremium::class.java)
         registerClass(TLPrivacyValueAllowUsers.CONSTRUCTOR_ID, TLPrivacyValueAllowUsers::class.java)
         registerClass(TLPrivacyValueDisallowAll.CONSTRUCTOR_ID, TLPrivacyValueDisallowAll::class.java)
         registerClass(TLPrivacyValueDisallowChatParticipants.CONSTRUCTOR_ID, TLPrivacyValueDisallowChatParticipants::class.java)
@@ -1664,10 +1868,14 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLPrivacyValueDisallowUsers.CONSTRUCTOR_ID, TLPrivacyValueDisallowUsers::class.java)
         registerClass(TLPublicForwardMessage.CONSTRUCTOR_ID, TLPublicForwardMessage::class.java)
         registerClass(TLPublicForwardStory.CONSTRUCTOR_ID, TLPublicForwardStory::class.java)
+        registerClass(TLQuickReply.CONSTRUCTOR_ID, TLQuickReply::class.java)
         registerClass(TLReactionCount.CONSTRUCTOR_ID, TLReactionCount::class.java)
         registerClass(TLReactionCustomEmoji.CONSTRUCTOR_ID, TLReactionCustomEmoji::class.java)
         registerClass(TLReactionEmoji.CONSTRUCTOR_ID, TLReactionEmoji::class.java)
         registerClass(TLReactionEmpty.CONSTRUCTOR_ID, TLReactionEmpty::class.java)
+        registerClass(TLReactionNotificationsFromAll.CONSTRUCTOR_ID, TLReactionNotificationsFromAll::class.java)
+        registerClass(TLReactionNotificationsFromContacts.CONSTRUCTOR_ID, TLReactionNotificationsFromContacts::class.java)
+        registerClass(TLReactionsNotifySettings.CONSTRUCTOR_ID, TLReactionsNotifySettings::class.java)
         registerClass(TLReadParticipantDate.CONSTRUCTOR_ID, TLReadParticipantDate::class.java)
         registerClass(TLReceivedNotifyMessage.CONSTRUCTOR_ID, TLReceivedNotifyMessage::class.java)
         registerClass(TLRecentMeUrlChat.CONSTRUCTOR_ID, TLRecentMeUrlChat::class.java)
@@ -1682,9 +1890,13 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestPeerTypeBroadcast.CONSTRUCTOR_ID, TLRequestPeerTypeBroadcast::class.java)
         registerClass(TLRequestPeerTypeChat.CONSTRUCTOR_ID, TLRequestPeerTypeChat::class.java)
         registerClass(TLRequestPeerTypeUser.CONSTRUCTOR_ID, TLRequestPeerTypeUser::class.java)
+        registerClass(TLRequestedPeerChannel.CONSTRUCTOR_ID, TLRequestedPeerChannel::class.java)
+        registerClass(TLRequestedPeerChat.CONSTRUCTOR_ID, TLRequestedPeerChat::class.java)
+        registerClass(TLRequestedPeerUser.CONSTRUCTOR_ID, TLRequestedPeerUser::class.java)
         registerClass(TLRestrictionReason.CONSTRUCTOR_ID, TLRestrictionReason::class.java)
         registerClass(TLSavedDialog.CONSTRUCTOR_ID, TLSavedDialog::class.java)
         registerClass(TLSavedPhoneContact.CONSTRUCTOR_ID, TLSavedPhoneContact::class.java)
+        registerClass(TLSavedReactionTag.CONSTRUCTOR_ID, TLSavedReactionTag::class.java)
         registerClass(TLSearchResultPosition.CONSTRUCTOR_ID, TLSearchResultPosition::class.java)
         registerClass(TLSearchResultsCalendarPeriod.CONSTRUCTOR_ID, TLSearchResultsCalendarPeriod::class.java)
         registerClass(TLSecureCredentialsEncrypted.CONSTRUCTOR_ID, TLSecureCredentialsEncrypted::class.java)
@@ -1742,10 +1954,26 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLSendMessageUploadRoundAction.CONSTRUCTOR_ID, TLSendMessageUploadRoundAction::class.java)
         registerClass(TLSendMessageUploadVideoAction.CONSTRUCTOR_ID, TLSendMessageUploadVideoAction::class.java)
         registerClass(TLShippingOption.CONSTRUCTOR_ID, TLShippingOption::class.java)
-        registerClass(TLSimpleWebViewResultUrl.CONSTRUCTOR_ID, TLSimpleWebViewResultUrl::class.java)
+        registerClass(TLSmsJob.CONSTRUCTOR_ID, TLSmsJob::class.java)
+        registerClass(TLEligibleToJoin.CONSTRUCTOR_ID, TLEligibleToJoin::class.java)
+        registerClass(TLStatus.CONSTRUCTOR_ID, TLStatus::class.java)
         registerClass(TLSpeakingInGroupCallAction.CONSTRUCTOR_ID, TLSpeakingInGroupCallAction::class.java)
         registerClass(TLSponsoredMessage.CONSTRUCTOR_ID, TLSponsoredMessage::class.java)
-        registerClass(TLSponsoredWebPage.CONSTRUCTOR_ID, TLSponsoredWebPage::class.java)
+        registerClass(TLSponsoredMessageReportOption.CONSTRUCTOR_ID, TLSponsoredMessageReportOption::class.java)
+        registerClass(TLStarsGiftOption.CONSTRUCTOR_ID, TLStarsGiftOption::class.java)
+        registerClass(TLStarsRevenueStatus.CONSTRUCTOR_ID, TLStarsRevenueStatus::class.java)
+        registerClass(TLStarsTopupOption.CONSTRUCTOR_ID, TLStarsTopupOption::class.java)
+        registerClass(TLStarsTransaction.CONSTRUCTOR_ID, TLStarsTransaction::class.java)
+        registerClass(TLStarsTransactionPeer.CONSTRUCTOR_ID, TLStarsTransactionPeer::class.java)
+        registerClass(TLStarsTransactionPeerAds.CONSTRUCTOR_ID, TLStarsTransactionPeerAds::class.java)
+        registerClass(TLStarsTransactionPeerAppStore.CONSTRUCTOR_ID, TLStarsTransactionPeerAppStore::class.java)
+        registerClass(TLStarsTransactionPeerFragment.CONSTRUCTOR_ID, TLStarsTransactionPeerFragment::class.java)
+        registerClass(TLStarsTransactionPeerPlayMarket.CONSTRUCTOR_ID, TLStarsTransactionPeerPlayMarket::class.java)
+        registerClass(TLStarsTransactionPeerPremiumBot.CONSTRUCTOR_ID, TLStarsTransactionPeerPremiumBot::class.java)
+        registerClass(TLStarsTransactionPeerUnsupported.CONSTRUCTOR_ID, TLStarsTransactionPeerUnsupported::class.java)
+        registerClass(TLBroadcastRevenueStats.CONSTRUCTOR_ID, TLBroadcastRevenueStats::class.java)
+        registerClass(TLBroadcastRevenueTransactions.CONSTRUCTOR_ID, TLBroadcastRevenueTransactions::class.java)
+        registerClass(TLBroadcastRevenueWithdrawalUrl.CONSTRUCTOR_ID, TLBroadcastRevenueWithdrawalUrl::class.java)
         registerClass(TLBroadcastStats.CONSTRUCTOR_ID, TLBroadcastStats::class.java)
         registerClass(TLMegagroupStats.CONSTRUCTOR_ID, TLMegagroupStats::class.java)
         registerClass(TLMessageStats.CONSTRUCTOR_ID, TLMessageStats::class.java)
@@ -1781,6 +2009,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLFileWebp.CONSTRUCTOR_ID, TLFileWebp::class.java)
         registerClass(TLAllStories.CONSTRUCTOR_ID, TLAllStories::class.java)
         registerClass(TLAllStoriesNotModified.CONSTRUCTOR_ID, TLAllStoriesNotModified::class.java)
+        registerClass(TLFoundStories.CONSTRUCTOR_ID, TLFoundStories::class.java)
         registerClass(com.github.badoualy.telegram.tl.api.stories.TLPeerStories.CONSTRUCTOR_ID, com.github.badoualy.telegram.tl.api.stories.TLPeerStories::class.java)
         registerClass(TLStories.CONSTRUCTOR_ID, TLStories::class.java)
         registerClass(TLStoryReactionsList.CONSTRUCTOR_ID, TLStoryReactionsList::class.java)
@@ -1817,7 +2046,9 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLTextWithEntities.CONSTRUCTOR_ID, TLTextWithEntities::class.java)
         registerClass(TLTheme.CONSTRUCTOR_ID, TLTheme::class.java)
         registerClass(TLThemeSettings.CONSTRUCTOR_ID, TLThemeSettings::class.java)
+        registerClass(TLTimezone.CONSTRUCTOR_ID, TLTimezone::class.java)
         registerClass(TLTopPeer.CONSTRUCTOR_ID, TLTopPeer::class.java)
+        registerClass(TLTopPeerCategoryBotsApp.CONSTRUCTOR_ID, TLTopPeerCategoryBotsApp::class.java)
         registerClass(TLTopPeerCategoryBotsInline.CONSTRUCTOR_ID, TLTopPeerCategoryBotsInline::class.java)
         registerClass(TLTopPeerCategoryBotsPM.CONSTRUCTOR_ID, TLTopPeerCategoryBotsPM::class.java)
         registerClass(TLTopPeerCategoryChannels.CONSTRUCTOR_ID, TLTopPeerCategoryChannels::class.java)
@@ -1829,20 +2060,26 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLTopPeerCategoryPhoneCalls.CONSTRUCTOR_ID, TLTopPeerCategoryPhoneCalls::class.java)
         registerClass(TLUpdateAttachMenuBots.CONSTRUCTOR_ID, TLUpdateAttachMenuBots::class.java)
         registerClass(TLUpdateAutoSaveSettings.CONSTRUCTOR_ID, TLUpdateAutoSaveSettings::class.java)
+        registerClass(TLUpdateBotBusinessConnect.CONSTRUCTOR_ID, TLUpdateBotBusinessConnect::class.java)
         registerClass(TLUpdateBotCallbackQuery.CONSTRUCTOR_ID, TLUpdateBotCallbackQuery::class.java)
         registerClass(TLUpdateBotChatBoost.CONSTRUCTOR_ID, TLUpdateBotChatBoost::class.java)
         registerClass(TLUpdateBotChatInviteRequester.CONSTRUCTOR_ID, TLUpdateBotChatInviteRequester::class.java)
         registerClass(TLUpdateBotCommands.CONSTRUCTOR_ID, TLUpdateBotCommands::class.java)
+        registerClass(TLUpdateBotDeleteBusinessMessage.CONSTRUCTOR_ID, TLUpdateBotDeleteBusinessMessage::class.java)
+        registerClass(TLUpdateBotEditBusinessMessage.CONSTRUCTOR_ID, TLUpdateBotEditBusinessMessage::class.java)
         registerClass(TLUpdateBotInlineQuery.CONSTRUCTOR_ID, TLUpdateBotInlineQuery::class.java)
         registerClass(TLUpdateBotInlineSend.CONSTRUCTOR_ID, TLUpdateBotInlineSend::class.java)
         registerClass(TLUpdateBotMenuButton.CONSTRUCTOR_ID, TLUpdateBotMenuButton::class.java)
         registerClass(TLUpdateBotMessageReaction.CONSTRUCTOR_ID, TLUpdateBotMessageReaction::class.java)
         registerClass(TLUpdateBotMessageReactions.CONSTRUCTOR_ID, TLUpdateBotMessageReactions::class.java)
+        registerClass(TLUpdateBotNewBusinessMessage.CONSTRUCTOR_ID, TLUpdateBotNewBusinessMessage::class.java)
         registerClass(TLUpdateBotPrecheckoutQuery.CONSTRUCTOR_ID, TLUpdateBotPrecheckoutQuery::class.java)
         registerClass(TLUpdateBotShippingQuery.CONSTRUCTOR_ID, TLUpdateBotShippingQuery::class.java)
         registerClass(TLUpdateBotStopped.CONSTRUCTOR_ID, TLUpdateBotStopped::class.java)
         registerClass(TLUpdateBotWebhookJSON.CONSTRUCTOR_ID, TLUpdateBotWebhookJSON::class.java)
         registerClass(TLUpdateBotWebhookJSONQuery.CONSTRUCTOR_ID, TLUpdateBotWebhookJSONQuery::class.java)
+        registerClass(TLUpdateBroadcastRevenueTransactions.CONSTRUCTOR_ID, TLUpdateBroadcastRevenueTransactions::class.java)
+        registerClass(TLUpdateBusinessBotCallbackQuery.CONSTRUCTOR_ID, TLUpdateBusinessBotCallbackQuery::class.java)
         registerClass(TLUpdateChannel.CONSTRUCTOR_ID, TLUpdateChannel::class.java)
         registerClass(TLUpdateChannelAvailableMessages.CONSTRUCTOR_ID, TLUpdateChannelAvailableMessages::class.java)
         registerClass(TLUpdateChannelMessageForwards.CONSTRUCTOR_ID, TLUpdateChannelMessageForwards::class.java)
@@ -1868,6 +2105,8 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLUpdateDcOptions.CONSTRUCTOR_ID, TLUpdateDcOptions::class.java)
         registerClass(TLUpdateDeleteChannelMessages.CONSTRUCTOR_ID, TLUpdateDeleteChannelMessages::class.java)
         registerClass(TLUpdateDeleteMessages.CONSTRUCTOR_ID, TLUpdateDeleteMessages::class.java)
+        registerClass(TLUpdateDeleteQuickReply.CONSTRUCTOR_ID, TLUpdateDeleteQuickReply::class.java)
+        registerClass(TLUpdateDeleteQuickReplyMessages.CONSTRUCTOR_ID, TLUpdateDeleteQuickReplyMessages::class.java)
         registerClass(TLUpdateDeleteScheduledMessages.CONSTRUCTOR_ID, TLUpdateDeleteScheduledMessages::class.java)
         registerClass(TLUpdateDialogFilter.CONSTRUCTOR_ID, TLUpdateDialogFilter::class.java)
         registerClass(TLUpdateDialogFilterOrder.CONSTRUCTOR_ID, TLUpdateDialogFilterOrder::class.java)
@@ -1886,7 +2125,6 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLUpdateGroupCall.CONSTRUCTOR_ID, TLUpdateGroupCall::class.java)
         registerClass(TLUpdateGroupCallConnection.CONSTRUCTOR_ID, TLUpdateGroupCallConnection::class.java)
         registerClass(TLUpdateGroupCallParticipants.CONSTRUCTOR_ID, TLUpdateGroupCallParticipants::class.java)
-        registerClass(TLUpdateGroupInvitePrivacyForbidden.CONSTRUCTOR_ID, TLUpdateGroupInvitePrivacyForbidden::class.java)
         registerClass(TLUpdateInlineBotCallbackQuery.CONSTRUCTOR_ID, TLUpdateInlineBotCallbackQuery::class.java)
         registerClass(TLUpdateLangPack.CONSTRUCTOR_ID, TLUpdateLangPack::class.java)
         registerClass(TLUpdateLangPackTooLong.CONSTRUCTOR_ID, TLUpdateLangPackTooLong::class.java)
@@ -1901,8 +2139,10 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLUpdateNewChannelMessage.CONSTRUCTOR_ID, TLUpdateNewChannelMessage::class.java)
         registerClass(TLUpdateNewEncryptedMessage.CONSTRUCTOR_ID, TLUpdateNewEncryptedMessage::class.java)
         registerClass(TLUpdateNewMessage.CONSTRUCTOR_ID, TLUpdateNewMessage::class.java)
+        registerClass(TLUpdateNewQuickReply.CONSTRUCTOR_ID, TLUpdateNewQuickReply::class.java)
         registerClass(TLUpdateNewScheduledMessage.CONSTRUCTOR_ID, TLUpdateNewScheduledMessage::class.java)
         registerClass(TLUpdateNewStickerSet.CONSTRUCTOR_ID, TLUpdateNewStickerSet::class.java)
+        registerClass(TLUpdateNewStoryReaction.CONSTRUCTOR_ID, TLUpdateNewStoryReaction::class.java)
         registerClass(TLUpdateNotifySettings.CONSTRUCTOR_ID, TLUpdateNotifySettings::class.java)
         registerClass(TLUpdatePeerBlocked.CONSTRUCTOR_ID, TLUpdatePeerBlocked::class.java)
         registerClass(TLUpdatePeerHistoryTTL.CONSTRUCTOR_ID, TLUpdatePeerHistoryTTL::class.java)
@@ -1918,6 +2158,8 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLUpdatePinnedSavedDialogs.CONSTRUCTOR_ID, TLUpdatePinnedSavedDialogs::class.java)
         registerClass(TLUpdatePrivacy.CONSTRUCTOR_ID, TLUpdatePrivacy::class.java)
         registerClass(TLUpdatePtsChanged.CONSTRUCTOR_ID, TLUpdatePtsChanged::class.java)
+        registerClass(TLUpdateQuickReplies.CONSTRUCTOR_ID, TLUpdateQuickReplies::class.java)
+        registerClass(TLUpdateQuickReplyMessage.CONSTRUCTOR_ID, TLUpdateQuickReplyMessage::class.java)
         registerClass(TLUpdateReadChannelDiscussionInbox.CONSTRUCTOR_ID, TLUpdateReadChannelDiscussionInbox::class.java)
         registerClass(TLUpdateReadChannelDiscussionOutbox.CONSTRUCTOR_ID, TLUpdateReadChannelDiscussionOutbox::class.java)
         registerClass(TLUpdateReadChannelInbox.CONSTRUCTOR_ID, TLUpdateReadChannelInbox::class.java)
@@ -1933,6 +2175,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLUpdateRecentStickers.CONSTRUCTOR_ID, TLUpdateRecentStickers::class.java)
         registerClass(TLUpdateSavedDialogPinned.CONSTRUCTOR_ID, TLUpdateSavedDialogPinned::class.java)
         registerClass(TLUpdateSavedGifs.CONSTRUCTOR_ID, TLUpdateSavedGifs::class.java)
+        registerClass(TLUpdateSavedReactionTags.CONSTRUCTOR_ID, TLUpdateSavedReactionTags::class.java)
         registerClass(TLUpdateSavedRingtones.CONSTRUCTOR_ID, TLUpdateSavedRingtones::class.java)
         registerClass(TLUpdateSentStoryReaction.CONSTRUCTOR_ID, TLUpdateSentStoryReaction::class.java)
         registerClass(TLUpdateServiceNotification.CONSTRUCTOR_ID, TLUpdateServiceNotification::class.java)
@@ -1940,6 +2183,9 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLUpdateShortChatMessage.CONSTRUCTOR_ID, TLUpdateShortChatMessage::class.java)
         registerClass(TLUpdateShortMessage.CONSTRUCTOR_ID, TLUpdateShortMessage::class.java)
         registerClass(TLUpdateShortSentMessage.CONSTRUCTOR_ID, TLUpdateShortSentMessage::class.java)
+        registerClass(TLUpdateSmsJob.CONSTRUCTOR_ID, TLUpdateSmsJob::class.java)
+        registerClass(TLUpdateStarsBalance.CONSTRUCTOR_ID, TLUpdateStarsBalance::class.java)
+        registerClass(TLUpdateStarsRevenueStatus.CONSTRUCTOR_ID, TLUpdateStarsRevenueStatus::class.java)
         registerClass(TLUpdateStickerSets.CONSTRUCTOR_ID, TLUpdateStickerSets::class.java)
         registerClass(TLUpdateStickerSetsOrder.CONSTRUCTOR_ID, TLUpdateStickerSetsOrder::class.java)
         registerClass(TLUpdateStoriesStealthMode.CONSTRUCTOR_ID, TLUpdateStoriesStealthMode::class.java)
@@ -1997,6 +2243,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLWebDocument.CONSTRUCTOR_ID, TLWebDocument::class.java)
         registerClass(TLWebDocumentNoProxy.CONSTRUCTOR_ID, TLWebDocumentNoProxy::class.java)
         registerClass(TLWebPage.CONSTRUCTOR_ID, TLWebPage::class.java)
+        registerClass(TLWebPageAttributeStickerSet.CONSTRUCTOR_ID, TLWebPageAttributeStickerSet::class.java)
         registerClass(TLWebPageAttributeStory.CONSTRUCTOR_ID, TLWebPageAttributeStory::class.java)
         registerClass(TLWebPageAttributeTheme.CONSTRUCTOR_ID, TLWebPageAttributeTheme::class.java)
         registerClass(TLWebPageEmpty.CONSTRUCTOR_ID, TLWebPageEmpty::class.java)
@@ -2012,11 +2259,15 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestAccountClearRecentEmojiStatuses.CONSTRUCTOR_ID, TLRequestAccountClearRecentEmojiStatuses::class.java)
         registerClass(TLRequestAccountConfirmPasswordEmail.CONSTRUCTOR_ID, TLRequestAccountConfirmPasswordEmail::class.java)
         registerClass(TLRequestAccountConfirmPhone.CONSTRUCTOR_ID, TLRequestAccountConfirmPhone::class.java)
+        registerClass(TLRequestAccountCreateBusinessChatLink.CONSTRUCTOR_ID, TLRequestAccountCreateBusinessChatLink::class.java)
         registerClass(TLRequestAccountCreateTheme.CONSTRUCTOR_ID, TLRequestAccountCreateTheme::class.java)
         registerClass(TLRequestAccountDeclinePasswordReset.CONSTRUCTOR_ID, TLRequestAccountDeclinePasswordReset::class.java)
         registerClass(TLRequestAccountDeleteAccount.CONSTRUCTOR_ID, TLRequestAccountDeleteAccount::class.java)
         registerClass(TLRequestAccountDeleteAutoSaveExceptions.CONSTRUCTOR_ID, TLRequestAccountDeleteAutoSaveExceptions::class.java)
+        registerClass(TLRequestAccountDeleteBusinessChatLink.CONSTRUCTOR_ID, TLRequestAccountDeleteBusinessChatLink::class.java)
         registerClass(TLRequestAccountDeleteSecureValue.CONSTRUCTOR_ID, TLRequestAccountDeleteSecureValue::class.java)
+        registerClass(TLRequestAccountDisablePeerConnectedBot.CONSTRUCTOR_ID, TLRequestAccountDisablePeerConnectedBot::class.java)
+        registerClass(TLRequestAccountEditBusinessChatLink.CONSTRUCTOR_ID, TLRequestAccountEditBusinessChatLink::class.java)
         registerClass(TLRequestAccountFinishTakeoutSession.CONSTRUCTOR_ID, TLRequestAccountFinishTakeoutSession::class.java)
         registerClass(TLRequestAccountGetAccountTTL.CONSTRUCTOR_ID, TLRequestAccountGetAccountTTL::class.java)
         registerClass(TLRequestAccountGetAllSecureValues.CONSTRUCTOR_ID, TLRequestAccountGetAllSecureValues::class.java)
@@ -2024,9 +2275,12 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestAccountGetAuthorizations.CONSTRUCTOR_ID, TLRequestAccountGetAuthorizations::class.java)
         registerClass(TLRequestAccountGetAutoDownloadSettings.CONSTRUCTOR_ID, TLRequestAccountGetAutoDownloadSettings::class.java)
         registerClass(TLRequestAccountGetAutoSaveSettings.CONSTRUCTOR_ID, TLRequestAccountGetAutoSaveSettings::class.java)
+        registerClass(TLRequestAccountGetBotBusinessConnection.CONSTRUCTOR_ID, TLRequestAccountGetBotBusinessConnection::class.java)
+        registerClass(TLRequestAccountGetBusinessChatLinks.CONSTRUCTOR_ID, TLRequestAccountGetBusinessChatLinks::class.java)
         registerClass(TLRequestAccountGetChannelDefaultEmojiStatuses.CONSTRUCTOR_ID, TLRequestAccountGetChannelDefaultEmojiStatuses::class.java)
         registerClass(TLRequestAccountGetChannelRestrictedStatusEmojis.CONSTRUCTOR_ID, TLRequestAccountGetChannelRestrictedStatusEmojis::class.java)
         registerClass(TLRequestAccountGetChatThemes.CONSTRUCTOR_ID, TLRequestAccountGetChatThemes::class.java)
+        registerClass(TLRequestAccountGetConnectedBots.CONSTRUCTOR_ID, TLRequestAccountGetConnectedBots::class.java)
         registerClass(TLRequestAccountGetContactSignUpNotification.CONSTRUCTOR_ID, TLRequestAccountGetContactSignUpNotification::class.java)
         registerClass(TLRequestAccountGetContentSettings.CONSTRUCTOR_ID, TLRequestAccountGetContentSettings::class.java)
         registerClass(TLRequestAccountGetDefaultBackgroundEmojis.CONSTRUCTOR_ID, TLRequestAccountGetDefaultBackgroundEmojis::class.java)
@@ -2040,6 +2294,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestAccountGetPassword.CONSTRUCTOR_ID, TLRequestAccountGetPassword::class.java)
         registerClass(TLRequestAccountGetPasswordSettings.CONSTRUCTOR_ID, TLRequestAccountGetPasswordSettings::class.java)
         registerClass(TLRequestAccountGetPrivacy.CONSTRUCTOR_ID, TLRequestAccountGetPrivacy::class.java)
+        registerClass(TLRequestAccountGetReactionsNotifySettings.CONSTRUCTOR_ID, TLRequestAccountGetReactionsNotifySettings::class.java)
         registerClass(TLRequestAccountGetRecentEmojiStatuses.CONSTRUCTOR_ID, TLRequestAccountGetRecentEmojiStatuses::class.java)
         registerClass(TLRequestAccountGetSavedRingtones.CONSTRUCTOR_ID, TLRequestAccountGetSavedRingtones::class.java)
         registerClass(TLRequestAccountGetSecureValue.CONSTRUCTOR_ID, TLRequestAccountGetSecureValue::class.java)
@@ -2064,6 +2319,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestAccountResetWallPapers.CONSTRUCTOR_ID, TLRequestAccountResetWallPapers::class.java)
         registerClass(TLRequestAccountResetWebAuthorization.CONSTRUCTOR_ID, TLRequestAccountResetWebAuthorization::class.java)
         registerClass(TLRequestAccountResetWebAuthorizations.CONSTRUCTOR_ID, TLRequestAccountResetWebAuthorizations::class.java)
+        registerClass(TLRequestAccountResolveBusinessChatLink.CONSTRUCTOR_ID, TLRequestAccountResolveBusinessChatLink::class.java)
         registerClass(TLRequestAccountSaveAutoDownloadSettings.CONSTRUCTOR_ID, TLRequestAccountSaveAutoDownloadSettings::class.java)
         registerClass(TLRequestAccountSaveAutoSaveSettings.CONSTRUCTOR_ID, TLRequestAccountSaveAutoSaveSettings::class.java)
         registerClass(TLRequestAccountSaveRingtone.CONSTRUCTOR_ID, TLRequestAccountSaveRingtone::class.java)
@@ -2080,13 +2336,24 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestAccountSetContentSettings.CONSTRUCTOR_ID, TLRequestAccountSetContentSettings::class.java)
         registerClass(TLRequestAccountSetGlobalPrivacySettings.CONSTRUCTOR_ID, TLRequestAccountSetGlobalPrivacySettings::class.java)
         registerClass(TLRequestAccountSetPrivacy.CONSTRUCTOR_ID, TLRequestAccountSetPrivacy::class.java)
+        registerClass(TLRequestAccountSetReactionsNotifySettings.CONSTRUCTOR_ID, TLRequestAccountSetReactionsNotifySettings::class.java)
+        registerClass(TLRequestAccountToggleConnectedBotPaused.CONSTRUCTOR_ID, TLRequestAccountToggleConnectedBotPaused::class.java)
+        registerClass(TLRequestAccountToggleSponsoredMessages.CONSTRUCTOR_ID, TLRequestAccountToggleSponsoredMessages::class.java)
         registerClass(TLRequestAccountToggleUsername.CONSTRUCTOR_ID, TLRequestAccountToggleUsername::class.java)
         registerClass(TLRequestAccountUnregisterDevice.CONSTRUCTOR_ID, TLRequestAccountUnregisterDevice::class.java)
+        registerClass(TLRequestAccountUpdateBirthday.CONSTRUCTOR_ID, TLRequestAccountUpdateBirthday::class.java)
+        registerClass(TLRequestAccountUpdateBusinessAwayMessage.CONSTRUCTOR_ID, TLRequestAccountUpdateBusinessAwayMessage::class.java)
+        registerClass(TLRequestAccountUpdateBusinessGreetingMessage.CONSTRUCTOR_ID, TLRequestAccountUpdateBusinessGreetingMessage::class.java)
+        registerClass(TLRequestAccountUpdateBusinessIntro.CONSTRUCTOR_ID, TLRequestAccountUpdateBusinessIntro::class.java)
+        registerClass(TLRequestAccountUpdateBusinessLocation.CONSTRUCTOR_ID, TLRequestAccountUpdateBusinessLocation::class.java)
+        registerClass(TLRequestAccountUpdateBusinessWorkHours.CONSTRUCTOR_ID, TLRequestAccountUpdateBusinessWorkHours::class.java)
         registerClass(TLRequestAccountUpdateColor.CONSTRUCTOR_ID, TLRequestAccountUpdateColor::class.java)
+        registerClass(TLRequestAccountUpdateConnectedBot.CONSTRUCTOR_ID, TLRequestAccountUpdateConnectedBot::class.java)
         registerClass(TLRequestAccountUpdateDeviceLocked.CONSTRUCTOR_ID, TLRequestAccountUpdateDeviceLocked::class.java)
         registerClass(TLRequestAccountUpdateEmojiStatus.CONSTRUCTOR_ID, TLRequestAccountUpdateEmojiStatus::class.java)
         registerClass(TLRequestAccountUpdateNotifySettings.CONSTRUCTOR_ID, TLRequestAccountUpdateNotifySettings::class.java)
         registerClass(TLRequestAccountUpdatePasswordSettings.CONSTRUCTOR_ID, TLRequestAccountUpdatePasswordSettings::class.java)
+        registerClass(TLRequestAccountUpdatePersonalChannel.CONSTRUCTOR_ID, TLRequestAccountUpdatePersonalChannel::class.java)
         registerClass(TLRequestAccountUpdateProfile.CONSTRUCTOR_ID, TLRequestAccountUpdateProfile::class.java)
         registerClass(TLRequestAccountUpdateStatus.CONSTRUCTOR_ID, TLRequestAccountUpdateStatus::class.java)
         registerClass(TLRequestAccountUpdateTheme.CONSTRUCTOR_ID, TLRequestAccountUpdateTheme::class.java)
@@ -2110,6 +2377,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestAuthImportWebTokenAuthorization.CONSTRUCTOR_ID, TLRequestAuthImportWebTokenAuthorization::class.java)
         registerClass(TLRequestAuthLogOut.CONSTRUCTOR_ID, TLRequestAuthLogOut::class.java)
         registerClass(TLRequestAuthRecoverPassword.CONSTRUCTOR_ID, TLRequestAuthRecoverPassword::class.java)
+        registerClass(TLRequestAuthReportMissingCode.CONSTRUCTOR_ID, TLRequestAuthReportMissingCode::class.java)
         registerClass(TLRequestAuthRequestFirebaseSms.CONSTRUCTOR_ID, TLRequestAuthRequestFirebaseSms::class.java)
         registerClass(TLRequestAuthRequestPasswordRecovery.CONSTRUCTOR_ID, TLRequestAuthRequestPasswordRecovery::class.java)
         registerClass(TLRequestAuthResendCode.CONSTRUCTOR_ID, TLRequestAuthResendCode::class.java)
@@ -2118,13 +2386,20 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestAuthSendCode.CONSTRUCTOR_ID, TLRequestAuthSendCode::class.java)
         registerClass(TLRequestAuthSignIn.CONSTRUCTOR_ID, TLRequestAuthSignIn::class.java)
         registerClass(TLRequestAuthSignUp.CONSTRUCTOR_ID, TLRequestAuthSignUp::class.java)
+        registerClass(TLRequestBotsAddPreviewMedia.CONSTRUCTOR_ID, TLRequestBotsAddPreviewMedia::class.java)
         registerClass(TLRequestBotsAllowSendMessage.CONSTRUCTOR_ID, TLRequestBotsAllowSendMessage::class.java)
         registerClass(TLRequestBotsAnswerWebhookJSONQuery.CONSTRUCTOR_ID, TLRequestBotsAnswerWebhookJSONQuery::class.java)
         registerClass(TLRequestBotsCanSendMessage.CONSTRUCTOR_ID, TLRequestBotsCanSendMessage::class.java)
+        registerClass(TLRequestBotsDeletePreviewMedia.CONSTRUCTOR_ID, TLRequestBotsDeletePreviewMedia::class.java)
+        registerClass(TLRequestBotsEditPreviewMedia.CONSTRUCTOR_ID, TLRequestBotsEditPreviewMedia::class.java)
         registerClass(TLRequestBotsGetBotCommands.CONSTRUCTOR_ID, TLRequestBotsGetBotCommands::class.java)
         registerClass(TLRequestBotsGetBotInfo.CONSTRUCTOR_ID, TLRequestBotsGetBotInfo::class.java)
         registerClass(TLRequestBotsGetBotMenuButton.CONSTRUCTOR_ID, TLRequestBotsGetBotMenuButton::class.java)
+        registerClass(TLRequestBotsGetPopularAppBots.CONSTRUCTOR_ID, TLRequestBotsGetPopularAppBots::class.java)
+        registerClass(TLRequestBotsGetPreviewInfo.CONSTRUCTOR_ID, TLRequestBotsGetPreviewInfo::class.java)
+        registerClass(TLRequestBotsGetPreviewMedias.CONSTRUCTOR_ID, TLRequestBotsGetPreviewMedias::class.java)
         registerClass(TLRequestBotsInvokeWebViewCustomMethod.CONSTRUCTOR_ID, TLRequestBotsInvokeWebViewCustomMethod::class.java)
+        registerClass(TLRequestBotsReorderPreviewMedias.CONSTRUCTOR_ID, TLRequestBotsReorderPreviewMedias::class.java)
         registerClass(TLRequestBotsReorderUsernames.CONSTRUCTOR_ID, TLRequestBotsReorderUsernames::class.java)
         registerClass(TLRequestBotsResetBotCommands.CONSTRUCTOR_ID, TLRequestBotsResetBotCommands::class.java)
         registerClass(TLRequestBotsSendCustomRequest.CONSTRUCTOR_ID, TLRequestBotsSendCustomRequest::class.java)
@@ -2177,7 +2452,12 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestChannelsReorderUsernames.CONSTRUCTOR_ID, TLRequestChannelsReorderUsernames::class.java)
         registerClass(TLRequestChannelsReportAntiSpamFalsePositive.CONSTRUCTOR_ID, TLRequestChannelsReportAntiSpamFalsePositive::class.java)
         registerClass(TLRequestChannelsReportSpam.CONSTRUCTOR_ID, TLRequestChannelsReportSpam::class.java)
+        registerClass(TLRequestChannelsReportSponsoredMessage.CONSTRUCTOR_ID, TLRequestChannelsReportSponsoredMessage::class.java)
+        registerClass(TLRequestChannelsRestrictSponsoredMessages.CONSTRUCTOR_ID, TLRequestChannelsRestrictSponsoredMessages::class.java)
+        registerClass(TLRequestChannelsSearchPosts.CONSTRUCTOR_ID, TLRequestChannelsSearchPosts::class.java)
+        registerClass(TLRequestChannelsSetBoostsToUnblockRestrictions.CONSTRUCTOR_ID, TLRequestChannelsSetBoostsToUnblockRestrictions::class.java)
         registerClass(TLRequestChannelsSetDiscussionGroup.CONSTRUCTOR_ID, TLRequestChannelsSetDiscussionGroup::class.java)
+        registerClass(TLRequestChannelsSetEmojiStickers.CONSTRUCTOR_ID, TLRequestChannelsSetEmojiStickers::class.java)
         registerClass(TLRequestChannelsSetStickers.CONSTRUCTOR_ID, TLRequestChannelsSetStickers::class.java)
         registerClass(TLRequestChannelsToggleAntiSpam.CONSTRUCTOR_ID, TLRequestChannelsToggleAntiSpam::class.java)
         registerClass(TLRequestChannelsToggleForum.CONSTRUCTOR_ID, TLRequestChannelsToggleForum::class.java)
@@ -2213,6 +2493,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestContactsDeleteContacts.CONSTRUCTOR_ID, TLRequestContactsDeleteContacts::class.java)
         registerClass(TLRequestContactsEditCloseFriends.CONSTRUCTOR_ID, TLRequestContactsEditCloseFriends::class.java)
         registerClass(TLRequestContactsExportContactToken.CONSTRUCTOR_ID, TLRequestContactsExportContactToken::class.java)
+        registerClass(TLRequestContactsGetBirthdays.CONSTRUCTOR_ID, TLRequestContactsGetBirthdays::class.java)
         registerClass(TLRequestContactsGetBlocked.CONSTRUCTOR_ID, TLRequestContactsGetBlocked::class.java)
         registerClass(TLRequestContactsGetContactIDs.CONSTRUCTOR_ID, TLRequestContactsGetContactIDs::class.java)
         registerClass(TLRequestContactsGetContacts.CONSTRUCTOR_ID, TLRequestContactsGetContacts::class.java)
@@ -2231,6 +2512,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestContactsToggleTopPeers.CONSTRUCTOR_ID, TLRequestContactsToggleTopPeers::class.java)
         registerClass(TLRequestContactsUnblock.CONSTRUCTOR_ID, TLRequestContactsUnblock::class.java)
         registerClass(TLRequestFoldersEditPeerFolders.CONSTRUCTOR_ID, TLRequestFoldersEditPeerFolders::class.java)
+        registerClass(TLRequestFragmentGetCollectibleInfo.CONSTRUCTOR_ID, TLRequestFragmentGetCollectibleInfo::class.java)
         registerClass(TLRequestHelpAcceptTermsOfService.CONSTRUCTOR_ID, TLRequestHelpAcceptTermsOfService::class.java)
         registerClass(TLRequestHelpDismissSuggestion.CONSTRUCTOR_ID, TLRequestHelpDismissSuggestion::class.java)
         registerClass(TLRequestHelpEditUserInfo.CONSTRUCTOR_ID, TLRequestHelpEditUserInfo::class.java)
@@ -2251,6 +2533,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestHelpGetSupport.CONSTRUCTOR_ID, TLRequestHelpGetSupport::class.java)
         registerClass(TLRequestHelpGetSupportName.CONSTRUCTOR_ID, TLRequestHelpGetSupportName::class.java)
         registerClass(TLRequestHelpGetTermsOfServiceUpdate.CONSTRUCTOR_ID, TLRequestHelpGetTermsOfServiceUpdate::class.java)
+        registerClass(TLRequestHelpGetTimezonesList.CONSTRUCTOR_ID, TLRequestHelpGetTimezonesList::class.java)
         registerClass(TLRequestHelpGetUserInfo.CONSTRUCTOR_ID, TLRequestHelpGetUserInfo::class.java)
         registerClass(TLRequestHelpHidePromoData.CONSTRUCTOR_ID, TLRequestHelpHidePromoData::class.java)
         registerClass(TLRequestHelpSaveAppLog.CONSTRUCTOR_ID, TLRequestHelpSaveAppLog::class.java)
@@ -2258,6 +2541,9 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestInitConnection.CONSTRUCTOR_ID, TLRequestInitConnection::class.java)
         registerClass(TLRequestInvokeAfterMsg.CONSTRUCTOR_ID, TLRequestInvokeAfterMsg::class.java)
         registerClass(TLRequestInvokeAfterMsgs.CONSTRUCTOR_ID, TLRequestInvokeAfterMsgs::class.java)
+        registerClass(TLRequestInvokeWithApnsSecret.CONSTRUCTOR_ID, TLRequestInvokeWithApnsSecret::class.java)
+        registerClass(TLRequestInvokeWithBusinessConnection.CONSTRUCTOR_ID, TLRequestInvokeWithBusinessConnection::class.java)
+        registerClass(TLRequestInvokeWithGooglePlayIntegrity.CONSTRUCTOR_ID, TLRequestInvokeWithGooglePlayIntegrity::class.java)
         registerClass(TLRequestInvokeWithLayer.CONSTRUCTOR_ID, TLRequestInvokeWithLayer::class.java)
         registerClass(TLRequestInvokeWithMessagesRange.CONSTRUCTOR_ID, TLRequestInvokeWithMessagesRange::class.java)
         registerClass(TLRequestInvokeWithTakeout.CONSTRUCTOR_ID, TLRequestInvokeWithTakeout::class.java)
@@ -2273,6 +2559,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestMessagesCheckChatInvite.CONSTRUCTOR_ID, TLRequestMessagesCheckChatInvite::class.java)
         registerClass(TLRequestMessagesCheckHistoryImport.CONSTRUCTOR_ID, TLRequestMessagesCheckHistoryImport::class.java)
         registerClass(TLRequestMessagesCheckHistoryImportPeer.CONSTRUCTOR_ID, TLRequestMessagesCheckHistoryImportPeer::class.java)
+        registerClass(TLRequestMessagesCheckQuickReplyShortcut.CONSTRUCTOR_ID, TLRequestMessagesCheckQuickReplyShortcut::class.java)
         registerClass(TLRequestMessagesClearAllDrafts.CONSTRUCTOR_ID, TLRequestMessagesClearAllDrafts::class.java)
         registerClass(TLRequestMessagesClearRecentReactions.CONSTRUCTOR_ID, TLRequestMessagesClearRecentReactions::class.java)
         registerClass(TLRequestMessagesClearRecentStickers.CONSTRUCTOR_ID, TLRequestMessagesClearRecentStickers::class.java)
@@ -2280,9 +2567,12 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestMessagesDeleteChat.CONSTRUCTOR_ID, TLRequestMessagesDeleteChat::class.java)
         registerClass(TLRequestMessagesDeleteChatUser.CONSTRUCTOR_ID, TLRequestMessagesDeleteChatUser::class.java)
         registerClass(TLRequestMessagesDeleteExportedChatInvite.CONSTRUCTOR_ID, TLRequestMessagesDeleteExportedChatInvite::class.java)
+        registerClass(TLRequestMessagesDeleteFactCheck.CONSTRUCTOR_ID, TLRequestMessagesDeleteFactCheck::class.java)
         registerClass(TLRequestMessagesDeleteHistory.CONSTRUCTOR_ID, TLRequestMessagesDeleteHistory::class.java)
         registerClass(TLRequestMessagesDeleteMessages.CONSTRUCTOR_ID, TLRequestMessagesDeleteMessages::class.java)
         registerClass(TLRequestMessagesDeletePhoneCallHistory.CONSTRUCTOR_ID, TLRequestMessagesDeletePhoneCallHistory::class.java)
+        registerClass(TLRequestMessagesDeleteQuickReplyMessages.CONSTRUCTOR_ID, TLRequestMessagesDeleteQuickReplyMessages::class.java)
+        registerClass(TLRequestMessagesDeleteQuickReplyShortcut.CONSTRUCTOR_ID, TLRequestMessagesDeleteQuickReplyShortcut::class.java)
         registerClass(TLRequestMessagesDeleteRevokedExportedChatInvites.CONSTRUCTOR_ID, TLRequestMessagesDeleteRevokedExportedChatInvites::class.java)
         registerClass(TLRequestMessagesDeleteSavedHistory.CONSTRUCTOR_ID, TLRequestMessagesDeleteSavedHistory::class.java)
         registerClass(TLRequestMessagesDeleteScheduledMessages.CONSTRUCTOR_ID, TLRequestMessagesDeleteScheduledMessages::class.java)
@@ -2293,8 +2583,10 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestMessagesEditChatPhoto.CONSTRUCTOR_ID, TLRequestMessagesEditChatPhoto::class.java)
         registerClass(TLRequestMessagesEditChatTitle.CONSTRUCTOR_ID, TLRequestMessagesEditChatTitle::class.java)
         registerClass(TLRequestMessagesEditExportedChatInvite.CONSTRUCTOR_ID, TLRequestMessagesEditExportedChatInvite::class.java)
+        registerClass(TLRequestMessagesEditFactCheck.CONSTRUCTOR_ID, TLRequestMessagesEditFactCheck::class.java)
         registerClass(TLRequestMessagesEditInlineBotMessage.CONSTRUCTOR_ID, TLRequestMessagesEditInlineBotMessage::class.java)
         registerClass(TLRequestMessagesEditMessage.CONSTRUCTOR_ID, TLRequestMessagesEditMessage::class.java)
+        registerClass(TLRequestMessagesEditQuickReplyShortcut.CONSTRUCTOR_ID, TLRequestMessagesEditQuickReplyShortcut::class.java)
         registerClass(TLRequestMessagesExportChatInvite.CONSTRUCTOR_ID, TLRequestMessagesExportChatInvite::class.java)
         registerClass(TLRequestMessagesFaveSticker.CONSTRUCTOR_ID, TLRequestMessagesFaveSticker::class.java)
         registerClass(TLRequestMessagesForwardMessages.CONSTRUCTOR_ID, TLRequestMessagesForwardMessages::class.java)
@@ -2305,6 +2597,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestMessagesGetAttachMenuBot.CONSTRUCTOR_ID, TLRequestMessagesGetAttachMenuBot::class.java)
         registerClass(TLRequestMessagesGetAttachMenuBots.CONSTRUCTOR_ID, TLRequestMessagesGetAttachMenuBots::class.java)
         registerClass(TLRequestMessagesGetAttachedStickers.CONSTRUCTOR_ID, TLRequestMessagesGetAttachedStickers::class.java)
+        registerClass(TLRequestMessagesGetAvailableEffects.CONSTRUCTOR_ID, TLRequestMessagesGetAvailableEffects::class.java)
         registerClass(TLRequestMessagesGetAvailableReactions.CONSTRUCTOR_ID, TLRequestMessagesGetAvailableReactions::class.java)
         registerClass(TLRequestMessagesGetBotApp.CONSTRUCTOR_ID, TLRequestMessagesGetBotApp::class.java)
         registerClass(TLRequestMessagesGetBotCallbackAnswer.CONSTRUCTOR_ID, TLRequestMessagesGetBotCallbackAnswer::class.java)
@@ -2313,6 +2606,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestMessagesGetCommonChats.CONSTRUCTOR_ID, TLRequestMessagesGetCommonChats::class.java)
         registerClass(TLRequestMessagesGetCustomEmojiDocuments.CONSTRUCTOR_ID, TLRequestMessagesGetCustomEmojiDocuments::class.java)
         registerClass(TLRequestMessagesGetDefaultHistoryTTL.CONSTRUCTOR_ID, TLRequestMessagesGetDefaultHistoryTTL::class.java)
+        registerClass(TLRequestMessagesGetDefaultTagReactions.CONSTRUCTOR_ID, TLRequestMessagesGetDefaultTagReactions::class.java)
         registerClass(TLRequestMessagesGetDhConfig.CONSTRUCTOR_ID, TLRequestMessagesGetDhConfig::class.java)
         registerClass(TLRequestMessagesGetDialogFilters.CONSTRUCTOR_ID, TLRequestMessagesGetDialogFilters::class.java)
         registerClass(TLRequestMessagesGetDialogUnreadMarks.CONSTRUCTOR_ID, TLRequestMessagesGetDialogUnreadMarks::class.java)
@@ -2325,11 +2619,13 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestMessagesGetEmojiKeywordsLanguages.CONSTRUCTOR_ID, TLRequestMessagesGetEmojiKeywordsLanguages::class.java)
         registerClass(TLRequestMessagesGetEmojiProfilePhotoGroups.CONSTRUCTOR_ID, TLRequestMessagesGetEmojiProfilePhotoGroups::class.java)
         registerClass(TLRequestMessagesGetEmojiStatusGroups.CONSTRUCTOR_ID, TLRequestMessagesGetEmojiStatusGroups::class.java)
+        registerClass(TLRequestMessagesGetEmojiStickerGroups.CONSTRUCTOR_ID, TLRequestMessagesGetEmojiStickerGroups::class.java)
         registerClass(TLRequestMessagesGetEmojiStickers.CONSTRUCTOR_ID, TLRequestMessagesGetEmojiStickers::class.java)
         registerClass(TLRequestMessagesGetEmojiURL.CONSTRUCTOR_ID, TLRequestMessagesGetEmojiURL::class.java)
         registerClass(TLRequestMessagesGetExportedChatInvite.CONSTRUCTOR_ID, TLRequestMessagesGetExportedChatInvite::class.java)
         registerClass(TLRequestMessagesGetExportedChatInvites.CONSTRUCTOR_ID, TLRequestMessagesGetExportedChatInvites::class.java)
         registerClass(TLRequestMessagesGetExtendedMedia.CONSTRUCTOR_ID, TLRequestMessagesGetExtendedMedia::class.java)
+        registerClass(TLRequestMessagesGetFactCheck.CONSTRUCTOR_ID, TLRequestMessagesGetFactCheck::class.java)
         registerClass(TLRequestMessagesGetFavedStickers.CONSTRUCTOR_ID, TLRequestMessagesGetFavedStickers::class.java)
         registerClass(TLRequestMessagesGetFeaturedEmojiStickers.CONSTRUCTOR_ID, TLRequestMessagesGetFeaturedEmojiStickers::class.java)
         registerClass(TLRequestMessagesGetFeaturedStickers.CONSTRUCTOR_ID, TLRequestMessagesGetFeaturedStickers::class.java)
@@ -2345,14 +2641,18 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestMessagesGetMessages.CONSTRUCTOR_ID, TLRequestMessagesGetMessages::class.java)
         registerClass(TLRequestMessagesGetMessagesReactions.CONSTRUCTOR_ID, TLRequestMessagesGetMessagesReactions::class.java)
         registerClass(TLRequestMessagesGetMessagesViews.CONSTRUCTOR_ID, TLRequestMessagesGetMessagesViews::class.java)
+        registerClass(TLRequestMessagesGetMyStickers.CONSTRUCTOR_ID, TLRequestMessagesGetMyStickers::class.java)
         registerClass(TLRequestMessagesGetOldFeaturedStickers.CONSTRUCTOR_ID, TLRequestMessagesGetOldFeaturedStickers::class.java)
         registerClass(TLRequestMessagesGetOnlines.CONSTRUCTOR_ID, TLRequestMessagesGetOnlines::class.java)
+        registerClass(TLRequestMessagesGetOutboxReadDate.CONSTRUCTOR_ID, TLRequestMessagesGetOutboxReadDate::class.java)
         registerClass(TLRequestMessagesGetPeerDialogs.CONSTRUCTOR_ID, TLRequestMessagesGetPeerDialogs::class.java)
         registerClass(TLRequestMessagesGetPeerSettings.CONSTRUCTOR_ID, TLRequestMessagesGetPeerSettings::class.java)
         registerClass(TLRequestMessagesGetPinnedDialogs.CONSTRUCTOR_ID, TLRequestMessagesGetPinnedDialogs::class.java)
         registerClass(TLRequestMessagesGetPinnedSavedDialogs.CONSTRUCTOR_ID, TLRequestMessagesGetPinnedSavedDialogs::class.java)
         registerClass(TLRequestMessagesGetPollResults.CONSTRUCTOR_ID, TLRequestMessagesGetPollResults::class.java)
         registerClass(TLRequestMessagesGetPollVotes.CONSTRUCTOR_ID, TLRequestMessagesGetPollVotes::class.java)
+        registerClass(TLRequestMessagesGetQuickReplies.CONSTRUCTOR_ID, TLRequestMessagesGetQuickReplies::class.java)
+        registerClass(TLRequestMessagesGetQuickReplyMessages.CONSTRUCTOR_ID, TLRequestMessagesGetQuickReplyMessages::class.java)
         registerClass(TLRequestMessagesGetRecentLocations.CONSTRUCTOR_ID, TLRequestMessagesGetRecentLocations::class.java)
         registerClass(TLRequestMessagesGetRecentReactions.CONSTRUCTOR_ID, TLRequestMessagesGetRecentReactions::class.java)
         registerClass(TLRequestMessagesGetRecentStickers.CONSTRUCTOR_ID, TLRequestMessagesGetRecentStickers::class.java)
@@ -2360,6 +2660,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestMessagesGetSavedDialogs.CONSTRUCTOR_ID, TLRequestMessagesGetSavedDialogs::class.java)
         registerClass(TLRequestMessagesGetSavedGifs.CONSTRUCTOR_ID, TLRequestMessagesGetSavedGifs::class.java)
         registerClass(TLRequestMessagesGetSavedHistory.CONSTRUCTOR_ID, TLRequestMessagesGetSavedHistory::class.java)
+        registerClass(TLRequestMessagesGetSavedReactionTags.CONSTRUCTOR_ID, TLRequestMessagesGetSavedReactionTags::class.java)
         registerClass(TLRequestMessagesGetScheduledHistory.CONSTRUCTOR_ID, TLRequestMessagesGetScheduledHistory::class.java)
         registerClass(TLRequestMessagesGetScheduledMessages.CONSTRUCTOR_ID, TLRequestMessagesGetScheduledMessages::class.java)
         registerClass(TLRequestMessagesGetSearchCounters.CONSTRUCTOR_ID, TLRequestMessagesGetSearchCounters::class.java)
@@ -2395,6 +2696,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestMessagesReceivedQueue.CONSTRUCTOR_ID, TLRequestMessagesReceivedQueue::class.java)
         registerClass(TLRequestMessagesReorderPinnedDialogs.CONSTRUCTOR_ID, TLRequestMessagesReorderPinnedDialogs::class.java)
         registerClass(TLRequestMessagesReorderPinnedSavedDialogs.CONSTRUCTOR_ID, TLRequestMessagesReorderPinnedSavedDialogs::class.java)
+        registerClass(TLRequestMessagesReorderQuickReplies.CONSTRUCTOR_ID, TLRequestMessagesReorderQuickReplies::class.java)
         registerClass(TLRequestMessagesReorderStickerSets.CONSTRUCTOR_ID, TLRequestMessagesReorderStickerSets::class.java)
         registerClass(TLRequestMessagesReport.CONSTRUCTOR_ID, TLRequestMessagesReport::class.java)
         registerClass(TLRequestMessagesReportEncryptedSpam.CONSTRUCTOR_ID, TLRequestMessagesReportEncryptedSpam::class.java)
@@ -2402,6 +2704,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestMessagesReportSpam.CONSTRUCTOR_ID, TLRequestMessagesReportSpam::class.java)
         registerClass(TLRequestMessagesRequestAppWebView.CONSTRUCTOR_ID, TLRequestMessagesRequestAppWebView::class.java)
         registerClass(TLRequestMessagesRequestEncryption.CONSTRUCTOR_ID, TLRequestMessagesRequestEncryption::class.java)
+        registerClass(TLRequestMessagesRequestMainWebView.CONSTRUCTOR_ID, TLRequestMessagesRequestMainWebView::class.java)
         registerClass(TLRequestMessagesRequestSimpleWebView.CONSTRUCTOR_ID, TLRequestMessagesRequestSimpleWebView::class.java)
         registerClass(TLRequestMessagesRequestUrlAuth.CONSTRUCTOR_ID, TLRequestMessagesRequestUrlAuth::class.java)
         registerClass(TLRequestMessagesRequestWebView.CONSTRUCTOR_ID, TLRequestMessagesRequestWebView::class.java)
@@ -2423,6 +2726,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestMessagesSendMedia.CONSTRUCTOR_ID, TLRequestMessagesSendMedia::class.java)
         registerClass(TLRequestMessagesSendMessage.CONSTRUCTOR_ID, TLRequestMessagesSendMessage::class.java)
         registerClass(TLRequestMessagesSendMultiMedia.CONSTRUCTOR_ID, TLRequestMessagesSendMultiMedia::class.java)
+        registerClass(TLRequestMessagesSendQuickReplyMessages.CONSTRUCTOR_ID, TLRequestMessagesSendQuickReplyMessages::class.java)
         registerClass(TLRequestMessagesSendReaction.CONSTRUCTOR_ID, TLRequestMessagesSendReaction::class.java)
         registerClass(TLRequestMessagesSendScheduledMessages.CONSTRUCTOR_ID, TLRequestMessagesSendScheduledMessages::class.java)
         registerClass(TLRequestMessagesSendScreenshotNotification.CONSTRUCTOR_ID, TLRequestMessagesSendScreenshotNotification::class.java)
@@ -2446,6 +2750,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestMessagesStartBot.CONSTRUCTOR_ID, TLRequestMessagesStartBot::class.java)
         registerClass(TLRequestMessagesStartHistoryImport.CONSTRUCTOR_ID, TLRequestMessagesStartHistoryImport::class.java)
         registerClass(TLRequestMessagesToggleBotInAttachMenu.CONSTRUCTOR_ID, TLRequestMessagesToggleBotInAttachMenu::class.java)
+        registerClass(TLRequestMessagesToggleDialogFilterTags.CONSTRUCTOR_ID, TLRequestMessagesToggleDialogFilterTags::class.java)
         registerClass(TLRequestMessagesToggleDialogPin.CONSTRUCTOR_ID, TLRequestMessagesToggleDialogPin::class.java)
         registerClass(TLRequestMessagesToggleNoForwards.CONSTRUCTOR_ID, TLRequestMessagesToggleNoForwards::class.java)
         registerClass(TLRequestMessagesTogglePeerTranslations.CONSTRUCTOR_ID, TLRequestMessagesTogglePeerTranslations::class.java)
@@ -2458,6 +2763,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestMessagesUpdateDialogFilter.CONSTRUCTOR_ID, TLRequestMessagesUpdateDialogFilter::class.java)
         registerClass(TLRequestMessagesUpdateDialogFiltersOrder.CONSTRUCTOR_ID, TLRequestMessagesUpdateDialogFiltersOrder::class.java)
         registerClass(TLRequestMessagesUpdatePinnedMessage.CONSTRUCTOR_ID, TLRequestMessagesUpdatePinnedMessage::class.java)
+        registerClass(TLRequestMessagesUpdateSavedReactionTag.CONSTRUCTOR_ID, TLRequestMessagesUpdateSavedReactionTag::class.java)
         registerClass(TLRequestMessagesUploadEncryptedFile.CONSTRUCTOR_ID, TLRequestMessagesUploadEncryptedFile::class.java)
         registerClass(TLRequestMessagesUploadImportedMedia.CONSTRUCTOR_ID, TLRequestMessagesUploadImportedMedia::class.java)
         registerClass(TLRequestMessagesUploadMedia.CONSTRUCTOR_ID, TLRequestMessagesUploadMedia::class.java)
@@ -2474,8 +2780,18 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestPaymentsGetPaymentReceipt.CONSTRUCTOR_ID, TLRequestPaymentsGetPaymentReceipt::class.java)
         registerClass(TLRequestPaymentsGetPremiumGiftCodeOptions.CONSTRUCTOR_ID, TLRequestPaymentsGetPremiumGiftCodeOptions::class.java)
         registerClass(TLRequestPaymentsGetSavedInfo.CONSTRUCTOR_ID, TLRequestPaymentsGetSavedInfo::class.java)
+        registerClass(TLRequestPaymentsGetStarsGiftOptions.CONSTRUCTOR_ID, TLRequestPaymentsGetStarsGiftOptions::class.java)
+        registerClass(TLRequestPaymentsGetStarsRevenueAdsAccountUrl.CONSTRUCTOR_ID, TLRequestPaymentsGetStarsRevenueAdsAccountUrl::class.java)
+        registerClass(TLRequestPaymentsGetStarsRevenueStats.CONSTRUCTOR_ID, TLRequestPaymentsGetStarsRevenueStats::class.java)
+        registerClass(TLRequestPaymentsGetStarsRevenueWithdrawalUrl.CONSTRUCTOR_ID, TLRequestPaymentsGetStarsRevenueWithdrawalUrl::class.java)
+        registerClass(TLRequestPaymentsGetStarsStatus.CONSTRUCTOR_ID, TLRequestPaymentsGetStarsStatus::class.java)
+        registerClass(TLRequestPaymentsGetStarsTopupOptions.CONSTRUCTOR_ID, TLRequestPaymentsGetStarsTopupOptions::class.java)
+        registerClass(TLRequestPaymentsGetStarsTransactions.CONSTRUCTOR_ID, TLRequestPaymentsGetStarsTransactions::class.java)
+        registerClass(TLRequestPaymentsGetStarsTransactionsByID.CONSTRUCTOR_ID, TLRequestPaymentsGetStarsTransactionsByID::class.java)
         registerClass(TLRequestPaymentsLaunchPrepaidGiveaway.CONSTRUCTOR_ID, TLRequestPaymentsLaunchPrepaidGiveaway::class.java)
+        registerClass(TLRequestPaymentsRefundStarsCharge.CONSTRUCTOR_ID, TLRequestPaymentsRefundStarsCharge::class.java)
         registerClass(TLRequestPaymentsSendPaymentForm.CONSTRUCTOR_ID, TLRequestPaymentsSendPaymentForm::class.java)
+        registerClass(TLRequestPaymentsSendStarsForm.CONSTRUCTOR_ID, TLRequestPaymentsSendStarsForm::class.java)
         registerClass(TLRequestPaymentsValidateRequestedInfo.CONSTRUCTOR_ID, TLRequestPaymentsValidateRequestedInfo::class.java)
         registerClass(TLRequestPhoneAcceptCall.CONSTRUCTOR_ID, TLRequestPhoneAcceptCall::class.java)
         registerClass(TLRequestPhoneCheckGroupCall.CONSTRUCTOR_ID, TLRequestPhoneCheckGroupCall::class.java)
@@ -2518,6 +2834,16 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestPremiumGetBoostsStatus.CONSTRUCTOR_ID, TLRequestPremiumGetBoostsStatus::class.java)
         registerClass(TLRequestPremiumGetMyBoosts.CONSTRUCTOR_ID, TLRequestPremiumGetMyBoosts::class.java)
         registerClass(TLRequestPremiumGetUserBoosts.CONSTRUCTOR_ID, TLRequestPremiumGetUserBoosts::class.java)
+        registerClass(TLRequestSmsjobsFinishJob.CONSTRUCTOR_ID, TLRequestSmsjobsFinishJob::class.java)
+        registerClass(TLRequestSmsjobsGetSmsJob.CONSTRUCTOR_ID, TLRequestSmsjobsGetSmsJob::class.java)
+        registerClass(TLRequestSmsjobsGetStatus.CONSTRUCTOR_ID, TLRequestSmsjobsGetStatus::class.java)
+        registerClass(TLRequestSmsjobsIsEligibleToJoin.CONSTRUCTOR_ID, TLRequestSmsjobsIsEligibleToJoin::class.java)
+        registerClass(TLRequestSmsjobsJoin.CONSTRUCTOR_ID, TLRequestSmsjobsJoin::class.java)
+        registerClass(TLRequestSmsjobsLeave.CONSTRUCTOR_ID, TLRequestSmsjobsLeave::class.java)
+        registerClass(TLRequestSmsjobsUpdateSettings.CONSTRUCTOR_ID, TLRequestSmsjobsUpdateSettings::class.java)
+        registerClass(TLRequestStatsGetBroadcastRevenueStats.CONSTRUCTOR_ID, TLRequestStatsGetBroadcastRevenueStats::class.java)
+        registerClass(TLRequestStatsGetBroadcastRevenueTransactions.CONSTRUCTOR_ID, TLRequestStatsGetBroadcastRevenueTransactions::class.java)
+        registerClass(TLRequestStatsGetBroadcastRevenueWithdrawalUrl.CONSTRUCTOR_ID, TLRequestStatsGetBroadcastRevenueWithdrawalUrl::class.java)
         registerClass(TLRequestStatsGetBroadcastStats.CONSTRUCTOR_ID, TLRequestStatsGetBroadcastStats::class.java)
         registerClass(TLRequestStatsGetMegagroupStats.CONSTRUCTOR_ID, TLRequestStatsGetMegagroupStats::class.java)
         registerClass(TLRequestStatsGetMessagePublicForwards.CONSTRUCTOR_ID, TLRequestStatsGetMessagePublicForwards::class.java)
@@ -2533,6 +2859,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestStickersDeleteStickerSet.CONSTRUCTOR_ID, TLRequestStickersDeleteStickerSet::class.java)
         registerClass(TLRequestStickersRemoveStickerFromSet.CONSTRUCTOR_ID, TLRequestStickersRemoveStickerFromSet::class.java)
         registerClass(TLRequestStickersRenameStickerSet.CONSTRUCTOR_ID, TLRequestStickersRenameStickerSet::class.java)
+        registerClass(TLRequestStickersReplaceSticker.CONSTRUCTOR_ID, TLRequestStickersReplaceSticker::class.java)
         registerClass(TLRequestStickersSetStickerSetThumb.CONSTRUCTOR_ID, TLRequestStickersSetStickerSetThumb::class.java)
         registerClass(TLRequestStickersSuggestShortName.CONSTRUCTOR_ID, TLRequestStickersSuggestShortName::class.java)
         registerClass(TLRequestStoriesActivateStealthMode.CONSTRUCTOR_ID, TLRequestStoriesActivateStealthMode::class.java)
@@ -2554,11 +2881,13 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestStoriesIncrementStoryViews.CONSTRUCTOR_ID, TLRequestStoriesIncrementStoryViews::class.java)
         registerClass(TLRequestStoriesReadStories.CONSTRUCTOR_ID, TLRequestStoriesReadStories::class.java)
         registerClass(TLRequestStoriesReport.CONSTRUCTOR_ID, TLRequestStoriesReport::class.java)
+        registerClass(TLRequestStoriesSearchPosts.CONSTRUCTOR_ID, TLRequestStoriesSearchPosts::class.java)
         registerClass(TLRequestStoriesSendReaction.CONSTRUCTOR_ID, TLRequestStoriesSendReaction::class.java)
         registerClass(TLRequestStoriesSendStory.CONSTRUCTOR_ID, TLRequestStoriesSendStory::class.java)
         registerClass(TLRequestStoriesToggleAllStoriesHidden.CONSTRUCTOR_ID, TLRequestStoriesToggleAllStoriesHidden::class.java)
         registerClass(TLRequestStoriesTogglePeerStoriesHidden.CONSTRUCTOR_ID, TLRequestStoriesTogglePeerStoriesHidden::class.java)
         registerClass(TLRequestStoriesTogglePinned.CONSTRUCTOR_ID, TLRequestStoriesTogglePinned::class.java)
+        registerClass(TLRequestStoriesTogglePinnedToTop.CONSTRUCTOR_ID, TLRequestStoriesTogglePinnedToTop::class.java)
         registerClass(TLRequestUpdatesGetChannelDifference.CONSTRUCTOR_ID, TLRequestUpdatesGetChannelDifference::class.java)
         registerClass(TLRequestUpdatesGetDifference.CONSTRUCTOR_ID, TLRequestUpdatesGetDifference::class.java)
         registerClass(TLRequestUpdatesGetState.CONSTRUCTOR_ID, TLRequestUpdatesGetState::class.java)
@@ -2571,6 +2900,7 @@ object TLApiTestContext : TLContext(1201) {
         registerClass(TLRequestUploadSaveBigFilePart.CONSTRUCTOR_ID, TLRequestUploadSaveBigFilePart::class.java)
         registerClass(TLRequestUploadSaveFilePart.CONSTRUCTOR_ID, TLRequestUploadSaveFilePart::class.java)
         registerClass(TLRequestUsersGetFullUser.CONSTRUCTOR_ID, TLRequestUsersGetFullUser::class.java)
+        registerClass(TLRequestUsersGetIsPremiumRequiredToContact.CONSTRUCTOR_ID, TLRequestUsersGetIsPremiumRequiredToContact::class.java)
         registerClass(TLRequestUsersGetUsers.CONSTRUCTOR_ID, TLRequestUsersGetUsers::class.java)
         registerClass(TLRequestUsersSetSecureValueErrors.CONSTRUCTOR_ID, TLRequestUsersSetSecureValueErrors::class.java)
     }

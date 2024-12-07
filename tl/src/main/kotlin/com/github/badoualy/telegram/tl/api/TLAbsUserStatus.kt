@@ -12,11 +12,11 @@ import com.github.badoualy.telegram.tl.core.TLObject
 /**
  * Abstraction level for the following constructors:
  * * [userStatusEmpty#9d05049][TLUserStatusEmpty]
- * * [userStatusLastMonth#77ebc742][TLUserStatusLastMonth]
- * * [userStatusLastWeek#7bf09fc][TLUserStatusLastWeek]
+ * * [userStatusLastMonth#65899777][TLUserStatusLastMonth]
+ * * [userStatusLastWeek#541a1d1a][TLUserStatusLastWeek]
  * * [userStatusOffline#8c703f][TLUserStatusOffline]
  * * [userStatusOnline#edb93949][TLUserStatusOnline]
- * * [userStatusRecently#e26f42f1][TLUserStatusRecently]
+ * * [userStatusRecently#7b197dc8][TLUserStatusRecently]
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>

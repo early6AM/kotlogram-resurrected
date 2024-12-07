@@ -14,9 +14,11 @@ import com.github.badoualy.telegram.tl.core.TLObject
  * * [inputMediaAreaChannelPost#2271f2bf][TLInputMediaAreaChannelPost]
  * * [inputMediaAreaVenue#b282217f][TLInputMediaAreaVenue]
  * * [mediaAreaChannelPost#770416af][TLMediaAreaChannelPost]
- * * [mediaAreaGeoPoint#df8b3b22][TLMediaAreaGeoPoint]
+ * * [mediaAreaGeoPoint#cad5452d][TLMediaAreaGeoPoint]
  * * [mediaAreaSuggestedReaction#14455871][TLMediaAreaSuggestedReaction]
+ * * [mediaAreaUrl#37381085][TLMediaAreaUrl]
  * * [mediaAreaVenue#be82db9c][TLMediaAreaVenue]
+ * * [mediaAreaWeather#49a6549c][TLMediaAreaWeather]
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>

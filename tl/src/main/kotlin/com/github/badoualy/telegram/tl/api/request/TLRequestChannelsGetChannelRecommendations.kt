@@ -8,7 +8,6 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputChannel
-import com.github.badoualy.telegram.tl.api.TLInputChannelEmpty
 import com.github.badoualy.telegram.tl.api.messages.TLAbsChats
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
@@ -25,29 +24,41 @@ import kotlin.jvm.Throws
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLRequestChannelsGetChannelRecommendations() : TLMethod<TLAbsChats>() {
-    var channel: TLAbsInputChannel = TLInputChannelEmpty()
+    var channel: TLAbsInputChannel? = null
 
-    private val _constructor: String = "channels.getChannelRecommendations#83b70d97"
+    private val _constructor: String = "channels.getChannelRecommendations#25a71742"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(channel: TLAbsInputChannel) : this() {
+    constructor(channel: TLAbsInputChannel?) : this() {
         this.channel = channel
+    }
+
+    protected override fun computeFlags() {
+        _flags = 0
+        updateFlags(channel, 1)
     }
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
-        writeTLObject(channel)
+        computeFlags()
+
+        writeInt(_flags)
+        doIfMask(channel, 1) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        channel = readTLObject<TLAbsInputChannel>()
+        _flags = readInt()
+        channel = readIfMask(1) { readTLObject<TLAbsInputChannel>() }
     }
 
     override fun computeSerializedSize(): Int {
+        computeFlags()
+
         var size = SIZE_CONSTRUCTOR_ID
-        size += channel.computeSerializedSize()
+        size += SIZE_INT32
+        size += getIntIfMask(channel, 1) { it.computeSerializedSize() }
         return size
     }
 
@@ -57,9 +68,10 @@ class TLRequestChannelsGetChannelRecommendations() : TLMethod<TLAbsChats>() {
         if (other !is TLRequestChannelsGetChannelRecommendations) return false
         if (other === this) return true
 
-        return channel == other.channel
+        return _flags == other._flags
+                && channel == other.channel
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x83b70d97.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x25a71742.toInt()
     }
 }

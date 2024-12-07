@@ -9,8 +9,8 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSiz
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputChannel
 import com.github.badoualy.telegram.tl.api.TLAbsInputUser
-import com.github.badoualy.telegram.tl.api.TLAbsUpdates
 import com.github.badoualy.telegram.tl.api.TLInputChannelEmpty
+import com.github.badoualy.telegram.tl.api.messages.TLInvitedUsers
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
@@ -26,12 +26,12 @@ import kotlin.jvm.Throws
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
-class TLRequestChannelsInviteToChannel() : TLMethod<TLAbsUpdates>() {
+class TLRequestChannelsInviteToChannel() : TLMethod<TLInvitedUsers>() {
     var channel: TLAbsInputChannel = TLInputChannelEmpty()
 
     var users: TLObjectVector<TLAbsInputUser> = TLObjectVector()
 
-    private val _constructor: String = "channels.inviteToChannel#199f3a6c"
+    private val _constructor: String = "channels.inviteToChannel#c9e33d54"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -39,6 +39,9 @@ class TLRequestChannelsInviteToChannel() : TLMethod<TLAbsUpdates>() {
         this.channel = channel
         this.users = users
     }
+
+    @Throws(IOException::class)
+    override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLInvitedUsers = tlDeserializer.readTLObject(TLInvitedUsers::class, TLInvitedUsers.CONSTRUCTOR_ID)
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
@@ -69,6 +72,6 @@ class TLRequestChannelsInviteToChannel() : TLMethod<TLAbsUpdates>() {
                 && users == other.users
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x199f3a6c.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xc9e33d54.toInt()
     }
 }

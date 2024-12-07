@@ -8,7 +8,7 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputFile
-import com.github.badoualy.telegram.tl.api.TLInputFileBig
+import com.github.badoualy.telegram.tl.api.TLInputFileStoryDocument
 import com.github.badoualy.telegram.tl.api.TLInputPhoneCall
 import com.github.badoualy.telegram.tl.core.TLBool
 import com.github.badoualy.telegram.tl.core.TLMethod
@@ -28,7 +28,7 @@ import kotlin.jvm.Throws
 class TLRequestPhoneSaveCallLog() : TLMethod<TLBool>() {
     var peer: TLInputPhoneCall = TLInputPhoneCall()
 
-    var file: TLAbsInputFile = TLInputFileBig()
+    var file: TLAbsInputFile = TLInputFileStoryDocument()
 
     private val _constructor: String = "phone.saveCallLog#41248786"
 

@@ -14,6 +14,7 @@ import com.github.badoualy.telegram.tl.core.TLObject
  * * [inputInvoiceMessage#c5b56859][TLInputInvoiceMessage]
  * * [inputInvoicePremiumGiftCode#98986c0d][TLInputInvoicePremiumGiftCode]
  * * [inputInvoiceSlug#c326caef][TLInputInvoiceSlug]
+ * * [inputInvoiceStars#65f00ce3][TLInputInvoiceStars]
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>

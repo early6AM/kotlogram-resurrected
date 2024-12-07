@@ -14,7 +14,6 @@ import com.github.badoualy.telegram.tl.api.TLInvoice
 import com.github.badoualy.telegram.tl.api.TLPaymentFormMethod
 import com.github.badoualy.telegram.tl.api.TLPaymentRequestedInfo
 import com.github.badoualy.telegram.tl.api.TLPaymentSavedCredentialsCard
-import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
@@ -33,24 +32,24 @@ import kotlin.jvm.Transient
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
-class TLPaymentForm() : TLObject() {
+class TLPaymentForm() : TLAbsPaymentForm() {
     @Transient
     var canSaveCredentials: Boolean = false
 
     @Transient
     var passwordMissing: Boolean = false
 
-    var formId: Long = 0L
+    override var formId: Long = 0L
 
-    var botId: Long = 0L
+    override var botId: Long = 0L
 
-    var title: String = ""
+    override var title: String = ""
 
-    var description: String = ""
+    override var description: String = ""
 
-    var photo: TLAbsWebDocument? = null
+    override var photo: TLAbsWebDocument? = null
 
-    var invoice: TLInvoice = TLInvoice()
+    override var invoice: TLInvoice = TLInvoice()
 
     var providerId: Long = 0L
 
@@ -66,7 +65,7 @@ class TLPaymentForm() : TLObject() {
 
     var savedCredentials: TLObjectVector<TLPaymentSavedCredentialsCard>? = TLObjectVector()
 
-    var users: TLObjectVector<TLAbsUser> = TLObjectVector()
+    override var users: TLObjectVector<TLAbsUser> = TLObjectVector()
 
     private val _constructor: String = "payments.paymentForm#a0058751"
 

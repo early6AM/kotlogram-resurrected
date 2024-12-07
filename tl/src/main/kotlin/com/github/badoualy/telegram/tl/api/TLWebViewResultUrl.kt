@@ -17,42 +17,65 @@ import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
- * webViewResultUrl#c14557c
+ * webViewResultUrl#4d22ff98
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLWebViewResultUrl() : TLObject() {
-    var queryId: Long = 0L
+    @Transient
+    var fullsize: Boolean = false
+
+    var queryId: Long? = null
 
     var url: String = ""
 
-    private val _constructor: String = "webViewResultUrl#c14557c"
+    private val _constructor: String = "webViewResultUrl#4d22ff98"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(queryId: Long, url: String) : this() {
+    constructor(
+            fullsize: Boolean,
+            queryId: Long?,
+            url: String
+    ) : this() {
+        this.fullsize = fullsize
         this.queryId = queryId
         this.url = url
     }
 
+    protected override fun computeFlags() {
+        _flags = 0
+        updateFlags(fullsize, 2)
+        updateFlags(queryId, 1)
+    }
+
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
-        writeLong(queryId)
+        computeFlags()
+
+        writeInt(_flags)
+        doIfMask(queryId, 1) { writeLong(it) }
         writeString(url)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        queryId = readLong()
+        _flags = readInt()
+        fullsize = isMask(2)
+        queryId = readIfMask(1) { readLong() }
         url = readString()
     }
 
     override fun computeSerializedSize(): Int {
+        computeFlags()
+
         var size = SIZE_CONSTRUCTOR_ID
-        size += SIZE_INT64
+        size += SIZE_INT32
+        size += getIntIfMask(queryId, 1) { SIZE_INT64 }
         size += computeTLStringSerializedSize(url)
         return size
     }
@@ -63,10 +86,12 @@ class TLWebViewResultUrl() : TLObject() {
         if (other !is TLWebViewResultUrl) return false
         if (other === this) return true
 
-        return queryId == other.queryId
+        return _flags == other._flags
+                && fullsize == other.fullsize
+                && queryId == other.queryId
                 && url == other.url
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xc14557c.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x4d22ff98.toInt()
     }
 }

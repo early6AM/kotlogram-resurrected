@@ -11,8 +11,8 @@ import com.github.badoualy.telegram.tl.core.TLObject
 
 /**
  * Abstraction level for the following constructors:
- * * [dialogFilter#7438f7e8][TLDialogFilter]
- * * [dialogFilterChatlist#d64a04a8][TLDialogFilterChatlist]
+ * * [dialogFilter#5fb5523b][TLDialogFilter]
+ * * [dialogFilterChatlist#9fe28ea4][TLDialogFilterChatlist]
  * * [dialogFilterDefault#363293ae][TLDialogFilterDefault]
  *
  * @author Yannick Badoual yann.badoual@gmail.com

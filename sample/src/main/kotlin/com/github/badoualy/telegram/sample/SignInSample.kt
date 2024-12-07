@@ -44,7 +44,7 @@ object SignInSample {
 //                            client.authCheckPassword(password).blockingGet()
                             TODO()
                         } else if (e.type.equals("PHONE_NUMBER_UNOCCUPIED", true)) {
-                            client.authSignUp(Config.phoneNumber, sentCode.phoneCodeHash, "Danill", "Pony")
+                            client.authSignUp(false, Config.phoneNumber, sentCode.phoneCodeHash, "Danill", "Pony")
                                 .blockingGet()
                         } else throw e
                     } as TLAuthorization

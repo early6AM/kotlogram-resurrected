@@ -17,11 +17,14 @@ import com.github.badoualy.telegram.tl.api.account.TLAbsThemes
 import com.github.badoualy.telegram.tl.api.account.TLAbsWallPapers
 import com.github.badoualy.telegram.tl.api.account.TLAuthorizationForm
 import com.github.badoualy.telegram.tl.api.account.TLAuthorizations
+import com.github.badoualy.telegram.tl.api.account.TLBusinessChatLinks
+import com.github.badoualy.telegram.tl.api.account.TLConnectedBots
 import com.github.badoualy.telegram.tl.api.account.TLContentSettings
 import com.github.badoualy.telegram.tl.api.account.TLPassword
 import com.github.badoualy.telegram.tl.api.account.TLPasswordInputSettings
 import com.github.badoualy.telegram.tl.api.account.TLPasswordSettings
 import com.github.badoualy.telegram.tl.api.account.TLPrivacyRules
+import com.github.badoualy.telegram.tl.api.account.TLResolvedBusinessChatLinks
 import com.github.badoualy.telegram.tl.api.account.TLSentEmailCode
 import com.github.badoualy.telegram.tl.api.account.TLTakeout
 import com.github.badoualy.telegram.tl.api.account.TLTmpPassword
@@ -33,7 +36,10 @@ import com.github.badoualy.telegram.tl.api.auth.TLExportedAuthorization
 import com.github.badoualy.telegram.tl.api.auth.TLLoggedOut
 import com.github.badoualy.telegram.tl.api.auth.TLPasswordRecovery
 import com.github.badoualy.telegram.tl.api.bots.TLBotInfo
+import com.github.badoualy.telegram.tl.api.bots.TLPopularAppBots
+import com.github.badoualy.telegram.tl.api.bots.TLPreviewInfo
 import com.github.badoualy.telegram.tl.api.channels.TLAbsChannelParticipants
+import com.github.badoualy.telegram.tl.api.channels.TLAbsSponsoredMessageReportResult
 import com.github.badoualy.telegram.tl.api.channels.TLAdminLogResults
 import com.github.badoualy.telegram.tl.api.channels.TLChannelParticipant
 import com.github.badoualy.telegram.tl.api.channels.TLSendAsPeers
@@ -43,9 +49,11 @@ import com.github.badoualy.telegram.tl.api.chatlists.TLExportedInvites
 import com.github.badoualy.telegram.tl.api.contacts.TLAbsBlocked
 import com.github.badoualy.telegram.tl.api.contacts.TLAbsContacts
 import com.github.badoualy.telegram.tl.api.contacts.TLAbsTopPeers
+import com.github.badoualy.telegram.tl.api.contacts.TLContactBirthdays
 import com.github.badoualy.telegram.tl.api.contacts.TLFound
 import com.github.badoualy.telegram.tl.api.contacts.TLImportedContacts
 import com.github.badoualy.telegram.tl.api.contacts.TLResolvedPeer
+import com.github.badoualy.telegram.tl.api.fragment.TLCollectibleInfo
 import com.github.badoualy.telegram.tl.api.help.TLAbsAppConfig
 import com.github.badoualy.telegram.tl.api.help.TLAbsAppUpdate
 import com.github.badoualy.telegram.tl.api.help.TLAbsCountriesList
@@ -54,6 +62,7 @@ import com.github.badoualy.telegram.tl.api.help.TLAbsPassportConfig
 import com.github.badoualy.telegram.tl.api.help.TLAbsPeerColors
 import com.github.badoualy.telegram.tl.api.help.TLAbsPromoData
 import com.github.badoualy.telegram.tl.api.help.TLAbsTermsOfServiceUpdate
+import com.github.badoualy.telegram.tl.api.help.TLAbsTimezonesList
 import com.github.badoualy.telegram.tl.api.help.TLAbsUserInfo
 import com.github.badoualy.telegram.tl.api.help.TLInviteText
 import com.github.badoualy.telegram.tl.api.help.TLPremiumPromo
@@ -61,6 +70,7 @@ import com.github.badoualy.telegram.tl.api.help.TLRecentMeUrls
 import com.github.badoualy.telegram.tl.api.help.TLSupport
 import com.github.badoualy.telegram.tl.api.help.TLSupportName
 import com.github.badoualy.telegram.tl.api.messages.TLAbsAllStickers
+import com.github.badoualy.telegram.tl.api.messages.TLAbsAvailableEffects
 import com.github.badoualy.telegram.tl.api.messages.TLAbsAvailableReactions
 import com.github.badoualy.telegram.tl.api.messages.TLAbsChats
 import com.github.badoualy.telegram.tl.api.messages.TLAbsDhConfig
@@ -70,10 +80,12 @@ import com.github.badoualy.telegram.tl.api.messages.TLAbsFavedStickers
 import com.github.badoualy.telegram.tl.api.messages.TLAbsFeaturedStickers
 import com.github.badoualy.telegram.tl.api.messages.TLAbsFoundStickerSets
 import com.github.badoualy.telegram.tl.api.messages.TLAbsMessages
+import com.github.badoualy.telegram.tl.api.messages.TLAbsQuickReplies
 import com.github.badoualy.telegram.tl.api.messages.TLAbsReactions
 import com.github.badoualy.telegram.tl.api.messages.TLAbsRecentStickers
 import com.github.badoualy.telegram.tl.api.messages.TLAbsSavedDialogs
 import com.github.badoualy.telegram.tl.api.messages.TLAbsSavedGifs
+import com.github.badoualy.telegram.tl.api.messages.TLAbsSavedReactionTags
 import com.github.badoualy.telegram.tl.api.messages.TLAbsSentEncryptedMessage
 import com.github.badoualy.telegram.tl.api.messages.TLAbsSponsoredMessages
 import com.github.badoualy.telegram.tl.api.messages.TLAbsStickerSet
@@ -90,6 +102,7 @@ import com.github.badoualy.telegram.tl.api.messages.TLChatAdminsWithInvites
 import com.github.badoualy.telegram.tl.api.messages.TLChatFull
 import com.github.badoualy.telegram.tl.api.messages.TLChatInviteImporters
 import com.github.badoualy.telegram.tl.api.messages.TLCheckedHistoryImportPeer
+import com.github.badoualy.telegram.tl.api.messages.TLDialogFilters
 import com.github.badoualy.telegram.tl.api.messages.TLDiscussionMessage
 import com.github.badoualy.telegram.tl.api.messages.TLExportedChatInvites
 import com.github.badoualy.telegram.tl.api.messages.TLForumTopics
@@ -97,9 +110,11 @@ import com.github.badoualy.telegram.tl.api.messages.TLHighScores
 import com.github.badoualy.telegram.tl.api.messages.TLHistoryImport
 import com.github.badoualy.telegram.tl.api.messages.TLHistoryImportParsed
 import com.github.badoualy.telegram.tl.api.messages.TLInactiveChats
+import com.github.badoualy.telegram.tl.api.messages.TLInvitedUsers
 import com.github.badoualy.telegram.tl.api.messages.TLMessageEditData
 import com.github.badoualy.telegram.tl.api.messages.TLMessageReactionsList
 import com.github.badoualy.telegram.tl.api.messages.TLMessageViews
+import com.github.badoualy.telegram.tl.api.messages.TLMyStickers
 import com.github.badoualy.telegram.tl.api.messages.TLPeerDialogs
 import com.github.badoualy.telegram.tl.api.messages.TLPeerSettings
 import com.github.badoualy.telegram.tl.api.messages.TLSearchCounter
@@ -110,13 +125,17 @@ import com.github.badoualy.telegram.tl.api.messages.TLTranslateResult
 import com.github.badoualy.telegram.tl.api.messages.TLVotesList
 import com.github.badoualy.telegram.tl.api.messages.TLWebPage
 import com.github.badoualy.telegram.tl.api.payments.TLAbsGiveawayInfo
+import com.github.badoualy.telegram.tl.api.payments.TLAbsPaymentForm
+import com.github.badoualy.telegram.tl.api.payments.TLAbsPaymentReceipt
 import com.github.badoualy.telegram.tl.api.payments.TLAbsPaymentResult
 import com.github.badoualy.telegram.tl.api.payments.TLBankCardData
 import com.github.badoualy.telegram.tl.api.payments.TLCheckedGiftCode
 import com.github.badoualy.telegram.tl.api.payments.TLExportedInvoice
-import com.github.badoualy.telegram.tl.api.payments.TLPaymentForm
-import com.github.badoualy.telegram.tl.api.payments.TLPaymentReceipt
 import com.github.badoualy.telegram.tl.api.payments.TLSavedInfo
+import com.github.badoualy.telegram.tl.api.payments.TLStarsRevenueAdsAccountUrl
+import com.github.badoualy.telegram.tl.api.payments.TLStarsRevenueStats
+import com.github.badoualy.telegram.tl.api.payments.TLStarsRevenueWithdrawalUrl
+import com.github.badoualy.telegram.tl.api.payments.TLStarsStatus
 import com.github.badoualy.telegram.tl.api.payments.TLValidatedRequestedInfo
 import com.github.badoualy.telegram.tl.api.phone.TLExportedGroupCallInvite
 import com.github.badoualy.telegram.tl.api.phone.TLGroupCall
@@ -138,11 +157,15 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestAccountCheckUsername
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountClearRecentEmojiStatuses
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountConfirmPasswordEmail
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountConfirmPhone
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountCreateBusinessChatLink
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountCreateTheme
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountDeclinePasswordReset
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountDeleteAccount
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountDeleteAutoSaveExceptions
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountDeleteBusinessChatLink
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountDeleteSecureValue
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountDisablePeerConnectedBot
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountEditBusinessChatLink
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountFinishTakeoutSession
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetAccountTTL
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetAllSecureValues
@@ -150,9 +173,12 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetAuthorizat
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetAuthorizations
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetAutoDownloadSettings
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetAutoSaveSettings
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetBotBusinessConnection
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetBusinessChatLinks
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetChannelDefaultEmojiStatuses
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetChannelRestrictedStatusEmojis
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetChatThemes
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetConnectedBots
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetContactSignUpNotification
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetContentSettings
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetDefaultBackgroundEmojis
@@ -166,6 +192,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetNotifySett
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetPassword
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetPasswordSettings
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetPrivacy
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetReactionsNotifySettings
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetRecentEmojiStatuses
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetSavedRingtones
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountGetSecureValue
@@ -190,6 +217,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestAccountResetPassword
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountResetWallPapers
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountResetWebAuthorization
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountResetWebAuthorizations
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountResolveBusinessChatLink
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountSaveAutoDownloadSettings
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountSaveAutoSaveSettings
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountSaveRingtone
@@ -206,13 +234,24 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestAccountSetContactSig
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountSetContentSettings
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountSetGlobalPrivacySettings
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountSetPrivacy
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountSetReactionsNotifySettings
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountToggleConnectedBotPaused
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountToggleSponsoredMessages
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountToggleUsername
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUnregisterDevice
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateBirthday
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateBusinessAwayMessage
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateBusinessGreetingMessage
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateBusinessIntro
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateBusinessLocation
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateBusinessWorkHours
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateColor
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateConnectedBot
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateDeviceLocked
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateEmojiStatus
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateNotifySettings
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdatePasswordSettings
+import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdatePersonalChannel
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateProfile
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateStatus
 import com.github.badoualy.telegram.tl.api.request.TLRequestAccountUpdateTheme
@@ -236,6 +275,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestAuthImportLoginToken
 import com.github.badoualy.telegram.tl.api.request.TLRequestAuthImportWebTokenAuthorization
 import com.github.badoualy.telegram.tl.api.request.TLRequestAuthLogOut
 import com.github.badoualy.telegram.tl.api.request.TLRequestAuthRecoverPassword
+import com.github.badoualy.telegram.tl.api.request.TLRequestAuthReportMissingCode
 import com.github.badoualy.telegram.tl.api.request.TLRequestAuthRequestFirebaseSms
 import com.github.badoualy.telegram.tl.api.request.TLRequestAuthRequestPasswordRecovery
 import com.github.badoualy.telegram.tl.api.request.TLRequestAuthResendCode
@@ -244,13 +284,20 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestAuthResetLoginEmail
 import com.github.badoualy.telegram.tl.api.request.TLRequestAuthSendCode
 import com.github.badoualy.telegram.tl.api.request.TLRequestAuthSignIn
 import com.github.badoualy.telegram.tl.api.request.TLRequestAuthSignUp
+import com.github.badoualy.telegram.tl.api.request.TLRequestBotsAddPreviewMedia
 import com.github.badoualy.telegram.tl.api.request.TLRequestBotsAllowSendMessage
 import com.github.badoualy.telegram.tl.api.request.TLRequestBotsAnswerWebhookJSONQuery
 import com.github.badoualy.telegram.tl.api.request.TLRequestBotsCanSendMessage
+import com.github.badoualy.telegram.tl.api.request.TLRequestBotsDeletePreviewMedia
+import com.github.badoualy.telegram.tl.api.request.TLRequestBotsEditPreviewMedia
 import com.github.badoualy.telegram.tl.api.request.TLRequestBotsGetBotCommands
 import com.github.badoualy.telegram.tl.api.request.TLRequestBotsGetBotInfo
 import com.github.badoualy.telegram.tl.api.request.TLRequestBotsGetBotMenuButton
+import com.github.badoualy.telegram.tl.api.request.TLRequestBotsGetPopularAppBots
+import com.github.badoualy.telegram.tl.api.request.TLRequestBotsGetPreviewInfo
+import com.github.badoualy.telegram.tl.api.request.TLRequestBotsGetPreviewMedias
 import com.github.badoualy.telegram.tl.api.request.TLRequestBotsInvokeWebViewCustomMethod
+import com.github.badoualy.telegram.tl.api.request.TLRequestBotsReorderPreviewMedias
 import com.github.badoualy.telegram.tl.api.request.TLRequestBotsReorderUsernames
 import com.github.badoualy.telegram.tl.api.request.TLRequestBotsResetBotCommands
 import com.github.badoualy.telegram.tl.api.request.TLRequestBotsSendCustomRequest
@@ -303,7 +350,12 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsReorderPinne
 import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsReorderUsernames
 import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsReportAntiSpamFalsePositive
 import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsReportSpam
+import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsReportSponsoredMessage
+import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsRestrictSponsoredMessages
+import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsSearchPosts
+import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsSetBoostsToUnblockRestrictions
 import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsSetDiscussionGroup
+import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsSetEmojiStickers
 import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsSetStickers
 import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsToggleAntiSpam
 import com.github.badoualy.telegram.tl.api.request.TLRequestChannelsToggleForum
@@ -339,6 +391,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestContactsDeleteByPhon
 import com.github.badoualy.telegram.tl.api.request.TLRequestContactsDeleteContacts
 import com.github.badoualy.telegram.tl.api.request.TLRequestContactsEditCloseFriends
 import com.github.badoualy.telegram.tl.api.request.TLRequestContactsExportContactToken
+import com.github.badoualy.telegram.tl.api.request.TLRequestContactsGetBirthdays
 import com.github.badoualy.telegram.tl.api.request.TLRequestContactsGetBlocked
 import com.github.badoualy.telegram.tl.api.request.TLRequestContactsGetContactIDs
 import com.github.badoualy.telegram.tl.api.request.TLRequestContactsGetContacts
@@ -357,6 +410,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestContactsSetBlocked
 import com.github.badoualy.telegram.tl.api.request.TLRequestContactsToggleTopPeers
 import com.github.badoualy.telegram.tl.api.request.TLRequestContactsUnblock
 import com.github.badoualy.telegram.tl.api.request.TLRequestFoldersEditPeerFolders
+import com.github.badoualy.telegram.tl.api.request.TLRequestFragmentGetCollectibleInfo
 import com.github.badoualy.telegram.tl.api.request.TLRequestHelpAcceptTermsOfService
 import com.github.badoualy.telegram.tl.api.request.TLRequestHelpDismissSuggestion
 import com.github.badoualy.telegram.tl.api.request.TLRequestHelpEditUserInfo
@@ -377,6 +431,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestHelpGetRecentMeUrls
 import com.github.badoualy.telegram.tl.api.request.TLRequestHelpGetSupport
 import com.github.badoualy.telegram.tl.api.request.TLRequestHelpGetSupportName
 import com.github.badoualy.telegram.tl.api.request.TLRequestHelpGetTermsOfServiceUpdate
+import com.github.badoualy.telegram.tl.api.request.TLRequestHelpGetTimezonesList
 import com.github.badoualy.telegram.tl.api.request.TLRequestHelpGetUserInfo
 import com.github.badoualy.telegram.tl.api.request.TLRequestHelpHidePromoData
 import com.github.badoualy.telegram.tl.api.request.TLRequestHelpSaveAppLog
@@ -384,6 +439,9 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestHelpSetBotUpdatesSta
 import com.github.badoualy.telegram.tl.api.request.TLRequestInitConnection
 import com.github.badoualy.telegram.tl.api.request.TLRequestInvokeAfterMsg
 import com.github.badoualy.telegram.tl.api.request.TLRequestInvokeAfterMsgs
+import com.github.badoualy.telegram.tl.api.request.TLRequestInvokeWithApnsSecret
+import com.github.badoualy.telegram.tl.api.request.TLRequestInvokeWithBusinessConnection
+import com.github.badoualy.telegram.tl.api.request.TLRequestInvokeWithGooglePlayIntegrity
 import com.github.badoualy.telegram.tl.api.request.TLRequestInvokeWithLayer
 import com.github.badoualy.telegram.tl.api.request.TLRequestInvokeWithMessagesRange
 import com.github.badoualy.telegram.tl.api.request.TLRequestInvokeWithTakeout
@@ -399,6 +457,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesAddChatUser
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesCheckChatInvite
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesCheckHistoryImport
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesCheckHistoryImportPeer
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesCheckQuickReplyShortcut
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesClearAllDrafts
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesClearRecentReactions
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesClearRecentStickers
@@ -406,9 +465,12 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesCreateChat
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesDeleteChat
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesDeleteChatUser
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesDeleteExportedChatInvite
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesDeleteFactCheck
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesDeleteHistory
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesDeleteMessages
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesDeletePhoneCallHistory
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesDeleteQuickReplyMessages
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesDeleteQuickReplyShortcut
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesDeleteRevokedExportedChatInvites
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesDeleteSavedHistory
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesDeleteScheduledMessages
@@ -419,8 +481,10 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesEditChatDefa
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesEditChatPhoto
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesEditChatTitle
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesEditExportedChatInvite
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesEditFactCheck
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesEditInlineBotMessage
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesEditMessage
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesEditQuickReplyShortcut
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesExportChatInvite
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesFaveSticker
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesForwardMessages
@@ -431,6 +495,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetArchivedS
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetAttachMenuBot
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetAttachMenuBots
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetAttachedStickers
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetAvailableEffects
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetAvailableReactions
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetBotApp
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetBotCallbackAnswer
@@ -439,6 +504,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetChats
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetCommonChats
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetCustomEmojiDocuments
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetDefaultHistoryTTL
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetDefaultTagReactions
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetDhConfig
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetDialogFilters
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetDialogUnreadMarks
@@ -451,11 +517,13 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetEmojiKeyw
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetEmojiKeywordsLanguages
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetEmojiProfilePhotoGroups
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetEmojiStatusGroups
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetEmojiStickerGroups
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetEmojiStickers
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetEmojiURL
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetExportedChatInvite
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetExportedChatInvites
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetExtendedMedia
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetFactCheck
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetFavedStickers
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetFeaturedEmojiStickers
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetFeaturedStickers
@@ -471,14 +539,18 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetMessageRe
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetMessages
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetMessagesReactions
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetMessagesViews
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetMyStickers
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetOldFeaturedStickers
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetOnlines
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetOutboxReadDate
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetPeerDialogs
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetPeerSettings
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetPinnedDialogs
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetPinnedSavedDialogs
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetPollResults
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetPollVotes
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetQuickReplies
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetQuickReplyMessages
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetRecentLocations
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetRecentReactions
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetRecentStickers
@@ -486,6 +558,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetReplies
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetSavedDialogs
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetSavedGifs
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetSavedHistory
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetSavedReactionTags
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetScheduledHistory
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetScheduledMessages
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesGetSearchCounters
@@ -521,6 +594,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesReceivedMess
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesReceivedQueue
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesReorderPinnedDialogs
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesReorderPinnedSavedDialogs
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesReorderQuickReplies
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesReorderStickerSets
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesReport
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesReportEncryptedSpam
@@ -528,6 +602,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesReportReacti
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesReportSpam
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesRequestAppWebView
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesRequestEncryption
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesRequestMainWebView
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesRequestSimpleWebView
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesRequestUrlAuth
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesRequestWebView
@@ -549,6 +624,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesSendInlineBo
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesSendMedia
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesSendMessage
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesSendMultiMedia
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesSendQuickReplyMessages
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesSendReaction
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesSendScheduledMessages
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesSendScreenshotNotification
@@ -572,6 +648,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesSetTyping
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesStartBot
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesStartHistoryImport
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesToggleBotInAttachMenu
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesToggleDialogFilterTags
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesToggleDialogPin
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesToggleNoForwards
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesTogglePeerTranslations
@@ -584,6 +661,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesUnpinAllMess
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesUpdateDialogFilter
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesUpdateDialogFiltersOrder
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesUpdatePinnedMessage
+import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesUpdateSavedReactionTag
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesUploadEncryptedFile
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesUploadImportedMedia
 import com.github.badoualy.telegram.tl.api.request.TLRequestMessagesUploadMedia
@@ -600,8 +678,18 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsGetPaymentFo
 import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsGetPaymentReceipt
 import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsGetPremiumGiftCodeOptions
 import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsGetSavedInfo
+import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsGetStarsGiftOptions
+import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsGetStarsRevenueAdsAccountUrl
+import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsGetStarsRevenueStats
+import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsGetStarsRevenueWithdrawalUrl
+import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsGetStarsStatus
+import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsGetStarsTopupOptions
+import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsGetStarsTransactions
+import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsGetStarsTransactionsByID
 import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsLaunchPrepaidGiveaway
+import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsRefundStarsCharge
 import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsSendPaymentForm
+import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsSendStarsForm
 import com.github.badoualy.telegram.tl.api.request.TLRequestPaymentsValidateRequestedInfo
 import com.github.badoualy.telegram.tl.api.request.TLRequestPhoneAcceptCall
 import com.github.badoualy.telegram.tl.api.request.TLRequestPhoneCheckGroupCall
@@ -644,6 +732,16 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestPremiumGetBoostsList
 import com.github.badoualy.telegram.tl.api.request.TLRequestPremiumGetBoostsStatus
 import com.github.badoualy.telegram.tl.api.request.TLRequestPremiumGetMyBoosts
 import com.github.badoualy.telegram.tl.api.request.TLRequestPremiumGetUserBoosts
+import com.github.badoualy.telegram.tl.api.request.TLRequestSmsjobsFinishJob
+import com.github.badoualy.telegram.tl.api.request.TLRequestSmsjobsGetSmsJob
+import com.github.badoualy.telegram.tl.api.request.TLRequestSmsjobsGetStatus
+import com.github.badoualy.telegram.tl.api.request.TLRequestSmsjobsIsEligibleToJoin
+import com.github.badoualy.telegram.tl.api.request.TLRequestSmsjobsJoin
+import com.github.badoualy.telegram.tl.api.request.TLRequestSmsjobsLeave
+import com.github.badoualy.telegram.tl.api.request.TLRequestSmsjobsUpdateSettings
+import com.github.badoualy.telegram.tl.api.request.TLRequestStatsGetBroadcastRevenueStats
+import com.github.badoualy.telegram.tl.api.request.TLRequestStatsGetBroadcastRevenueTransactions
+import com.github.badoualy.telegram.tl.api.request.TLRequestStatsGetBroadcastRevenueWithdrawalUrl
 import com.github.badoualy.telegram.tl.api.request.TLRequestStatsGetBroadcastStats
 import com.github.badoualy.telegram.tl.api.request.TLRequestStatsGetMegagroupStats
 import com.github.badoualy.telegram.tl.api.request.TLRequestStatsGetMessagePublicForwards
@@ -659,6 +757,7 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestStickersCreateSticke
 import com.github.badoualy.telegram.tl.api.request.TLRequestStickersDeleteStickerSet
 import com.github.badoualy.telegram.tl.api.request.TLRequestStickersRemoveStickerFromSet
 import com.github.badoualy.telegram.tl.api.request.TLRequestStickersRenameStickerSet
+import com.github.badoualy.telegram.tl.api.request.TLRequestStickersReplaceSticker
 import com.github.badoualy.telegram.tl.api.request.TLRequestStickersSetStickerSetThumb
 import com.github.badoualy.telegram.tl.api.request.TLRequestStickersSuggestShortName
 import com.github.badoualy.telegram.tl.api.request.TLRequestStoriesActivateStealthMode
@@ -680,11 +779,13 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestStoriesGetStoryViews
 import com.github.badoualy.telegram.tl.api.request.TLRequestStoriesIncrementStoryViews
 import com.github.badoualy.telegram.tl.api.request.TLRequestStoriesReadStories
 import com.github.badoualy.telegram.tl.api.request.TLRequestStoriesReport
+import com.github.badoualy.telegram.tl.api.request.TLRequestStoriesSearchPosts
 import com.github.badoualy.telegram.tl.api.request.TLRequestStoriesSendReaction
 import com.github.badoualy.telegram.tl.api.request.TLRequestStoriesSendStory
 import com.github.badoualy.telegram.tl.api.request.TLRequestStoriesToggleAllStoriesHidden
 import com.github.badoualy.telegram.tl.api.request.TLRequestStoriesTogglePeerStoriesHidden
 import com.github.badoualy.telegram.tl.api.request.TLRequestStoriesTogglePinned
+import com.github.badoualy.telegram.tl.api.request.TLRequestStoriesTogglePinnedToTop
 import com.github.badoualy.telegram.tl.api.request.TLRequestUpdatesGetChannelDifference
 import com.github.badoualy.telegram.tl.api.request.TLRequestUpdatesGetDifference
 import com.github.badoualy.telegram.tl.api.request.TLRequestUpdatesGetState
@@ -697,8 +798,14 @@ import com.github.badoualy.telegram.tl.api.request.TLRequestUploadReuploadCdnFil
 import com.github.badoualy.telegram.tl.api.request.TLRequestUploadSaveBigFilePart
 import com.github.badoualy.telegram.tl.api.request.TLRequestUploadSaveFilePart
 import com.github.badoualy.telegram.tl.api.request.TLRequestUsersGetFullUser
+import com.github.badoualy.telegram.tl.api.request.TLRequestUsersGetIsPremiumRequiredToContact
 import com.github.badoualy.telegram.tl.api.request.TLRequestUsersGetUsers
 import com.github.badoualy.telegram.tl.api.request.TLRequestUsersSetSecureValueErrors
+import com.github.badoualy.telegram.tl.api.smsjobs.TLEligibleToJoin
+import com.github.badoualy.telegram.tl.api.smsjobs.TLStatus
+import com.github.badoualy.telegram.tl.api.stats.TLBroadcastRevenueStats
+import com.github.badoualy.telegram.tl.api.stats.TLBroadcastRevenueTransactions
+import com.github.badoualy.telegram.tl.api.stats.TLBroadcastRevenueWithdrawalUrl
 import com.github.badoualy.telegram.tl.api.stats.TLBroadcastStats
 import com.github.badoualy.telegram.tl.api.stats.TLMegagroupStats
 import com.github.badoualy.telegram.tl.api.stats.TLMessageStats
@@ -706,6 +813,7 @@ import com.github.badoualy.telegram.tl.api.stats.TLPublicForwards
 import com.github.badoualy.telegram.tl.api.stats.TLStoryStats
 import com.github.badoualy.telegram.tl.api.stickers.TLSuggestedShortName
 import com.github.badoualy.telegram.tl.api.stories.TLAbsAllStories
+import com.github.badoualy.telegram.tl.api.stories.TLFoundStories
 import com.github.badoualy.telegram.tl.api.stories.TLPeerStories
 import com.github.badoualy.telegram.tl.api.stories.TLStories
 import com.github.badoualy.telegram.tl.api.stories.TLStoryReactionsList
@@ -766,6 +874,8 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
 
     override fun accountConfirmPhone(phoneCodeHash: String, phoneCode: String): Single<TLBool> = executeMethod(TLRequestAccountConfirmPhone(phoneCodeHash, phoneCode))
 
+    override fun accountCreateBusinessChatLink(link: TLInputBusinessChatLink): Single<TLBusinessChatLink> = executeMethod(TLRequestAccountCreateBusinessChatLink(link))
+
     override fun accountCreateTheme(
             slug: String,
             title: String,
@@ -779,7 +889,13 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
 
     override fun accountDeleteAutoSaveExceptions(): Single<TLBool> = executeMethod(TLRequestAccountDeleteAutoSaveExceptions())
 
+    override fun accountDeleteBusinessChatLink(slug: String): Single<TLBool> = executeMethod(TLRequestAccountDeleteBusinessChatLink(slug))
+
     override fun accountDeleteSecureValue(types: TLObjectVector<TLAbsSecureValueType>): Single<TLBool> = executeMethod(TLRequestAccountDeleteSecureValue(types))
+
+    override fun accountDisablePeerConnectedBot(peer: TLAbsInputPeer): Single<TLBool> = executeMethod(TLRequestAccountDisablePeerConnectedBot(peer))
+
+    override fun accountEditBusinessChatLink(slug: String, link: TLInputBusinessChatLink): Single<TLBusinessChatLink> = executeMethod(TLRequestAccountEditBusinessChatLink(slug, link))
 
     override fun accountFinishTakeoutSession(success: Boolean): Single<TLBool> = executeMethod(TLRequestAccountFinishTakeoutSession(success))
 
@@ -799,11 +915,17 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
 
     override fun accountGetAutoSaveSettings(): Single<com.github.badoualy.telegram.tl.api.account.TLAutoSaveSettings> = executeMethod(TLRequestAccountGetAutoSaveSettings())
 
+    override fun accountGetBotBusinessConnection(connectionId: String): Single<TLAbsUpdates> = executeMethod(TLRequestAccountGetBotBusinessConnection(connectionId))
+
+    override fun accountGetBusinessChatLinks(): Single<TLBusinessChatLinks> = executeMethod(TLRequestAccountGetBusinessChatLinks())
+
     override fun accountGetChannelDefaultEmojiStatuses(hash: Long): Single<TLAbsEmojiStatuses> = executeMethod(TLRequestAccountGetChannelDefaultEmojiStatuses(hash))
 
     override fun accountGetChannelRestrictedStatusEmojis(hash: Long): Single<TLAbsEmojiList> = executeMethod(TLRequestAccountGetChannelRestrictedStatusEmojis(hash))
 
     override fun accountGetChatThemes(hash: Long): Single<TLAbsThemes> = executeMethod(TLRequestAccountGetChatThemes(hash))
+
+    override fun accountGetConnectedBots(): Single<TLConnectedBots> = executeMethod(TLRequestAccountGetConnectedBots())
 
     override fun accountGetContactSignUpNotification(): Single<TLBool> = executeMethod(TLRequestAccountGetContactSignUpNotification())
 
@@ -834,6 +956,8 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
     override fun accountGetPasswordSettings(password: TLAbsInputCheckPasswordSRP): Single<TLPasswordSettings> = executeMethod(TLRequestAccountGetPasswordSettings(password))
 
     override fun accountGetPrivacy(key: TLAbsInputPrivacyKey): Single<TLPrivacyRules> = executeMethod(TLRequestAccountGetPrivacy(key))
+
+    override fun accountGetReactionsNotifySettings(): Single<TLReactionsNotifySettings> = executeMethod(TLRequestAccountGetReactionsNotifySettings())
 
     override fun accountGetRecentEmojiStatuses(hash: Long): Single<TLAbsEmojiStatuses> = executeMethod(TLRequestAccountGetRecentEmojiStatuses(hash))
 
@@ -912,6 +1036,8 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
 
     override fun accountResetWebAuthorizations(): Single<TLBool> = executeMethod(TLRequestAccountResetWebAuthorizations())
 
+    override fun accountResolveBusinessChatLink(slug: String): Single<TLResolvedBusinessChatLinks> = executeMethod(TLRequestAccountResolveBusinessChatLink(slug))
+
     override fun accountSaveAutoDownloadSettings(
             low: Boolean,
             high: Boolean,
@@ -958,6 +1084,12 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
 
     override fun accountSetPrivacy(key: TLAbsInputPrivacyKey, rules: TLObjectVector<TLAbsInputPrivacyRule>): Single<TLPrivacyRules> = executeMethod(TLRequestAccountSetPrivacy(key, rules))
 
+    override fun accountSetReactionsNotifySettings(settings: TLReactionsNotifySettings): Single<TLReactionsNotifySettings> = executeMethod(TLRequestAccountSetReactionsNotifySettings(settings))
+
+    override fun accountToggleConnectedBotPaused(peer: TLAbsInputPeer, paused: Boolean): Single<TLBool> = executeMethod(TLRequestAccountToggleConnectedBotPaused(peer, paused))
+
+    override fun accountToggleSponsoredMessages(enabled: Boolean): Single<TLBool> = executeMethod(TLRequestAccountToggleSponsoredMessages(enabled))
+
     override fun accountToggleUsername(username: String, active: Boolean): Single<TLBool> = executeMethod(TLRequestAccountToggleUsername(username, active))
 
     override fun accountUnregisterDevice(
@@ -966,11 +1098,30 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             otherUids: TLLongVector
     ): Single<TLBool> = executeMethod(TLRequestAccountUnregisterDevice(tokenType, token, otherUids))
 
+    override fun accountUpdateBirthday(birthday: TLBirthday?): Single<TLBool> = executeMethod(TLRequestAccountUpdateBirthday(birthday))
+
+    override fun accountUpdateBusinessAwayMessage(message: TLInputBusinessAwayMessage?): Single<TLBool> = executeMethod(TLRequestAccountUpdateBusinessAwayMessage(message))
+
+    override fun accountUpdateBusinessGreetingMessage(message: TLInputBusinessGreetingMessage?): Single<TLBool> = executeMethod(TLRequestAccountUpdateBusinessGreetingMessage(message))
+
+    override fun accountUpdateBusinessIntro(intro: TLInputBusinessIntro?): Single<TLBool> = executeMethod(TLRequestAccountUpdateBusinessIntro(intro))
+
+    override fun accountUpdateBusinessLocation(geoPoint: TLAbsInputGeoPoint?, address: String?): Single<TLBool> = executeMethod(TLRequestAccountUpdateBusinessLocation(geoPoint, address))
+
+    override fun accountUpdateBusinessWorkHours(businessWorkHours: TLBusinessWorkHours?): Single<TLBool> = executeMethod(TLRequestAccountUpdateBusinessWorkHours(businessWorkHours))
+
     override fun accountUpdateColor(
             forProfile: Boolean,
             color: Int?,
             backgroundEmojiId: Long?
     ): Single<TLBool> = executeMethod(TLRequestAccountUpdateColor(forProfile, color, backgroundEmojiId))
+
+    override fun accountUpdateConnectedBot(
+            canReply: Boolean,
+            deleted: Boolean,
+            bot: TLAbsInputUser,
+            recipients: TLInputBusinessBotRecipients
+    ): Single<TLAbsUpdates> = executeMethod(TLRequestAccountUpdateConnectedBot(canReply, deleted, bot, recipients))
 
     override fun accountUpdateDeviceLocked(period: Int): Single<TLBool> = executeMethod(TLRequestAccountUpdateDeviceLocked(period))
 
@@ -979,6 +1130,8 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
     override fun accountUpdateNotifySettings(peer: TLAbsInputNotifyPeer, settings: TLInputPeerNotifySettings): Single<TLBool> = executeMethod(TLRequestAccountUpdateNotifySettings(peer, settings))
 
     override fun accountUpdatePasswordSettings(password: TLAbsInputCheckPasswordSRP, newSettings: TLPasswordInputSettings): Single<TLBool> = executeMethod(TLRequestAccountUpdatePasswordSettings(password, newSettings))
+
+    override fun accountUpdatePersonalChannel(channel: TLAbsInputChannel): Single<TLBool> = executeMethod(TLRequestAccountUpdatePersonalChannel(channel))
 
     override fun accountUpdateProfile(
             firstName: String?,
@@ -1073,16 +1226,27 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
 
     override fun authRecoverPassword(code: String, newSettings: TLPasswordInputSettings?): Single<TLAbsAuthorization> = executeMethod(TLRequestAuthRecoverPassword(code, newSettings))
 
+    override fun authReportMissingCode(
+            phoneNumber: String,
+            phoneCodeHash: String,
+            mnc: String
+    ): Single<TLBool> = executeMethod(TLRequestAuthReportMissingCode(phoneNumber, phoneCodeHash, mnc))
+
     override fun authRequestFirebaseSms(
             phoneNumber: String,
             phoneCodeHash: String,
             safetyNetToken: String?,
+            playIntegrityToken: String?,
             iosPushSecret: String?
-    ): Single<TLBool> = executeMethod(TLRequestAuthRequestFirebaseSms(phoneNumber, phoneCodeHash, safetyNetToken, iosPushSecret))
+    ): Single<TLBool> = executeMethod(TLRequestAuthRequestFirebaseSms(phoneNumber, phoneCodeHash, safetyNetToken, playIntegrityToken, iosPushSecret))
 
     override fun authRequestPasswordRecovery(): Single<TLPasswordRecovery> = executeMethod(TLRequestAuthRequestPasswordRecovery())
 
-    override fun authResendCode(phoneNumber: String, phoneCodeHash: String): Single<TLAbsSentCode> = executeMethod(TLRequestAuthResendCode(phoneNumber, phoneCodeHash))
+    override fun authResendCode(
+            phoneNumber: String,
+            phoneCodeHash: String,
+            reason: String?
+    ): Single<TLAbsSentCode> = executeMethod(TLRequestAuthResendCode(phoneNumber, phoneCodeHash, reason))
 
     override fun authResetAuthorizations(): Single<TLBool> = executeMethod(TLRequestAuthResetAuthorizations())
 
@@ -1103,11 +1267,18 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
     ): Single<TLAbsAuthorization> = executeMethod(TLRequestAuthSignIn(phoneNumber, phoneCodeHash, phoneCode, emailVerification))
 
     override fun authSignUp(
+            noJoinedNotifications: Boolean,
             phoneNumber: String,
             phoneCodeHash: String,
             firstName: String,
             lastName: String
-    ): Single<TLAbsAuthorization> = executeMethod(TLRequestAuthSignUp(phoneNumber, phoneCodeHash, firstName, lastName))
+    ): Single<TLAbsAuthorization> = executeMethod(TLRequestAuthSignUp(noJoinedNotifications, phoneNumber, phoneCodeHash, firstName, lastName))
+
+    override fun botsAddPreviewMedia(
+            bot: TLAbsInputUser,
+            langCode: String,
+            media: TLAbsInputMedia
+    ): Single<TLBotPreviewMedia> = executeMethod(TLRequestBotsAddPreviewMedia(bot, langCode, media))
 
     override fun botsAllowSendMessage(bot: TLAbsInputUser): Single<TLAbsUpdates> = executeMethod(TLRequestBotsAllowSendMessage(bot))
 
@@ -1115,17 +1286,42 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
 
     override fun botsCanSendMessage(bot: TLAbsInputUser): Single<TLBool> = executeMethod(TLRequestBotsCanSendMessage(bot))
 
+    override fun botsDeletePreviewMedia(
+            bot: TLAbsInputUser,
+            langCode: String,
+            media: TLObjectVector<TLAbsInputMedia>
+    ): Single<TLBool> = executeMethod(TLRequestBotsDeletePreviewMedia(bot, langCode, media))
+
+    override fun botsEditPreviewMedia(
+            bot: TLAbsInputUser,
+            langCode: String,
+            media: TLAbsInputMedia,
+            newMedia: TLAbsInputMedia
+    ): Single<TLBotPreviewMedia> = executeMethod(TLRequestBotsEditPreviewMedia(bot, langCode, media, newMedia))
+
     override fun botsGetBotCommands(scope: TLAbsBotCommandScope, langCode: String): Single<TLObjectVector<TLBotCommand>> = executeMethod(TLRequestBotsGetBotCommands(scope, langCode))
 
     override fun botsGetBotInfo(bot: TLAbsInputUser?, langCode: String): Single<TLBotInfo> = executeMethod(TLRequestBotsGetBotInfo(bot, langCode))
 
     override fun botsGetBotMenuButton(userId: TLAbsInputUser): Single<TLAbsBotMenuButton> = executeMethod(TLRequestBotsGetBotMenuButton(userId))
 
+    override fun botsGetPopularAppBots(offset: String, limit: Int): Single<TLPopularAppBots> = executeMethod(TLRequestBotsGetPopularAppBots(offset, limit))
+
+    override fun botsGetPreviewInfo(bot: TLAbsInputUser, langCode: String): Single<TLPreviewInfo> = executeMethod(TLRequestBotsGetPreviewInfo(bot, langCode))
+
+    override fun botsGetPreviewMedias(bot: TLAbsInputUser): Single<TLObjectVector<TLBotPreviewMedia>> = executeMethod(TLRequestBotsGetPreviewMedias(bot))
+
     override fun botsInvokeWebViewCustomMethod(
             bot: TLAbsInputUser,
             customMethod: String,
             params: TLDataJSON
     ): Single<TLDataJSON> = executeMethod(TLRequestBotsInvokeWebViewCustomMethod(bot, customMethod, params))
+
+    override fun botsReorderPreviewMedias(
+            bot: TLAbsInputUser,
+            langCode: String,
+            order: TLObjectVector<TLAbsInputMedia>
+    ): Single<TLBool> = executeMethod(TLRequestBotsReorderPreviewMedias(bot, langCode, order))
 
     override fun botsReorderUsernames(bot: TLAbsInputUser, order: TLStringVector): Single<TLBool> = executeMethod(TLRequestBotsReorderUsernames(bot, order))
 
@@ -1257,9 +1453,13 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             limit: Int
     ): Single<TLAdminLogResults> = executeMethod(TLRequestChannelsGetAdminLog(channel, q, eventsFilter, admins, maxId, minId, limit))
 
-    override fun channelsGetAdminedPublicChannels(byLocation: Boolean, checkLimit: Boolean): Single<TLAbsChats> = executeMethod(TLRequestChannelsGetAdminedPublicChannels(byLocation, checkLimit))
+    override fun channelsGetAdminedPublicChannels(
+            byLocation: Boolean,
+            checkLimit: Boolean,
+            forPersonal: Boolean
+    ): Single<TLAbsChats> = executeMethod(TLRequestChannelsGetAdminedPublicChannels(byLocation, checkLimit, forPersonal))
 
-    override fun channelsGetChannelRecommendations(channel: TLAbsInputChannel): Single<TLAbsChats> = executeMethod(TLRequestChannelsGetChannelRecommendations(channel))
+    override fun channelsGetChannelRecommendations(channel: TLAbsInputChannel?): Single<TLAbsChats> = executeMethod(TLRequestChannelsGetChannelRecommendations(channel))
 
     override fun channelsGetChannels(id: TLObjectVector<TLAbsInputChannel>): Single<TLAbsChats> = executeMethod(TLRequestChannelsGetChannels(id))
 
@@ -1298,7 +1498,7 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
 
     override fun channelsGetSponsoredMessages(channel: TLAbsInputChannel): Single<TLAbsSponsoredMessages> = executeMethod(TLRequestChannelsGetSponsoredMessages(channel))
 
-    override fun channelsInviteToChannel(channel: TLAbsInputChannel, users: TLObjectVector<TLAbsInputUser>): Single<TLAbsUpdates> = executeMethod(TLRequestChannelsInviteToChannel(channel, users))
+    override fun channelsInviteToChannel(channel: TLAbsInputChannel, users: TLObjectVector<TLAbsInputUser>): Single<TLInvitedUsers> = executeMethod(TLRequestChannelsInviteToChannel(channel, users))
 
     override fun channelsJoinChannel(channel: TLAbsInputChannel): Single<TLAbsUpdates> = executeMethod(TLRequestChannelsJoinChannel(channel))
 
@@ -1324,7 +1524,27 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             id: TLIntVector
     ): Single<TLBool> = executeMethod(TLRequestChannelsReportSpam(channel, participant, id))
 
+    override fun channelsReportSponsoredMessage(
+            channel: TLAbsInputChannel,
+            randomId: TLBytes,
+            option: TLBytes
+    ): Single<TLAbsSponsoredMessageReportResult> = executeMethod(TLRequestChannelsReportSponsoredMessage(channel, randomId, option))
+
+    override fun channelsRestrictSponsoredMessages(channel: TLAbsInputChannel, restricted: Boolean): Single<TLAbsUpdates> = executeMethod(TLRequestChannelsRestrictSponsoredMessages(channel, restricted))
+
+    override fun channelsSearchPosts(
+            hashtag: String,
+            offsetRate: Int,
+            offsetPeer: TLAbsInputPeer,
+            offsetId: Int,
+            limit: Int
+    ): Single<TLAbsMessages> = executeMethod(TLRequestChannelsSearchPosts(hashtag, offsetRate, offsetPeer, offsetId, limit))
+
+    override fun channelsSetBoostsToUnblockRestrictions(channel: TLAbsInputChannel, boosts: Int): Single<TLAbsUpdates> = executeMethod(TLRequestChannelsSetBoostsToUnblockRestrictions(channel, boosts))
+
     override fun channelsSetDiscussionGroup(broadcast: TLAbsInputChannel, group: TLAbsInputChannel): Single<TLBool> = executeMethod(TLRequestChannelsSetDiscussionGroup(broadcast, group))
+
+    override fun channelsSetEmojiStickers(channel: TLAbsInputChannel, stickerset: TLAbsInputStickerSet): Single<TLBool> = executeMethod(TLRequestChannelsSetEmojiStickers(channel, stickerset))
 
     override fun channelsSetStickers(channel: TLAbsInputChannel, stickerset: TLAbsInputStickerSet): Single<TLBool> = executeMethod(TLRequestChannelsSetStickers(channel, stickerset))
 
@@ -1429,6 +1649,8 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
 
     override fun contactsExportContactToken(): Single<TLExportedContactToken> = executeMethod(TLRequestContactsExportContactToken())
 
+    override fun contactsGetBirthdays(): Single<TLContactBirthdays> = executeMethod(TLRequestContactsGetBirthdays())
+
     override fun contactsGetBlocked(
             myStoriesFrom: Boolean,
             offset: Int,
@@ -1490,6 +1712,8 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
 
     override fun foldersEditPeerFolders(folderPeers: TLObjectVector<TLInputFolderPeer>): Single<TLAbsUpdates> = executeMethod(TLRequestFoldersEditPeerFolders(folderPeers))
 
+    override fun fragmentGetCollectibleInfo(collectible: TLAbsInputCollectible): Single<TLCollectibleInfo> = executeMethod(TLRequestFragmentGetCollectibleInfo(collectible))
+
     override fun helpAcceptTermsOfService(id: TLDataJSON): Single<TLBool> = executeMethod(TLRequestHelpAcceptTermsOfService(id))
 
     override fun helpDismissSuggestion(peer: TLAbsInputPeer, suggestion: String): Single<TLBool> = executeMethod(TLRequestHelpDismissSuggestion(peer, suggestion))
@@ -1534,6 +1758,8 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
 
     override fun helpGetTermsOfServiceUpdate(): Single<TLAbsTermsOfServiceUpdate> = executeMethod(TLRequestHelpGetTermsOfServiceUpdate())
 
+    override fun helpGetTimezonesList(hash: Int): Single<TLAbsTimezonesList> = executeMethod(TLRequestHelpGetTimezonesList(hash))
+
     override fun helpGetUserInfo(userId: TLAbsInputUser): Single<TLAbsUserInfo> = executeMethod(TLRequestHelpGetUserInfo(userId))
 
     override fun helpHidePromoData(peer: TLAbsInputPeer): Single<TLBool> = executeMethod(TLRequestHelpHidePromoData(peer))
@@ -1558,6 +1784,20 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
     override fun <T : TLObject> invokeAfterMsg(msgId: Long, query: TLMethod<T>?): Single<T> = executeMethod(TLRequestInvokeAfterMsg(msgId, query))
 
     override fun <T : TLObject> invokeAfterMsgs(msgIds: TLLongVector, query: TLMethod<T>?): Single<T> = executeMethod(TLRequestInvokeAfterMsgs(msgIds, query))
+
+    override fun <T : TLObject> invokeWithApnsSecret(
+            nonce: String,
+            secret: String,
+            query: TLMethod<T>?
+    ): Single<T> = executeMethod(TLRequestInvokeWithApnsSecret(nonce, secret, query))
+
+    override fun <T : TLObject> invokeWithBusinessConnection(connectionId: String, query: TLMethod<T>?): Single<T> = executeMethod(TLRequestInvokeWithBusinessConnection(connectionId, query))
+
+    override fun <T : TLObject> invokeWithGooglePlayIntegrity(
+            nonce: String,
+            token: String,
+            query: TLMethod<T>?
+    ): Single<T> = executeMethod(TLRequestInvokeWithGooglePlayIntegrity(nonce, token, query))
 
     override fun <T : TLObject> invokeWithLayer(layer: Int, query: TLMethod<T>?): Single<T> = executeMethod(TLRequestInvokeWithLayer(layer, query))
 
@@ -1603,13 +1843,15 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             chatId: Long,
             userId: TLAbsInputUser,
             fwdLimit: Int
-    ): Single<TLAbsUpdates> = executeMethod(TLRequestMessagesAddChatUser(chatId, userId, fwdLimit))
+    ): Single<TLInvitedUsers> = executeMethod(TLRequestMessagesAddChatUser(chatId, userId, fwdLimit))
 
     override fun messagesCheckChatInvite(hash: String): Single<TLAbsChatInvite> = executeMethod(TLRequestMessagesCheckChatInvite(hash))
 
     override fun messagesCheckHistoryImport(importHead: String): Single<TLHistoryImportParsed> = executeMethod(TLRequestMessagesCheckHistoryImport(importHead))
 
     override fun messagesCheckHistoryImportPeer(peer: TLAbsInputPeer): Single<TLCheckedHistoryImportPeer> = executeMethod(TLRequestMessagesCheckHistoryImportPeer(peer))
+
+    override fun messagesCheckQuickReplyShortcut(shortcut: String): Single<TLBool> = executeMethod(TLRequestMessagesCheckQuickReplyShortcut(shortcut))
 
     override fun messagesClearAllDrafts(): Single<TLBool> = executeMethod(TLRequestMessagesClearAllDrafts())
 
@@ -1621,7 +1863,7 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             users: TLObjectVector<TLAbsInputUser>,
             title: String,
             ttlPeriod: Int?
-    ): Single<TLAbsUpdates> = executeMethod(TLRequestMessagesCreateChat(users, title, ttlPeriod))
+    ): Single<TLInvitedUsers> = executeMethod(TLRequestMessagesCreateChat(users, title, ttlPeriod))
 
     override fun messagesDeleteChat(chatId: Long): Single<TLBool> = executeMethod(TLRequestMessagesDeleteChat(chatId))
 
@@ -1632,6 +1874,8 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
     ): Single<TLAbsUpdates> = executeMethod(TLRequestMessagesDeleteChatUser(revokeHistory, chatId, userId))
 
     override fun messagesDeleteExportedChatInvite(peer: TLAbsInputPeer, link: String): Single<TLBool> = executeMethod(TLRequestMessagesDeleteExportedChatInvite(peer, link))
+
+    override fun messagesDeleteFactCheck(peer: TLAbsInputPeer, msgId: Int): Single<TLAbsUpdates> = executeMethod(TLRequestMessagesDeleteFactCheck(peer, msgId))
 
     override fun messagesDeleteHistory(
             justClear: Boolean,
@@ -1645,6 +1889,10 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
     override fun messagesDeleteMessages(revoke: Boolean, id: TLIntVector): Single<TLAffectedMessages> = executeMethod(TLRequestMessagesDeleteMessages(revoke, id))
 
     override fun messagesDeletePhoneCallHistory(revoke: Boolean): Single<TLAffectedFoundMessages> = executeMethod(TLRequestMessagesDeletePhoneCallHistory(revoke))
+
+    override fun messagesDeleteQuickReplyMessages(shortcutId: Int, id: TLIntVector): Single<TLAbsUpdates> = executeMethod(TLRequestMessagesDeleteQuickReplyMessages(shortcutId, id))
+
+    override fun messagesDeleteQuickReplyShortcut(shortcutId: Int): Single<TLBool> = executeMethod(TLRequestMessagesDeleteQuickReplyShortcut(shortcutId))
 
     override fun messagesDeleteRevokedExportedChatInvites(peer: TLAbsInputPeer, adminId: TLAbsInputUser): Single<TLBool> = executeMethod(TLRequestMessagesDeleteRevokedExportedChatInvites(peer, adminId))
 
@@ -1683,6 +1931,12 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             title: String?
     ): Single<com.github.badoualy.telegram.tl.api.messages.TLAbsExportedChatInvite> = executeMethod(TLRequestMessagesEditExportedChatInvite(revoked, peer, link, expireDate, usageLimit, requestNeeded, title))
 
+    override fun messagesEditFactCheck(
+            peer: TLAbsInputPeer,
+            msgId: Int,
+            text: TLTextWithEntities
+    ): Single<TLAbsUpdates> = executeMethod(TLRequestMessagesEditFactCheck(peer, msgId, text))
+
     override fun messagesEditInlineBotMessage(
             noWebpage: Boolean,
             invertMedia: Boolean,
@@ -1702,8 +1956,11 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             media: TLAbsInputMedia?,
             replyMarkup: TLAbsReplyMarkup?,
             entities: TLObjectVector<TLAbsMessageEntity>?,
-            scheduleDate: Int?
-    ): Single<TLAbsUpdates> = executeMethod(TLRequestMessagesEditMessage(noWebpage, invertMedia, peer, id, message, media, replyMarkup, entities, scheduleDate))
+            scheduleDate: Int?,
+            quickReplyShortcutId: Int?
+    ): Single<TLAbsUpdates> = executeMethod(TLRequestMessagesEditMessage(noWebpage, invertMedia, peer, id, message, media, replyMarkup, entities, scheduleDate, quickReplyShortcutId))
+
+    override fun messagesEditQuickReplyShortcut(shortcutId: Int, shortcut: String): Single<TLBool> = executeMethod(TLRequestMessagesEditQuickReplyShortcut(shortcutId, shortcut))
 
     override fun messagesExportChatInvite(
             legacyRevokePermanent: Boolean,
@@ -1729,8 +1986,9 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             toPeer: TLAbsInputPeer,
             topMsgId: Int?,
             scheduleDate: Int?,
-            sendAs: TLAbsInputPeer?
-    ): Single<TLAbsUpdates> = executeMethod(TLRequestMessagesForwardMessages(silent, background, withMyScore, dropAuthor, dropMediaCaptions, noforwards, fromPeer, id, randomId, toPeer, topMsgId, scheduleDate, sendAs))
+            sendAs: TLAbsInputPeer?,
+            quickReplyShortcut: TLAbsInputQuickReplyShortcut?
+    ): Single<TLAbsUpdates> = executeMethod(TLRequestMessagesForwardMessages(silent, background, withMyScore, dropAuthor, dropMediaCaptions, noforwards, fromPeer, id, randomId, toPeer, topMsgId, scheduleDate, sendAs, quickReplyShortcut))
 
     override fun messagesGetAdminsWithInvites(peer: TLAbsInputPeer): Single<TLChatAdminsWithInvites> = executeMethod(TLRequestMessagesGetAdminsWithInvites(peer))
 
@@ -1750,6 +2008,8 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
     override fun messagesGetAttachMenuBots(hash: Long): Single<TLAbsAttachMenuBots> = executeMethod(TLRequestMessagesGetAttachMenuBots(hash))
 
     override fun messagesGetAttachedStickers(media: TLAbsInputStickeredMedia): Single<TLObjectVector<TLAbsStickerSetCovered>> = executeMethod(TLRequestMessagesGetAttachedStickers(media))
+
+    override fun messagesGetAvailableEffects(hash: Int): Single<TLAbsAvailableEffects> = executeMethod(TLRequestMessagesGetAvailableEffects(hash))
 
     override fun messagesGetAvailableReactions(hash: Int): Single<TLAbsAvailableReactions> = executeMethod(TLRequestMessagesGetAvailableReactions(hash))
 
@@ -1786,9 +2046,11 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
 
     override fun messagesGetDefaultHistoryTTL(): Single<TLDefaultHistoryTTL> = executeMethod(TLRequestMessagesGetDefaultHistoryTTL())
 
+    override fun messagesGetDefaultTagReactions(hash: Long): Single<TLAbsReactions> = executeMethod(TLRequestMessagesGetDefaultTagReactions(hash))
+
     override fun messagesGetDhConfig(version: Int, randomLength: Int): Single<TLAbsDhConfig> = executeMethod(TLRequestMessagesGetDhConfig(version, randomLength))
 
-    override fun messagesGetDialogFilters(): Single<TLObjectVector<TLAbsDialogFilter>> = executeMethod(TLRequestMessagesGetDialogFilters())
+    override fun messagesGetDialogFilters(): Single<TLDialogFilters> = executeMethod(TLRequestMessagesGetDialogFilters())
 
     override fun messagesGetDialogUnreadMarks(): Single<TLObjectVector<TLAbsDialogPeer>> = executeMethod(TLRequestMessagesGetDialogUnreadMarks())
 
@@ -1822,6 +2084,8 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
 
     override fun messagesGetEmojiStatusGroups(hash: Int): Single<TLAbsEmojiGroups> = executeMethod(TLRequestMessagesGetEmojiStatusGroups(hash))
 
+    override fun messagesGetEmojiStickerGroups(hash: Int): Single<TLAbsEmojiGroups> = executeMethod(TLRequestMessagesGetEmojiStickerGroups(hash))
+
     override fun messagesGetEmojiStickers(hash: Long): Single<TLAbsAllStickers> = executeMethod(TLRequestMessagesGetEmojiStickers(hash))
 
     override fun messagesGetEmojiURL(langCode: String): Single<TLEmojiURL> = executeMethod(TLRequestMessagesGetEmojiURL(langCode))
@@ -1838,6 +2102,8 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
     ): Single<TLExportedChatInvites> = executeMethod(TLRequestMessagesGetExportedChatInvites(revoked, peer, adminId, offsetDate, offsetLink, limit))
 
     override fun messagesGetExtendedMedia(peer: TLAbsInputPeer, id: TLIntVector): Single<TLAbsUpdates> = executeMethod(TLRequestMessagesGetExtendedMedia(peer, id))
+
+    override fun messagesGetFactCheck(peer: TLAbsInputPeer, msgId: TLIntVector): Single<TLObjectVector<TLFactCheck>> = executeMethod(TLRequestMessagesGetFactCheck(peer, msgId))
 
     override fun messagesGetFavedStickers(hash: Long): Single<TLAbsFavedStickers> = executeMethod(TLRequestMessagesGetFavedStickers(hash))
 
@@ -1898,6 +2164,8 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             increment: Boolean
     ): Single<TLMessageViews> = executeMethod(TLRequestMessagesGetMessagesViews(peer, id, increment))
 
+    override fun messagesGetMyStickers(offsetId: Long, limit: Int): Single<TLMyStickers> = executeMethod(TLRequestMessagesGetMyStickers(offsetId, limit))
+
     override fun messagesGetOldFeaturedStickers(
             offset: Int,
             limit: Int,
@@ -1905,6 +2173,8 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
     ): Single<TLAbsFeaturedStickers> = executeMethod(TLRequestMessagesGetOldFeaturedStickers(offset, limit, hash))
 
     override fun messagesGetOnlines(peer: TLAbsInputPeer): Single<TLChatOnlines> = executeMethod(TLRequestMessagesGetOnlines(peer))
+
+    override fun messagesGetOutboxReadDate(peer: TLAbsInputPeer, msgId: Int): Single<TLOutboxReadDate> = executeMethod(TLRequestMessagesGetOutboxReadDate(peer, msgId))
 
     override fun messagesGetPeerDialogs(peers: TLObjectVector<TLAbsInputDialogPeer>): Single<TLPeerDialogs> = executeMethod(TLRequestMessagesGetPeerDialogs(peers))
 
@@ -1923,6 +2193,14 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             offset: String?,
             limit: Int
     ): Single<TLVotesList> = executeMethod(TLRequestMessagesGetPollVotes(peer, id, option, offset, limit))
+
+    override fun messagesGetQuickReplies(hash: Long): Single<TLAbsQuickReplies> = executeMethod(TLRequestMessagesGetQuickReplies(hash))
+
+    override fun messagesGetQuickReplyMessages(
+            shortcutId: Int,
+            id: TLIntVector?,
+            hash: Long
+    ): Single<TLAbsMessages> = executeMethod(TLRequestMessagesGetQuickReplyMessages(shortcutId, id, hash))
 
     override fun messagesGetRecentLocations(
             peer: TLAbsInputPeer,
@@ -1967,6 +2245,8 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             minId: Int,
             hash: Long
     ): Single<TLAbsMessages> = executeMethod(TLRequestMessagesGetSavedHistory(peer, offsetId, offsetDate, addOffset, limit, maxId, minId, hash))
+
+    override fun messagesGetSavedReactionTags(peer: TLAbsInputPeer?, hash: Long): Single<TLAbsSavedReactionTags> = executeMethod(TLRequestMessagesGetSavedReactionTags(peer, hash))
 
     override fun messagesGetScheduledHistory(peer: TLAbsInputPeer, hash: Long): Single<TLAbsMessages> = executeMethod(TLRequestMessagesGetScheduledHistory(peer, hash))
 
@@ -2103,6 +2383,8 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
 
     override fun messagesReorderPinnedSavedDialogs(force: Boolean, order: TLObjectVector<TLAbsInputDialogPeer>): Single<TLBool> = executeMethod(TLRequestMessagesReorderPinnedSavedDialogs(force, order))
 
+    override fun messagesReorderQuickReplies(order: TLIntVector): Single<TLBool> = executeMethod(TLRequestMessagesReorderQuickReplies(order))
+
     override fun messagesReorderStickerSets(
             masks: Boolean,
             emojis: Boolean,
@@ -2128,12 +2410,13 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
 
     override fun messagesRequestAppWebView(
             writeAllowed: Boolean,
+            compact: Boolean,
             peer: TLAbsInputPeer,
             app: TLAbsInputBotApp,
             startParam: String?,
             themeParams: TLDataJSON?,
             platform: String
-    ): Single<TLAppWebViewResultUrl> = executeMethod(TLRequestMessagesRequestAppWebView(writeAllowed, peer, app, startParam, themeParams, platform))
+    ): Single<TLWebViewResultUrl> = executeMethod(TLRequestMessagesRequestAppWebView(writeAllowed, compact, peer, app, startParam, themeParams, platform))
 
     override fun messagesRequestEncryption(
             userId: TLAbsInputUser,
@@ -2141,15 +2424,25 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             gA: TLBytes
     ): Single<TLAbsEncryptedChat> = executeMethod(TLRequestMessagesRequestEncryption(userId, randomId, gA))
 
+    override fun messagesRequestMainWebView(
+            compact: Boolean,
+            peer: TLAbsInputPeer,
+            bot: TLAbsInputUser,
+            startParam: String?,
+            themeParams: TLDataJSON?,
+            platform: String
+    ): Single<TLWebViewResultUrl> = executeMethod(TLRequestMessagesRequestMainWebView(compact, peer, bot, startParam, themeParams, platform))
+
     override fun messagesRequestSimpleWebView(
             fromSwitchWebview: Boolean,
             fromSideMenu: Boolean,
+            compact: Boolean,
             bot: TLAbsInputUser,
             url: String?,
             startParam: String?,
             themeParams: TLDataJSON?,
             platform: String
-    ): Single<TLSimpleWebViewResultUrl> = executeMethod(TLRequestMessagesRequestSimpleWebView(fromSwitchWebview, fromSideMenu, bot, url, startParam, themeParams, platform))
+    ): Single<TLWebViewResultUrl> = executeMethod(TLRequestMessagesRequestSimpleWebView(fromSwitchWebview, fromSideMenu, compact, bot, url, startParam, themeParams, platform))
 
     override fun messagesRequestUrlAuth(
             peer: TLAbsInputPeer?,
@@ -2161,6 +2454,7 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
     override fun messagesRequestWebView(
             fromBotMenu: Boolean,
             silent: Boolean,
+            compact: Boolean,
             peer: TLAbsInputPeer,
             bot: TLAbsInputUser,
             url: String?,
@@ -2169,7 +2463,7 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             platform: String,
             replyTo: TLAbsInputReplyTo?,
             sendAs: TLAbsInputPeer?
-    ): Single<TLWebViewResultUrl> = executeMethod(TLRequestMessagesRequestWebView(fromBotMenu, silent, peer, bot, url, startParam, themeParams, platform, replyTo, sendAs))
+    ): Single<TLWebViewResultUrl> = executeMethod(TLRequestMessagesRequestWebView(fromBotMenu, silent, compact, peer, bot, url, startParam, themeParams, platform, replyTo, sendAs))
 
     override fun messagesSaveDefaultSendAs(peer: TLAbsInputPeer, sendAs: TLAbsInputPeer): Single<TLBool> = executeMethod(TLRequestMessagesSaveDefaultSendAs(peer, sendAs))
 
@@ -2180,8 +2474,9 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             peer: TLAbsInputPeer,
             message: String,
             entities: TLObjectVector<TLAbsMessageEntity>?,
-            media: TLAbsInputMedia?
-    ): Single<TLBool> = executeMethod(TLRequestMessagesSaveDraft(noWebpage, invertMedia, replyTo, peer, message, entities, media))
+            media: TLAbsInputMedia?,
+            effect: Long?
+    ): Single<TLBool> = executeMethod(TLRequestMessagesSaveDraft(noWebpage, invertMedia, replyTo, peer, message, entities, media, effect))
 
     override fun messagesSaveGif(id: TLAbsInputDocument, unsave: Boolean): Single<TLBool> = executeMethod(TLRequestMessagesSaveGif(id, unsave))
 
@@ -2196,6 +2491,7 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             q: String,
             fromId: TLAbsInputPeer?,
             savedPeerId: TLAbsInputPeer?,
+            savedReaction: TLObjectVector<TLAbsReaction>?,
             topMsgId: Int?,
             filter: TLAbsMessagesFilter,
             minDate: Int,
@@ -2206,7 +2502,7 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             maxId: Int,
             minId: Int,
             hash: Long
-    ): Single<TLAbsMessages> = executeMethod(TLRequestMessagesSearch(peer, q, fromId, savedPeerId, topMsgId, filter, minDate, maxDate, offsetId, addOffset, limit, maxId, minId, hash))
+    ): Single<TLAbsMessages> = executeMethod(TLRequestMessagesSearch(peer, q, fromId, savedPeerId, savedReaction, topMsgId, filter, minDate, maxDate, offsetId, addOffset, limit, maxId, minId, hash))
 
     override fun messagesSearchCustomEmoji(emoticon: String, hash: Long): Single<TLAbsEmojiList> = executeMethod(TLRequestMessagesSearchCustomEmoji(emoticon, hash))
 
@@ -2280,8 +2576,9 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             queryId: Long,
             id: String,
             scheduleDate: Int?,
-            sendAs: TLAbsInputPeer?
-    ): Single<TLAbsUpdates> = executeMethod(TLRequestMessagesSendInlineBotResult(silent, background, clearDraft, hideVia, peer, replyTo, randomId, queryId, id, scheduleDate, sendAs))
+            sendAs: TLAbsInputPeer?,
+            quickReplyShortcut: TLAbsInputQuickReplyShortcut?
+    ): Single<TLAbsUpdates> = executeMethod(TLRequestMessagesSendInlineBotResult(silent, background, clearDraft, hideVia, peer, replyTo, randomId, queryId, id, scheduleDate, sendAs, quickReplyShortcut))
 
     override fun messagesSendMedia(
             silent: Boolean,
@@ -2298,8 +2595,10 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             replyMarkup: TLAbsReplyMarkup?,
             entities: TLObjectVector<TLAbsMessageEntity>?,
             scheduleDate: Int?,
-            sendAs: TLAbsInputPeer?
-    ): Single<TLAbsUpdates> = executeMethod(TLRequestMessagesSendMedia(silent, background, clearDraft, noforwards, updateStickersetsOrder, invertMedia, peer, replyTo, media, message, randomId, replyMarkup, entities, scheduleDate, sendAs))
+            sendAs: TLAbsInputPeer?,
+            quickReplyShortcut: TLAbsInputQuickReplyShortcut?,
+            effect: Long?
+    ): Single<TLAbsUpdates> = executeMethod(TLRequestMessagesSendMedia(silent, background, clearDraft, noforwards, updateStickersetsOrder, invertMedia, peer, replyTo, media, message, randomId, replyMarkup, entities, scheduleDate, sendAs, quickReplyShortcut, effect))
 
     override fun messagesSendMessage(
             noWebpage: Boolean,
@@ -2316,8 +2615,10 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             replyMarkup: TLAbsReplyMarkup?,
             entities: TLObjectVector<TLAbsMessageEntity>?,
             scheduleDate: Int?,
-            sendAs: TLAbsInputPeer?
-    ): Single<TLAbsUpdates> = executeMethod(TLRequestMessagesSendMessage(noWebpage, silent, background, clearDraft, noforwards, updateStickersetsOrder, invertMedia, peer, replyTo, message, randomId, replyMarkup, entities, scheduleDate, sendAs))
+            sendAs: TLAbsInputPeer?,
+            quickReplyShortcut: TLAbsInputQuickReplyShortcut?,
+            effect: Long?
+    ): Single<TLAbsUpdates> = executeMethod(TLRequestMessagesSendMessage(noWebpage, silent, background, clearDraft, noforwards, updateStickersetsOrder, invertMedia, peer, replyTo, message, randomId, replyMarkup, entities, scheduleDate, sendAs, quickReplyShortcut, effect))
 
     override fun messagesSendMultiMedia(
             silent: Boolean,
@@ -2330,8 +2631,17 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             replyTo: TLAbsInputReplyTo?,
             multiMedia: TLObjectVector<TLInputSingleMedia>,
             scheduleDate: Int?,
-            sendAs: TLAbsInputPeer?
-    ): Single<TLAbsUpdates> = executeMethod(TLRequestMessagesSendMultiMedia(silent, background, clearDraft, noforwards, updateStickersetsOrder, invertMedia, peer, replyTo, multiMedia, scheduleDate, sendAs))
+            sendAs: TLAbsInputPeer?,
+            quickReplyShortcut: TLAbsInputQuickReplyShortcut?,
+            effect: Long?
+    ): Single<TLAbsUpdates> = executeMethod(TLRequestMessagesSendMultiMedia(silent, background, clearDraft, noforwards, updateStickersetsOrder, invertMedia, peer, replyTo, multiMedia, scheduleDate, sendAs, quickReplyShortcut, effect))
+
+    override fun messagesSendQuickReplyMessages(
+            peer: TLAbsInputPeer,
+            shortcutId: Int,
+            id: TLIntVector,
+            randomId: TLLongVector
+    ): Single<TLAbsUpdates> = executeMethod(TLRequestMessagesSendQuickReplyMessages(peer, shortcutId, id, randomId))
 
     override fun messagesSendReaction(
             big: Boolean,
@@ -2384,7 +2694,11 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             shippingOptions: TLObjectVector<TLShippingOption>?
     ): Single<TLBool> = executeMethod(TLRequestMessagesSetBotShippingResults(queryId, error, shippingOptions))
 
-    override fun messagesSetChatAvailableReactions(peer: TLAbsInputPeer, availableReactions: TLAbsChatReactions): Single<TLAbsUpdates> = executeMethod(TLRequestMessagesSetChatAvailableReactions(peer, availableReactions))
+    override fun messagesSetChatAvailableReactions(
+            peer: TLAbsInputPeer,
+            availableReactions: TLAbsChatReactions,
+            reactionsLimit: Int?
+    ): Single<TLAbsUpdates> = executeMethod(TLRequestMessagesSetChatAvailableReactions(peer, availableReactions, reactionsLimit))
 
     override fun messagesSetChatTheme(peer: TLAbsInputPeer, emoticon: String): Single<TLAbsUpdates> = executeMethod(TLRequestMessagesSetChatTheme(peer, emoticon))
 
@@ -2454,6 +2768,8 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             enabled: Boolean
     ): Single<TLBool> = executeMethod(TLRequestMessagesToggleBotInAttachMenu(writeAllowed, bot, enabled))
 
+    override fun messagesToggleDialogFilterTags(enabled: Boolean): Single<TLBool> = executeMethod(TLRequestMessagesToggleDialogFilterTags(enabled))
+
     override fun messagesToggleDialogPin(pinned: Boolean, peer: TLAbsInputDialogPeer): Single<TLBool> = executeMethod(TLRequestMessagesToggleDialogPin(pinned, peer))
 
     override fun messagesToggleNoForwards(peer: TLAbsInputPeer, enabled: Boolean): Single<TLAbsUpdates> = executeMethod(TLRequestMessagesToggleNoForwards(peer, enabled))
@@ -2494,6 +2810,8 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             id: Int
     ): Single<TLAbsUpdates> = executeMethod(TLRequestMessagesUpdatePinnedMessage(silent, unpin, pmOneside, peer, id))
 
+    override fun messagesUpdateSavedReactionTag(reaction: TLAbsReaction, title: String?): Single<TLBool> = executeMethod(TLRequestMessagesUpdateSavedReactionTag(reaction, title))
+
     override fun messagesUploadEncryptedFile(peer: TLInputEncryptedChat, file: TLAbsInputEncryptedFile): Single<TLAbsEncryptedFile> = executeMethod(TLRequestMessagesUploadEncryptedFile(peer, file))
 
     override fun messagesUploadImportedMedia(
@@ -2503,7 +2821,11 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             media: TLAbsInputMedia
     ): Single<TLAbsMessageMedia> = executeMethod(TLRequestMessagesUploadImportedMedia(peer, importId, fileName, media))
 
-    override fun messagesUploadMedia(peer: TLAbsInputPeer, media: TLAbsInputMedia): Single<TLAbsMessageMedia> = executeMethod(TLRequestMessagesUploadMedia(peer, media))
+    override fun messagesUploadMedia(
+            businessConnectionId: String?,
+            peer: TLAbsInputPeer,
+            media: TLAbsInputMedia
+    ): Single<TLAbsMessageMedia> = executeMethod(TLRequestMessagesUploadMedia(businessConnectionId, peer, media))
 
     override fun paymentsApplyGiftCode(slug: String): Single<TLAbsUpdates> = executeMethod(TLRequestPaymentsApplyGiftCode(slug))
 
@@ -2523,19 +2845,48 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
 
     override fun paymentsGetGiveawayInfo(peer: TLAbsInputPeer, msgId: Int): Single<TLAbsGiveawayInfo> = executeMethod(TLRequestPaymentsGetGiveawayInfo(peer, msgId))
 
-    override fun paymentsGetPaymentForm(invoice: TLAbsInputInvoice, themeParams: TLDataJSON?): Single<TLPaymentForm> = executeMethod(TLRequestPaymentsGetPaymentForm(invoice, themeParams))
+    override fun paymentsGetPaymentForm(invoice: TLAbsInputInvoice, themeParams: TLDataJSON?): Single<TLAbsPaymentForm> = executeMethod(TLRequestPaymentsGetPaymentForm(invoice, themeParams))
 
-    override fun paymentsGetPaymentReceipt(peer: TLAbsInputPeer, msgId: Int): Single<TLPaymentReceipt> = executeMethod(TLRequestPaymentsGetPaymentReceipt(peer, msgId))
+    override fun paymentsGetPaymentReceipt(peer: TLAbsInputPeer, msgId: Int): Single<TLAbsPaymentReceipt> = executeMethod(TLRequestPaymentsGetPaymentReceipt(peer, msgId))
 
     override fun paymentsGetPremiumGiftCodeOptions(boostPeer: TLAbsInputPeer?): Single<TLObjectVector<TLPremiumGiftCodeOption>> = executeMethod(TLRequestPaymentsGetPremiumGiftCodeOptions(boostPeer))
 
     override fun paymentsGetSavedInfo(): Single<TLSavedInfo> = executeMethod(TLRequestPaymentsGetSavedInfo())
+
+    override fun paymentsGetStarsGiftOptions(userId: TLAbsInputUser?): Single<TLObjectVector<TLStarsGiftOption>> = executeMethod(TLRequestPaymentsGetStarsGiftOptions(userId))
+
+    override fun paymentsGetStarsRevenueAdsAccountUrl(peer: TLAbsInputPeer): Single<TLStarsRevenueAdsAccountUrl> = executeMethod(TLRequestPaymentsGetStarsRevenueAdsAccountUrl(peer))
+
+    override fun paymentsGetStarsRevenueStats(dark: Boolean, peer: TLAbsInputPeer): Single<TLStarsRevenueStats> = executeMethod(TLRequestPaymentsGetStarsRevenueStats(dark, peer))
+
+    override fun paymentsGetStarsRevenueWithdrawalUrl(
+            peer: TLAbsInputPeer,
+            stars: Long,
+            password: TLAbsInputCheckPasswordSRP
+    ): Single<TLStarsRevenueWithdrawalUrl> = executeMethod(TLRequestPaymentsGetStarsRevenueWithdrawalUrl(peer, stars, password))
+
+    override fun paymentsGetStarsStatus(peer: TLAbsInputPeer): Single<TLStarsStatus> = executeMethod(TLRequestPaymentsGetStarsStatus(peer))
+
+    override fun paymentsGetStarsTopupOptions(): Single<TLObjectVector<TLStarsTopupOption>> = executeMethod(TLRequestPaymentsGetStarsTopupOptions())
+
+    override fun paymentsGetStarsTransactions(
+            inbound: Boolean,
+            outbound: Boolean,
+            ascending: Boolean,
+            peer: TLAbsInputPeer,
+            offset: String,
+            limit: Int
+    ): Single<TLStarsStatus> = executeMethod(TLRequestPaymentsGetStarsTransactions(inbound, outbound, ascending, peer, offset, limit))
+
+    override fun paymentsGetStarsTransactionsByID(peer: TLAbsInputPeer, id: TLObjectVector<TLInputStarsTransaction>): Single<TLStarsStatus> = executeMethod(TLRequestPaymentsGetStarsTransactionsByID(peer, id))
 
     override fun paymentsLaunchPrepaidGiveaway(
             peer: TLAbsInputPeer,
             giveawayId: Long,
             purpose: TLAbsInputStorePaymentPurpose
     ): Single<TLAbsUpdates> = executeMethod(TLRequestPaymentsLaunchPrepaidGiveaway(peer, giveawayId, purpose))
+
+    override fun paymentsRefundStarsCharge(userId: TLAbsInputUser, chargeId: String): Single<TLAbsUpdates> = executeMethod(TLRequestPaymentsRefundStarsCharge(userId, chargeId))
 
     override fun paymentsSendPaymentForm(
             formId: Long,
@@ -2545,6 +2896,8 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             credentials: TLAbsInputPaymentCredentials,
             tipAmount: Long?
     ): Single<TLAbsPaymentResult> = executeMethod(TLRequestPaymentsSendPaymentForm(formId, invoice, requestedInfoId, shippingOptionId, credentials, tipAmount))
+
+    override fun paymentsSendStarsForm(formId: Long, invoice: TLAbsInputInvoice): Single<TLAbsPaymentResult> = executeMethod(TLRequestPaymentsSendStarsForm(formId, invoice))
 
     override fun paymentsValidateRequestedInfo(
             save: Boolean,
@@ -2727,6 +3080,30 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
 
     override fun premiumGetUserBoosts(peer: TLAbsInputPeer, userId: TLAbsInputUser): Single<TLBoostsList> = executeMethod(TLRequestPremiumGetUserBoosts(peer, userId))
 
+    override fun smsjobsFinishJob(jobId: String, error: String?): Single<TLBool> = executeMethod(TLRequestSmsjobsFinishJob(jobId, error))
+
+    override fun smsjobsGetSmsJob(jobId: String): Single<TLSmsJob> = executeMethod(TLRequestSmsjobsGetSmsJob(jobId))
+
+    override fun smsjobsGetStatus(): Single<TLStatus> = executeMethod(TLRequestSmsjobsGetStatus())
+
+    override fun smsjobsIsEligibleToJoin(): Single<TLEligibleToJoin> = executeMethod(TLRequestSmsjobsIsEligibleToJoin())
+
+    override fun smsjobsJoin(): Single<TLBool> = executeMethod(TLRequestSmsjobsJoin())
+
+    override fun smsjobsLeave(): Single<TLBool> = executeMethod(TLRequestSmsjobsLeave())
+
+    override fun smsjobsUpdateSettings(allowInternational: Boolean): Single<TLBool> = executeMethod(TLRequestSmsjobsUpdateSettings(allowInternational))
+
+    override fun statsGetBroadcastRevenueStats(dark: Boolean, channel: TLAbsInputChannel): Single<TLBroadcastRevenueStats> = executeMethod(TLRequestStatsGetBroadcastRevenueStats(dark, channel))
+
+    override fun statsGetBroadcastRevenueTransactions(
+            channel: TLAbsInputChannel,
+            offset: Int,
+            limit: Int
+    ): Single<TLBroadcastRevenueTransactions> = executeMethod(TLRequestStatsGetBroadcastRevenueTransactions(channel, offset, limit))
+
+    override fun statsGetBroadcastRevenueWithdrawalUrl(channel: TLAbsInputChannel, password: TLAbsInputCheckPasswordSRP): Single<TLBroadcastRevenueWithdrawalUrl> = executeMethod(TLRequestStatsGetBroadcastRevenueWithdrawalUrl(channel, password))
+
     override fun statsGetBroadcastStats(dark: Boolean, channel: TLAbsInputChannel): Single<TLBroadcastStats> = executeMethod(TLRequestStatsGetBroadcastStats(dark, channel))
 
     override fun statsGetMegagroupStats(dark: Boolean, channel: TLAbsInputChannel): Single<TLMegagroupStats> = executeMethod(TLRequestStatsGetMegagroupStats(dark, channel))
@@ -2774,8 +3151,6 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
 
     override fun stickersCreateStickerSet(
             masks: Boolean,
-            animated: Boolean,
-            videos: Boolean,
             emojis: Boolean,
             textColor: Boolean,
             userId: TLAbsInputUser,
@@ -2784,13 +3159,15 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             thumb: TLAbsInputDocument?,
             stickers: TLObjectVector<TLInputStickerSetItem>,
             software: String?
-    ): Single<TLAbsStickerSet> = executeMethod(TLRequestStickersCreateStickerSet(masks, animated, videos, emojis, textColor, userId, title, shortName, thumb, stickers, software))
+    ): Single<TLAbsStickerSet> = executeMethod(TLRequestStickersCreateStickerSet(masks, emojis, textColor, userId, title, shortName, thumb, stickers, software))
 
     override fun stickersDeleteStickerSet(stickerset: TLAbsInputStickerSet): Single<TLBool> = executeMethod(TLRequestStickersDeleteStickerSet(stickerset))
 
     override fun stickersRemoveStickerFromSet(sticker: TLAbsInputDocument): Single<TLAbsStickerSet> = executeMethod(TLRequestStickersRemoveStickerFromSet(sticker))
 
     override fun stickersRenameStickerSet(stickerset: TLAbsInputStickerSet, title: String): Single<TLAbsStickerSet> = executeMethod(TLRequestStickersRenameStickerSet(stickerset, title))
+
+    override fun stickersReplaceSticker(sticker: TLAbsInputDocument, newSticker: TLInputStickerSetItem): Single<TLAbsStickerSet> = executeMethod(TLRequestStickersReplaceSticker(sticker, newSticker))
 
     override fun stickersSetStickerSetThumb(
             stickerset: TLAbsInputStickerSet,
@@ -2879,6 +3256,13 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             message: String
     ): Single<TLBool> = executeMethod(TLRequestStoriesReport(peer, id, reason, message))
 
+    override fun storiesSearchPosts(
+            hashtag: String?,
+            area: TLAbsMediaArea?,
+            offset: String,
+            limit: Int
+    ): Single<TLFoundStories> = executeMethod(TLRequestStoriesSearchPosts(hashtag, area, offset, limit))
+
     override fun storiesSendReaction(
             addToRecent: Boolean,
             peer: TLAbsInputPeer,
@@ -2911,6 +3295,8 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
             id: TLIntVector,
             pinned: Boolean
     ): Single<TLIntVector> = executeMethod(TLRequestStoriesTogglePinned(peer, id, pinned))
+
+    override fun storiesTogglePinnedToTop(peer: TLAbsInputPeer, id: TLIntVector): Single<TLBool> = executeMethod(TLRequestStoriesTogglePinnedToTop(peer, id))
 
     override fun updatesGetChannelDifference(
             force: Boolean,
@@ -2971,6 +3357,8 @@ abstract class TelegramApiWrapper : TelegramApi, RpcQueryExecutor {
     ): Single<TLBool> = executeMethod(TLRequestUploadSaveFilePart(fileId, filePart, bytes))
 
     override fun usersGetFullUser(id: TLAbsInputUser): Single<TLUserFull> = executeMethod(TLRequestUsersGetFullUser(id))
+
+    override fun usersGetIsPremiumRequiredToContact(id: TLObjectVector<TLAbsInputUser>): Single<TLObjectVector<TLBool>> = executeMethod(TLRequestUsersGetIsPremiumRequiredToContact(id))
 
     override fun usersGetUsers(id: TLObjectVector<TLAbsInputUser>): Single<TLObjectVector<TLAbsUser>> = executeMethod(TLRequestUsersGetUsers(id))
 

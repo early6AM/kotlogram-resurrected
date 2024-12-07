@@ -21,6 +21,7 @@ import com.github.badoualy.telegram.tl.core.TLObject
  * * [messageMediaGiveaway#daad85b0][TLMessageMediaGiveaway]
  * * [messageMediaGiveawayResults#c6991068][TLMessageMediaGiveawayResults]
  * * [messageMediaInvoice#f6a548d3][TLMessageMediaInvoice]
+ * * [messageMediaPaidMedia#a8852491][TLMessageMediaPaidMedia]
  * * [messageMediaPhoto#695150d7][TLMessageMediaPhoto]
  * * [messageMediaPoll#4bd6e798][TLMessageMediaPoll]
  * * [messageMediaStory#68cb6283][TLMessageMediaStory]

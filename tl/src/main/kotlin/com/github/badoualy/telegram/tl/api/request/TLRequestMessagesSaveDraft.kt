@@ -21,6 +21,7 @@ import java.io.IOException
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
+import kotlin.Long
 import kotlin.String
 import kotlin.jvm.Throws
 import kotlin.jvm.Transient
@@ -46,7 +47,9 @@ class TLRequestMessagesSaveDraft() : TLMethod<TLBool>() {
 
     var media: TLAbsInputMedia? = null
 
-    private val _constructor: String = "messages.saveDraft#7ff3b806"
+    var effect: Long? = null
+
+    private val _constructor: String = "messages.saveDraft#d372c5ce"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -57,7 +60,8 @@ class TLRequestMessagesSaveDraft() : TLMethod<TLBool>() {
             peer: TLAbsInputPeer,
             message: String,
             entities: TLObjectVector<TLAbsMessageEntity>?,
-            media: TLAbsInputMedia?
+            media: TLAbsInputMedia?,
+            effect: Long?
     ) : this() {
         this.noWebpage = noWebpage
         this.invertMedia = invertMedia
@@ -66,6 +70,7 @@ class TLRequestMessagesSaveDraft() : TLMethod<TLBool>() {
         this.message = message
         this.entities = entities
         this.media = media
+        this.effect = effect
     }
 
     protected override fun computeFlags() {
@@ -75,6 +80,7 @@ class TLRequestMessagesSaveDraft() : TLMethod<TLBool>() {
         updateFlags(replyTo, 16)
         updateFlags(entities, 8)
         updateFlags(media, 32)
+        updateFlags(effect, 128)
     }
 
     @Throws(IOException::class)
@@ -87,6 +93,7 @@ class TLRequestMessagesSaveDraft() : TLMethod<TLBool>() {
         writeString(message)
         doIfMask(entities, 8) { writeTLVector(it) }
         doIfMask(media, 32) { writeTLObject(it) }
+        doIfMask(effect, 128) { writeLong(it) }
     }
 
     @Throws(IOException::class)
@@ -99,6 +106,7 @@ class TLRequestMessagesSaveDraft() : TLMethod<TLBool>() {
         message = readString()
         entities = readIfMask(8) { readTLVector<TLAbsMessageEntity>() }
         media = readIfMask(32) { readTLObject<TLAbsInputMedia>() }
+        effect = readIfMask(128) { readLong() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -111,6 +119,7 @@ class TLRequestMessagesSaveDraft() : TLMethod<TLBool>() {
         size += computeTLStringSerializedSize(message)
         size += getIntIfMask(entities, 8) { it.computeSerializedSize() }
         size += getIntIfMask(media, 32) { it.computeSerializedSize() }
+        size += getIntIfMask(effect, 128) { SIZE_INT64 }
         return size
     }
 
@@ -128,8 +137,9 @@ class TLRequestMessagesSaveDraft() : TLMethod<TLBool>() {
                 && message == other.message
                 && entities == other.entities
                 && media == other.media
+                && effect == other.effect
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x7ff3b806.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xd372c5ce.toInt()
     }
 }

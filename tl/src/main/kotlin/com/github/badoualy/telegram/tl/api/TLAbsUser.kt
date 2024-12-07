@@ -13,7 +13,7 @@ import kotlin.Long
 
 /**
  * Abstraction level for the following constructors:
- * * [user#215c4438][TLUser]
+ * * [user#83314fca][TLUser]
  * * [userEmpty#d3bc4b7a][TLUserEmpty]
  *
  * @author Yannick Badoual yann.badoual@gmail.com

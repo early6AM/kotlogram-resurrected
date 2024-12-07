@@ -12,7 +12,7 @@ import kotlin.Long
 
 /**
  * Abstraction level for the following constructors:
- * * [phoneCall#967f7c67][TLPhoneCall]
+ * * [phoneCall#30535af5][TLPhoneCall]
  * * [phoneCallAccepted#3660c311][TLPhoneCallAccepted]
  * * [phoneCallDiscarded#50ca4de1][TLPhoneCallDiscarded]
  * * [phoneCallEmpty#5366c915][TLPhoneCallEmpty]

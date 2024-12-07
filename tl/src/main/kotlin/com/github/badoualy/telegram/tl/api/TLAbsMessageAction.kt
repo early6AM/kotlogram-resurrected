@@ -11,6 +11,7 @@ import com.github.badoualy.telegram.tl.core.TLObject
 
 /**
  * Abstraction level for the following constructors:
+ * * [messageActionBoostApply#cc02aa6d][TLMessageActionBoostApply]
  * * [messageActionBotAllowed#c516d679][TLMessageActionBotAllowed]
  * * [messageActionChannelCreate#95d2ac92][TLMessageActionChannelCreate]
  * * [messageActionChannelMigrateFrom#ea3948e9][TLMessageActionChannelMigrateFrom]
@@ -30,17 +31,20 @@ import com.github.badoualy.telegram.tl.core.TLObject
  * * [messageActionGeoProximityReached#98e0d697][TLMessageActionGeoProximityReached]
  * * [messageActionGiftCode#678c2e09][TLMessageActionGiftCode]
  * * [messageActionGiftPremium#c83d6aec][TLMessageActionGiftPremium]
+ * * [messageActionGiftStars#45d5b021][TLMessageActionGiftStars]
  * * [messageActionGiveawayLaunch#332ba9ed][TLMessageActionGiveawayLaunch]
  * * [messageActionGiveawayResults#2a9fadc5][TLMessageActionGiveawayResults]
  * * [messageActionGroupCall#7a0d7f42][TLMessageActionGroupCall]
  * * [messageActionGroupCallScheduled#b3a07661][TLMessageActionGroupCallScheduled]
  * * [messageActionHistoryClear#9fbab604][TLMessageActionHistoryClear]
  * * [messageActionInviteToGroupCall#502f92f7][TLMessageActionInviteToGroupCall]
+ * * [messageActionPaymentRefunded#41b3e202][TLMessageActionPaymentRefunded]
  * * [messageActionPaymentSent#96163f56][TLMessageActionPaymentSent]
  * * [messageActionPaymentSentMe#8f31b327][TLMessageActionPaymentSentMe]
  * * [messageActionPhoneCall#80e11a7f][TLMessageActionPhoneCall]
  * * [messageActionPinMessage#94bd38ed][TLMessageActionPinMessage]
  * * [messageActionRequestedPeer#31518e9b][TLMessageActionRequestedPeer]
+ * * [messageActionRequestedPeerSentMe#93b31848][TLMessageActionRequestedPeerSentMe]
  * * [messageActionScreenshotTaken#4792929b][TLMessageActionScreenshotTaken]
  * * [messageActionSecureValuesSent#d95c6154][TLMessageActionSecureValuesSent]
  * * [messageActionSecureValuesSentMe#1b287353][TLMessageActionSecureValuesSentMe]

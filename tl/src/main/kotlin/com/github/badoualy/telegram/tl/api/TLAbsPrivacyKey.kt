@@ -13,6 +13,7 @@ import com.github.badoualy.telegram.tl.core.TLObject
  * Abstraction level for the following constructors:
  * * [privacyKeyAbout#a486b761][TLPrivacyKeyAbout]
  * * [privacyKeyAddedByPhone#42ffd42b][TLPrivacyKeyAddedByPhone]
+ * * [privacyKeyBirthday#2000a518][TLPrivacyKeyBirthday]
  * * [privacyKeyChatInvite#500e6dfa][TLPrivacyKeyChatInvite]
  * * [privacyKeyForwards#69ec56a3][TLPrivacyKeyForwards]
  * * [privacyKeyPhoneCall#3d662b7b][TLPrivacyKeyPhoneCall]

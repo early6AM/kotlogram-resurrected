@@ -12,7 +12,6 @@ import com.github.badoualy.telegram.tl.api.TLAbsWebDocument
 import com.github.badoualy.telegram.tl.api.TLInvoice
 import com.github.badoualy.telegram.tl.api.TLPaymentRequestedInfo
 import com.github.badoualy.telegram.tl.api.TLShippingOption
-import com.github.badoualy.telegram.tl.core.TLObject
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
@@ -30,20 +29,20 @@ import kotlin.jvm.Throws
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
-class TLPaymentReceipt() : TLObject() {
-    var date: Int = 0
+class TLPaymentReceipt() : TLAbsPaymentReceipt() {
+    override var date: Int = 0
 
-    var botId: Long = 0L
+    override var botId: Long = 0L
 
     var providerId: Long = 0L
 
-    var title: String = ""
+    override var title: String = ""
 
-    var description: String = ""
+    override var description: String = ""
 
-    var photo: TLAbsWebDocument? = null
+    override var photo: TLAbsWebDocument? = null
 
-    var invoice: TLInvoice = TLInvoice()
+    override var invoice: TLInvoice = TLInvoice()
 
     var info: TLPaymentRequestedInfo? = null
 
@@ -51,13 +50,13 @@ class TLPaymentReceipt() : TLObject() {
 
     var tipAmount: Long? = null
 
-    var currency: String = ""
+    override var currency: String = ""
 
-    var totalAmount: Long = 0L
+    override var totalAmount: Long = 0L
 
     var credentialsTitle: String = ""
 
-    var users: TLObjectVector<TLAbsUser> = TLObjectVector()
+    override var users: TLObjectVector<TLAbsUser> = TLObjectVector()
 
     private val _constructor: String = "payments.paymentReceipt#70c4fe03"
 

@@ -34,7 +34,6 @@ class TLRequestInvokeWithLayer<T : TLObject>() : TLMethod<T>() {
     constructor(layer: Int, query: TLMethod<T>?) : this() {
         this.layer = layer
         this.query = query
-        println(query.toString())
     }
 
     @Throws(IOException::class)

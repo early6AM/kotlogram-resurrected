@@ -9,7 +9,7 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSiz
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputFile
 import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
-import com.github.badoualy.telegram.tl.api.TLInputFileBig
+import com.github.badoualy.telegram.tl.api.TLInputFileStoryDocument
 import com.github.badoualy.telegram.tl.api.TLInputPeerEmpty
 import com.github.badoualy.telegram.tl.api.messages.TLHistoryImport
 import com.github.badoualy.telegram.tl.core.TLMethod
@@ -29,7 +29,7 @@ import kotlin.jvm.Throws
 class TLRequestMessagesInitHistoryImport() : TLMethod<TLHistoryImport>() {
     var peer: TLAbsInputPeer = TLInputPeerEmpty()
 
-    var file: TLAbsInputFile = TLInputFileBig()
+    var file: TLAbsInputFile = TLInputFileStoryDocument()
 
     var mediaCount: Int = 0
 

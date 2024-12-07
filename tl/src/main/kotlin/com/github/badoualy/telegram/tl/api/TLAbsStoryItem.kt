@@ -12,7 +12,7 @@ import kotlin.Int
 
 /**
  * Abstraction level for the following constructors:
- * * [storyItem#af6365a1][TLStoryItem]
+ * * [storyItem#79b26a24][TLStoryItem]
  * * [storyItemDeleted#51e6ee4f][TLStoryItemDeleted]
  * * [storyItemSkipped#ffadc913][TLStoryItemSkipped]
  *

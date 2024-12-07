@@ -11,6 +11,7 @@ import com.github.badoualy.telegram.tl.core.TLObject
 
 /**
  * Abstraction level for the following constructors:
+ * * [webPageAttributeStickerSet#50cc03d3][TLWebPageAttributeStickerSet]
  * * [webPageAttributeStory#2e94c3e7][TLWebPageAttributeStory]
  * * [webPageAttributeTheme#54b56617][TLWebPageAttributeTheme]
  *

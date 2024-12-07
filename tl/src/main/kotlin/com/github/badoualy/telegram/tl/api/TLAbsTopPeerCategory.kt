@@ -11,6 +11,7 @@ import com.github.badoualy.telegram.tl.core.TLObject
 
 /**
  * Abstraction level for the following constructors:
+ * * [topPeerCategoryBotsApp#fd9e7bec][TLTopPeerCategoryBotsApp]
  * * [topPeerCategoryBotsInline#148677e2][TLTopPeerCategoryBotsInline]
  * * [topPeerCategoryBotsPM#ab661b5b][TLTopPeerCategoryBotsPM]
  * * [topPeerCategoryChannels#161d9628][TLTopPeerCategoryChannels]

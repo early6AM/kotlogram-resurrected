@@ -17,40 +17,40 @@ import kotlin.String
 import kotlin.jvm.Throws
 
 /**
- * inputReplyToStory#15b0f283
+ * inputReplyToStory#5881323a
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLInputReplyToStory() : TLAbsInputReplyTo() {
-    var userId: TLAbsInputUser = TLInputUserEmpty()
+    var peer: TLAbsInputPeer = TLInputPeerEmpty()
 
     var storyId: Int = 0
 
-    private val _constructor: String = "inputReplyToStory#15b0f283"
+    private val _constructor: String = "inputReplyToStory#5881323a"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(userId: TLAbsInputUser, storyId: Int) : this() {
-        this.userId = userId
+    constructor(peer: TLAbsInputPeer, storyId: Int) : this() {
+        this.peer = peer
         this.storyId = storyId
     }
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
-        writeTLObject(userId)
+        writeTLObject(peer)
         writeInt(storyId)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        userId = readTLObject<TLAbsInputUser>()
+        peer = readTLObject<TLAbsInputPeer>()
         storyId = readInt()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
-        size += userId.computeSerializedSize()
+        size += peer.computeSerializedSize()
         size += SIZE_INT32
         return size
     }
@@ -61,10 +61,10 @@ class TLInputReplyToStory() : TLAbsInputReplyTo() {
         if (other !is TLInputReplyToStory) return false
         if (other === this) return true
 
-        return userId == other.userId
+        return peer == other.peer
                 && storyId == other.storyId
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x15b0f283.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x5881323a.toInt()
     }
 }

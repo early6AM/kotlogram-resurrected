@@ -15,6 +15,8 @@ import com.github.badoualy.telegram.tl.core.TLObject
  * * [inputStorePaymentPremiumGiftCode#a3805f3f][TLInputStorePaymentPremiumGiftCode]
  * * [inputStorePaymentPremiumGiveaway#160544ca][TLInputStorePaymentPremiumGiveaway]
  * * [inputStorePaymentPremiumSubscription#a6751e66][TLInputStorePaymentPremiumSubscription]
+ * * [inputStorePaymentStarsGift#1d741ef7][TLInputStorePaymentStarsGift]
+ * * [inputStorePaymentStarsTopup#dddd0f56][TLInputStorePaymentStarsTopup]
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>

@@ -9,7 +9,7 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSiz
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputInvoice
 import com.github.badoualy.telegram.tl.api.TLAbsInputPaymentCredentials
-import com.github.badoualy.telegram.tl.api.TLInputInvoiceSlug
+import com.github.badoualy.telegram.tl.api.TLInputInvoiceStars
 import com.github.badoualy.telegram.tl.api.TLInputPaymentCredentialsApplePay
 import com.github.badoualy.telegram.tl.api.payments.TLAbsPaymentResult
 import com.github.badoualy.telegram.tl.core.TLMethod
@@ -30,7 +30,7 @@ import kotlin.jvm.Throws
 class TLRequestPaymentsSendPaymentForm() : TLMethod<TLAbsPaymentResult>() {
     var formId: Long = 0L
 
-    var invoice: TLAbsInputInvoice = TLInputInvoiceSlug()
+    var invoice: TLAbsInputInvoice = TLInputInvoiceStars()
 
     var requestedInfoId: String? = null
 

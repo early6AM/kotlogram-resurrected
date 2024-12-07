@@ -7,6 +7,7 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
+import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
 import java.io.IOException
@@ -17,7 +18,7 @@ import kotlin.String
 import kotlin.jvm.Throws
 
 /**
- * updateMessageExtendedMedia#5a73a98c
+ * updateMessageExtendedMedia#d5a41724
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -27,16 +28,16 @@ class TLUpdateMessageExtendedMedia() : TLAbsUpdate() {
 
     var msgId: Int = 0
 
-    var extendedMedia: TLAbsMessageExtendedMedia = TLMessageExtendedMedia()
+    var extendedMedia: TLObjectVector<TLAbsMessageExtendedMedia> = TLObjectVector()
 
-    private val _constructor: String = "updateMessageExtendedMedia#5a73a98c"
+    private val _constructor: String = "updateMessageExtendedMedia#d5a41724"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             peer: TLAbsPeer,
             msgId: Int,
-            extendedMedia: TLAbsMessageExtendedMedia
+            extendedMedia: TLObjectVector<TLAbsMessageExtendedMedia>
     ) : this() {
         this.peer = peer
         this.msgId = msgId
@@ -47,14 +48,14 @@ class TLUpdateMessageExtendedMedia() : TLAbsUpdate() {
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
         writeTLObject(peer)
         writeInt(msgId)
-        writeTLObject(extendedMedia)
+        writeTLVector(extendedMedia)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         peer = readTLObject<TLAbsPeer>()
         msgId = readInt()
-        extendedMedia = readTLObject<TLAbsMessageExtendedMedia>()
+        extendedMedia = readTLVector<TLAbsMessageExtendedMedia>()
     }
 
     override fun computeSerializedSize(): Int {
@@ -76,6 +77,6 @@ class TLUpdateMessageExtendedMedia() : TLAbsUpdate() {
                 && extendedMedia == other.extendedMedia
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x5a73a98c.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xd5a41724.toInt()
     }
 }

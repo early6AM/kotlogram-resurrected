@@ -7,9 +7,8 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
-import com.github.badoualy.telegram.tl.api.TLAbsDialogFilter
+import com.github.badoualy.telegram.tl.api.messages.TLDialogFilters
 import com.github.badoualy.telegram.tl.core.TLMethod
-import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import java.io.IOException
 import kotlin.Any
@@ -22,13 +21,13 @@ import kotlin.jvm.Throws
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
-class TLRequestMessagesGetDialogFilters : TLMethod<TLObjectVector<TLAbsDialogFilter>>() {
-    private val _constructor: String = "messages.getDialogFilters#f19ed96d"
+class TLRequestMessagesGetDialogFilters : TLMethod<TLDialogFilters>() {
+    private val _constructor: String = "messages.getDialogFilters#efd48c89"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     @Throws(IOException::class)
-    override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLObjectVector<TLAbsDialogFilter> = tlDeserializer.readTLVector<TLAbsDialogFilter>()
+    override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLDialogFilters = tlDeserializer.readTLObject(TLDialogFilters::class, TLDialogFilters.CONSTRUCTOR_ID)
 
     override fun toString() = _constructor
 
@@ -39,6 +38,6 @@ class TLRequestMessagesGetDialogFilters : TLMethod<TLObjectVector<TLAbsDialogFil
         return true
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xf19ed96d.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xefd48c89.toInt()
     }
 }

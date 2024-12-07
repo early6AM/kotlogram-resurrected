@@ -36,6 +36,9 @@ class TLRequestMessagesRequestWebView() : TLMethod<TLWebViewResultUrl>() {
     @Transient
     var silent: Boolean = false
 
+    @Transient
+    var compact: Boolean = false
+
     var peer: TLAbsInputPeer = TLInputPeerEmpty()
 
     var bot: TLAbsInputUser = TLInputUserEmpty()
@@ -59,6 +62,7 @@ class TLRequestMessagesRequestWebView() : TLMethod<TLWebViewResultUrl>() {
     constructor(
             fromBotMenu: Boolean,
             silent: Boolean,
+            compact: Boolean,
             peer: TLAbsInputPeer,
             bot: TLAbsInputUser,
             url: String?,
@@ -70,6 +74,7 @@ class TLRequestMessagesRequestWebView() : TLMethod<TLWebViewResultUrl>() {
     ) : this() {
         this.fromBotMenu = fromBotMenu
         this.silent = silent
+        this.compact = compact
         this.peer = peer
         this.bot = bot
         this.url = url
@@ -87,6 +92,7 @@ class TLRequestMessagesRequestWebView() : TLMethod<TLWebViewResultUrl>() {
         _flags = 0
         updateFlags(fromBotMenu, 16)
         updateFlags(silent, 32)
+        updateFlags(compact, 128)
         updateFlags(url, 2)
         updateFlags(startParam, 8)
         updateFlags(themeParams, 4)
@@ -114,6 +120,7 @@ class TLRequestMessagesRequestWebView() : TLMethod<TLWebViewResultUrl>() {
         _flags = readInt()
         fromBotMenu = isMask(16)
         silent = isMask(32)
+        compact = isMask(128)
         peer = readTLObject<TLAbsInputPeer>()
         bot = readTLObject<TLAbsInputUser>()
         url = readIfMask(2) { readString() }
@@ -149,6 +156,7 @@ class TLRequestMessagesRequestWebView() : TLMethod<TLWebViewResultUrl>() {
         return _flags == other._flags
                 && fromBotMenu == other.fromBotMenu
                 && silent == other.silent
+                && compact == other.compact
                 && peer == other.peer
                 && bot == other.bot
                 && url == other.url

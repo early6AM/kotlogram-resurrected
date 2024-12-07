@@ -27,31 +27,53 @@ class TLRequestAuthResendCode() : TLMethod<TLAbsSentCode>() {
 
     var phoneCodeHash: String = ""
 
-    private val _constructor: String = "auth.resendCode#3ef1a9bf"
+    var reason: String? = null
+
+    private val _constructor: String = "auth.resendCode#cae47523"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(phoneNumber: String, phoneCodeHash: String) : this() {
+    constructor(
+            phoneNumber: String,
+            phoneCodeHash: String,
+            reason: String?
+    ) : this() {
         this.phoneNumber = phoneNumber
         this.phoneCodeHash = phoneCodeHash
+        this.reason = reason
+    }
+
+    protected override fun computeFlags() {
+        _flags = 0
+        updateFlags(reason, 1)
     }
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
+        computeFlags()
+
+        writeInt(_flags)
         writeString(phoneNumber)
         writeString(phoneCodeHash)
+        doIfMask(reason, 1) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
+        _flags = readInt()
         phoneNumber = readString()
         phoneCodeHash = readString()
+        reason = readIfMask(1) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
+        computeFlags()
+
         var size = SIZE_CONSTRUCTOR_ID
+        size += SIZE_INT32
         size += computeTLStringSerializedSize(phoneNumber)
         size += computeTLStringSerializedSize(phoneCodeHash)
+        size += getIntIfMask(reason, 1) { computeTLStringSerializedSize(it) }
         return size
     }
 
@@ -61,10 +83,12 @@ class TLRequestAuthResendCode() : TLMethod<TLAbsSentCode>() {
         if (other !is TLRequestAuthResendCode) return false
         if (other === this) return true
 
-        return phoneNumber == other.phoneNumber
+        return _flags == other._flags
+                && phoneNumber == other.phoneNumber
                 && phoneCodeHash == other.phoneCodeHash
+                && reason == other.reason
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x3ef1a9bf.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xcae47523.toInt()
     }
 }

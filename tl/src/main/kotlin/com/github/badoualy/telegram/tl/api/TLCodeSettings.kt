@@ -41,6 +41,9 @@ class TLCodeSettings() : TLObject() {
     @Transient
     var allowFirebase: Boolean = false
 
+    @Transient
+    var unknownNumber: Boolean = false
+
     var logoutTokens: TLBytesVector? = null
 
     var token: String? = null
@@ -57,6 +60,7 @@ class TLCodeSettings() : TLObject() {
             allowAppHash: Boolean,
             allowMissedCall: Boolean,
             allowFirebase: Boolean,
+            unknownNumber: Boolean,
             logoutTokens: TLBytesVector?,
             token: String?,
             appSandbox: Boolean?
@@ -66,6 +70,7 @@ class TLCodeSettings() : TLObject() {
         this.allowAppHash = allowAppHash
         this.allowMissedCall = allowMissedCall
         this.allowFirebase = allowFirebase
+        this.unknownNumber = unknownNumber
         this.logoutTokens = logoutTokens
         this.token = token
         this.appSandbox = appSandbox
@@ -78,6 +83,7 @@ class TLCodeSettings() : TLObject() {
         updateFlags(allowAppHash, 16)
         updateFlags(allowMissedCall, 32)
         updateFlags(allowFirebase, 128)
+        updateFlags(unknownNumber, 512)
         updateFlags(logoutTokens, 64)
         updateFlags(token, 256)
         // If field is not serialized force it to false
@@ -102,6 +108,7 @@ class TLCodeSettings() : TLObject() {
         allowAppHash = isMask(16)
         allowMissedCall = isMask(32)
         allowFirebase = isMask(128)
+        unknownNumber = isMask(512)
         logoutTokens = readIfMask(64) { readTLBytesVector() }
         token = readIfMask(256) { readString() }
         appSandbox = readIfMask(256) { readBoolean() }
@@ -130,6 +137,7 @@ class TLCodeSettings() : TLObject() {
                 && allowAppHash == other.allowAppHash
                 && allowMissedCall == other.allowMissedCall
                 && allowFirebase == other.allowFirebase
+                && unknownNumber == other.unknownNumber
                 && logoutTokens == other.logoutTokens
                 && token == other.token
                 && appSandbox == other.appSandbox

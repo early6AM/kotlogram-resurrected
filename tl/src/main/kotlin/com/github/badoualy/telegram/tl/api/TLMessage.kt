@@ -20,7 +20,7 @@ import kotlin.jvm.Throws
 import kotlin.jvm.Transient
 
 /**
- * message#76bec211
+ * message#94345242
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -59,9 +59,14 @@ class TLMessage() : TLAbsMessage() {
     @Transient
     var invertMedia: Boolean = false
 
+    @Transient
+    var offline: Boolean = false
+
     override var id: Int = 0
 
     var fromId: TLAbsPeer? = null
+
+    var fromBoostsApplied: Int? = null
 
     var peerId: TLAbsPeer = TLPeerChat()
 
@@ -70,6 +75,8 @@ class TLMessage() : TLAbsMessage() {
     var fwdFrom: TLMessageFwdHeader? = null
 
     var viaBotId: Long? = null
+
+    var viaBusinessBotId: Long? = null
 
     var replyTo: TLAbsMessageReplyHeader? = null
 
@@ -101,7 +108,13 @@ class TLMessage() : TLAbsMessage() {
 
     var ttlPeriod: Int? = null
 
-    private val _constructor: String = "message#76bec211"
+    var quickReplyShortcutId: Int? = null
+
+    var effect: Long? = null
+
+    var factcheck: TLFactCheck? = null
+
+    private val _constructor: String = "message#94345242"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -117,12 +130,15 @@ class TLMessage() : TLAbsMessage() {
             pinned: Boolean,
             noforwards: Boolean,
             invertMedia: Boolean,
+            offline: Boolean,
             id: Int,
             fromId: TLAbsPeer?,
+            fromBoostsApplied: Int?,
             peerId: TLAbsPeer,
             savedPeerId: TLAbsPeer?,
             fwdFrom: TLMessageFwdHeader?,
             viaBotId: Long?,
+            viaBusinessBotId: Long?,
             replyTo: TLAbsMessageReplyHeader?,
             date: Int,
             message: String,
@@ -137,7 +153,10 @@ class TLMessage() : TLAbsMessage() {
             groupedId: Long?,
             reactions: TLMessageReactions?,
             restrictionReason: TLObjectVector<TLRestrictionReason>?,
-            ttlPeriod: Int?
+            ttlPeriod: Int?,
+            quickReplyShortcutId: Int?,
+            effect: Long?,
+            factcheck: TLFactCheck?
     ) : this() {
         this.out = out
         this.mentioned = mentioned
@@ -150,12 +169,15 @@ class TLMessage() : TLAbsMessage() {
         this.pinned = pinned
         this.noforwards = noforwards
         this.invertMedia = invertMedia
+        this.offline = offline
         this.id = id
         this.fromId = fromId
+        this.fromBoostsApplied = fromBoostsApplied
         this.peerId = peerId
         this.savedPeerId = savedPeerId
         this.fwdFrom = fwdFrom
         this.viaBotId = viaBotId
+        this.viaBusinessBotId = viaBusinessBotId
         this.replyTo = replyTo
         this.date = date
         this.message = message
@@ -171,6 +193,9 @@ class TLMessage() : TLAbsMessage() {
         this.reactions = reactions
         this.restrictionReason = restrictionReason
         this.ttlPeriod = ttlPeriod
+        this.quickReplyShortcutId = quickReplyShortcutId
+        this.effect = effect
+        this.factcheck = factcheck
     }
 
     protected override fun computeFlags() {
@@ -186,10 +211,13 @@ class TLMessage() : TLAbsMessage() {
         updateFlags(pinned, 16777216)
         updateFlags(noforwards, 67108864)
         updateFlags(invertMedia, 134217728)
+        updateFlags(offline, 2)
         updateFlags(fromId, 256)
+        updateFlags(fromBoostsApplied, 536870912)
         updateFlags(savedPeerId, 268435456)
         updateFlags(fwdFrom, 4)
         updateFlags(viaBotId, 2048)
+        updateFlags(viaBusinessBotId, 1)
         updateFlags(replyTo, 8)
         updateFlags(media, 512)
         updateFlags(replyMarkup, 64)
@@ -203,6 +231,13 @@ class TLMessage() : TLAbsMessage() {
         updateFlags(reactions, 1048576)
         updateFlags(restrictionReason, 4194304)
         updateFlags(ttlPeriod, 33554432)
+        updateFlags(quickReplyShortcutId, 1073741824)
+        updateFlags(effect, 4)
+        updateFlags(factcheck, 8)
+
+        // Following parameters might be forced to true by another field that updated the flags
+        out = isMask(2)
+        offline = isMask(2)
     }
 
     @Throws(IOException::class)
@@ -210,12 +245,15 @@ class TLMessage() : TLAbsMessage() {
         computeFlags()
 
         writeInt(_flags)
+        writeInt(_flags)
         writeInt(id)
         doIfMask(fromId, 256) { writeTLObject(it) }
+        doIfMask(fromBoostsApplied, 536870912) { writeInt(it) }
         writeTLObject(peerId)
         doIfMask(savedPeerId, 268435456) { writeTLObject(it) }
         doIfMask(fwdFrom, 4) { writeTLObject(it) }
         doIfMask(viaBotId, 2048) { writeLong(it) }
+        doIfMask(viaBusinessBotId, 1) { writeLong(it) }
         doIfMask(replyTo, 8) { writeTLObject(it) }
         writeInt(date)
         writeString(message)
@@ -231,6 +269,9 @@ class TLMessage() : TLAbsMessage() {
         doIfMask(reactions, 1048576) { writeTLObject(it) }
         doIfMask(restrictionReason, 4194304) { writeTLVector(it) }
         doIfMask(ttlPeriod, 33554432) { writeInt(it) }
+        doIfMask(quickReplyShortcutId, 1073741824) { writeInt(it) }
+        doIfMask(effect, 4) { writeLong(it) }
+        doIfMask(factcheck, 8) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
@@ -247,12 +288,16 @@ class TLMessage() : TLAbsMessage() {
         pinned = isMask(16777216)
         noforwards = isMask(67108864)
         invertMedia = isMask(134217728)
+        _flags = readInt()
+        offline = isMask(2)
         id = readInt()
         fromId = readIfMask(256) { readTLObject<TLAbsPeer>() }
+        fromBoostsApplied = readIfMask(536870912) { readInt() }
         peerId = readTLObject<TLAbsPeer>()
         savedPeerId = readIfMask(268435456) { readTLObject<TLAbsPeer>() }
         fwdFrom = readIfMask(4) { readTLObject<TLMessageFwdHeader>(TLMessageFwdHeader::class, TLMessageFwdHeader.CONSTRUCTOR_ID) }
         viaBotId = readIfMask(2048) { readLong() }
+        viaBusinessBotId = readIfMask(1) { readLong() }
         replyTo = readIfMask(8) { readTLObject<TLAbsMessageReplyHeader>() }
         date = readInt()
         message = readString()
@@ -268,6 +313,9 @@ class TLMessage() : TLAbsMessage() {
         reactions = readIfMask(1048576) { readTLObject<TLMessageReactions>(TLMessageReactions::class, TLMessageReactions.CONSTRUCTOR_ID) }
         restrictionReason = readIfMask(4194304) { readTLVector<TLRestrictionReason>() }
         ttlPeriod = readIfMask(33554432) { readInt() }
+        quickReplyShortcutId = readIfMask(1073741824) { readInt() }
+        effect = readIfMask(4) { readLong() }
+        factcheck = readIfMask(8) { readTLObject<TLFactCheck>(TLFactCheck::class, TLFactCheck.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -276,11 +324,14 @@ class TLMessage() : TLAbsMessage() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT32
+        size += SIZE_INT32
         size += getIntIfMask(fromId, 256) { it.computeSerializedSize() }
+        size += getIntIfMask(fromBoostsApplied, 536870912) { SIZE_INT32 }
         size += peerId.computeSerializedSize()
         size += getIntIfMask(savedPeerId, 268435456) { it.computeSerializedSize() }
         size += getIntIfMask(fwdFrom, 4) { it.computeSerializedSize() }
         size += getIntIfMask(viaBotId, 2048) { SIZE_INT64 }
+        size += getIntIfMask(viaBusinessBotId, 1) { SIZE_INT64 }
         size += getIntIfMask(replyTo, 8) { it.computeSerializedSize() }
         size += SIZE_INT32
         size += computeTLStringSerializedSize(message)
@@ -296,6 +347,9 @@ class TLMessage() : TLAbsMessage() {
         size += getIntIfMask(reactions, 1048576) { it.computeSerializedSize() }
         size += getIntIfMask(restrictionReason, 4194304) { it.computeSerializedSize() }
         size += getIntIfMask(ttlPeriod, 33554432) { SIZE_INT32 }
+        size += getIntIfMask(quickReplyShortcutId, 1073741824) { SIZE_INT32 }
+        size += getIntIfMask(effect, 4) { SIZE_INT64 }
+        size += getIntIfMask(factcheck, 8) { it.computeSerializedSize() }
         return size
     }
 
@@ -317,12 +371,16 @@ class TLMessage() : TLAbsMessage() {
                 && pinned == other.pinned
                 && noforwards == other.noforwards
                 && invertMedia == other.invertMedia
+                && _flags == other._flags
+                && offline == other.offline
                 && id == other.id
                 && fromId == other.fromId
+                && fromBoostsApplied == other.fromBoostsApplied
                 && peerId == other.peerId
                 && savedPeerId == other.savedPeerId
                 && fwdFrom == other.fwdFrom
                 && viaBotId == other.viaBotId
+                && viaBusinessBotId == other.viaBusinessBotId
                 && replyTo == other.replyTo
                 && date == other.date
                 && message == other.message
@@ -338,8 +396,11 @@ class TLMessage() : TLAbsMessage() {
                 && reactions == other.reactions
                 && restrictionReason == other.restrictionReason
                 && ttlPeriod == other.ttlPeriod
+                && quickReplyShortcutId == other.quickReplyShortcutId
+                && effect == other.effect
+                && factcheck == other.factcheck
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x76bec211.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x94345242.toInt()
     }
 }

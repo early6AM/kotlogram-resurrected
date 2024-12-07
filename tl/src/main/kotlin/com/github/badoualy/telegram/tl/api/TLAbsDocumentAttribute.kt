@@ -18,7 +18,7 @@ import com.github.badoualy.telegram.tl.core.TLObject
  * * [documentAttributeHasStickers#9801d2f7][TLDocumentAttributeHasStickers]
  * * [documentAttributeImageSize#6c37c15c][TLDocumentAttributeImageSize]
  * * [documentAttributeSticker#6319d612][TLDocumentAttributeSticker]
- * * [documentAttributeVideo#d38ff1c2][TLDocumentAttributeVideo]
+ * * [documentAttributeVideo#17399fad][TLDocumentAttributeVideo]
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>

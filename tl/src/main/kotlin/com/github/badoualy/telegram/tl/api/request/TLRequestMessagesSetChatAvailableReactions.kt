@@ -31,31 +31,53 @@ class TLRequestMessagesSetChatAvailableReactions() : TLMethod<TLAbsUpdates>() {
 
     var availableReactions: TLAbsChatReactions = TLChatReactionsNone()
 
-    private val _constructor: String = "messages.setChatAvailableReactions#feb16771"
+    var reactionsLimit: Int? = null
+
+    private val _constructor: String = "messages.setChatAvailableReactions#5a150bd4"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(peer: TLAbsInputPeer, availableReactions: TLAbsChatReactions) : this() {
+    constructor(
+            peer: TLAbsInputPeer,
+            availableReactions: TLAbsChatReactions,
+            reactionsLimit: Int?
+    ) : this() {
         this.peer = peer
         this.availableReactions = availableReactions
+        this.reactionsLimit = reactionsLimit
+    }
+
+    protected override fun computeFlags() {
+        _flags = 0
+        updateFlags(reactionsLimit, 1)
     }
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
+        computeFlags()
+
+        writeInt(_flags)
         writeTLObject(peer)
         writeTLObject(availableReactions)
+        doIfMask(reactionsLimit, 1) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
+        _flags = readInt()
         peer = readTLObject<TLAbsInputPeer>()
         availableReactions = readTLObject<TLAbsChatReactions>()
+        reactionsLimit = readIfMask(1) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
+        computeFlags()
+
         var size = SIZE_CONSTRUCTOR_ID
+        size += SIZE_INT32
         size += peer.computeSerializedSize()
         size += availableReactions.computeSerializedSize()
+        size += getIntIfMask(reactionsLimit, 1) { SIZE_INT32 }
         return size
     }
 
@@ -65,10 +87,12 @@ class TLRequestMessagesSetChatAvailableReactions() : TLMethod<TLAbsUpdates>() {
         if (other !is TLRequestMessagesSetChatAvailableReactions) return false
         if (other === this) return true
 
-        return peer == other.peer
+        return _flags == other._flags
+                && peer == other.peer
                 && availableReactions == other.availableReactions
+                && reactionsLimit == other.reactionsLimit
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xfeb16771.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x5a150bd4.toInt()
     }
 }

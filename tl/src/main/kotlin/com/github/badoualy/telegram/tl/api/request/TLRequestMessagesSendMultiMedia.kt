@@ -8,6 +8,7 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
+import com.github.badoualy.telegram.tl.api.TLAbsInputQuickReplyShortcut
 import com.github.badoualy.telegram.tl.api.TLAbsInputReplyTo
 import com.github.badoualy.telegram.tl.api.TLAbsUpdates
 import com.github.badoualy.telegram.tl.api.TLInputPeerEmpty
@@ -20,6 +21,7 @@ import java.io.IOException
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
+import kotlin.Long
 import kotlin.String
 import kotlin.jvm.Throws
 import kotlin.jvm.Transient
@@ -57,7 +59,11 @@ class TLRequestMessagesSendMultiMedia() : TLMethod<TLAbsUpdates>() {
 
     var sendAs: TLAbsInputPeer? = null
 
-    private val _constructor: String = "messages.sendMultiMedia#456e8987"
+    var quickReplyShortcut: TLAbsInputQuickReplyShortcut? = null
+
+    var effect: Long? = null
+
+    private val _constructor: String = "messages.sendMultiMedia#37b74355"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -72,7 +78,9 @@ class TLRequestMessagesSendMultiMedia() : TLMethod<TLAbsUpdates>() {
             replyTo: TLAbsInputReplyTo?,
             multiMedia: TLObjectVector<TLInputSingleMedia>,
             scheduleDate: Int?,
-            sendAs: TLAbsInputPeer?
+            sendAs: TLAbsInputPeer?,
+            quickReplyShortcut: TLAbsInputQuickReplyShortcut?,
+            effect: Long?
     ) : this() {
         this.silent = silent
         this.background = background
@@ -85,6 +93,8 @@ class TLRequestMessagesSendMultiMedia() : TLMethod<TLAbsUpdates>() {
         this.multiMedia = multiMedia
         this.scheduleDate = scheduleDate
         this.sendAs = sendAs
+        this.quickReplyShortcut = quickReplyShortcut
+        this.effect = effect
     }
 
     protected override fun computeFlags() {
@@ -98,6 +108,8 @@ class TLRequestMessagesSendMultiMedia() : TLMethod<TLAbsUpdates>() {
         updateFlags(replyTo, 1)
         updateFlags(scheduleDate, 1024)
         updateFlags(sendAs, 8192)
+        updateFlags(quickReplyShortcut, 131072)
+        updateFlags(effect, 262144)
     }
 
     @Throws(IOException::class)
@@ -110,6 +122,8 @@ class TLRequestMessagesSendMultiMedia() : TLMethod<TLAbsUpdates>() {
         writeTLVector(multiMedia)
         doIfMask(scheduleDate, 1024) { writeInt(it) }
         doIfMask(sendAs, 8192) { writeTLObject(it) }
+        doIfMask(quickReplyShortcut, 131072) { writeTLObject(it) }
+        doIfMask(effect, 262144) { writeLong(it) }
     }
 
     @Throws(IOException::class)
@@ -126,6 +140,8 @@ class TLRequestMessagesSendMultiMedia() : TLMethod<TLAbsUpdates>() {
         multiMedia = readTLVector<TLInputSingleMedia>()
         scheduleDate = readIfMask(1024) { readInt() }
         sendAs = readIfMask(8192) { readTLObject<TLAbsInputPeer>() }
+        quickReplyShortcut = readIfMask(131072) { readTLObject<TLAbsInputQuickReplyShortcut>() }
+        effect = readIfMask(262144) { readLong() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -138,6 +154,8 @@ class TLRequestMessagesSendMultiMedia() : TLMethod<TLAbsUpdates>() {
         size += multiMedia.computeSerializedSize()
         size += getIntIfMask(scheduleDate, 1024) { SIZE_INT32 }
         size += getIntIfMask(sendAs, 8192) { it.computeSerializedSize() }
+        size += getIntIfMask(quickReplyShortcut, 131072) { it.computeSerializedSize() }
+        size += getIntIfMask(effect, 262144) { SIZE_INT64 }
         return size
     }
 
@@ -159,8 +177,10 @@ class TLRequestMessagesSendMultiMedia() : TLMethod<TLAbsUpdates>() {
                 && multiMedia == other.multiMedia
                 && scheduleDate == other.scheduleDate
                 && sendAs == other.sendAs
+                && quickReplyShortcut == other.quickReplyShortcut
+                && effect == other.effect
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x456e8987.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x37b74355.toInt()
     }
 }

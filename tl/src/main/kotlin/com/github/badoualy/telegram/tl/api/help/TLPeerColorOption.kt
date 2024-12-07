@@ -19,7 +19,7 @@ import kotlin.jvm.Throws
 import kotlin.jvm.Transient
 
 /**
- * help.peerColorOption#ef8430ab
+ * help.peerColorOption#adec6ebe
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -36,7 +36,9 @@ class TLPeerColorOption() : TLObject() {
 
     var channelMinLevel: Int? = null
 
-    private val _constructor: String = "help.peerColorOption#ef8430ab"
+    var groupMinLevel: Int? = null
+
+    private val _constructor: String = "help.peerColorOption#adec6ebe"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -45,13 +47,15 @@ class TLPeerColorOption() : TLObject() {
             colorId: Int,
             colors: TLAbsPeerColorSet?,
             darkColors: TLAbsPeerColorSet?,
-            channelMinLevel: Int?
+            channelMinLevel: Int?,
+            groupMinLevel: Int?
     ) : this() {
         this.hidden = hidden
         this.colorId = colorId
         this.colors = colors
         this.darkColors = darkColors
         this.channelMinLevel = channelMinLevel
+        this.groupMinLevel = groupMinLevel
     }
 
     protected override fun computeFlags() {
@@ -60,6 +64,7 @@ class TLPeerColorOption() : TLObject() {
         updateFlags(colors, 2)
         updateFlags(darkColors, 4)
         updateFlags(channelMinLevel, 8)
+        updateFlags(groupMinLevel, 16)
     }
 
     @Throws(IOException::class)
@@ -71,6 +76,7 @@ class TLPeerColorOption() : TLObject() {
         doIfMask(colors, 2) { writeTLObject(it) }
         doIfMask(darkColors, 4) { writeTLObject(it) }
         doIfMask(channelMinLevel, 8) { writeInt(it) }
+        doIfMask(groupMinLevel, 16) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -81,6 +87,7 @@ class TLPeerColorOption() : TLObject() {
         colors = readIfMask(2) { readTLObject<TLAbsPeerColorSet>() }
         darkColors = readIfMask(4) { readTLObject<TLAbsPeerColorSet>() }
         channelMinLevel = readIfMask(8) { readInt() }
+        groupMinLevel = readIfMask(16) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -92,6 +99,7 @@ class TLPeerColorOption() : TLObject() {
         size += getIntIfMask(colors, 2) { it.computeSerializedSize() }
         size += getIntIfMask(darkColors, 4) { it.computeSerializedSize() }
         size += getIntIfMask(channelMinLevel, 8) { SIZE_INT32 }
+        size += getIntIfMask(groupMinLevel, 16) { SIZE_INT32 }
         return size
     }
 
@@ -107,8 +115,9 @@ class TLPeerColorOption() : TLObject() {
                 && colors == other.colors
                 && darkColors == other.darkColors
                 && channelMinLevel == other.channelMinLevel
+                && groupMinLevel == other.groupMinLevel
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xef8430ab.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xadec6ebe.toInt()
     }
 }

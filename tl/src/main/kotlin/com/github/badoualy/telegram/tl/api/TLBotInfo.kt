@@ -18,6 +18,7 @@ import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * botInfo#8f300b57
@@ -26,6 +27,9 @@ import kotlin.jvm.Throws
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLBotInfo() : TLObject() {
+    @Transient
+    var hasPreviewMedias: Boolean = false
+
     var userId: Long? = null
 
     var description: String? = null
@@ -43,6 +47,7 @@ class TLBotInfo() : TLObject() {
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
+            hasPreviewMedias: Boolean,
             userId: Long?,
             description: String?,
             descriptionPhoto: TLAbsPhoto?,
@@ -50,6 +55,7 @@ class TLBotInfo() : TLObject() {
             commands: TLObjectVector<TLBotCommand>?,
             menuButton: TLAbsBotMenuButton?
     ) : this() {
+        this.hasPreviewMedias = hasPreviewMedias
         this.userId = userId
         this.description = description
         this.descriptionPhoto = descriptionPhoto
@@ -60,6 +66,7 @@ class TLBotInfo() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        updateFlags(hasPreviewMedias, 64)
         updateFlags(userId, 1)
         updateFlags(description, 2)
         updateFlags(descriptionPhoto, 16)
@@ -84,6 +91,7 @@ class TLBotInfo() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
+        hasPreviewMedias = isMask(64)
         userId = readIfMask(1) { readLong() }
         description = readIfMask(2) { readString() }
         descriptionPhoto = readIfMask(16) { readTLObject<TLAbsPhoto>() }
@@ -113,6 +121,7 @@ class TLBotInfo() : TLObject() {
         if (other === this) return true
 
         return _flags == other._flags
+                && hasPreviewMedias == other.hasPreviewMedias
                 && userId == other.userId
                 && description == other.description
                 && descriptionPhoto == other.descriptionPhoto

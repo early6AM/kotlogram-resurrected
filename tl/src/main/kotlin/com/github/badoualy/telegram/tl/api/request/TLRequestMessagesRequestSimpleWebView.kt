@@ -10,7 +10,7 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSi
 import com.github.badoualy.telegram.tl.api.TLAbsInputUser
 import com.github.badoualy.telegram.tl.api.TLDataJSON
 import com.github.badoualy.telegram.tl.api.TLInputUserEmpty
-import com.github.badoualy.telegram.tl.api.TLSimpleWebViewResultUrl
+import com.github.badoualy.telegram.tl.api.TLWebViewResultUrl
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
@@ -26,12 +26,15 @@ import kotlin.jvm.Transient
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
-class TLRequestMessagesRequestSimpleWebView() : TLMethod<TLSimpleWebViewResultUrl>() {
+class TLRequestMessagesRequestSimpleWebView() : TLMethod<TLWebViewResultUrl>() {
     @Transient
     var fromSwitchWebview: Boolean = false
 
     @Transient
     var fromSideMenu: Boolean = false
+
+    @Transient
+    var compact: Boolean = false
 
     var bot: TLAbsInputUser = TLInputUserEmpty()
 
@@ -43,13 +46,14 @@ class TLRequestMessagesRequestSimpleWebView() : TLMethod<TLSimpleWebViewResultUr
 
     var platform: String = ""
 
-    private val _constructor: String = "messages.requestSimpleWebView#1a46500a"
+    private val _constructor: String = "messages.requestSimpleWebView#413a3e73"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             fromSwitchWebview: Boolean,
             fromSideMenu: Boolean,
+            compact: Boolean,
             bot: TLAbsInputUser,
             url: String?,
             startParam: String?,
@@ -58,6 +62,7 @@ class TLRequestMessagesRequestSimpleWebView() : TLMethod<TLSimpleWebViewResultUr
     ) : this() {
         this.fromSwitchWebview = fromSwitchWebview
         this.fromSideMenu = fromSideMenu
+        this.compact = compact
         this.bot = bot
         this.url = url
         this.startParam = startParam
@@ -66,12 +71,13 @@ class TLRequestMessagesRequestSimpleWebView() : TLMethod<TLSimpleWebViewResultUr
     }
 
     @Throws(IOException::class)
-    override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLSimpleWebViewResultUrl = tlDeserializer.readTLObject(TLSimpleWebViewResultUrl::class, TLSimpleWebViewResultUrl.CONSTRUCTOR_ID)
+    override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLWebViewResultUrl = tlDeserializer.readTLObject(TLWebViewResultUrl::class, TLWebViewResultUrl.CONSTRUCTOR_ID)
 
     protected override fun computeFlags() {
         _flags = 0
         updateFlags(fromSwitchWebview, 2)
         updateFlags(fromSideMenu, 4)
+        updateFlags(compact, 128)
         updateFlags(url, 8)
         updateFlags(startParam, 16)
         updateFlags(themeParams, 1)
@@ -94,6 +100,7 @@ class TLRequestMessagesRequestSimpleWebView() : TLMethod<TLSimpleWebViewResultUr
         _flags = readInt()
         fromSwitchWebview = isMask(2)
         fromSideMenu = isMask(4)
+        compact = isMask(128)
         bot = readTLObject<TLAbsInputUser>()
         url = readIfMask(8) { readString() }
         startParam = readIfMask(16) { readString() }
@@ -123,6 +130,7 @@ class TLRequestMessagesRequestSimpleWebView() : TLMethod<TLSimpleWebViewResultUr
         return _flags == other._flags
                 && fromSwitchWebview == other.fromSwitchWebview
                 && fromSideMenu == other.fromSideMenu
+                && compact == other.compact
                 && bot == other.bot
                 && url == other.url
                 && startParam == other.startParam
@@ -130,6 +138,6 @@ class TLRequestMessagesRequestSimpleWebView() : TLMethod<TLSimpleWebViewResultUr
                 && platform == other.platform
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x1a46500a.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x413a3e73.toInt()
     }
 }

@@ -22,7 +22,7 @@ import kotlin.jvm.Throws
 import kotlin.jvm.Transient
 
 /**
- * channelFull#f2bcb6f
+ * channelFull#bbab348d
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -69,6 +69,18 @@ class TLChannelFull() : TLAbsChatFull() {
 
     @Transient
     var viewForumAsMessages: Boolean = false
+
+    @Transient
+    var restrictedSponsored: Boolean = false
+
+    @Transient
+    var canViewRevenue: Boolean = false
+
+    @Transient
+    var paidMediaAllowed: Boolean = false
+
+    @Transient
+    var canViewStarsRevenue: Boolean = false
 
     override var id: Long = 0L
 
@@ -140,11 +152,19 @@ class TLChannelFull() : TLAbsChatFull() {
 
     var availableReactions: TLAbsChatReactions? = null
 
+    var reactionsLimit: Int? = null
+
     var stories: TLPeerStories? = null
 
     var wallpaper: TLAbsWallPaper? = null
 
-    private val _constructor: String = "channelFull#f2bcb6f"
+    var boostsApplied: Int? = null
+
+    var boostsUnrestrict: Int? = null
+
+    var emojiset: TLStickerSet? = null
+
+    private val _constructor: String = "channelFull#bbab348d"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -163,6 +183,10 @@ class TLChannelFull() : TLAbsChatFull() {
             translationsDisabled: Boolean,
             storiesPinnedAvailable: Boolean,
             viewForumAsMessages: Boolean,
+            restrictedSponsored: Boolean,
+            canViewRevenue: Boolean,
+            paidMediaAllowed: Boolean,
+            canViewStarsRevenue: Boolean,
             id: Long,
             about: String,
             participantsCount: Int?,
@@ -198,8 +222,12 @@ class TLChannelFull() : TLAbsChatFull() {
             recentRequesters: TLLongVector?,
             defaultSendAs: TLAbsPeer?,
             availableReactions: TLAbsChatReactions?,
+            reactionsLimit: Int?,
             stories: TLPeerStories?,
-            wallpaper: TLAbsWallPaper?
+            wallpaper: TLAbsWallPaper?,
+            boostsApplied: Int?,
+            boostsUnrestrict: Int?,
+            emojiset: TLStickerSet?
     ) : this() {
         this.canViewParticipants = canViewParticipants
         this.canSetUsername = canSetUsername
@@ -215,6 +243,10 @@ class TLChannelFull() : TLAbsChatFull() {
         this.translationsDisabled = translationsDisabled
         this.storiesPinnedAvailable = storiesPinnedAvailable
         this.viewForumAsMessages = viewForumAsMessages
+        this.restrictedSponsored = restrictedSponsored
+        this.canViewRevenue = canViewRevenue
+        this.paidMediaAllowed = paidMediaAllowed
+        this.canViewStarsRevenue = canViewStarsRevenue
         this.id = id
         this.about = about
         this.participantsCount = participantsCount
@@ -250,8 +282,12 @@ class TLChannelFull() : TLAbsChatFull() {
         this.recentRequesters = recentRequesters
         this.defaultSendAs = defaultSendAs
         this.availableReactions = availableReactions
+        this.reactionsLimit = reactionsLimit
         this.stories = stories
         this.wallpaper = wallpaper
+        this.boostsApplied = boostsApplied
+        this.boostsUnrestrict = boostsUnrestrict
+        this.emojiset = emojiset
     }
 
     protected override fun computeFlags() {
@@ -270,6 +306,10 @@ class TLChannelFull() : TLAbsChatFull() {
         updateFlags(translationsDisabled, 8)
         updateFlags(storiesPinnedAvailable, 32)
         updateFlags(viewForumAsMessages, 64)
+        updateFlags(restrictedSponsored, 2048)
+        updateFlags(canViewRevenue, 4096)
+        updateFlags(paidMediaAllowed, 16384)
+        updateFlags(canViewStarsRevenue, 32768)
         updateFlags(participantsCount, 1)
         updateFlags(adminsCount, 2)
         updateFlags(kickedCount, 4)
@@ -296,19 +336,28 @@ class TLChannelFull() : TLAbsChatFull() {
         updateFlags(recentRequesters, 268435456)
         updateFlags(defaultSendAs, 536870912)
         updateFlags(availableReactions, 1073741824)
+        updateFlags(reactionsLimit, 8192)
         updateFlags(stories, 16)
         updateFlags(wallpaper, 128)
+        updateFlags(boostsApplied, 256)
+        updateFlags(boostsUnrestrict, 512)
+        updateFlags(emojiset, 1024)
 
         // Following parameters might be forced to true by another field that updated the flags
         canViewParticipants = isMask(8)
         canSetUsername = isMask(64)
         canSetStickers = isMask(128)
+        hiddenPrehistory = isMask(1024)
         canDeleteChannel = isMask(1)
         antispam = isMask(2)
         participantsHidden = isMask(4)
         translationsDisabled = isMask(8)
         storiesPinnedAvailable = isMask(32)
         viewForumAsMessages = isMask(64)
+        restrictedSponsored = isMask(2048)
+        canViewRevenue = isMask(4096)
+        paidMediaAllowed = isMask(16384)
+        canViewStarsRevenue = isMask(32768)
     }
 
     @Throws(IOException::class)
@@ -352,8 +401,12 @@ class TLChannelFull() : TLAbsChatFull() {
         doIfMask(recentRequesters, 268435456) { writeTLVector(it) }
         doIfMask(defaultSendAs, 536870912) { writeTLObject(it) }
         doIfMask(availableReactions, 1073741824) { writeTLObject(it) }
+        doIfMask(reactionsLimit, 8192) { writeInt(it) }
         doIfMask(stories, 16) { writeTLObject(it) }
         doIfMask(wallpaper, 128) { writeTLObject(it) }
+        doIfMask(boostsApplied, 256) { writeInt(it) }
+        doIfMask(boostsUnrestrict, 512) { writeInt(it) }
+        doIfMask(emojiset, 1024) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
@@ -374,6 +427,10 @@ class TLChannelFull() : TLAbsChatFull() {
         translationsDisabled = isMask(8)
         storiesPinnedAvailable = isMask(32)
         viewForumAsMessages = isMask(64)
+        restrictedSponsored = isMask(2048)
+        canViewRevenue = isMask(4096)
+        paidMediaAllowed = isMask(16384)
+        canViewStarsRevenue = isMask(32768)
         id = readLong()
         about = readString()
         participantsCount = readIfMask(1) { readInt() }
@@ -409,8 +466,12 @@ class TLChannelFull() : TLAbsChatFull() {
         recentRequesters = readIfMask(268435456) { readTLLongVector() }
         defaultSendAs = readIfMask(536870912) { readTLObject<TLAbsPeer>() }
         availableReactions = readIfMask(1073741824) { readTLObject<TLAbsChatReactions>() }
+        reactionsLimit = readIfMask(8192) { readInt() }
         stories = readIfMask(16) { readTLObject<TLPeerStories>(TLPeerStories::class, TLPeerStories.CONSTRUCTOR_ID) }
         wallpaper = readIfMask(128) { readTLObject<TLAbsWallPaper>() }
+        boostsApplied = readIfMask(256) { readInt() }
+        boostsUnrestrict = readIfMask(512) { readInt() }
+        emojiset = readIfMask(1024) { readTLObject<TLStickerSet>(TLStickerSet::class, TLStickerSet.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -454,8 +515,12 @@ class TLChannelFull() : TLAbsChatFull() {
         size += getIntIfMask(recentRequesters, 268435456) { it.computeSerializedSize() }
         size += getIntIfMask(defaultSendAs, 536870912) { it.computeSerializedSize() }
         size += getIntIfMask(availableReactions, 1073741824) { it.computeSerializedSize() }
+        size += getIntIfMask(reactionsLimit, 8192) { SIZE_INT32 }
         size += getIntIfMask(stories, 16) { it.computeSerializedSize() }
         size += getIntIfMask(wallpaper, 128) { it.computeSerializedSize() }
+        size += getIntIfMask(boostsApplied, 256) { SIZE_INT32 }
+        size += getIntIfMask(boostsUnrestrict, 512) { SIZE_INT32 }
+        size += getIntIfMask(emojiset, 1024) { it.computeSerializedSize() }
         return size
     }
 
@@ -481,6 +546,10 @@ class TLChannelFull() : TLAbsChatFull() {
                 && translationsDisabled == other.translationsDisabled
                 && storiesPinnedAvailable == other.storiesPinnedAvailable
                 && viewForumAsMessages == other.viewForumAsMessages
+                && restrictedSponsored == other.restrictedSponsored
+                && canViewRevenue == other.canViewRevenue
+                && paidMediaAllowed == other.paidMediaAllowed
+                && canViewStarsRevenue == other.canViewStarsRevenue
                 && id == other.id
                 && about == other.about
                 && participantsCount == other.participantsCount
@@ -516,10 +585,14 @@ class TLChannelFull() : TLAbsChatFull() {
                 && recentRequesters == other.recentRequesters
                 && defaultSendAs == other.defaultSendAs
                 && availableReactions == other.availableReactions
+                && reactionsLimit == other.reactionsLimit
                 && stories == other.stories
                 && wallpaper == other.wallpaper
+                && boostsApplied == other.boostsApplied
+                && boostsUnrestrict == other.boostsUnrestrict
+                && emojiset == other.emojiset
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xf2bcb6f.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xbbab348d.toInt()
     }
 }

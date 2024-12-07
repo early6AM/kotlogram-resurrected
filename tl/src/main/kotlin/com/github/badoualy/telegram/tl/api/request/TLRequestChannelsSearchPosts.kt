@@ -1,0 +1,99 @@
+package com.github.badoualy.telegram.tl.api.request
+
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_BOOLEAN
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_CONSTRUCTOR_ID
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_DOUBLE
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
+import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
+import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
+import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
+import com.github.badoualy.telegram.tl.api.TLInputPeerEmpty
+import com.github.badoualy.telegram.tl.api.messages.TLAbsMessages
+import com.github.badoualy.telegram.tl.core.TLMethod
+import com.github.badoualy.telegram.tl.serialization.TLDeserializer
+import com.github.badoualy.telegram.tl.serialization.TLSerializer
+import java.io.IOException
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.String
+import kotlin.jvm.Throws
+
+/**
+ * @author Yannick Badoual yann.badoual@gmail.com
+ * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
+ */
+class TLRequestChannelsSearchPosts() : TLMethod<TLAbsMessages>() {
+    var hashtag: String = ""
+
+    var offsetRate: Int = 0
+
+    var offsetPeer: TLAbsInputPeer = TLInputPeerEmpty()
+
+    var offsetId: Int = 0
+
+    var limit: Int = 0
+
+    private val _constructor: String = "channels.searchPosts#d19f987b"
+
+    override val constructorId: Int = CONSTRUCTOR_ID
+
+    constructor(
+            hashtag: String,
+            offsetRate: Int,
+            offsetPeer: TLAbsInputPeer,
+            offsetId: Int,
+            limit: Int
+    ) : this() {
+        this.hashtag = hashtag
+        this.offsetRate = offsetRate
+        this.offsetPeer = offsetPeer
+        this.offsetId = offsetId
+        this.limit = limit
+    }
+
+    @Throws(IOException::class)
+    override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
+        writeString(hashtag)
+        writeInt(offsetRate)
+        writeTLObject(offsetPeer)
+        writeInt(offsetId)
+        writeInt(limit)
+    }
+
+    @Throws(IOException::class)
+    override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
+        hashtag = readString()
+        offsetRate = readInt()
+        offsetPeer = readTLObject<TLAbsInputPeer>()
+        offsetId = readInt()
+        limit = readInt()
+    }
+
+    override fun computeSerializedSize(): Int {
+        var size = SIZE_CONSTRUCTOR_ID
+        size += computeTLStringSerializedSize(hashtag)
+        size += SIZE_INT32
+        size += offsetPeer.computeSerializedSize()
+        size += SIZE_INT32
+        size += SIZE_INT32
+        return size
+    }
+
+    override fun toString() = _constructor
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is TLRequestChannelsSearchPosts) return false
+        if (other === this) return true
+
+        return hashtag == other.hashtag
+                && offsetRate == other.offsetRate
+                && offsetPeer == other.offsetPeer
+                && offsetId == other.offsetId
+                && limit == other.limit
+    }
+    companion object  {
+        const val CONSTRUCTOR_ID: Int = 0xd19f987b.toInt()
+    }
+}

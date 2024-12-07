@@ -50,7 +50,9 @@ class TLRequestMessagesEditMessage() : TLMethod<TLAbsUpdates>() {
 
     var scheduleDate: Int? = null
 
-    private val _constructor: String = "messages.editMessage#48f71778"
+    var quickReplyShortcutId: Int? = null
+
+    private val _constructor: String = "messages.editMessage#dfd14005"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -63,7 +65,8 @@ class TLRequestMessagesEditMessage() : TLMethod<TLAbsUpdates>() {
             media: TLAbsInputMedia?,
             replyMarkup: TLAbsReplyMarkup?,
             entities: TLObjectVector<TLAbsMessageEntity>?,
-            scheduleDate: Int?
+            scheduleDate: Int?,
+            quickReplyShortcutId: Int?
     ) : this() {
         this.noWebpage = noWebpage
         this.invertMedia = invertMedia
@@ -74,6 +77,7 @@ class TLRequestMessagesEditMessage() : TLMethod<TLAbsUpdates>() {
         this.replyMarkup = replyMarkup
         this.entities = entities
         this.scheduleDate = scheduleDate
+        this.quickReplyShortcutId = quickReplyShortcutId
     }
 
     protected override fun computeFlags() {
@@ -85,6 +89,7 @@ class TLRequestMessagesEditMessage() : TLMethod<TLAbsUpdates>() {
         updateFlags(replyMarkup, 4)
         updateFlags(entities, 8)
         updateFlags(scheduleDate, 32768)
+        updateFlags(quickReplyShortcutId, 131072)
     }
 
     @Throws(IOException::class)
@@ -99,6 +104,7 @@ class TLRequestMessagesEditMessage() : TLMethod<TLAbsUpdates>() {
         doIfMask(replyMarkup, 4) { writeTLObject(it) }
         doIfMask(entities, 8) { writeTLVector(it) }
         doIfMask(scheduleDate, 32768) { writeInt(it) }
+        doIfMask(quickReplyShortcutId, 131072) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -113,6 +119,7 @@ class TLRequestMessagesEditMessage() : TLMethod<TLAbsUpdates>() {
         replyMarkup = readIfMask(4) { readTLObject<TLAbsReplyMarkup>() }
         entities = readIfMask(8) { readTLVector<TLAbsMessageEntity>() }
         scheduleDate = readIfMask(32768) { readInt() }
+        quickReplyShortcutId = readIfMask(131072) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -127,6 +134,7 @@ class TLRequestMessagesEditMessage() : TLMethod<TLAbsUpdates>() {
         size += getIntIfMask(replyMarkup, 4) { it.computeSerializedSize() }
         size += getIntIfMask(entities, 8) { it.computeSerializedSize() }
         size += getIntIfMask(scheduleDate, 32768) { SIZE_INT32 }
+        size += getIntIfMask(quickReplyShortcutId, 131072) { SIZE_INT32 }
         return size
     }
 
@@ -146,8 +154,9 @@ class TLRequestMessagesEditMessage() : TLMethod<TLAbsUpdates>() {
                 && replyMarkup == other.replyMarkup
                 && entities == other.entities
                 && scheduleDate == other.scheduleDate
+                && quickReplyShortcutId == other.quickReplyShortcutId
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x48f71778.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xdfd14005.toInt()
     }
 }

@@ -21,7 +21,7 @@ import kotlin.jvm.Throws
 import kotlin.jvm.Transient
 
 /**
- * poll#86e18161
+ * poll#58747131
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -41,7 +41,7 @@ class TLPoll() : TLObject() {
     @Transient
     var quiz: Boolean = false
 
-    var question: String = ""
+    var question: TLTextWithEntities = TLTextWithEntities()
 
     var answers: TLObjectVector<TLPollAnswer> = TLObjectVector()
 
@@ -49,7 +49,7 @@ class TLPoll() : TLObject() {
 
     var closeDate: Int? = null
 
-    private val _constructor: String = "poll#86e18161"
+    private val _constructor: String = "poll#58747131"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -59,7 +59,7 @@ class TLPoll() : TLObject() {
             publicVoters: Boolean,
             multipleChoice: Boolean,
             quiz: Boolean,
-            question: String,
+            question: TLTextWithEntities,
             answers: TLObjectVector<TLPollAnswer>,
             closePeriod: Int?,
             closeDate: Int?
@@ -91,7 +91,7 @@ class TLPoll() : TLObject() {
 
         writeLong(id)
         writeInt(_flags)
-        writeString(question)
+        writeTLObject(question)
         writeTLVector(answers)
         doIfMask(closePeriod, 16) { writeInt(it) }
         doIfMask(closeDate, 32) { writeInt(it) }
@@ -105,7 +105,7 @@ class TLPoll() : TLObject() {
         publicVoters = isMask(2)
         multipleChoice = isMask(4)
         quiz = isMask(8)
-        question = readString()
+        question = readTLObject<TLTextWithEntities>(TLTextWithEntities::class, TLTextWithEntities.CONSTRUCTOR_ID)
         answers = readTLVector<TLPollAnswer>()
         closePeriod = readIfMask(16) { readInt() }
         closeDate = readIfMask(32) { readInt() }
@@ -117,7 +117,7 @@ class TLPoll() : TLObject() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT64
         size += SIZE_INT32
-        size += computeTLStringSerializedSize(question)
+        size += question.computeSerializedSize()
         size += answers.computeSerializedSize()
         size += getIntIfMask(closePeriod, 16) { SIZE_INT32 }
         size += getIntIfMask(closeDate, 32) { SIZE_INT32 }
@@ -142,6 +142,6 @@ class TLPoll() : TLObject() {
                 && closeDate == other.closeDate
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x86e18161.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x58747131.toInt()
     }
 }

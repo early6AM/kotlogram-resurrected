@@ -8,8 +8,8 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputUser
-import com.github.badoualy.telegram.tl.api.TLAbsUpdates
 import com.github.badoualy.telegram.tl.api.TLInputUserEmpty
+import com.github.badoualy.telegram.tl.api.messages.TLInvitedUsers
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
@@ -25,14 +25,14 @@ import kotlin.jvm.Throws
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
-class TLRequestMessagesAddChatUser() : TLMethod<TLAbsUpdates>() {
+class TLRequestMessagesAddChatUser() : TLMethod<TLInvitedUsers>() {
     var chatId: Long = 0L
 
     var userId: TLAbsInputUser = TLInputUserEmpty()
 
     var fwdLimit: Int = 0
 
-    private val _constructor: String = "messages.addChatUser#f24753e3"
+    private val _constructor: String = "messages.addChatUser#cbc6d107"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -45,6 +45,9 @@ class TLRequestMessagesAddChatUser() : TLMethod<TLAbsUpdates>() {
         this.userId = userId
         this.fwdLimit = fwdLimit
     }
+
+    @Throws(IOException::class)
+    override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLInvitedUsers = tlDeserializer.readTLObject(TLInvitedUsers::class, TLInvitedUsers.CONSTRUCTOR_ID)
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
@@ -79,6 +82,6 @@ class TLRequestMessagesAddChatUser() : TLMethod<TLAbsUpdates>() {
                 && fwdLimit == other.fwdLimit
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xf24753e3.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xcbc6d107.toInt()
     }
 }

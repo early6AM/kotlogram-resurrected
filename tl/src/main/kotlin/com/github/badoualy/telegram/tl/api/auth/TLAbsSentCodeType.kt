@@ -14,12 +14,14 @@ import com.github.badoualy.telegram.tl.core.TLObject
  * * [auth.sentCodeTypeApp#3dbb5986][TLSentCodeTypeApp]
  * * [auth.sentCodeTypeCall#5353e5a7][TLSentCodeTypeCall]
  * * [auth.sentCodeTypeEmailCode#f450f59b][TLSentCodeTypeEmailCode]
- * * [auth.sentCodeTypeFirebaseSms#e57b1432][TLSentCodeTypeFirebaseSms]
+ * * [auth.sentCodeTypeFirebaseSms#9fd736][TLSentCodeTypeFirebaseSms]
  * * [auth.sentCodeTypeFlashCall#ab03c6d9][TLSentCodeTypeFlashCall]
  * * [auth.sentCodeTypeFragmentSms#d9565c39][TLSentCodeTypeFragmentSms]
  * * [auth.sentCodeTypeMissedCall#82006484][TLSentCodeTypeMissedCall]
  * * [auth.sentCodeTypeSetUpEmailRequired#a5491dea][TLSentCodeTypeSetUpEmailRequired]
  * * [auth.sentCodeTypeSms#c000bba2][TLSentCodeTypeSms]
+ * * [auth.sentCodeTypeSmsPhrase#b37794af][TLSentCodeTypeSmsPhrase]
+ * * [auth.sentCodeTypeSmsWord#a416ac81][TLSentCodeTypeSmsWord]
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>

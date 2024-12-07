@@ -29,9 +29,11 @@ class TLRequestAuthRequestFirebaseSms() : TLMethod<TLBool>() {
 
     var safetyNetToken: String? = null
 
+    var playIntegrityToken: String? = null
+
     var iosPushSecret: String? = null
 
-    private val _constructor: String = "auth.requestFirebaseSms#89464b50"
+    private val _constructor: String = "auth.requestFirebaseSms#8e39261e"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -39,17 +41,20 @@ class TLRequestAuthRequestFirebaseSms() : TLMethod<TLBool>() {
             phoneNumber: String,
             phoneCodeHash: String,
             safetyNetToken: String?,
+            playIntegrityToken: String?,
             iosPushSecret: String?
     ) : this() {
         this.phoneNumber = phoneNumber
         this.phoneCodeHash = phoneCodeHash
         this.safetyNetToken = safetyNetToken
+        this.playIntegrityToken = playIntegrityToken
         this.iosPushSecret = iosPushSecret
     }
 
     protected override fun computeFlags() {
         _flags = 0
         updateFlags(safetyNetToken, 1)
+        updateFlags(playIntegrityToken, 4)
         updateFlags(iosPushSecret, 2)
     }
 
@@ -61,6 +66,7 @@ class TLRequestAuthRequestFirebaseSms() : TLMethod<TLBool>() {
         writeString(phoneNumber)
         writeString(phoneCodeHash)
         doIfMask(safetyNetToken, 1) { writeString(it) }
+        doIfMask(playIntegrityToken, 4) { writeString(it) }
         doIfMask(iosPushSecret, 2) { writeString(it) }
     }
 
@@ -70,6 +76,7 @@ class TLRequestAuthRequestFirebaseSms() : TLMethod<TLBool>() {
         phoneNumber = readString()
         phoneCodeHash = readString()
         safetyNetToken = readIfMask(1) { readString() }
+        playIntegrityToken = readIfMask(4) { readString() }
         iosPushSecret = readIfMask(2) { readString() }
     }
 
@@ -81,6 +88,7 @@ class TLRequestAuthRequestFirebaseSms() : TLMethod<TLBool>() {
         size += computeTLStringSerializedSize(phoneNumber)
         size += computeTLStringSerializedSize(phoneCodeHash)
         size += getIntIfMask(safetyNetToken, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(playIntegrityToken, 4) { computeTLStringSerializedSize(it) }
         size += getIntIfMask(iosPushSecret, 2) { computeTLStringSerializedSize(it) }
         return size
     }
@@ -95,9 +103,10 @@ class TLRequestAuthRequestFirebaseSms() : TLMethod<TLBool>() {
                 && phoneNumber == other.phoneNumber
                 && phoneCodeHash == other.phoneCodeHash
                 && safetyNetToken == other.safetyNetToken
+                && playIntegrityToken == other.playIntegrityToken
                 && iosPushSecret == other.iosPushSecret
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x89464b50.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x8e39261e.toInt()
     }
 }

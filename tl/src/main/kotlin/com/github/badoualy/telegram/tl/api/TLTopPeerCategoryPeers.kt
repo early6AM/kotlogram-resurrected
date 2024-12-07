@@ -25,7 +25,7 @@ import kotlin.jvm.Throws
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLTopPeerCategoryPeers() : TLObject() {
-    var category: TLAbsTopPeerCategory = TLTopPeerCategoryBotsPM()
+    var category: TLAbsTopPeerCategory = TLTopPeerCategoryBotsApp()
 
     var count: Int = 0
 

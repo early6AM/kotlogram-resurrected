@@ -8,7 +8,7 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputUser
-import com.github.badoualy.telegram.tl.api.TLAbsUpdates
+import com.github.badoualy.telegram.tl.api.messages.TLInvitedUsers
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
@@ -24,14 +24,14 @@ import kotlin.jvm.Throws
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
-class TLRequestMessagesCreateChat() : TLMethod<TLAbsUpdates>() {
+class TLRequestMessagesCreateChat() : TLMethod<TLInvitedUsers>() {
     var users: TLObjectVector<TLAbsInputUser> = TLObjectVector()
 
     var title: String = ""
 
     var ttlPeriod: Int? = null
 
-    private val _constructor: String = "messages.createChat#34a818"
+    private val _constructor: String = "messages.createChat#92ceddd4"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -44,6 +44,9 @@ class TLRequestMessagesCreateChat() : TLMethod<TLAbsUpdates>() {
         this.title = title
         this.ttlPeriod = ttlPeriod
     }
+
+    @Throws(IOException::class)
+    override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLInvitedUsers = tlDeserializer.readTLObject(TLInvitedUsers::class, TLInvitedUsers.CONSTRUCTOR_ID)
 
     protected override fun computeFlags() {
         _flags = 0
@@ -91,6 +94,6 @@ class TLRequestMessagesCreateChat() : TLMethod<TLAbsUpdates>() {
                 && ttlPeriod == other.ttlPeriod
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x34a818.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x92ceddd4.toInt()
     }
 }

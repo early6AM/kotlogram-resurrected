@@ -9,7 +9,7 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSiz
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputPeer
 import com.github.badoualy.telegram.tl.api.TLInputPeerEmpty
-import com.github.badoualy.telegram.tl.api.payments.TLPaymentReceipt
+import com.github.badoualy.telegram.tl.api.payments.TLAbsPaymentReceipt
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
@@ -24,7 +24,7 @@ import kotlin.jvm.Throws
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
-class TLRequestPaymentsGetPaymentReceipt() : TLMethod<TLPaymentReceipt>() {
+class TLRequestPaymentsGetPaymentReceipt() : TLMethod<TLAbsPaymentReceipt>() {
     var peer: TLAbsInputPeer = TLInputPeerEmpty()
 
     var msgId: Int = 0
@@ -37,9 +37,6 @@ class TLRequestPaymentsGetPaymentReceipt() : TLMethod<TLPaymentReceipt>() {
         this.peer = peer
         this.msgId = msgId
     }
-
-    @Throws(IOException::class)
-    override fun deserializeResponse_(tlDeserializer: TLDeserializer): TLPaymentReceipt = tlDeserializer.readTLObject(TLPaymentReceipt::class, TLPaymentReceipt.CONSTRUCTOR_ID)
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {

@@ -21,7 +21,7 @@ import kotlin.jvm.Throws
 import kotlin.jvm.Transient
 
 /**
- * chatFull#c9d31138
+ * chatFull#2633421b
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -68,7 +68,9 @@ class TLChatFull() : TLAbsChatFull() {
 
     var availableReactions: TLAbsChatReactions? = null
 
-    private val _constructor: String = "chatFull#c9d31138"
+    var reactionsLimit: Int? = null
+
+    private val _constructor: String = "chatFull#2633421b"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -91,7 +93,8 @@ class TLChatFull() : TLAbsChatFull() {
             themeEmoticon: String?,
             requestsPending: Int?,
             recentRequesters: TLLongVector?,
-            availableReactions: TLAbsChatReactions?
+            availableReactions: TLAbsChatReactions?,
+            reactionsLimit: Int?
     ) : this() {
         this.canSetUsername = canSetUsername
         this.hasScheduled = hasScheduled
@@ -112,6 +115,7 @@ class TLChatFull() : TLAbsChatFull() {
         this.requestsPending = requestsPending
         this.recentRequesters = recentRequesters
         this.availableReactions = availableReactions
+        this.reactionsLimit = reactionsLimit
     }
 
     protected override fun computeFlags() {
@@ -131,6 +135,7 @@ class TLChatFull() : TLAbsChatFull() {
         updateFlags(requestsPending, 131072)
         updateFlags(recentRequesters, 131072)
         updateFlags(availableReactions, 262144)
+        updateFlags(reactionsLimit, 1048576)
     }
 
     @Throws(IOException::class)
@@ -154,6 +159,7 @@ class TLChatFull() : TLAbsChatFull() {
         doIfMask(requestsPending, 131072) { writeInt(it) }
         doIfMask(recentRequesters, 131072) { writeTLVector(it) }
         doIfMask(availableReactions, 262144) { writeTLObject(it) }
+        doIfMask(reactionsLimit, 1048576) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -178,6 +184,7 @@ class TLChatFull() : TLAbsChatFull() {
         requestsPending = readIfMask(131072) { readInt() }
         recentRequesters = readIfMask(131072) { readTLLongVector() }
         availableReactions = readIfMask(262144) { readTLObject<TLAbsChatReactions>() }
+        reactionsLimit = readIfMask(1048576) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -201,6 +208,7 @@ class TLChatFull() : TLAbsChatFull() {
         size += getIntIfMask(requestsPending, 131072) { SIZE_INT32 }
         size += getIntIfMask(recentRequesters, 131072) { it.computeSerializedSize() }
         size += getIntIfMask(availableReactions, 262144) { it.computeSerializedSize() }
+        size += getIntIfMask(reactionsLimit, 1048576) { SIZE_INT32 }
         return size
     }
 
@@ -230,8 +238,9 @@ class TLChatFull() : TLAbsChatFull() {
                 && requestsPending == other.requestsPending
                 && recentRequesters == other.recentRequesters
                 && availableReactions == other.availableReactions
+                && reactionsLimit == other.reactionsLimit
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xc9d31138.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x2633421b.toInt()
     }
 }

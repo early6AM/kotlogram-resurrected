@@ -49,8 +49,9 @@ abstract class TelegramSyncClient : TelegramSyncApiWrapper() {
                 allowFlashcall = allowFlashcall,
                 currentNumber = currentNumber ?: true,
                 allowAppHash = true,
-                allowMissedCall = true,
+                allowMissedCall = false,
                 allowFirebase = true,
+                unknownNumber = true,
                 logoutTokens = null,
                 token = null,
                 appSandbox = null
@@ -100,10 +101,23 @@ abstract class TelegramSyncClient : TelegramSyncApiWrapper() {
     /** Convenience method wrapping the argument for a plain text message */
     fun messagesSendMessage(peer: TLAbsInputPeer, message: String, randomId: Long) =
         super.messagesSendMessage(
-            true, false, false, false,
-            false, false, false,
-            peer, null, message, randomId,
-            null, null, null, null
+            noWebpage = true,
+            silent = false,
+            background = false,
+            clearDraft = false,
+            noforwards = false,
+            updateStickersetsOrder = false,
+            invertMedia = false,
+            peer = peer,
+            replyTo = null,
+            message = message,
+            randomId = randomId,
+            replyMarkup = null,
+            entities = null,
+            scheduleDate = null,
+            sendAs = null,
+            quickReplyShortcut = null,
+            effect = null
         )
 }
 

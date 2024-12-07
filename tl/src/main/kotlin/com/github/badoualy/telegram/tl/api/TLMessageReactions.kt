@@ -32,6 +32,9 @@ class TLMessageReactions() : TLObject() {
     @Transient
     var canSeeList: Boolean = false
 
+    @Transient
+    var reactionsAsTags: Boolean = false
+
     var results: TLObjectVector<TLReactionCount> = TLObjectVector()
 
     var recentReactions: TLObjectVector<TLMessagePeerReaction>? = TLObjectVector()
@@ -43,11 +46,13 @@ class TLMessageReactions() : TLObject() {
     constructor(
             min: Boolean,
             canSeeList: Boolean,
+            reactionsAsTags: Boolean,
             results: TLObjectVector<TLReactionCount>,
             recentReactions: TLObjectVector<TLMessagePeerReaction>?
     ) : this() {
         this.min = min
         this.canSeeList = canSeeList
+        this.reactionsAsTags = reactionsAsTags
         this.results = results
         this.recentReactions = recentReactions
     }
@@ -56,6 +61,7 @@ class TLMessageReactions() : TLObject() {
         _flags = 0
         updateFlags(min, 1)
         updateFlags(canSeeList, 4)
+        updateFlags(reactionsAsTags, 8)
         updateFlags(recentReactions, 2)
     }
 
@@ -73,6 +79,7 @@ class TLMessageReactions() : TLObject() {
         _flags = readInt()
         min = isMask(1)
         canSeeList = isMask(4)
+        reactionsAsTags = isMask(8)
         results = readTLVector<TLReactionCount>()
         recentReactions = readIfMask(2) { readTLVector<TLMessagePeerReaction>() }
     }
@@ -96,6 +103,7 @@ class TLMessageReactions() : TLObject() {
         return _flags == other._flags
                 && min == other.min
                 && canSeeList == other.canSeeList
+                && reactionsAsTags == other.reactionsAsTags
                 && results == other.results
                 && recentReactions == other.recentReactions
     }

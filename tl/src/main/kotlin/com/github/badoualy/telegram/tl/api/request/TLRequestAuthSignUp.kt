@@ -17,12 +17,16 @@ import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
 import kotlin.jvm.Throws
+import kotlin.jvm.Transient
 
 /**
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLRequestAuthSignUp() : TLMethod<TLAbsAuthorization>() {
+    @Transient
+    var noJoinedNotifications: Boolean = false
+
     var phoneNumber: String = ""
 
     var phoneCodeHash: String = ""
@@ -31,24 +35,34 @@ class TLRequestAuthSignUp() : TLMethod<TLAbsAuthorization>() {
 
     var lastName: String = ""
 
-    private val _constructor: String = "auth.signUp#80eee427"
+    private val _constructor: String = "auth.signUp#aac7b717"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
+            noJoinedNotifications: Boolean,
             phoneNumber: String,
             phoneCodeHash: String,
             firstName: String,
             lastName: String
     ) : this() {
+        this.noJoinedNotifications = noJoinedNotifications
         this.phoneNumber = phoneNumber
         this.phoneCodeHash = phoneCodeHash
         this.firstName = firstName
         this.lastName = lastName
     }
 
+    protected override fun computeFlags() {
+        _flags = 0
+        updateFlags(noJoinedNotifications, 1)
+    }
+
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
+        computeFlags()
+
+        writeInt(_flags)
         writeString(phoneNumber)
         writeString(phoneCodeHash)
         writeString(firstName)
@@ -57,6 +71,8 @@ class TLRequestAuthSignUp() : TLMethod<TLAbsAuthorization>() {
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
+        _flags = readInt()
+        noJoinedNotifications = isMask(1)
         phoneNumber = readString()
         phoneCodeHash = readString()
         firstName = readString()
@@ -64,7 +80,10 @@ class TLRequestAuthSignUp() : TLMethod<TLAbsAuthorization>() {
     }
 
     override fun computeSerializedSize(): Int {
+        computeFlags()
+
         var size = SIZE_CONSTRUCTOR_ID
+        size += SIZE_INT32
         size += computeTLStringSerializedSize(phoneNumber)
         size += computeTLStringSerializedSize(phoneCodeHash)
         size += computeTLStringSerializedSize(firstName)
@@ -78,12 +97,14 @@ class TLRequestAuthSignUp() : TLMethod<TLAbsAuthorization>() {
         if (other !is TLRequestAuthSignUp) return false
         if (other === this) return true
 
-        return phoneNumber == other.phoneNumber
+        return _flags == other._flags
+                && noJoinedNotifications == other.noJoinedNotifications
+                && phoneNumber == other.phoneNumber
                 && phoneCodeHash == other.phoneCodeHash
                 && firstName == other.firstName
                 && lastName == other.lastName
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x80eee427.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xaac7b717.toInt()
     }
 }

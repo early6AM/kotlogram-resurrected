@@ -69,8 +69,9 @@ abstract class TelegramClient : TelegramApiWrapper(), TelegramApi, Closeable {
                     allowFlashcall = allowFlashcall,
                     currentNumber = currentNumber ?: true,
                     allowAppHash = true,
-                    allowMissedCall = true,
+                    allowMissedCall = false,
                     allowFirebase = true,
+                    unknownNumber = true,
                     logoutTokens = null,
                     token = null,
                     appSandbox = null
@@ -94,8 +95,9 @@ abstract class TelegramClient : TelegramApiWrapper(), TelegramApi, Closeable {
                 allowFlashcall = allowFlashcall,
                 currentNumber = currentNumber ?: true,
                 allowAppHash = true,
-                allowMissedCall = true,
+                allowMissedCall = false,
                 allowFirebase = true,
+                unknownNumber = true,
                 logoutTokens = null,
                 token = null,
                 appSandbox = null
@@ -166,6 +168,8 @@ abstract class TelegramClient : TelegramApiWrapper(), TelegramApi, Closeable {
             null,
             null,
             null,
-            null
+            null,
+            null,
+            null,
         )
 }

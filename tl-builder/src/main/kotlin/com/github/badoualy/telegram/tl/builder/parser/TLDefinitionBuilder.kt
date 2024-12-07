@@ -4,10 +4,8 @@ object TLDefinitionBuilder {
 
     private val genericRegex = Regex("([a-zA-Z]+)<([a-zA-Z_.]+)>",
                                      RegexOption.IGNORE_CASE) // Vector<SomeKindOfType>
-    private val flagRegex = Regex("([a-zA-Z]+)\\.(\\d+)\\?([a-zA-Z<>.]+)",
+    private val flagRegex = Regex("([a-zA-Z]+\\d*)\\.(\\d+)\\?([a-zA-Z<>.]+)",
                                   RegexOption.IGNORE_CASE) // flags.0?true
-    private val flagRegex2 = Regex("([a-zA-Z]+\\d*)\\.(\\d+)\\?([a-zA-Z<>.]+)",
-                                  RegexOption.IGNORE_CASE) // flags2.0?true
     private val rawRegex = Regex("[a-zA-Z].+")
 
     private val typeMap = HashMap<String, TLTypeRaw>()
@@ -93,8 +91,8 @@ object TLDefinitionBuilder {
                     ?: throw RuntimeException("Unknown error with type $typeName")
             val realType = groups[3]?.value
                     ?: throw RuntimeException("Unknown error with type $typeName")
-            if (maskName != "flags")
-                throw RuntimeException("Unsupported flag name, expected `flags`")
+            if (maskName != "flags" && maskName != "flags2")
+                throw RuntimeException("Unsupported flag name, expected `flags` or `flags2`")
 
             TLTypeConditional(value, createType(realType))
         }

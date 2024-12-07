@@ -46,8 +46,8 @@ val TYPE_TL_OBJECT_VECTOR = ClassName.get(PACKAGE_TL_CORE, "TLObjectVector")
 val TYPE_TL_METHOD = ClassName.get(PACKAGE_TL_CORE, "TLMethod")
 val TYPE_TL_OBJECT = ClassName.get(PACKAGE_TL_CORE, "TLObject")
 
-val TYPE_SINGLE = ClassName.get("io.reactivex", "Single")
-val TYPE_OBSERVABLE = ClassName.get("io.reactivex", "Observable")
+val TYPE_SINGLE = ClassName.get("io.reactivex.rxjava3.core", "Single")
+val TYPE_OBSERVABLE = ClassName.get("io.reactivex.rxjava3.core", "Observable")
 
 
 val JAVADOC_AUTHOR = "@author Yannick Badoual yann.badoual@gmail.com\n"

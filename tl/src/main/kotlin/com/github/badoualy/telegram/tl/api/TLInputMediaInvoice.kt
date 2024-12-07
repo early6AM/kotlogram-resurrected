@@ -18,7 +18,7 @@ import kotlin.String
 import kotlin.jvm.Throws
 
 /**
- * inputMediaInvoice#8eb5a6d5
+ * inputMediaInvoice#405fef0d
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -34,7 +34,7 @@ class TLInputMediaInvoice() : TLAbsInputMedia() {
 
     var payload: TLBytes = TLBytes.EMPTY
 
-    var provider: String = ""
+    var provider: String? = null
 
     var providerData: TLDataJSON = TLDataJSON()
 
@@ -42,7 +42,7 @@ class TLInputMediaInvoice() : TLAbsInputMedia() {
 
     var extendedMedia: TLAbsInputMedia? = null
 
-    private val _constructor: String = "inputMediaInvoice#8eb5a6d5"
+    private val _constructor: String = "inputMediaInvoice#405fef0d"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -52,7 +52,7 @@ class TLInputMediaInvoice() : TLAbsInputMedia() {
             photo: TLInputWebDocument?,
             invoice: TLInvoice,
             payload: TLBytes,
-            provider: String,
+            provider: String?,
             providerData: TLDataJSON,
             startParam: String?,
             extendedMedia: TLAbsInputMedia?
@@ -71,6 +71,7 @@ class TLInputMediaInvoice() : TLAbsInputMedia() {
     protected override fun computeFlags() {
         _flags = 0
         updateFlags(photo, 1)
+        updateFlags(provider, 8)
         updateFlags(startParam, 2)
         updateFlags(extendedMedia, 4)
     }
@@ -85,7 +86,7 @@ class TLInputMediaInvoice() : TLAbsInputMedia() {
         doIfMask(photo, 1) { writeTLObject(it) }
         writeTLObject(invoice)
         writeTLBytes(payload)
-        writeString(provider)
+        doIfMask(provider, 8) { writeString(it) }
         writeTLObject(providerData)
         doIfMask(startParam, 2) { writeString(it) }
         doIfMask(extendedMedia, 4) { writeTLObject(it) }
@@ -99,7 +100,7 @@ class TLInputMediaInvoice() : TLAbsInputMedia() {
         photo = readIfMask(1) { readTLObject<TLInputWebDocument>(TLInputWebDocument::class, TLInputWebDocument.CONSTRUCTOR_ID) }
         invoice = readTLObject<TLInvoice>(TLInvoice::class, TLInvoice.CONSTRUCTOR_ID)
         payload = readTLBytes()
-        provider = readString()
+        provider = readIfMask(8) { readString() }
         providerData = readTLObject<TLDataJSON>(TLDataJSON::class, TLDataJSON.CONSTRUCTOR_ID)
         startParam = readIfMask(2) { readString() }
         extendedMedia = readIfMask(4) { readTLObject<TLAbsInputMedia>() }
@@ -115,7 +116,7 @@ class TLInputMediaInvoice() : TLAbsInputMedia() {
         size += getIntIfMask(photo, 1) { it.computeSerializedSize() }
         size += invoice.computeSerializedSize()
         size += computeTLBytesSerializedSize(payload)
-        size += computeTLStringSerializedSize(provider)
+        size += getIntIfMask(provider, 8) { computeTLStringSerializedSize(it) }
         size += providerData.computeSerializedSize()
         size += getIntIfMask(startParam, 2) { computeTLStringSerializedSize(it) }
         size += getIntIfMask(extendedMedia, 4) { it.computeSerializedSize() }
@@ -140,6 +141,6 @@ class TLInputMediaInvoice() : TLAbsInputMedia() {
                 && extendedMedia == other.extendedMedia
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x8eb5a6d5.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x405fef0d.toInt()
     }
 }

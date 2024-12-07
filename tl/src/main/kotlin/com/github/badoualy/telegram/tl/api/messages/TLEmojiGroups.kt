@@ -7,7 +7,7 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT32
 import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
-import com.github.badoualy.telegram.tl.api.TLEmojiGroup
+import com.github.badoualy.telegram.tl.api.TLAbsEmojiGroup
 import com.github.badoualy.telegram.tl.core.TLObjectVector
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
@@ -27,13 +27,13 @@ import kotlin.jvm.Throws
 class TLEmojiGroups() : TLAbsEmojiGroups() {
     var hash: Int = 0
 
-    var groups: TLObjectVector<TLEmojiGroup> = TLObjectVector()
+    var groups: TLObjectVector<TLAbsEmojiGroup> = TLObjectVector()
 
     private val _constructor: String = "messages.emojiGroups#881fb94b"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(hash: Int, groups: TLObjectVector<TLEmojiGroup>) : this() {
+    constructor(hash: Int, groups: TLObjectVector<TLAbsEmojiGroup>) : this() {
         this.hash = hash
         this.groups = groups
     }
@@ -47,7 +47,7 @@ class TLEmojiGroups() : TLAbsEmojiGroups() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         hash = readInt()
-        groups = readTLVector<TLEmojiGroup>()
+        groups = readTLVector<TLAbsEmojiGroup>()
     }
 
     override fun computeSerializedSize(): Int {

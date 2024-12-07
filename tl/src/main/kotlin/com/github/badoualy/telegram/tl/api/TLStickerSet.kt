@@ -37,12 +37,6 @@ class TLStickerSet() : TLObject() {
     var masks: Boolean = false
 
     @Transient
-    var animated: Boolean = false
-
-    @Transient
-    var videos: Boolean = false
-
-    @Transient
     var emojis: Boolean = false
 
     @Transient
@@ -50,6 +44,9 @@ class TLStickerSet() : TLObject() {
 
     @Transient
     var channelEmojiStatus: Boolean = false
+
+    @Transient
+    var creator: Boolean = false
 
     var installedDate: Int? = null
 
@@ -81,11 +78,10 @@ class TLStickerSet() : TLObject() {
             archived: Boolean,
             official: Boolean,
             masks: Boolean,
-            animated: Boolean,
-            videos: Boolean,
             emojis: Boolean,
             textColor: Boolean,
             channelEmojiStatus: Boolean,
+            creator: Boolean,
             installedDate: Int?,
             id: Long,
             accessHash: Long,
@@ -101,11 +97,10 @@ class TLStickerSet() : TLObject() {
         this.archived = archived
         this.official = official
         this.masks = masks
-        this.animated = animated
-        this.videos = videos
         this.emojis = emojis
         this.textColor = textColor
         this.channelEmojiStatus = channelEmojiStatus
+        this.creator = creator
         this.installedDate = installedDate
         this.id = id
         this.accessHash = accessHash
@@ -124,11 +119,10 @@ class TLStickerSet() : TLObject() {
         updateFlags(archived, 2)
         updateFlags(official, 4)
         updateFlags(masks, 8)
-        updateFlags(animated, 32)
-        updateFlags(videos, 64)
         updateFlags(emojis, 128)
         updateFlags(textColor, 512)
         updateFlags(channelEmojiStatus, 1024)
+        updateFlags(creator, 2048)
         updateFlags(installedDate, 1)
         updateFlags(thumbs, 16)
         updateFlags(thumbDcId, 16)
@@ -160,11 +154,10 @@ class TLStickerSet() : TLObject() {
         archived = isMask(2)
         official = isMask(4)
         masks = isMask(8)
-        animated = isMask(32)
-        videos = isMask(64)
         emojis = isMask(128)
         textColor = isMask(512)
         channelEmojiStatus = isMask(1024)
+        creator = isMask(2048)
         installedDate = readIfMask(1) { readInt() }
         id = readLong()
         accessHash = readLong()
@@ -207,11 +200,10 @@ class TLStickerSet() : TLObject() {
                 && archived == other.archived
                 && official == other.official
                 && masks == other.masks
-                && animated == other.animated
-                && videos == other.videos
                 && emojis == other.emojis
                 && textColor == other.textColor
                 && channelEmojiStatus == other.channelEmojiStatus
+                && creator == other.creator
                 && installedDate == other.installedDate
                 && id == other.id
                 && accessHash == other.accessHash

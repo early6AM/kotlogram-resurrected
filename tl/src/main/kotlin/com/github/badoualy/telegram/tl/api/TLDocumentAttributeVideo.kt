@@ -19,7 +19,7 @@ import kotlin.jvm.Throws
 import kotlin.jvm.Transient
 
 /**
- * documentAttributeVideo#d38ff1c2
+ * documentAttributeVideo#17399fad
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -42,7 +42,9 @@ class TLDocumentAttributeVideo() : TLAbsDocumentAttribute() {
 
     var preloadPrefixSize: Int? = null
 
-    private val _constructor: String = "documentAttributeVideo#d38ff1c2"
+    var videoStartTs: Double? = null
+
+    private val _constructor: String = "documentAttributeVideo#17399fad"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -53,7 +55,8 @@ class TLDocumentAttributeVideo() : TLAbsDocumentAttribute() {
             duration: Double,
             w: Int,
             h: Int,
-            preloadPrefixSize: Int?
+            preloadPrefixSize: Int?,
+            videoStartTs: Double?
     ) : this() {
         this.roundMessage = roundMessage
         this.supportsStreaming = supportsStreaming
@@ -62,6 +65,7 @@ class TLDocumentAttributeVideo() : TLAbsDocumentAttribute() {
         this.w = w
         this.h = h
         this.preloadPrefixSize = preloadPrefixSize
+        this.videoStartTs = videoStartTs
     }
 
     protected override fun computeFlags() {
@@ -70,6 +74,7 @@ class TLDocumentAttributeVideo() : TLAbsDocumentAttribute() {
         updateFlags(supportsStreaming, 2)
         updateFlags(nosound, 8)
         updateFlags(preloadPrefixSize, 4)
+        updateFlags(videoStartTs, 16)
     }
 
     @Throws(IOException::class)
@@ -81,6 +86,7 @@ class TLDocumentAttributeVideo() : TLAbsDocumentAttribute() {
         writeInt(w)
         writeInt(h)
         doIfMask(preloadPrefixSize, 4) { writeInt(it) }
+        doIfMask(videoStartTs, 16) { writeDouble(it) }
     }
 
     @Throws(IOException::class)
@@ -93,6 +99,7 @@ class TLDocumentAttributeVideo() : TLAbsDocumentAttribute() {
         w = readInt()
         h = readInt()
         preloadPrefixSize = readIfMask(4) { readInt() }
+        videoStartTs = readIfMask(16) { readDouble() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -104,6 +111,7 @@ class TLDocumentAttributeVideo() : TLAbsDocumentAttribute() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += getIntIfMask(preloadPrefixSize, 4) { SIZE_INT32 }
+        size += getIntIfMask(videoStartTs, 16) { SIZE_DOUBLE }
         return size
     }
 
@@ -121,8 +129,9 @@ class TLDocumentAttributeVideo() : TLAbsDocumentAttribute() {
                 && w == other.w
                 && h == other.h
                 && preloadPrefixSize == other.preloadPrefixSize
+                && videoStartTs == other.videoStartTs
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xd38ff1c2.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x17399fad.toInt()
     }
 }

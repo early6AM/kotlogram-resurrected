@@ -20,7 +20,7 @@ import kotlin.jvm.Throws
 import kotlin.jvm.Transient
 
 /**
- * user#215c4438
+ * user#83314fca
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -92,6 +92,15 @@ class TLUser() : TLAbsUser() {
     @Transient
     var storiesUnavailable: Boolean = false
 
+    @Transient
+    var contactRequirePremium: Boolean = false
+
+    @Transient
+    var botBusiness: Boolean = false
+
+    @Transient
+    var botHasMainApp: Boolean = false
+
     override var id: Long = 0L
 
     var accessHash: Long? = null
@@ -126,7 +135,9 @@ class TLUser() : TLAbsUser() {
 
     var profileColor: TLPeerColor? = null
 
-    private val _constructor: String = "user#215c4438"
+    var botActiveUsers: Int? = null
+
+    private val _constructor: String = "user#83314fca"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -153,6 +164,9 @@ class TLUser() : TLAbsUser() {
             closeFriend: Boolean,
             storiesHidden: Boolean,
             storiesUnavailable: Boolean,
+            contactRequirePremium: Boolean,
+            botBusiness: Boolean,
+            botHasMainApp: Boolean,
             id: Long,
             accessHash: Long?,
             firstName: String?,
@@ -169,7 +183,8 @@ class TLUser() : TLAbsUser() {
             usernames: TLObjectVector<TLUsername>?,
             storiesMaxId: Int?,
             color: TLPeerColor?,
-            profileColor: TLPeerColor?
+            profileColor: TLPeerColor?,
+            botActiveUsers: Int?
     ) : this() {
         this.self = self
         this.contact = contact
@@ -193,6 +208,9 @@ class TLUser() : TLAbsUser() {
         this.closeFriend = closeFriend
         this.storiesHidden = storiesHidden
         this.storiesUnavailable = storiesUnavailable
+        this.contactRequirePremium = contactRequirePremium
+        this.botBusiness = botBusiness
+        this.botHasMainApp = botHasMainApp
         this.id = id
         this.accessHash = accessHash
         this.firstName = firstName
@@ -210,6 +228,7 @@ class TLUser() : TLAbsUser() {
         this.storiesMaxId = storiesMaxId
         this.color = color
         this.profileColor = profileColor
+        this.botActiveUsers = botActiveUsers
     }
 
     protected override fun computeFlags() {
@@ -236,6 +255,9 @@ class TLUser() : TLAbsUser() {
         updateFlags(closeFriend, 4)
         updateFlags(storiesHidden, 8)
         updateFlags(storiesUnavailable, 16)
+        updateFlags(contactRequirePremium, 1024)
+        updateFlags(botBusiness, 2048)
+        updateFlags(botHasMainApp, 8192)
         updateFlags(accessHash, 1)
         updateFlags(firstName, 2)
         updateFlags(lastName, 4)
@@ -252,14 +274,22 @@ class TLUser() : TLAbsUser() {
         updateFlags(storiesMaxId, 32)
         updateFlags(color, 256)
         updateFlags(profileColor, 512)
+        updateFlags(botActiveUsers, 4096)
 
         // Following parameters might be forced to true by another field that updated the flags
+        self = isMask(1024)
+        contact = isMask(2048)
+        mutualContact = isMask(4096)
+        deleted = isMask(8192)
         bot = isMask(16384)
         restricted = isMask(262144)
         botCanEdit = isMask(2)
         closeFriend = isMask(4)
         storiesHidden = isMask(8)
         storiesUnavailable = isMask(16)
+        contactRequirePremium = isMask(1024)
+        botBusiness = isMask(2048)
+        botHasMainApp = isMask(8192)
     }
 
     @Throws(IOException::class)
@@ -285,6 +315,7 @@ class TLUser() : TLAbsUser() {
         doIfMask(storiesMaxId, 32) { writeInt(it) }
         doIfMask(color, 256) { writeTLObject(it) }
         doIfMask(profileColor, 512) { writeTLObject(it) }
+        doIfMask(botActiveUsers, 4096) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -313,6 +344,9 @@ class TLUser() : TLAbsUser() {
         closeFriend = isMask(4)
         storiesHidden = isMask(8)
         storiesUnavailable = isMask(16)
+        contactRequirePremium = isMask(1024)
+        botBusiness = isMask(2048)
+        botHasMainApp = isMask(8192)
         id = readLong()
         accessHash = readIfMask(1) { readLong() }
         firstName = readIfMask(2) { readString() }
@@ -330,6 +364,7 @@ class TLUser() : TLAbsUser() {
         storiesMaxId = readIfMask(32) { readInt() }
         color = readIfMask(256) { readTLObject<TLPeerColor>(TLPeerColor::class, TLPeerColor.CONSTRUCTOR_ID) }
         profileColor = readIfMask(512) { readTLObject<TLPeerColor>(TLPeerColor::class, TLPeerColor.CONSTRUCTOR_ID) }
+        botActiveUsers = readIfMask(4096) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -355,6 +390,7 @@ class TLUser() : TLAbsUser() {
         size += getIntIfMask(storiesMaxId, 32) { SIZE_INT32 }
         size += getIntIfMask(color, 256) { it.computeSerializedSize() }
         size += getIntIfMask(profileColor, 512) { it.computeSerializedSize() }
+        size += getIntIfMask(botActiveUsers, 4096) { SIZE_INT32 }
         return size
     }
 
@@ -388,6 +424,9 @@ class TLUser() : TLAbsUser() {
                 && closeFriend == other.closeFriend
                 && storiesHidden == other.storiesHidden
                 && storiesUnavailable == other.storiesUnavailable
+                && contactRequirePremium == other.contactRequirePremium
+                && botBusiness == other.botBusiness
+                && botHasMainApp == other.botHasMainApp
                 && id == other.id
                 && accessHash == other.accessHash
                 && firstName == other.firstName
@@ -405,8 +444,9 @@ class TLUser() : TLAbsUser() {
                 && storiesMaxId == other.storiesMaxId
                 && color == other.color
                 && profileColor == other.profileColor
+                && botActiveUsers == other.botActiveUsers
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x215c4438.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x83314fca.toInt()
     }
 }

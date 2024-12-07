@@ -19,40 +19,40 @@ import kotlin.String
 import kotlin.jvm.Throws
 
 /**
- * pollAnswer#6ca9c2e9
+ * pollAnswer#ff16e2ca
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLPollAnswer() : TLObject() {
-    var text: String = ""
+    var text: TLTextWithEntities = TLTextWithEntities()
 
     var option: TLBytes = TLBytes.EMPTY
 
-    private val _constructor: String = "pollAnswer#6ca9c2e9"
+    private val _constructor: String = "pollAnswer#ff16e2ca"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(text: String, option: TLBytes) : this() {
+    constructor(text: TLTextWithEntities, option: TLBytes) : this() {
         this.text = text
         this.option = option
     }
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
-        writeString(text)
+        writeTLObject(text)
         writeTLBytes(option)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
-        text = readString()
+        text = readTLObject<TLTextWithEntities>(TLTextWithEntities::class, TLTextWithEntities.CONSTRUCTOR_ID)
         option = readTLBytes()
     }
 
     override fun computeSerializedSize(): Int {
         var size = SIZE_CONSTRUCTOR_ID
-        size += computeTLStringSerializedSize(text)
+        size += text.computeSerializedSize()
         size += computeTLBytesSerializedSize(option)
         return size
     }
@@ -67,6 +67,6 @@ class TLPollAnswer() : TLObject() {
                 && option == other.option
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0x6ca9c2e9.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xff16e2ca.toInt()
     }
 }

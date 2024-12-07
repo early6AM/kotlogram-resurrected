@@ -21,7 +21,7 @@ import kotlin.jvm.Throws
 import kotlin.jvm.Transient
 
 /**
- * sponsoredMessage#ed5383f7
+ * sponsoredMessage#bdedf566
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -31,67 +31,55 @@ class TLSponsoredMessage() : TLObject() {
     var recommended: Boolean = false
 
     @Transient
-    var showPeerPhoto: Boolean = false
+    var canReport: Boolean = false
 
     var randomId: TLBytes = TLBytes.EMPTY
 
-    var fromId: TLAbsPeer? = null
+    var url: String = ""
 
-    var chatInvite: TLAbsChatInvite? = null
-
-    var chatInviteHash: String? = null
-
-    var channelPost: Int? = null
-
-    var startParam: String? = null
-
-    var webpage: TLSponsoredWebPage? = null
-
-    var app: TLAbsBotApp? = null
+    var title: String = ""
 
     var message: String = ""
 
     var entities: TLObjectVector<TLAbsMessageEntity>? = TLObjectVector()
 
-    var buttonText: String? = null
+    var photo: TLAbsPhoto? = null
+
+    var color: TLPeerColor? = null
+
+    var buttonText: String = ""
 
     var sponsorInfo: String? = null
 
     var additionalInfo: String? = null
 
-    private val _constructor: String = "sponsoredMessage#ed5383f7"
+    private val _constructor: String = "sponsoredMessage#bdedf566"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
     constructor(
             recommended: Boolean,
-            showPeerPhoto: Boolean,
+            canReport: Boolean,
             randomId: TLBytes,
-            fromId: TLAbsPeer?,
-            chatInvite: TLAbsChatInvite?,
-            chatInviteHash: String?,
-            channelPost: Int?,
-            startParam: String?,
-            webpage: TLSponsoredWebPage?,
-            app: TLAbsBotApp?,
+            url: String,
+            title: String,
             message: String,
             entities: TLObjectVector<TLAbsMessageEntity>?,
-            buttonText: String?,
+            photo: TLAbsPhoto?,
+            color: TLPeerColor?,
+            buttonText: String,
             sponsorInfo: String?,
             additionalInfo: String?
     ) : this() {
         this.recommended = recommended
-        this.showPeerPhoto = showPeerPhoto
+        this.canReport = canReport
         this.randomId = randomId
-        this.fromId = fromId
-        this.chatInvite = chatInvite
-        this.chatInviteHash = chatInviteHash
-        this.channelPost = channelPost
-        this.startParam = startParam
-        this.webpage = webpage
-        this.app = app
+        this.url = url
+        this.title = title
         this.message = message
         this.entities = entities
+        this.photo = photo
+        this.color = color
         this.buttonText = buttonText
         this.sponsorInfo = sponsorInfo
         this.additionalInfo = additionalInfo
@@ -100,16 +88,10 @@ class TLSponsoredMessage() : TLObject() {
     protected override fun computeFlags() {
         _flags = 0
         updateFlags(recommended, 32)
-        updateFlags(showPeerPhoto, 64)
-        updateFlags(fromId, 8)
-        updateFlags(chatInvite, 16)
-        updateFlags(chatInviteHash, 16)
-        updateFlags(channelPost, 4)
-        updateFlags(startParam, 1)
-        updateFlags(webpage, 512)
-        updateFlags(app, 1024)
+        updateFlags(canReport, 4096)
         updateFlags(entities, 2)
-        updateFlags(buttonText, 2048)
+        updateFlags(photo, 64)
+        updateFlags(color, 8192)
         updateFlags(sponsorInfo, 128)
         updateFlags(additionalInfo, 256)
     }
@@ -120,16 +102,13 @@ class TLSponsoredMessage() : TLObject() {
 
         writeInt(_flags)
         writeTLBytes(randomId)
-        doIfMask(fromId, 8) { writeTLObject(it) }
-        doIfMask(chatInvite, 16) { writeTLObject(it) }
-        doIfMask(chatInviteHash, 16) { writeString(it) }
-        doIfMask(channelPost, 4) { writeInt(it) }
-        doIfMask(startParam, 1) { writeString(it) }
-        doIfMask(webpage, 512) { writeTLObject(it) }
-        doIfMask(app, 1024) { writeTLObject(it) }
+        writeString(url)
+        writeString(title)
         writeString(message)
         doIfMask(entities, 2) { writeTLVector(it) }
-        doIfMask(buttonText, 2048) { writeString(it) }
+        doIfMask(photo, 64) { writeTLObject(it) }
+        doIfMask(color, 8192) { writeTLObject(it) }
+        writeString(buttonText)
         doIfMask(sponsorInfo, 128) { writeString(it) }
         doIfMask(additionalInfo, 256) { writeString(it) }
     }
@@ -138,18 +117,15 @@ class TLSponsoredMessage() : TLObject() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         recommended = isMask(32)
-        showPeerPhoto = isMask(64)
+        canReport = isMask(4096)
         randomId = readTLBytes()
-        fromId = readIfMask(8) { readTLObject<TLAbsPeer>() }
-        chatInvite = readIfMask(16) { readTLObject<TLAbsChatInvite>() }
-        chatInviteHash = readIfMask(16) { readString() }
-        channelPost = readIfMask(4) { readInt() }
-        startParam = readIfMask(1) { readString() }
-        webpage = readIfMask(512) { readTLObject<TLSponsoredWebPage>(TLSponsoredWebPage::class, TLSponsoredWebPage.CONSTRUCTOR_ID) }
-        app = readIfMask(1024) { readTLObject<TLAbsBotApp>() }
+        url = readString()
+        title = readString()
         message = readString()
         entities = readIfMask(2) { readTLVector<TLAbsMessageEntity>() }
-        buttonText = readIfMask(2048) { readString() }
+        photo = readIfMask(64) { readTLObject<TLAbsPhoto>() }
+        color = readIfMask(8192) { readTLObject<TLPeerColor>(TLPeerColor::class, TLPeerColor.CONSTRUCTOR_ID) }
+        buttonText = readString()
         sponsorInfo = readIfMask(128) { readString() }
         additionalInfo = readIfMask(256) { readString() }
     }
@@ -160,16 +136,13 @@ class TLSponsoredMessage() : TLObject() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += computeTLBytesSerializedSize(randomId)
-        size += getIntIfMask(fromId, 8) { it.computeSerializedSize() }
-        size += getIntIfMask(chatInvite, 16) { it.computeSerializedSize() }
-        size += getIntIfMask(chatInviteHash, 16) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(channelPost, 4) { SIZE_INT32 }
-        size += getIntIfMask(startParam, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(webpage, 512) { it.computeSerializedSize() }
-        size += getIntIfMask(app, 1024) { it.computeSerializedSize() }
+        size += computeTLStringSerializedSize(url)
+        size += computeTLStringSerializedSize(title)
         size += computeTLStringSerializedSize(message)
         size += getIntIfMask(entities, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(buttonText, 2048) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(photo, 64) { it.computeSerializedSize() }
+        size += getIntIfMask(color, 8192) { it.computeSerializedSize() }
+        size += computeTLStringSerializedSize(buttonText)
         size += getIntIfMask(sponsorInfo, 128) { computeTLStringSerializedSize(it) }
         size += getIntIfMask(additionalInfo, 256) { computeTLStringSerializedSize(it) }
         return size
@@ -183,22 +156,19 @@ class TLSponsoredMessage() : TLObject() {
 
         return _flags == other._flags
                 && recommended == other.recommended
-                && showPeerPhoto == other.showPeerPhoto
+                && canReport == other.canReport
                 && randomId == other.randomId
-                && fromId == other.fromId
-                && chatInvite == other.chatInvite
-                && chatInviteHash == other.chatInviteHash
-                && channelPost == other.channelPost
-                && startParam == other.startParam
-                && webpage == other.webpage
-                && app == other.app
+                && url == other.url
+                && title == other.title
                 && message == other.message
                 && entities == other.entities
+                && photo == other.photo
+                && color == other.color
                 && buttonText == other.buttonText
                 && sponsorInfo == other.sponsorInfo
                 && additionalInfo == other.additionalInfo
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xed5383f7.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xbdedf566.toInt()
     }
 }

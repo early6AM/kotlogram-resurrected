@@ -34,6 +34,12 @@ class TLGlobalPrivacySettings() : TLObject() {
     @Transient
     var keepArchivedFolders: Boolean = false
 
+    @Transient
+    var hideReadMarks: Boolean = false
+
+    @Transient
+    var newNoncontactPeersRequirePremium: Boolean = false
+
     private val _constructor: String = "globalPrivacySettings#734c4ccb"
 
     override val constructorId: Int = CONSTRUCTOR_ID
@@ -41,11 +47,15 @@ class TLGlobalPrivacySettings() : TLObject() {
     constructor(
             archiveAndMuteNewNoncontactPeers: Boolean,
             keepArchivedUnmuted: Boolean,
-            keepArchivedFolders: Boolean
+            keepArchivedFolders: Boolean,
+            hideReadMarks: Boolean,
+            newNoncontactPeersRequirePremium: Boolean
     ) : this() {
         this.archiveAndMuteNewNoncontactPeers = archiveAndMuteNewNoncontactPeers
         this.keepArchivedUnmuted = keepArchivedUnmuted
         this.keepArchivedFolders = keepArchivedFolders
+        this.hideReadMarks = hideReadMarks
+        this.newNoncontactPeersRequirePremium = newNoncontactPeersRequirePremium
     }
 
     protected override fun computeFlags() {
@@ -53,6 +63,8 @@ class TLGlobalPrivacySettings() : TLObject() {
         updateFlags(archiveAndMuteNewNoncontactPeers, 1)
         updateFlags(keepArchivedUnmuted, 2)
         updateFlags(keepArchivedFolders, 4)
+        updateFlags(hideReadMarks, 8)
+        updateFlags(newNoncontactPeersRequirePremium, 16)
     }
 
     @Throws(IOException::class)
@@ -68,6 +80,8 @@ class TLGlobalPrivacySettings() : TLObject() {
         archiveAndMuteNewNoncontactPeers = isMask(1)
         keepArchivedUnmuted = isMask(2)
         keepArchivedFolders = isMask(4)
+        hideReadMarks = isMask(8)
+        newNoncontactPeersRequirePremium = isMask(16)
     }
 
     override fun computeSerializedSize(): Int {
@@ -88,6 +102,8 @@ class TLGlobalPrivacySettings() : TLObject() {
                 && archiveAndMuteNewNoncontactPeers == other.archiveAndMuteNewNoncontactPeers
                 && keepArchivedUnmuted == other.keepArchivedUnmuted
                 && keepArchivedFolders == other.keepArchivedFolders
+                && hideReadMarks == other.hideReadMarks
+                && newNoncontactPeersRequirePremium == other.newNoncontactPeersRequirePremium
     }
     companion object  {
         const val CONSTRUCTOR_ID: Int = 0x734c4ccb.toInt()

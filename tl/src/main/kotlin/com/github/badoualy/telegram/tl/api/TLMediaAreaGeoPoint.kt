@@ -17,7 +17,7 @@ import kotlin.String
 import kotlin.jvm.Throws
 
 /**
- * mediaAreaGeoPoint#df8b3b22
+ * mediaAreaGeoPoint#cad5452d
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -27,31 +27,53 @@ class TLMediaAreaGeoPoint() : TLAbsMediaArea() {
 
     var geo: TLAbsGeoPoint = TLGeoPointEmpty()
 
-    private val _constructor: String = "mediaAreaGeoPoint#df8b3b22"
+    var address: TLGeoPointAddress? = null
+
+    private val _constructor: String = "mediaAreaGeoPoint#cad5452d"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
-    constructor(coordinates: TLMediaAreaCoordinates, geo: TLAbsGeoPoint) : this() {
+    constructor(
+            coordinates: TLMediaAreaCoordinates,
+            geo: TLAbsGeoPoint,
+            address: TLGeoPointAddress?
+    ) : this() {
         this.coordinates = coordinates
         this.geo = geo
+        this.address = address
+    }
+
+    protected override fun computeFlags() {
+        _flags = 0
+        updateFlags(address, 1)
     }
 
     @Throws(IOException::class)
     override fun serializeBody(tlSerializer: TLSerializer) = with (tlSerializer)  {
+        computeFlags()
+
+        writeInt(_flags)
         writeTLObject(coordinates)
         writeTLObject(geo)
+        doIfMask(address, 1) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
+        _flags = readInt()
         coordinates = readTLObject<TLMediaAreaCoordinates>(TLMediaAreaCoordinates::class, TLMediaAreaCoordinates.CONSTRUCTOR_ID)
         geo = readTLObject<TLAbsGeoPoint>()
+        address = readIfMask(1) { readTLObject<TLGeoPointAddress>(TLGeoPointAddress::class, TLGeoPointAddress.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
+        computeFlags()
+
         var size = SIZE_CONSTRUCTOR_ID
+        size += SIZE_INT32
         size += coordinates.computeSerializedSize()
         size += geo.computeSerializedSize()
+        size += getIntIfMask(address, 1) { it.computeSerializedSize() }
         return size
     }
 
@@ -61,10 +83,12 @@ class TLMediaAreaGeoPoint() : TLAbsMediaArea() {
         if (other !is TLMediaAreaGeoPoint) return false
         if (other === this) return true
 
-        return coordinates == other.coordinates
+        return _flags == other._flags
+                && coordinates == other.coordinates
                 && geo == other.geo
+                && address == other.address
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xdf8b3b22.toInt()
+        const val CONSTRUCTOR_ID: Int = 0xcad5452d.toInt()
     }
 }

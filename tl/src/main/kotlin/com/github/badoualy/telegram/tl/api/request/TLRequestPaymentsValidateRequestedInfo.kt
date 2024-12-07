@@ -8,7 +8,7 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.SIZE_INT64
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSize
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsInputInvoice
-import com.github.badoualy.telegram.tl.api.TLInputInvoiceSlug
+import com.github.badoualy.telegram.tl.api.TLInputInvoiceStars
 import com.github.badoualy.telegram.tl.api.TLPaymentRequestedInfo
 import com.github.badoualy.telegram.tl.api.payments.TLValidatedRequestedInfo
 import com.github.badoualy.telegram.tl.core.TLMethod
@@ -30,7 +30,7 @@ class TLRequestPaymentsValidateRequestedInfo() : TLMethod<TLValidatedRequestedIn
     @Transient
     var save: Boolean = false
 
-    var invoice: TLAbsInputInvoice = TLInputInvoiceSlug()
+    var invoice: TLAbsInputInvoice = TLInputInvoiceStars()
 
     var info: TLPaymentRequestedInfo = TLPaymentRequestedInfo()
 

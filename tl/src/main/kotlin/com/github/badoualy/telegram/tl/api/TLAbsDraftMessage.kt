@@ -12,7 +12,7 @@ import kotlin.Boolean
 
 /**
  * Abstraction level for the following constructors:
- * * [draftMessage#3fccf7ef][TLDraftMessage]
+ * * [draftMessage#2d65321f][TLDraftMessage]
  * * [draftMessageEmpty#1b0c841a][TLDraftMessageEmpty]
  *
  * @author Yannick Badoual yann.badoual@gmail.com

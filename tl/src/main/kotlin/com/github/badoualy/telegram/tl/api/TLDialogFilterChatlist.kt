@@ -19,7 +19,7 @@ import kotlin.jvm.Throws
 import kotlin.jvm.Transient
 
 /**
- * dialogFilterChatlist#d64a04a8
+ * dialogFilterChatlist#9fe28ea4
  *
  * @author Yannick Badoual yann.badoual@gmail.com
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
@@ -34,11 +34,13 @@ class TLDialogFilterChatlist() : TLAbsDialogFilter() {
 
     var emoticon: String? = null
 
+    var color: Int? = null
+
     var pinnedPeers: TLObjectVector<TLAbsInputPeer> = TLObjectVector()
 
     var includePeers: TLObjectVector<TLAbsInputPeer> = TLObjectVector()
 
-    private val _constructor: String = "dialogFilterChatlist#d64a04a8"
+    private val _constructor: String = "dialogFilterChatlist#9fe28ea4"
 
     override val constructorId: Int = CONSTRUCTOR_ID
 
@@ -47,6 +49,7 @@ class TLDialogFilterChatlist() : TLAbsDialogFilter() {
             id: Int,
             title: String,
             emoticon: String?,
+            color: Int?,
             pinnedPeers: TLObjectVector<TLAbsInputPeer>,
             includePeers: TLObjectVector<TLAbsInputPeer>
     ) : this() {
@@ -54,6 +57,7 @@ class TLDialogFilterChatlist() : TLAbsDialogFilter() {
         this.id = id
         this.title = title
         this.emoticon = emoticon
+        this.color = color
         this.pinnedPeers = pinnedPeers
         this.includePeers = includePeers
     }
@@ -62,6 +66,7 @@ class TLDialogFilterChatlist() : TLAbsDialogFilter() {
         _flags = 0
         updateFlags(hasMyInvites, 67108864)
         updateFlags(emoticon, 33554432)
+        updateFlags(color, 134217728)
     }
 
     @Throws(IOException::class)
@@ -72,6 +77,7 @@ class TLDialogFilterChatlist() : TLAbsDialogFilter() {
         writeInt(id)
         writeString(title)
         doIfMask(emoticon, 33554432) { writeString(it) }
+        doIfMask(color, 134217728) { writeInt(it) }
         writeTLVector(pinnedPeers)
         writeTLVector(includePeers)
     }
@@ -83,6 +89,7 @@ class TLDialogFilterChatlist() : TLAbsDialogFilter() {
         id = readInt()
         title = readString()
         emoticon = readIfMask(33554432) { readString() }
+        color = readIfMask(134217728) { readInt() }
         pinnedPeers = readTLVector<TLAbsInputPeer>()
         includePeers = readTLVector<TLAbsInputPeer>()
     }
@@ -95,6 +102,7 @@ class TLDialogFilterChatlist() : TLAbsDialogFilter() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(title)
         size += getIntIfMask(emoticon, 33554432) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(color, 134217728) { SIZE_INT32 }
         size += pinnedPeers.computeSerializedSize()
         size += includePeers.computeSerializedSize()
         return size
@@ -111,10 +119,11 @@ class TLDialogFilterChatlist() : TLAbsDialogFilter() {
                 && id == other.id
                 && title == other.title
                 && emoticon == other.emoticon
+                && color == other.color
                 && pinnedPeers == other.pinnedPeers
                 && includePeers == other.includePeers
     }
     companion object  {
-        const val CONSTRUCTOR_ID: Int = 0xd64a04a8.toInt()
+        const val CONSTRUCTOR_ID: Int = 0x9fe28ea4.toInt()
     }
 }

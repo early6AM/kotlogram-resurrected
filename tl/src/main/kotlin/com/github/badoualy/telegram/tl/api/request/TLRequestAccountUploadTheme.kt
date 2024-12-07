@@ -9,7 +9,7 @@ import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLBytesSerializedSiz
 import com.github.badoualy.telegram.tl.TLObjectUtils.computeTLStringSerializedSize
 import com.github.badoualy.telegram.tl.api.TLAbsDocument
 import com.github.badoualy.telegram.tl.api.TLAbsInputFile
-import com.github.badoualy.telegram.tl.api.TLInputFileBig
+import com.github.badoualy.telegram.tl.api.TLInputFileStoryDocument
 import com.github.badoualy.telegram.tl.core.TLMethod
 import com.github.badoualy.telegram.tl.serialization.TLDeserializer
 import com.github.badoualy.telegram.tl.serialization.TLSerializer
@@ -25,7 +25,7 @@ import kotlin.jvm.Throws
  * @see <a href="http://github.com/badoualy/kotlogram">http://github.com/badoualy/kotlogram</a>
  */
 class TLRequestAccountUploadTheme() : TLMethod<TLAbsDocument>() {
-    var file: TLAbsInputFile = TLInputFileBig()
+    var file: TLAbsInputFile = TLInputFileStoryDocument()
 
     var thumb: TLAbsInputFile? = null
 
