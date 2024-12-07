@@ -220,8 +220,10 @@ class TelegramClientImpl internal constructor(
             }
             exportedHandlerTimeoutMap.put(dcId, System.currentTimeMillis() + exportedClientTimeout)
         }
-        if (closeHandler)
+        if (closeHandler) {
+            println("${Thread.currentThread().id} $tag releaseExportedHandler() closing connection")
             handler.close()
+        }
 
         Single.timer(exportedClientTimeout, TimeUnit.MILLISECONDS)
             .subscribeBy(onSuccess = { onExportedHandlerTimeout(dcId) })
@@ -250,8 +252,7 @@ class TelegramClientImpl internal constructor(
                         when {
                             error.oneOf(FLOOD_WAIT_3) -> {
                                 println("${Thread.currentThread().id} $tag Error 420 encountered, retrying after 3 seconds")
-//                                Single.timer(3, TimeUnit.SECONDS)
-                                Single.error(exception)
+                                Single.timer(4, TimeUnit.SECONDS)
                             }
 
                             else -> Single.error(exception)
@@ -346,7 +347,11 @@ class TelegramClientImpl internal constructor(
     override fun sync(): TelegramSyncClient = TelegramSyncClientImpl(this)
 
     override fun close() {
-        exportedHandlerMap.values.forEach { it.close() }
+        exportedHandlerMap.values.forEach {
+            println("${Thread.currentThread().id} $tag TelegramClientImpl().close() $it closing connection")
+            it.close()
+        }
+        println("${Thread.currentThread().id} $tag TelegramClientImpl().close() mtProtoHandler closing connection")
         mtProtoHandler?.close()
         closed = true
         mtProtoHandler?.session?.let { apiStorage.session = it }
@@ -396,6 +401,7 @@ class TelegramClientImpl internal constructor(
             println("${Thread.currentThread().id} init connection end")
         } catch (e: Exception) {
             System.err.println("${Thread.currentThread().id} Error in init connection: ${e.message}")
+            println("${Thread.currentThread().id} $tag initConnection() closing connection")
             mtProtoHandler.close()
             println("${Thread.currentThread().id} mtProtoHandler closed")
             if (e is RpcErrorException) {
@@ -456,6 +462,7 @@ class TelegramClientImpl internal constructor(
 
     private fun migrate(dcId: Int) = Completable.fromAction {
         println("${Thread.currentThread().id} $tag Migrating to DC$dcId")
+        println("${Thread.currentThread().id} $tag migrate() closing connection")
         mtProtoHandler?.close()
         authKey = null
         dataCenter = Kotlogram.getDcById(dcId)
@@ -511,6 +518,7 @@ class TelegramClientImpl internal constructor(
     private fun onExportedHandlerTimeout(dcId: Int) {
         synchronized(exportedHandlerMap) {
             if (System.currentTimeMillis() >= exportedHandlerTimeoutMap.getOrDefault(dcId, -1)) {
+                println("${Thread.currentThread().id} $tag onExportedHandlerTimeout() closing connection")
                 exportedHandlerMap.remove(dcId)?.close()
                 exportedHandlerTimeoutMap.remove(dcId)
             }
@@ -527,6 +535,7 @@ class TelegramClientImpl internal constructor(
             .observeOn(Schedulers.io())
             .map { (handler, bindSuccess) ->
                 if (!bindSuccess) {
+                    println("${Thread.currentThread().id} $tag pfs() closing connection")
                     handler.close()
                     throw RuntimeException("Failed to bind temp auth key")
                 } else handler

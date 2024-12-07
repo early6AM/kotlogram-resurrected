@@ -143,6 +143,9 @@ internal class MTProtoTcpConnection
         try {
             socketChannel.close()
         } catch (e: IOException) {
+            println("${Thread.currentThread().id} $tag Closing connection error $e")
+            e.printStackTrace()
+            throw e
         }
     }
 

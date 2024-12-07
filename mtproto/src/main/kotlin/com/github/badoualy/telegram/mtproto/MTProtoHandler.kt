@@ -134,6 +134,7 @@ class MTProtoHandler {
     /** Closes the connection and re-open another one immediately, this should fix most connection issues */
     fun resetConnection() {
         println("${session.tag} resetConnection()")
+        println("${Thread.currentThread().id} $tag resetConnection() closing connection")
         close()
 
         session = newSession(connection.dataCenter)
@@ -186,12 +187,13 @@ class MTProtoHandler {
         println("${Thread.currentThread().id} methods for observable $methods")
         try {
             return methods.takeIf {
-                println("${Thread.currentThread().id} check is not empty: $it")
+                println("${Thread.currentThread().id} check is empty: ${it.isEmpty()}")
                 it.isNotEmpty()
             }?.let {
                 rpcResultSubject
                     .filter { methods.contains(requestByIdMap[it.messageId]) }
                     .take(methods.size.toLong())
+                    .doOnDispose { println("${Thread.currentThread().id} $tag Поток утилизирован") }
                     .doOnSubscribe { executeMethods_(methods) }
                     .subscribeOn(Schedulers.io())
                     .flatMapMaybe {
@@ -199,9 +201,9 @@ class MTProtoHandler {
                     }
                     .retryWhen { throwableObservable ->
                         throwableObservable.flatMap { throwable ->
-                            if (throwable is RpcErrorException && throwable.code == 420) {
+                            if (throwable is RpcErrorException && (throwable.code == 420 || throwable.code == 500)) {
                                 // Если код ошибки 420, ждем заданное время и повторяем
-                                Observable.timer(5, TimeUnit.SECONDS)
+                                Observable.timer(4, TimeUnit.SECONDS)
                             } else {
                                 // Для других ошибок не повторяем
                                 Observable.error(throwable)
@@ -272,6 +274,10 @@ class MTProtoHandler {
     @Throws(IOException::class)
     internal fun sendMessage(message: ByteArray) {
         println("${Thread.currentThread().id} sendMessage() as ${message.readConstructorId()}")
+        if (!connection.isAlive()) {
+            println("${Thread.currentThread().id} $tag Connection is closed, cannot send message")
+            return
+        }
         connection.sendMessage(message)
     }
 
