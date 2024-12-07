@@ -195,17 +195,17 @@ class MTProtoHandler {
                     .doOnSubscribe { executeMethods_(methods) }
                     .subscribeOn(Schedulers.io())
                     .flatMapMaybe {
-                        try {
-                            mapResult(it)
-                        } catch (e: RpcErrorException) {
-                            System.err.println("${Thread.currentThread().id} $tag mapResult() error: $e")
-                            if (e.code == 420) {
-                                System.err.println("${Thread.currentThread().id} $tag Too many requests, retrying...")
+                        mapResult(it)
+                    }
+                    .retryWhen { throwableObservable ->
+                        throwableObservable.flatMap { throwable ->
+                            if (throwable is RpcErrorException && throwable.code == 420) {
+                                // Если код ошибки 420, ждем заданное время и повторяем
                                 Observable.timer(5, TimeUnit.SECONDS)
-                                    .blockingSubscribe()
-                                executeMethods_(methods)
+                            } else {
+                                // Для других ошибок не повторяем
+                                Observable.error(throwable)
                             }
-                            Maybe.empty()
                         }
                     }
                     .sorted { o1, o2 ->
