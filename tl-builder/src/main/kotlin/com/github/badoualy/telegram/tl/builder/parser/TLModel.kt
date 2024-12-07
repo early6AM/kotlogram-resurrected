@@ -3,7 +3,11 @@ package com.github.badoualy.telegram.tl.builder.parser
 import com.github.badoualy.telegram.tl.builder.utils.hexString
 
 // Main definition
-class TLDefinition(val supertypes: List<TLAbstractConstructor>, val types: List<TLConstructor>, val methods: List<TLMethod>)
+class TLDefinition(
+    val supertypes: List<TLAbstractConstructor>,
+    val types: List<TLConstructor>,
+    val methods: List<TLMethod>
+)
 
 // Base classes
 abstract class TLType : Comparable<TLType> {
@@ -50,10 +54,17 @@ object TLTypeFlag : TLType() {
     override val name = "#Flag"
 }
 
-class TLTypeConditional(val value: Int, val realType: TLType) : TLType() {
+interface ConditionalType {
+    val value: Int
+    val realType: TLType
+
+    fun pow2Value(): Int
+}
+
+class TLTypeConditional(override val value: Int, override val realType: TLType) : TLType(), ConditionalType {
     override val name = "Conditional(${realType.name})"
 
-    fun pow2Value() = Math.pow(2.toDouble(), value.toDouble()).toInt()
+    override fun pow2Value() = Math.pow(2.toDouble(), value.toDouble()).toInt()
 
     // TODO: check if needed
     override fun serializable() = !realType.isTrueFalseFlag()
@@ -61,24 +72,41 @@ class TLTypeConditional(val value: Int, val realType: TLType) : TLType() {
     override fun toString() = "flag.$value?$realType"
 }
 
+class TLTypeConditional2(override val value: Int, override val realType: TLType) : TLType(), ConditionalType {
+    override val name = "Conditional2(${realType.name})"
+
+    override fun pow2Value() = Math.pow(2.toDouble(), value.toDouble()).toInt()
+
+    // TODO: check if needed
+    override fun serializable() = !realType.isTrueFalseFlag()
+
+    override fun toString() = "flag2.$value?$realType"
+}
+
 ///////////////////////////////////
 ////////// CONSTRUCTORS //////////
 /////////////////////////////////
-class TLConstructor(override val name: String,
-                    override val id: Int,
-                    override val parameters: List<TLParameter>,
-                    override val tlType: TLTypeRaw,
-                    var hasSupertype: Boolean = false) : TLTypeConstructor<TLTypeRaw>()
+class TLConstructor(
+    override val name: String,
+    override val id: Int,
+    override val parameters: List<TLParameter>,
+    override val tlType: TLTypeRaw,
+    var hasSupertype: Boolean = false
+) : TLTypeConstructor<TLTypeRaw>()
 
-class TLAbstractConstructor(override val name: String,
-                            override val parameters: List<TLParameter>,
-                            override val tlType: TLTypeRaw,
-                            val forEmptyConstructor: Boolean) : TLTypeConstructor<TLTypeRaw>()
+class TLAbstractConstructor(
+    override val name: String,
+    override val parameters: List<TLParameter>,
+    override val tlType: TLTypeRaw,
+    val forEmptyConstructor: Boolean
+) : TLTypeConstructor<TLTypeRaw>()
 
-class TLMethod(override val name: String,
-               override val id: Int,
-               override val parameters: List<TLParameter>,
-               override val tlType: TLType) : TLTypeConstructor<TLType>()
+class TLMethod(
+    override val name: String,
+    override val id: Int,
+    override val parameters: List<TLParameter>,
+    override val tlType: TLType
+) : TLTypeConstructor<TLType>()
 
 class TLParameter(val name: String, val tlType: TLType) : Comparable<TLParameter> {
     /** true if inherited from abstract parent (aka parameter is common to all constructors of the same type) */

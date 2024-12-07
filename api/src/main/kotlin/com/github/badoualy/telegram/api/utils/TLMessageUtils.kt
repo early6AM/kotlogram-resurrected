@@ -46,7 +46,7 @@ val TLAbsMessage.isSticker: Boolean
 
 fun TLAbsMessage.getStickerAlt() = when (isSticker) {
     true -> ((this as? TLMessage)?.media as? TLMessageMediaDocument)?.document?.asDocument()?.attributes
-            ?.filterIsInstance<TLDocumentAttributeSticker>()?.first()?.alt
+            ?.filterIsInstance<TLDocumentAttributeSticker>()?.firstOrNull()?.alt
     false -> null
 }
 

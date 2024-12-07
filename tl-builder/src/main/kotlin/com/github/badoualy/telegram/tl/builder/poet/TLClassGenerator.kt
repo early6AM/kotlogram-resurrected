@@ -287,7 +287,7 @@ class TLClassGenerator(tlDefinition: TLDefinition, val config: Config) {
 
         // Compute flag for serialization
         // TODO: simplify?
-        val condParameters = parameters.filter { it.tlType is TLTypeConditional }
+        val condParameters = parameters.filter { it.tlType is TLTypeConditional || it.tlType is TLTypeConditional2 }
         if (condParameters.isNotEmpty() && id != null) {
             val computeFlagsFun = FunSpec.makeOverride("computeFlags", false)
 
@@ -295,7 +295,7 @@ class TLClassGenerator(tlDefinition: TLDefinition, val config: Config) {
 
             computeFlagsFun.addStatement("_flags = 0")
             for (parameter in condParameters) {
-                val tlType = parameter.tlType as TLTypeConditional
+                val tlType: ConditionalType = parameter.tlType as ConditionalType
                 val realType = tlType.realType
                 val fieldName = parameter.name.lCamelCase().javaEscape()
 
@@ -304,12 +304,12 @@ class TLClassGenerator(tlDefinition: TLDefinition, val config: Config) {
 
                     if (condParameters.any {
                         it != parameter
-                                && !((it.tlType as TLTypeConditional).realType is TLTypeRaw && (it.tlType.realType as TLTypeRaw).name == "Bool")
-                                && (it.tlType as TLTypeConditional).value == tlType.value
+                                && !((it.tlType as ConditionalType).realType is TLTypeRaw && (it.tlType.realType as TLTypeRaw).name == "Bool")
+                                && (it.tlType as ConditionalType).value == tlType.value
                     })
                         condBoolean.add(parameter)
                 } else {
-                    if (realType is TLTypeRaw && realType.name == "Bool" && condParameters.any { it != parameter && (it.tlType as TLTypeConditional).value == tlType.value }) {
+                    if (realType is TLTypeRaw && realType.name == "Bool" && condParameters.any { it != parameter && (it.tlType as ConditionalType).value == tlType.value }) {
                         computeFlagsFun.addCode("// If field is not serialized force it to false\n")
                         computeFlagsFun.addStatement(
                                 "if ($fieldName != null && !isMask(${tlType.pow2Value()})) $fieldName = null")
@@ -325,7 +325,7 @@ class TLClassGenerator(tlDefinition: TLDefinition, val config: Config) {
                         "\n// Following parameters might be forced to true by another field that updated the flags\n")
                 for (parameter in condBoolean) {
                     computeFlagsFun.addStatement(
-                            "" + parameter.name.lCamelCase().javaEscape() + " = isMask(${(parameter.tlType as TLTypeConditional).pow2Value()})")
+                            "" + parameter.name.lCamelCase().javaEscape() + " = isMask(${(parameter.tlType as ConditionalType).pow2Value()})")
                 }
             }
 
@@ -344,7 +344,7 @@ class TLClassGenerator(tlDefinition: TLDefinition, val config: Config) {
         for (parameter in parameters) {
             val fieldTlType = parameter.tlType
             val fieldType = getType(fieldTlType).let {
-                val nullable = (fieldTlType is TLTypeConditional && !fieldTlType.realType.isTrueFalseFlag())
+                val nullable = (fieldTlType is ConditionalType && !fieldTlType.realType.isTrueFalseFlag())
                         || (fieldTlType is TLTypeFunctional)
                 if (nullable) it.asNullable() else it
             }
@@ -454,6 +454,7 @@ class TLClassGenerator(tlDefinition: TLDefinition, val config: Config) {
         is TLTypeAny -> TypeVariableName.T()
         is TLTypeFlag -> INT
         is TLTypeConditional -> getType(type.realType)
+        is TLTypeConditional2 -> getType(type.realType)
         is TLTypeGeneric -> {
             when ((type.parameters.first() as TLTypeRaw).name) {
                 "int" -> TYPE_TL_INT_VECTOR

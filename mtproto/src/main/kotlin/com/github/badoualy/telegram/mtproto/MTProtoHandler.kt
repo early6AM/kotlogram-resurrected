@@ -117,7 +117,7 @@ class MTProtoHandler {
                 onError = {
                     System.err.println("${Thread.currentThread().id} $tag messageSubject onErrorReceived() $it")
                     // TODO: enable?
-                    //resetConnection()
+                    resetConnection()
                 },
                 onComplete = {
                     println("${Thread.currentThread().id} $tag messageSubject onComplete()")
@@ -156,7 +156,9 @@ class MTProtoHandler {
 
     private fun dispose() {
         compositeDisposable.clear()
-        messageSubject.onComplete() // Will propagate error to subscriber
+        if (messageSubject.hasObservers()) {
+            messageSubject.onComplete() // Завершить только если есть подписчики
+        }
     }
 
     @Deprecated(message = "TO REMOVE", replaceWith = ReplaceWith("rx"))
@@ -244,10 +246,10 @@ class MTProtoHandler {
                 newMessage(MTMessagesContainer(messages))
             } else {
                 println("${Thread.currentThread().id} $tag Sending only one message")
-                messages.first()
+                messages.firstOrNull()
             }
 
-        sendMessage(message)
+        message?.let { sendMessage(it) }
     }
 
     /** Sends the given [MTProtoMessage] after encrypting it */
