@@ -62,6 +62,7 @@ class TLMessagePeerReaction() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(big, 1)
         updateFlags(unread, 2)
         updateFlags(my, 4)
@@ -80,9 +81,9 @@ class TLMessagePeerReaction() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        big = isMask(1)
-        unread = isMask(2)
-        my = isMask(4)
+        big = isMask(1, 1)
+        unread = isMask(1, 2)
+        my = isMask(1, 4)
         peerId = readTLObject<TLAbsPeer>()
         date = readInt()
         reaction = readTLObject<TLAbsReaction>()

@@ -40,6 +40,7 @@ class TLRequestMessagesDiscardEncryption() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(deleteHistory, 1)
     }
 
@@ -54,7 +55,7 @@ class TLRequestMessagesDiscardEncryption() : TLMethod<TLBool>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        deleteHistory = isMask(1)
+        deleteHistory = isMask(1, 1)
         chatId = readInt()
     }
 

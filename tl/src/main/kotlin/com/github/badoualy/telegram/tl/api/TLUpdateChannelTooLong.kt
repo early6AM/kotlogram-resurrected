@@ -39,6 +39,7 @@ class TLUpdateChannelTooLong() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(pts, 1)
     }
 
@@ -48,14 +49,14 @@ class TLUpdateChannelTooLong() : TLAbsUpdate() {
 
         writeInt(_flags)
         writeLong(channelId)
-        doIfMask(pts, 1) { writeInt(it) }
+        doIfMask(1, pts, 1) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         channelId = readLong()
-        pts = readIfMask(1) { readInt() }
+        pts = readIfMask(1, 1) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -64,7 +65,7 @@ class TLUpdateChannelTooLong() : TLAbsUpdate() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT64
-        size += getIntIfMask(pts, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, pts, 1) { SIZE_INT32 }
         return size
     }
 

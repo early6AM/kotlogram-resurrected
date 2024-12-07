@@ -80,8 +80,6 @@ class TLUser() : TLAbsUser() {
     @Transient
     var attachMenuEnabled: Boolean = false
 
-    var _flags2: Int = 0
-
     @Transient
     var botCanEdit: Boolean = false
 
@@ -162,7 +160,6 @@ class TLUser() : TLAbsUser() {
             botAttachMenu: Boolean,
             premium: Boolean,
             attachMenuEnabled: Boolean,
-            _flags2: Int,
             botCanEdit: Boolean,
             closeFriend: Boolean,
             storiesHidden: Boolean,
@@ -207,7 +204,6 @@ class TLUser() : TLAbsUser() {
         this.botAttachMenu = botAttachMenu
         this.premium = premium
         this.attachMenuEnabled = attachMenuEnabled
-        this._flags2 = _flags2
         this.botCanEdit = botCanEdit
         this.closeFriend = closeFriend
         this.storiesHidden = storiesHidden
@@ -237,6 +233,7 @@ class TLUser() : TLAbsUser() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(self, 1024)
         updateFlags(contact, 2048)
         updateFlags(mutualContact, 4096)
@@ -281,19 +278,19 @@ class TLUser() : TLAbsUser() {
         updateFlags(botActiveUsers, 4096)
 
         // Following parameters might be forced to true by another field that updated the flags
-        self = isMask(1024)
-        contact = isMask(2048)
-        mutualContact = isMask(4096)
-        deleted = isMask(8192)
-        bot = isMask(16384)
-        restricted = isMask(262144)
-        botCanEdit = isMask(2)
-        closeFriend = isMask(4)
-        storiesHidden = isMask(8)
-        storiesUnavailable = isMask(16)
-        contactRequirePremium = isMask(1024)
-        botBusiness = isMask(2048)
-        botHasMainApp = isMask(8192)
+        self = isMask(1, 1024)
+        contact = isMask(1, 2048)
+        mutualContact = isMask(1, 4096)
+        deleted = isMask(1, 8192)
+        bot = isMask(1, 16384)
+        restricted = isMask(1, 262144)
+        botCanEdit = isMask(2, 2)
+        closeFriend = isMask(2, 4)
+        storiesHidden = isMask(2, 8)
+        storiesUnavailable = isMask(2, 16)
+        contactRequirePremium = isMask(2, 1024)
+        botBusiness = isMask(2, 2048)
+        botHasMainApp = isMask(2, 8192)
     }
 
     @Throws(IOException::class)
@@ -303,72 +300,72 @@ class TLUser() : TLAbsUser() {
         writeInt(_flags)
         writeInt(_flags2)
         writeLong(id)
-        doIfMask(accessHash, 1) { writeLong(it) }
-        doIfMask(firstName, 2) { writeString(it) }
-        doIfMask(lastName, 4) { writeString(it) }
-        doIfMask(username, 8) { writeString(it) }
-        doIfMask(phone, 16) { writeString(it) }
-        doIfMask(photo, 32) { writeTLObject(it) }
-        doIfMask(status, 64) { writeTLObject(it) }
-        doIfMask(botInfoVersion, 16384) { writeInt(it) }
-        doIfMask(restrictionReason, 262144) { writeTLVector(it) }
-        doIfMask(botInlinePlaceholder, 524288) { writeString(it) }
-        doIfMask(langCode, 4194304) { writeString(it) }
-        doIfMask(emojiStatus, 1073741824) { writeTLObject(it) }
-        doIfMask(usernames, 1) { writeTLVector(it) }
-        doIfMask(storiesMaxId, 32) { writeInt(it) }
-        doIfMask(color, 256) { writeTLObject(it) }
-        doIfMask(profileColor, 512) { writeTLObject(it) }
-        doIfMask(botActiveUsers, 4096) { writeInt(it) }
+        doIfMask(1, accessHash, 1) { writeLong(it) }
+        doIfMask(1, firstName, 2) { writeString(it) }
+        doIfMask(1, lastName, 4) { writeString(it) }
+        doIfMask(1, username, 8) { writeString(it) }
+        doIfMask(1, phone, 16) { writeString(it) }
+        doIfMask(1, photo, 32) { writeTLObject(it) }
+        doIfMask(1, status, 64) { writeTLObject(it) }
+        doIfMask(1, botInfoVersion, 16384) { writeInt(it) }
+        doIfMask(1, restrictionReason, 262144) { writeTLVector(it) }
+        doIfMask(1, botInlinePlaceholder, 524288) { writeString(it) }
+        doIfMask(1, langCode, 4194304) { writeString(it) }
+        doIfMask(1, emojiStatus, 1073741824) { writeTLObject(it) }
+        doIfMask(2, usernames, 1) { writeTLVector(it) }
+        doIfMask(2, storiesMaxId, 32) { writeInt(it) }
+        doIfMask(2, color, 256) { writeTLObject(it) }
+        doIfMask(2, profileColor, 512) { writeTLObject(it) }
+        doIfMask(2, botActiveUsers, 4096) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        self = isMask(1024)
-        contact = isMask(2048)
-        mutualContact = isMask(4096)
-        deleted = isMask(8192)
-        bot = isMask(16384)
-        botChatHistory = isMask(32768)
-        botNochats = isMask(65536)
-        verified = isMask(131072)
-        restricted = isMask(262144)
-        min = isMask(1048576)
-        botInlineGeo = isMask(2097152)
-        support = isMask(8388608)
-        scam = isMask(16777216)
-        applyMinPhoto = isMask(33554432)
-        fake = isMask(67108864)
-        botAttachMenu = isMask(134217728)
-        premium = isMask(268435456)
-        attachMenuEnabled = isMask(536870912)
+        self = isMask(1, 1024)
+        contact = isMask(1, 2048)
+        mutualContact = isMask(1, 4096)
+        deleted = isMask(1, 8192)
+        bot = isMask(1, 16384)
+        botChatHistory = isMask(1, 32768)
+        botNochats = isMask(1, 65536)
+        verified = isMask(1, 131072)
+        restricted = isMask(1, 262144)
+        min = isMask(1, 1048576)
+        botInlineGeo = isMask(1, 2097152)
+        support = isMask(1, 8388608)
+        scam = isMask(1, 16777216)
+        applyMinPhoto = isMask(1, 33554432)
+        fake = isMask(1, 67108864)
+        botAttachMenu = isMask(1, 134217728)
+        premium = isMask(1, 268435456)
+        attachMenuEnabled = isMask(1, 536870912)
         _flags2 = readInt()
-        botCanEdit = isMask(2)
-        closeFriend = isMask(4)
-        storiesHidden = isMask(8)
-        storiesUnavailable = isMask(16)
-        contactRequirePremium = isMask(1024)
-        botBusiness = isMask(2048)
-        botHasMainApp = isMask(8192)
+        botCanEdit = isMask(2, 2)
+        closeFriend = isMask(2, 4)
+        storiesHidden = isMask(2, 8)
+        storiesUnavailable = isMask(2, 16)
+        contactRequirePremium = isMask(2, 1024)
+        botBusiness = isMask(2, 2048)
+        botHasMainApp = isMask(2, 8192)
         id = readLong()
-        accessHash = readIfMask(1) { readLong() }
-        firstName = readIfMask(2) { readString() }
-        lastName = readIfMask(4) { readString() }
-        username = readIfMask(8) { readString() }
-        phone = readIfMask(16) { readString() }
-        photo = readIfMask(32) { readTLObject<TLAbsUserProfilePhoto>() }
-        status = readIfMask(64) { readTLObject<TLAbsUserStatus>() }
-        botInfoVersion = readIfMask(16384) { readInt() }
-        restrictionReason = readIfMask(262144) { readTLVector<TLRestrictionReason>() }
-        botInlinePlaceholder = readIfMask(524288) { readString() }
-        langCode = readIfMask(4194304) { readString() }
-        emojiStatus = readIfMask(1073741824) { readTLObject<TLAbsEmojiStatus>() }
-        usernames = readIfMask(1) { readTLVector<TLUsername>() }
-        storiesMaxId = readIfMask(32) { readInt() }
-        color = readIfMask(256) { readTLObject<TLPeerColor>(TLPeerColor::class, TLPeerColor.CONSTRUCTOR_ID) }
-        profileColor = readIfMask(512) { readTLObject<TLPeerColor>(TLPeerColor::class, TLPeerColor.CONSTRUCTOR_ID) }
-        botActiveUsers = readIfMask(4096) { readInt() }
+        accessHash = readIfMask(1, 1) { readLong() }
+        firstName = readIfMask(1, 2) { readString() }
+        lastName = readIfMask(1, 4) { readString() }
+        username = readIfMask(1, 8) { readString() }
+        phone = readIfMask(1, 16) { readString() }
+        photo = readIfMask(1, 32) { readTLObject<TLAbsUserProfilePhoto>() }
+        status = readIfMask(1, 64) { readTLObject<TLAbsUserStatus>() }
+        botInfoVersion = readIfMask(1, 16384) { readInt() }
+        restrictionReason = readIfMask(1, 262144) { readTLVector<TLRestrictionReason>() }
+        botInlinePlaceholder = readIfMask(1, 524288) { readString() }
+        langCode = readIfMask(1, 4194304) { readString() }
+        emojiStatus = readIfMask(1, 1073741824) { readTLObject<TLAbsEmojiStatus>() }
+        usernames = readIfMask(2, 1) { readTLVector<TLUsername>() }
+        storiesMaxId = readIfMask(2, 32) { readInt() }
+        color = readIfMask(2, 256) { readTLObject<TLPeerColor>(TLPeerColor::class, TLPeerColor.CONSTRUCTOR_ID) }
+        profileColor = readIfMask(2, 512) { readTLObject<TLPeerColor>(TLPeerColor::class, TLPeerColor.CONSTRUCTOR_ID) }
+        botActiveUsers = readIfMask(2, 4096) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -378,23 +375,23 @@ class TLUser() : TLAbsUser() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT64
-        size += getIntIfMask(accessHash, 1) { SIZE_INT64 }
-        size += getIntIfMask(firstName, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(lastName, 4) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(username, 8) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(phone, 16) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(photo, 32) { it.computeSerializedSize() }
-        size += getIntIfMask(status, 64) { it.computeSerializedSize() }
-        size += getIntIfMask(botInfoVersion, 16384) { SIZE_INT32 }
-        size += getIntIfMask(restrictionReason, 262144) { it.computeSerializedSize() }
-        size += getIntIfMask(botInlinePlaceholder, 524288) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(langCode, 4194304) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(emojiStatus, 1073741824) { it.computeSerializedSize() }
-        size += getIntIfMask(usernames, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(storiesMaxId, 32) { SIZE_INT32 }
-        size += getIntIfMask(color, 256) { it.computeSerializedSize() }
-        size += getIntIfMask(profileColor, 512) { it.computeSerializedSize() }
-        size += getIntIfMask(botActiveUsers, 4096) { SIZE_INT32 }
+        size += getIntIfMask(1, accessHash, 1) { SIZE_INT64 }
+        size += getIntIfMask(1, firstName, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, lastName, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, username, 8) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, phone, 16) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, photo, 32) { it.computeSerializedSize() }
+        size += getIntIfMask(1, status, 64) { it.computeSerializedSize() }
+        size += getIntIfMask(1, botInfoVersion, 16384) { SIZE_INT32 }
+        size += getIntIfMask(1, restrictionReason, 262144) { it.computeSerializedSize() }
+        size += getIntIfMask(1, botInlinePlaceholder, 524288) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, langCode, 4194304) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, emojiStatus, 1073741824) { it.computeSerializedSize() }
+        size += getIntIfMask(2, usernames, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(2, storiesMaxId, 32) { SIZE_INT32 }
+        size += getIntIfMask(2, color, 256) { it.computeSerializedSize() }
+        size += getIntIfMask(2, profileColor, 512) { it.computeSerializedSize() }
+        size += getIntIfMask(2, botActiveUsers, 4096) { SIZE_INT32 }
         return size
     }
 

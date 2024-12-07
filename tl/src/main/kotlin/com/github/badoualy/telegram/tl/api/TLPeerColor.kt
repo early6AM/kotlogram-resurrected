@@ -40,6 +40,7 @@ class TLPeerColor() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(color, 1)
         updateFlags(backgroundEmojiId, 2)
     }
@@ -49,15 +50,15 @@ class TLPeerColor() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(color, 1) { writeInt(it) }
-        doIfMask(backgroundEmojiId, 2) { writeLong(it) }
+        doIfMask(1, color, 1) { writeInt(it) }
+        doIfMask(1, backgroundEmojiId, 2) { writeLong(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        color = readIfMask(1) { readInt() }
-        backgroundEmojiId = readIfMask(2) { readLong() }
+        color = readIfMask(1, 1) { readInt() }
+        backgroundEmojiId = readIfMask(1, 2) { readLong() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -65,8 +66,8 @@ class TLPeerColor() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(color, 1) { SIZE_INT32 }
-        size += getIntIfMask(backgroundEmojiId, 2) { SIZE_INT64 }
+        size += getIntIfMask(1, color, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, backgroundEmojiId, 2) { SIZE_INT64 }
         return size
     }
 

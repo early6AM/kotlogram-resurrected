@@ -62,6 +62,7 @@ class TLFolder() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(autofillNewBroadcasts, 1)
         updateFlags(autofillPublicGroups, 2)
         updateFlags(autofillNewCorrespondents, 4)
@@ -75,18 +76,18 @@ class TLFolder() : TLObject() {
         writeInt(_flags)
         writeInt(id)
         writeString(title)
-        doIfMask(photo, 8) { writeTLObject(it) }
+        doIfMask(1, photo, 8) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        autofillNewBroadcasts = isMask(1)
-        autofillPublicGroups = isMask(2)
-        autofillNewCorrespondents = isMask(4)
+        autofillNewBroadcasts = isMask(1, 1)
+        autofillPublicGroups = isMask(1, 2)
+        autofillNewCorrespondents = isMask(1, 4)
         id = readInt()
         title = readString()
-        photo = readIfMask(8) { readTLObject<TLAbsChatPhoto>() }
+        photo = readIfMask(1, 8) { readTLObject<TLAbsChatPhoto>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -96,7 +97,7 @@ class TLFolder() : TLObject() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += computeTLStringSerializedSize(title)
-        size += getIntIfMask(photo, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, photo, 8) { it.computeSerializedSize() }
         return size
     }
 

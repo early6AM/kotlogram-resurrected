@@ -103,6 +103,7 @@ class TLDialogFilter() : TLAbsDialogFilter() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(contacts, 1)
         updateFlags(nonContacts, 2)
         updateFlags(groups, 4)
@@ -122,8 +123,8 @@ class TLDialogFilter() : TLAbsDialogFilter() {
         writeInt(_flags)
         writeInt(id)
         writeString(title)
-        doIfMask(emoticon, 33554432) { writeString(it) }
-        doIfMask(color, 134217728) { writeInt(it) }
+        doIfMask(1, emoticon, 33554432) { writeString(it) }
+        doIfMask(1, color, 134217728) { writeInt(it) }
         writeTLVector(pinnedPeers)
         writeTLVector(includePeers)
         writeTLVector(excludePeers)
@@ -132,18 +133,18 @@ class TLDialogFilter() : TLAbsDialogFilter() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        contacts = isMask(1)
-        nonContacts = isMask(2)
-        groups = isMask(4)
-        broadcasts = isMask(8)
-        bots = isMask(16)
-        excludeMuted = isMask(2048)
-        excludeRead = isMask(4096)
-        excludeArchived = isMask(8192)
+        contacts = isMask(1, 1)
+        nonContacts = isMask(1, 2)
+        groups = isMask(1, 4)
+        broadcasts = isMask(1, 8)
+        bots = isMask(1, 16)
+        excludeMuted = isMask(1, 2048)
+        excludeRead = isMask(1, 4096)
+        excludeArchived = isMask(1, 8192)
         id = readInt()
         title = readString()
-        emoticon = readIfMask(33554432) { readString() }
-        color = readIfMask(134217728) { readInt() }
+        emoticon = readIfMask(1, 33554432) { readString() }
+        color = readIfMask(1, 134217728) { readInt() }
         pinnedPeers = readTLVector<TLAbsInputPeer>()
         includePeers = readTLVector<TLAbsInputPeer>()
         excludePeers = readTLVector<TLAbsInputPeer>()
@@ -156,8 +157,8 @@ class TLDialogFilter() : TLAbsDialogFilter() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += computeTLStringSerializedSize(title)
-        size += getIntIfMask(emoticon, 33554432) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(color, 134217728) { SIZE_INT32 }
+        size += getIntIfMask(1, emoticon, 33554432) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, color, 134217728) { SIZE_INT32 }
         size += pinnedPeers.computeSerializedSize()
         size += includePeers.computeSerializedSize()
         size += excludePeers.computeSerializedSize()

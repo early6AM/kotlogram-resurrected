@@ -61,6 +61,7 @@ class TLGiveawayInfo() : TLAbsGiveawayInfo() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(participating, 1)
         updateFlags(preparingResults, 8)
         updateFlags(joinedTooEarlyDate, 2)
@@ -74,20 +75,20 @@ class TLGiveawayInfo() : TLAbsGiveawayInfo() {
 
         writeInt(_flags)
         writeInt(startDate)
-        doIfMask(joinedTooEarlyDate, 2) { writeInt(it) }
-        doIfMask(adminDisallowedChatId, 4) { writeLong(it) }
-        doIfMask(disallowedCountry, 16) { writeString(it) }
+        doIfMask(1, joinedTooEarlyDate, 2) { writeInt(it) }
+        doIfMask(1, adminDisallowedChatId, 4) { writeLong(it) }
+        doIfMask(1, disallowedCountry, 16) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        participating = isMask(1)
-        preparingResults = isMask(8)
+        participating = isMask(1, 1)
+        preparingResults = isMask(1, 8)
         startDate = readInt()
-        joinedTooEarlyDate = readIfMask(2) { readInt() }
-        adminDisallowedChatId = readIfMask(4) { readLong() }
-        disallowedCountry = readIfMask(16) { readString() }
+        joinedTooEarlyDate = readIfMask(1, 2) { readInt() }
+        adminDisallowedChatId = readIfMask(1, 4) { readLong() }
+        disallowedCountry = readIfMask(1, 16) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -96,9 +97,9 @@ class TLGiveawayInfo() : TLAbsGiveawayInfo() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(joinedTooEarlyDate, 2) { SIZE_INT32 }
-        size += getIntIfMask(adminDisallowedChatId, 4) { SIZE_INT64 }
-        size += getIntIfMask(disallowedCountry, 16) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, joinedTooEarlyDate, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, adminDisallowedChatId, 4) { SIZE_INT64 }
+        size += getIntIfMask(1, disallowedCountry, 16) { computeTLStringSerializedSize(it) }
         return size
     }
 

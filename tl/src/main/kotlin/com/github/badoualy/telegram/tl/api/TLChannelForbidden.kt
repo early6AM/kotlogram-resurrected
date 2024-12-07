@@ -61,6 +61,7 @@ class TLChannelForbidden() : TLAbsChat() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(broadcast, 32)
         updateFlags(megagroup, 256)
         updateFlags(untilDate, 65536)
@@ -74,18 +75,18 @@ class TLChannelForbidden() : TLAbsChat() {
         writeLong(id)
         writeLong(accessHash)
         writeString(title)
-        doIfMask(untilDate, 65536) { writeInt(it) }
+        doIfMask(1, untilDate, 65536) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        broadcast = isMask(32)
-        megagroup = isMask(256)
+        broadcast = isMask(1, 32)
+        megagroup = isMask(1, 256)
         id = readLong()
         accessHash = readLong()
         title = readString()
-        untilDate = readIfMask(65536) { readInt() }
+        untilDate = readIfMask(1, 65536) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -96,7 +97,7 @@ class TLChannelForbidden() : TLAbsChat() {
         size += SIZE_INT64
         size += SIZE_INT64
         size += computeTLStringSerializedSize(title)
-        size += getIntIfMask(untilDate, 65536) { SIZE_INT32 }
+        size += getIntIfMask(1, untilDate, 65536) { SIZE_INT32 }
         return size
     }
 

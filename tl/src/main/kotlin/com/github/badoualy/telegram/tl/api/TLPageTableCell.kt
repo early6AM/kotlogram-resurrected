@@ -72,6 +72,7 @@ class TLPageTableCell() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(header, 1)
         updateFlags(alignCenter, 8)
         updateFlags(alignRight, 16)
@@ -87,22 +88,22 @@ class TLPageTableCell() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(text, 128) { writeTLObject(it) }
-        doIfMask(colspan, 2) { writeInt(it) }
-        doIfMask(rowspan, 4) { writeInt(it) }
+        doIfMask(1, text, 128) { writeTLObject(it) }
+        doIfMask(1, colspan, 2) { writeInt(it) }
+        doIfMask(1, rowspan, 4) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        header = isMask(1)
-        alignCenter = isMask(8)
-        alignRight = isMask(16)
-        valignMiddle = isMask(32)
-        valignBottom = isMask(64)
-        text = readIfMask(128) { readTLObject<TLAbsRichText>() }
-        colspan = readIfMask(2) { readInt() }
-        rowspan = readIfMask(4) { readInt() }
+        header = isMask(1, 1)
+        alignCenter = isMask(1, 8)
+        alignRight = isMask(1, 16)
+        valignMiddle = isMask(1, 32)
+        valignBottom = isMask(1, 64)
+        text = readIfMask(1, 128) { readTLObject<TLAbsRichText>() }
+        colspan = readIfMask(1, 2) { readInt() }
+        rowspan = readIfMask(1, 4) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -110,9 +111,9 @@ class TLPageTableCell() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(text, 128) { it.computeSerializedSize() }
-        size += getIntIfMask(colspan, 2) { SIZE_INT32 }
-        size += getIntIfMask(rowspan, 4) { SIZE_INT32 }
+        size += getIntIfMask(1, text, 128) { it.computeSerializedSize() }
+        size += getIntIfMask(1, colspan, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, rowspan, 4) { SIZE_INT32 }
         return size
     }
 

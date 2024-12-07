@@ -59,6 +59,7 @@ class TLMediaAreaCoordinates() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(radius, 1)
     }
 
@@ -72,7 +73,7 @@ class TLMediaAreaCoordinates() : TLObject() {
         writeDouble(w)
         writeDouble(h)
         writeDouble(rotation)
-        doIfMask(radius, 1) { writeDouble(it) }
+        doIfMask(1, radius, 1) { writeDouble(it) }
     }
 
     @Throws(IOException::class)
@@ -83,7 +84,7 @@ class TLMediaAreaCoordinates() : TLObject() {
         w = readDouble()
         h = readDouble()
         rotation = readDouble()
-        radius = readIfMask(1) { readDouble() }
+        radius = readIfMask(1, 1) { readDouble() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -96,7 +97,7 @@ class TLMediaAreaCoordinates() : TLObject() {
         size += SIZE_DOUBLE
         size += SIZE_DOUBLE
         size += SIZE_DOUBLE
-        size += getIntIfMask(radius, 1) { SIZE_DOUBLE }
+        size += getIntIfMask(1, radius, 1) { SIZE_DOUBLE }
         return size
     }
 

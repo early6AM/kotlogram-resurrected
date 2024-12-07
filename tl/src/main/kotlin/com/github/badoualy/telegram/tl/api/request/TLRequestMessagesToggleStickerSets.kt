@@ -55,6 +55,7 @@ class TLRequestMessagesToggleStickerSets() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(uninstall, 1)
         updateFlags(archive, 2)
         updateFlags(unarchive, 4)
@@ -71,9 +72,9 @@ class TLRequestMessagesToggleStickerSets() : TLMethod<TLBool>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        uninstall = isMask(1)
-        archive = isMask(2)
-        unarchive = isMask(4)
+        uninstall = isMask(1, 1)
+        archive = isMask(1, 2)
+        unarchive = isMask(1, 4)
         stickersets = readTLVector<TLAbsInputStickerSet>()
     }
 

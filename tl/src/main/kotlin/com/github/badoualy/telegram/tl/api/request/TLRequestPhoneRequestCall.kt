@@ -62,6 +62,7 @@ class TLRequestPhoneRequestCall() : TLMethod<TLPhoneCall>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(video, 1)
     }
 
@@ -79,7 +80,7 @@ class TLRequestPhoneRequestCall() : TLMethod<TLPhoneCall>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        video = isMask(1)
+        video = isMask(1, 1)
         userId = readTLObject<TLAbsInputUser>()
         randomId = readInt()
         gAHash = readTLBytes()

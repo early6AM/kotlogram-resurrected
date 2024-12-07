@@ -57,6 +57,7 @@ class TLStarsRevenueStatus() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(withdrawalEnabled, 1)
         updateFlags(nextWithdrawalAt, 2)
     }
@@ -69,17 +70,17 @@ class TLStarsRevenueStatus() : TLObject() {
         writeLong(currentBalance)
         writeLong(availableBalance)
         writeLong(overallRevenue)
-        doIfMask(nextWithdrawalAt, 2) { writeInt(it) }
+        doIfMask(1, nextWithdrawalAt, 2) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        withdrawalEnabled = isMask(1)
+        withdrawalEnabled = isMask(1, 1)
         currentBalance = readLong()
         availableBalance = readLong()
         overallRevenue = readLong()
-        nextWithdrawalAt = readIfMask(2) { readInt() }
+        nextWithdrawalAt = readIfMask(1, 2) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -90,7 +91,7 @@ class TLStarsRevenueStatus() : TLObject() {
         size += SIZE_INT64
         size += SIZE_INT64
         size += SIZE_INT64
-        size += getIntIfMask(nextWithdrawalAt, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, nextWithdrawalAt, 2) { SIZE_INT32 }
         return size
     }
 

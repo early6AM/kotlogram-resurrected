@@ -60,6 +60,7 @@ class TLResolvedBusinessChatLinks() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(entities, 1)
     }
 
@@ -70,7 +71,7 @@ class TLResolvedBusinessChatLinks() : TLObject() {
         writeInt(_flags)
         writeTLObject(peer)
         writeString(message)
-        doIfMask(entities, 1) { writeTLVector(it) }
+        doIfMask(1, entities, 1) { writeTLVector(it) }
         writeTLVector(chats)
         writeTLVector(users)
     }
@@ -80,7 +81,7 @@ class TLResolvedBusinessChatLinks() : TLObject() {
         _flags = readInt()
         peer = readTLObject<TLAbsPeer>()
         message = readString()
-        entities = readIfMask(1) { readTLVector<TLAbsMessageEntity>() }
+        entities = readIfMask(1, 1) { readTLVector<TLAbsMessageEntity>() }
         chats = readTLVector<TLAbsChat>()
         users = readTLVector<TLAbsUser>()
     }
@@ -92,7 +93,7 @@ class TLResolvedBusinessChatLinks() : TLObject() {
         size += SIZE_INT32
         size += peer.computeSerializedSize()
         size += computeTLStringSerializedSize(message)
-        size += getIntIfMask(entities, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, entities, 1) { it.computeSerializedSize() }
         size += chats.computeSerializedSize()
         size += users.computeSerializedSize()
         return size

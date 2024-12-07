@@ -41,6 +41,7 @@ class TLValidatedRequestedInfo() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(id, 1)
         updateFlags(shippingOptions, 2)
     }
@@ -50,15 +51,15 @@ class TLValidatedRequestedInfo() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(id, 1) { writeString(it) }
-        doIfMask(shippingOptions, 2) { writeTLVector(it) }
+        doIfMask(1, id, 1) { writeString(it) }
+        doIfMask(1, shippingOptions, 2) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        id = readIfMask(1) { readString() }
-        shippingOptions = readIfMask(2) { readTLVector<TLShippingOption>() }
+        id = readIfMask(1, 1) { readString() }
+        shippingOptions = readIfMask(1, 2) { readTLVector<TLShippingOption>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -66,8 +67,8 @@ class TLValidatedRequestedInfo() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(id, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(shippingOptions, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, id, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, shippingOptions, 2) { it.computeSerializedSize() }
         return size
     }
 

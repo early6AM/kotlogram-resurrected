@@ -71,6 +71,7 @@ class TLPage() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(part, 1)
         updateFlags(rtl, 2)
         updateFlags(v2, 4)
@@ -86,20 +87,20 @@ class TLPage() : TLObject() {
         writeTLVector(blocks)
         writeTLVector(photos)
         writeTLVector(documents)
-        doIfMask(views, 8) { writeInt(it) }
+        doIfMask(1, views, 8) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        part = isMask(1)
-        rtl = isMask(2)
-        v2 = isMask(4)
+        part = isMask(1, 1)
+        rtl = isMask(1, 2)
+        v2 = isMask(1, 4)
         url = readString()
         blocks = readTLVector<TLAbsPageBlock>()
         photos = readTLVector<TLAbsPhoto>()
         documents = readTLVector<TLAbsDocument>()
-        views = readIfMask(8) { readInt() }
+        views = readIfMask(1, 8) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -111,7 +112,7 @@ class TLPage() : TLObject() {
         size += blocks.computeSerializedSize()
         size += photos.computeSerializedSize()
         size += documents.computeSerializedSize()
-        size += getIntIfMask(views, 8) { SIZE_INT32 }
+        size += getIntIfMask(1, views, 8) { SIZE_INT32 }
         return size
     }
 

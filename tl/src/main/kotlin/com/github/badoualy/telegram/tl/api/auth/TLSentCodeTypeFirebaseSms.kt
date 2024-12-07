@@ -59,6 +59,7 @@ class TLSentCodeTypeFirebaseSms() : TLAbsSentCodeType() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(nonce, 1)
         updateFlags(playIntegrityProjectId, 4)
         updateFlags(playIntegrityNonce, 4)
@@ -71,22 +72,22 @@ class TLSentCodeTypeFirebaseSms() : TLAbsSentCodeType() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(nonce, 1) { writeTLBytes(it) }
-        doIfMask(playIntegrityProjectId, 4) { writeLong(it) }
-        doIfMask(playIntegrityNonce, 4) { writeTLBytes(it) }
-        doIfMask(receipt, 2) { writeString(it) }
-        doIfMask(pushTimeout, 2) { writeInt(it) }
+        doIfMask(1, nonce, 1) { writeTLBytes(it) }
+        doIfMask(1, playIntegrityProjectId, 4) { writeLong(it) }
+        doIfMask(1, playIntegrityNonce, 4) { writeTLBytes(it) }
+        doIfMask(1, receipt, 2) { writeString(it) }
+        doIfMask(1, pushTimeout, 2) { writeInt(it) }
         writeInt(length)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        nonce = readIfMask(1) { readTLBytes() }
-        playIntegrityProjectId = readIfMask(4) { readLong() }
-        playIntegrityNonce = readIfMask(4) { readTLBytes() }
-        receipt = readIfMask(2) { readString() }
-        pushTimeout = readIfMask(2) { readInt() }
+        nonce = readIfMask(1, 1) { readTLBytes() }
+        playIntegrityProjectId = readIfMask(1, 4) { readLong() }
+        playIntegrityNonce = readIfMask(1, 4) { readTLBytes() }
+        receipt = readIfMask(1, 2) { readString() }
+        pushTimeout = readIfMask(1, 2) { readInt() }
         length = readInt()
     }
 
@@ -95,11 +96,11 @@ class TLSentCodeTypeFirebaseSms() : TLAbsSentCodeType() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(nonce, 1) { computeTLBytesSerializedSize(it) }
-        size += getIntIfMask(playIntegrityProjectId, 4) { SIZE_INT64 }
-        size += getIntIfMask(playIntegrityNonce, 4) { computeTLBytesSerializedSize(it) }
-        size += getIntIfMask(receipt, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(pushTimeout, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, nonce, 1) { computeTLBytesSerializedSize(it) }
+        size += getIntIfMask(1, playIntegrityProjectId, 4) { SIZE_INT64 }
+        size += getIntIfMask(1, playIntegrityNonce, 4) { computeTLBytesSerializedSize(it) }
+        size += getIntIfMask(1, receipt, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, pushTimeout, 2) { SIZE_INT32 }
         size += SIZE_INT32
         return size
     }

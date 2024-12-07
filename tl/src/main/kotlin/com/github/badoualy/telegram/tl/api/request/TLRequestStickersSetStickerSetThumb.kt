@@ -49,6 +49,7 @@ class TLRequestStickersSetStickerSetThumb() : TLMethod<TLAbsStickerSet>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(thumb, 1)
         updateFlags(thumbDocumentId, 2)
     }
@@ -59,16 +60,16 @@ class TLRequestStickersSetStickerSetThumb() : TLMethod<TLAbsStickerSet>() {
 
         writeInt(_flags)
         writeTLObject(stickerset)
-        doIfMask(thumb, 1) { writeTLObject(it) }
-        doIfMask(thumbDocumentId, 2) { writeLong(it) }
+        doIfMask(1, thumb, 1) { writeTLObject(it) }
+        doIfMask(1, thumbDocumentId, 2) { writeLong(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         stickerset = readTLObject<TLAbsInputStickerSet>()
-        thumb = readIfMask(1) { readTLObject<TLAbsInputDocument>() }
-        thumbDocumentId = readIfMask(2) { readLong() }
+        thumb = readIfMask(1, 1) { readTLObject<TLAbsInputDocument>() }
+        thumbDocumentId = readIfMask(1, 2) { readLong() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -77,8 +78,8 @@ class TLRequestStickersSetStickerSetThumb() : TLMethod<TLAbsStickerSet>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += stickerset.computeSerializedSize()
-        size += getIntIfMask(thumb, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(thumbDocumentId, 2) { SIZE_INT64 }
+        size += getIntIfMask(1, thumb, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, thumbDocumentId, 2) { SIZE_INT64 }
         return size
     }
 

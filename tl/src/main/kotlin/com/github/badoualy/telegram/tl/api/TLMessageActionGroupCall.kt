@@ -38,6 +38,7 @@ class TLMessageActionGroupCall() : TLAbsMessageAction() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(duration, 1)
     }
 
@@ -47,14 +48,14 @@ class TLMessageActionGroupCall() : TLAbsMessageAction() {
 
         writeInt(_flags)
         writeTLObject(call)
-        doIfMask(duration, 1) { writeInt(it) }
+        doIfMask(1, duration, 1) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         call = readTLObject<TLInputGroupCall>(TLInputGroupCall::class, TLInputGroupCall.CONSTRUCTOR_ID)
-        duration = readIfMask(1) { readInt() }
+        duration = readIfMask(1, 1) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -63,7 +64,7 @@ class TLMessageActionGroupCall() : TLAbsMessageAction() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += call.computeSerializedSize()
-        size += getIntIfMask(duration, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, duration, 1) { SIZE_INT32 }
         return size
     }
 

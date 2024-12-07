@@ -51,6 +51,7 @@ class TLInputWebFileAudioAlbumThumbLocation() : TLAbsInputWebFileLocation() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(small, 4)
         updateFlags(document, 1)
         updateFlags(title, 2)
@@ -62,18 +63,18 @@ class TLInputWebFileAudioAlbumThumbLocation() : TLAbsInputWebFileLocation() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(document, 1) { writeTLObject(it) }
-        doIfMask(title, 2) { writeString(it) }
-        doIfMask(performer, 2) { writeString(it) }
+        doIfMask(1, document, 1) { writeTLObject(it) }
+        doIfMask(1, title, 2) { writeString(it) }
+        doIfMask(1, performer, 2) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        small = isMask(4)
-        document = readIfMask(1) { readTLObject<TLAbsInputDocument>() }
-        title = readIfMask(2) { readString() }
-        performer = readIfMask(2) { readString() }
+        small = isMask(1, 4)
+        document = readIfMask(1, 1) { readTLObject<TLAbsInputDocument>() }
+        title = readIfMask(1, 2) { readString() }
+        performer = readIfMask(1, 2) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -81,9 +82,9 @@ class TLInputWebFileAudioAlbumThumbLocation() : TLAbsInputWebFileLocation() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(document, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(title, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(performer, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, document, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, title, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, performer, 2) { computeTLStringSerializedSize(it) }
         return size
     }
 

@@ -113,6 +113,7 @@ class TLWebPage() : TLAbsWebPage() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(hasLargeMedia, 8192)
         updateFlags(type, 1)
         updateFlags(siteName, 2)
@@ -139,44 +140,44 @@ class TLWebPage() : TLAbsWebPage() {
         writeString(url)
         writeString(displayUrl)
         writeInt(hash)
-        doIfMask(type, 1) { writeString(it) }
-        doIfMask(siteName, 2) { writeString(it) }
-        doIfMask(title, 4) { writeString(it) }
-        doIfMask(description, 8) { writeString(it) }
-        doIfMask(photo, 16) { writeTLObject(it) }
-        doIfMask(embedUrl, 32) { writeString(it) }
-        doIfMask(embedType, 32) { writeString(it) }
-        doIfMask(embedWidth, 64) { writeInt(it) }
-        doIfMask(embedHeight, 64) { writeInt(it) }
-        doIfMask(duration, 128) { writeInt(it) }
-        doIfMask(author, 256) { writeString(it) }
-        doIfMask(document, 512) { writeTLObject(it) }
-        doIfMask(cachedPage, 1024) { writeTLObject(it) }
-        doIfMask(attributes, 4096) { writeTLVector(it) }
+        doIfMask(1, type, 1) { writeString(it) }
+        doIfMask(1, siteName, 2) { writeString(it) }
+        doIfMask(1, title, 4) { writeString(it) }
+        doIfMask(1, description, 8) { writeString(it) }
+        doIfMask(1, photo, 16) { writeTLObject(it) }
+        doIfMask(1, embedUrl, 32) { writeString(it) }
+        doIfMask(1, embedType, 32) { writeString(it) }
+        doIfMask(1, embedWidth, 64) { writeInt(it) }
+        doIfMask(1, embedHeight, 64) { writeInt(it) }
+        doIfMask(1, duration, 128) { writeInt(it) }
+        doIfMask(1, author, 256) { writeString(it) }
+        doIfMask(1, document, 512) { writeTLObject(it) }
+        doIfMask(1, cachedPage, 1024) { writeTLObject(it) }
+        doIfMask(1, attributes, 4096) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        hasLargeMedia = isMask(8192)
+        hasLargeMedia = isMask(1, 8192)
         id = readLong()
         url = readString()
         displayUrl = readString()
         hash = readInt()
-        type = readIfMask(1) { readString() }
-        siteName = readIfMask(2) { readString() }
-        title = readIfMask(4) { readString() }
-        description = readIfMask(8) { readString() }
-        photo = readIfMask(16) { readTLObject<TLAbsPhoto>() }
-        embedUrl = readIfMask(32) { readString() }
-        embedType = readIfMask(32) { readString() }
-        embedWidth = readIfMask(64) { readInt() }
-        embedHeight = readIfMask(64) { readInt() }
-        duration = readIfMask(128) { readInt() }
-        author = readIfMask(256) { readString() }
-        document = readIfMask(512) { readTLObject<TLAbsDocument>() }
-        cachedPage = readIfMask(1024) { readTLObject<TLPage>(TLPage::class, TLPage.CONSTRUCTOR_ID) }
-        attributes = readIfMask(4096) { readTLVector<TLAbsWebPageAttribute>() }
+        type = readIfMask(1, 1) { readString() }
+        siteName = readIfMask(1, 2) { readString() }
+        title = readIfMask(1, 4) { readString() }
+        description = readIfMask(1, 8) { readString() }
+        photo = readIfMask(1, 16) { readTLObject<TLAbsPhoto>() }
+        embedUrl = readIfMask(1, 32) { readString() }
+        embedType = readIfMask(1, 32) { readString() }
+        embedWidth = readIfMask(1, 64) { readInt() }
+        embedHeight = readIfMask(1, 64) { readInt() }
+        duration = readIfMask(1, 128) { readInt() }
+        author = readIfMask(1, 256) { readString() }
+        document = readIfMask(1, 512) { readTLObject<TLAbsDocument>() }
+        cachedPage = readIfMask(1, 1024) { readTLObject<TLPage>(TLPage::class, TLPage.CONSTRUCTOR_ID) }
+        attributes = readIfMask(1, 4096) { readTLVector<TLAbsWebPageAttribute>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -188,20 +189,20 @@ class TLWebPage() : TLAbsWebPage() {
         size += computeTLStringSerializedSize(url)
         size += computeTLStringSerializedSize(displayUrl)
         size += SIZE_INT32
-        size += getIntIfMask(type, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(siteName, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(title, 4) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(description, 8) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(photo, 16) { it.computeSerializedSize() }
-        size += getIntIfMask(embedUrl, 32) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(embedType, 32) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(embedWidth, 64) { SIZE_INT32 }
-        size += getIntIfMask(embedHeight, 64) { SIZE_INT32 }
-        size += getIntIfMask(duration, 128) { SIZE_INT32 }
-        size += getIntIfMask(author, 256) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(document, 512) { it.computeSerializedSize() }
-        size += getIntIfMask(cachedPage, 1024) { it.computeSerializedSize() }
-        size += getIntIfMask(attributes, 4096) { it.computeSerializedSize() }
+        size += getIntIfMask(1, type, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, siteName, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, title, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, description, 8) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, photo, 16) { it.computeSerializedSize() }
+        size += getIntIfMask(1, embedUrl, 32) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, embedType, 32) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, embedWidth, 64) { SIZE_INT32 }
+        size += getIntIfMask(1, embedHeight, 64) { SIZE_INT32 }
+        size += getIntIfMask(1, duration, 128) { SIZE_INT32 }
+        size += getIntIfMask(1, author, 256) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, document, 512) { it.computeSerializedSize() }
+        size += getIntIfMask(1, cachedPage, 1024) { it.computeSerializedSize() }
+        size += getIntIfMask(1, attributes, 4096) { it.computeSerializedSize() }
         return size
     }
 

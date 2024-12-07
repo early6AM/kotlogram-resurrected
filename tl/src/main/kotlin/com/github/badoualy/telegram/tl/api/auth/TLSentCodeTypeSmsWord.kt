@@ -35,6 +35,7 @@ class TLSentCodeTypeSmsWord() : TLAbsSentCodeType() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(beginning, 1)
     }
 
@@ -43,13 +44,13 @@ class TLSentCodeTypeSmsWord() : TLAbsSentCodeType() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(beginning, 1) { writeString(it) }
+        doIfMask(1, beginning, 1) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        beginning = readIfMask(1) { readString() }
+        beginning = readIfMask(1, 1) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -57,7 +58,7 @@ class TLSentCodeTypeSmsWord() : TLAbsSentCodeType() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(beginning, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, beginning, 1) { computeTLStringSerializedSize(it) }
         return size
     }
 

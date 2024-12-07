@@ -37,6 +37,7 @@ class TLInputMessagesFilterPhoneCalls() : TLAbsMessagesFilter() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(missed, 1)
     }
 
@@ -50,7 +51,7 @@ class TLInputMessagesFilterPhoneCalls() : TLAbsMessagesFilter() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        missed = isMask(1)
+        missed = isMask(1, 1)
     }
 
     override fun computeSerializedSize(): Int {

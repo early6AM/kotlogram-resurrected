@@ -73,6 +73,7 @@ class TLWallPaperSettings() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(blur, 2)
         updateFlags(motion, 4)
         updateFlags(backgroundColor, 1)
@@ -89,27 +90,27 @@ class TLWallPaperSettings() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(backgroundColor, 1) { writeInt(it) }
-        doIfMask(secondBackgroundColor, 16) { writeInt(it) }
-        doIfMask(thirdBackgroundColor, 32) { writeInt(it) }
-        doIfMask(fourthBackgroundColor, 64) { writeInt(it) }
-        doIfMask(intensity, 8) { writeInt(it) }
-        doIfMask(rotation, 16) { writeInt(it) }
-        doIfMask(emoticon, 128) { writeString(it) }
+        doIfMask(1, backgroundColor, 1) { writeInt(it) }
+        doIfMask(1, secondBackgroundColor, 16) { writeInt(it) }
+        doIfMask(1, thirdBackgroundColor, 32) { writeInt(it) }
+        doIfMask(1, fourthBackgroundColor, 64) { writeInt(it) }
+        doIfMask(1, intensity, 8) { writeInt(it) }
+        doIfMask(1, rotation, 16) { writeInt(it) }
+        doIfMask(1, emoticon, 128) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        blur = isMask(2)
-        motion = isMask(4)
-        backgroundColor = readIfMask(1) { readInt() }
-        secondBackgroundColor = readIfMask(16) { readInt() }
-        thirdBackgroundColor = readIfMask(32) { readInt() }
-        fourthBackgroundColor = readIfMask(64) { readInt() }
-        intensity = readIfMask(8) { readInt() }
-        rotation = readIfMask(16) { readInt() }
-        emoticon = readIfMask(128) { readString() }
+        blur = isMask(1, 2)
+        motion = isMask(1, 4)
+        backgroundColor = readIfMask(1, 1) { readInt() }
+        secondBackgroundColor = readIfMask(1, 16) { readInt() }
+        thirdBackgroundColor = readIfMask(1, 32) { readInt() }
+        fourthBackgroundColor = readIfMask(1, 64) { readInt() }
+        intensity = readIfMask(1, 8) { readInt() }
+        rotation = readIfMask(1, 16) { readInt() }
+        emoticon = readIfMask(1, 128) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -117,13 +118,13 @@ class TLWallPaperSettings() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(backgroundColor, 1) { SIZE_INT32 }
-        size += getIntIfMask(secondBackgroundColor, 16) { SIZE_INT32 }
-        size += getIntIfMask(thirdBackgroundColor, 32) { SIZE_INT32 }
-        size += getIntIfMask(fourthBackgroundColor, 64) { SIZE_INT32 }
-        size += getIntIfMask(intensity, 8) { SIZE_INT32 }
-        size += getIntIfMask(rotation, 16) { SIZE_INT32 }
-        size += getIntIfMask(emoticon, 128) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, backgroundColor, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, secondBackgroundColor, 16) { SIZE_INT32 }
+        size += getIntIfMask(1, thirdBackgroundColor, 32) { SIZE_INT32 }
+        size += getIntIfMask(1, fourthBackgroundColor, 64) { SIZE_INT32 }
+        size += getIntIfMask(1, intensity, 8) { SIZE_INT32 }
+        size += getIntIfMask(1, rotation, 16) { SIZE_INT32 }
+        size += getIntIfMask(1, emoticon, 128) { computeTLStringSerializedSize(it) }
         return size
     }
 

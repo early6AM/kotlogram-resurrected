@@ -49,6 +49,7 @@ class TLRequestMessagesReorderPinnedDialogs() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(force, 1)
     }
 
@@ -64,7 +65,7 @@ class TLRequestMessagesReorderPinnedDialogs() : TLMethod<TLBool>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        force = isMask(1)
+        force = isMask(1, 1)
         folderId = readInt()
         order = readTLVector<TLAbsInputDialogPeer>()
     }

@@ -68,6 +68,7 @@ class TLChannelDifference() : TLAbsChannelDifference() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(_final, 1)
         updateFlags(timeout, 2)
     }
@@ -78,7 +79,7 @@ class TLChannelDifference() : TLAbsChannelDifference() {
 
         writeInt(_flags)
         writeInt(pts)
-        doIfMask(timeout, 2) { writeInt(it) }
+        doIfMask(1, timeout, 2) { writeInt(it) }
         writeTLVector(newMessages)
         writeTLVector(otherUpdates)
         writeTLVector(chats)
@@ -88,9 +89,9 @@ class TLChannelDifference() : TLAbsChannelDifference() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        _final = isMask(1)
+        _final = isMask(1, 1)
         pts = readInt()
-        timeout = readIfMask(2) { readInt() }
+        timeout = readIfMask(1, 2) { readInt() }
         newMessages = readTLVector<TLAbsMessage>()
         otherUpdates = readTLVector<TLAbsUpdate>()
         chats = readTLVector<TLAbsChat>()
@@ -103,7 +104,7 @@ class TLChannelDifference() : TLAbsChannelDifference() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(timeout, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, timeout, 2) { SIZE_INT32 }
         size += newMessages.computeSerializedSize()
         size += otherUpdates.computeSerializedSize()
         size += chats.computeSerializedSize()

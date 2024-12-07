@@ -1,6 +1,7 @@
 package com.github.badoualy.telegram.tl.serialization
 
 import com.github.badoualy.telegram.tl.TLContext
+import com.github.badoualy.telegram.tl.api.TLPeerColor
 import com.github.badoualy.telegram.tl.core.*
 import com.github.badoualy.telegram.tl.exception.InvalidConstructorIdException
 import java.io.IOException
@@ -110,6 +111,7 @@ interface TLDeserializer {
     private fun <T, V : TLVector<T>> deserializeVector(vector: V): V = readInt().let { constructorId ->
         when (constructorId) {
             TLVector.CONSTRUCTOR_ID -> deserializeVectorBody(vector)
+//            TLPeerColor.CONSTRUCTOR_ID -> deserializeVectorBody(vector)
             else -> throw InvalidConstructorIdException(constructorId, TLVector.CONSTRUCTOR_ID)
         }
     }

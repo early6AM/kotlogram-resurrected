@@ -66,6 +66,7 @@ class TLRequestMessagesGetExportedChatInvites() : TLMethod<TLExportedChatInvites
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(revoked, 8)
         updateFlags(offsetDate, 4)
         updateFlags(offsetLink, 4)
@@ -78,19 +79,19 @@ class TLRequestMessagesGetExportedChatInvites() : TLMethod<TLExportedChatInvites
         writeInt(_flags)
         writeTLObject(peer)
         writeTLObject(adminId)
-        doIfMask(offsetDate, 4) { writeInt(it) }
-        doIfMask(offsetLink, 4) { writeString(it) }
+        doIfMask(1, offsetDate, 4) { writeInt(it) }
+        doIfMask(1, offsetLink, 4) { writeString(it) }
         writeInt(limit)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        revoked = isMask(8)
+        revoked = isMask(1, 8)
         peer = readTLObject<TLAbsInputPeer>()
         adminId = readTLObject<TLAbsInputUser>()
-        offsetDate = readIfMask(4) { readInt() }
-        offsetLink = readIfMask(4) { readString() }
+        offsetDate = readIfMask(1, 4) { readInt() }
+        offsetLink = readIfMask(1, 4) { readString() }
         limit = readInt()
     }
 
@@ -101,8 +102,8 @@ class TLRequestMessagesGetExportedChatInvites() : TLMethod<TLExportedChatInvites
         size += SIZE_INT32
         size += peer.computeSerializedSize()
         size += adminId.computeSerializedSize()
-        size += getIntIfMask(offsetDate, 4) { SIZE_INT32 }
-        size += getIntIfMask(offsetLink, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, offsetDate, 4) { SIZE_INT32 }
+        size += getIntIfMask(1, offsetLink, 4) { computeTLStringSerializedSize(it) }
         size += SIZE_INT32
         return size
     }

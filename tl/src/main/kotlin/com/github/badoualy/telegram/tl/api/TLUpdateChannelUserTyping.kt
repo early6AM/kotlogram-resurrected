@@ -50,6 +50,7 @@ class TLUpdateChannelUserTyping() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(topMsgId, 1)
     }
 
@@ -59,7 +60,7 @@ class TLUpdateChannelUserTyping() : TLAbsUpdate() {
 
         writeInt(_flags)
         writeLong(channelId)
-        doIfMask(topMsgId, 1) { writeInt(it) }
+        doIfMask(1, topMsgId, 1) { writeInt(it) }
         writeTLObject(fromId)
         writeTLObject(action)
     }
@@ -68,7 +69,7 @@ class TLUpdateChannelUserTyping() : TLAbsUpdate() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         channelId = readLong()
-        topMsgId = readIfMask(1) { readInt() }
+        topMsgId = readIfMask(1, 1) { readInt() }
         fromId = readTLObject<TLAbsPeer>()
         action = readTLObject<TLAbsSendMessageAction>()
     }
@@ -79,7 +80,7 @@ class TLUpdateChannelUserTyping() : TLAbsUpdate() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT64
-        size += getIntIfMask(topMsgId, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, topMsgId, 1) { SIZE_INT32 }
         size += fromId.computeSerializedSize()
         size += action.computeSerializedSize()
         return size

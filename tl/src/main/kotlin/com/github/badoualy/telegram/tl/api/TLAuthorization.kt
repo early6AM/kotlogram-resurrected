@@ -114,6 +114,7 @@ class TLAuthorization() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(current, 1)
         updateFlags(officialApp, 2)
         updateFlags(passwordPending, 4)
@@ -144,12 +145,12 @@ class TLAuthorization() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        current = isMask(1)
-        officialApp = isMask(2)
-        passwordPending = isMask(4)
-        encryptedRequestsDisabled = isMask(8)
-        callRequestsDisabled = isMask(16)
-        unconfirmed = isMask(32)
+        current = isMask(1, 1)
+        officialApp = isMask(1, 2)
+        passwordPending = isMask(1, 4)
+        encryptedRequestsDisabled = isMask(1, 8)
+        callRequestsDisabled = isMask(1, 16)
+        unconfirmed = isMask(1, 32)
         hash = readLong()
         deviceModel = readString()
         platform = readString()

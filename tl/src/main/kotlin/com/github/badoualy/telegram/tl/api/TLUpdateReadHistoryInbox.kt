@@ -57,6 +57,7 @@ class TLUpdateReadHistoryInbox() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(folderId, 1)
     }
 
@@ -65,7 +66,7 @@ class TLUpdateReadHistoryInbox() : TLAbsUpdate() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(folderId, 1) { writeInt(it) }
+        doIfMask(1, folderId, 1) { writeInt(it) }
         writeTLObject(peer)
         writeInt(maxId)
         writeInt(stillUnreadCount)
@@ -76,7 +77,7 @@ class TLUpdateReadHistoryInbox() : TLAbsUpdate() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        folderId = readIfMask(1) { readInt() }
+        folderId = readIfMask(1, 1) { readInt() }
         peer = readTLObject<TLAbsPeer>()
         maxId = readInt()
         stillUnreadCount = readInt()
@@ -89,7 +90,7 @@ class TLUpdateReadHistoryInbox() : TLAbsUpdate() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(folderId, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, folderId, 1) { SIZE_INT32 }
         size += peer.computeSerializedSize()
         size += SIZE_INT32
         size += SIZE_INT32

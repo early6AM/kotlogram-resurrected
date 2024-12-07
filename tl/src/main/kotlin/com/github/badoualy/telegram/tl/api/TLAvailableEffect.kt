@@ -61,6 +61,7 @@ class TLAvailableEffect() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(premiumRequired, 4)
         updateFlags(staticIconId, 1)
         updateFlags(effectAnimationId, 2)
@@ -73,20 +74,20 @@ class TLAvailableEffect() : TLObject() {
         writeInt(_flags)
         writeLong(id)
         writeString(emoticon)
-        doIfMask(staticIconId, 1) { writeLong(it) }
+        doIfMask(1, staticIconId, 1) { writeLong(it) }
         writeLong(effectStickerId)
-        doIfMask(effectAnimationId, 2) { writeLong(it) }
+        doIfMask(1, effectAnimationId, 2) { writeLong(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        premiumRequired = isMask(4)
+        premiumRequired = isMask(1, 4)
         id = readLong()
         emoticon = readString()
-        staticIconId = readIfMask(1) { readLong() }
+        staticIconId = readIfMask(1, 1) { readLong() }
         effectStickerId = readLong()
-        effectAnimationId = readIfMask(2) { readLong() }
+        effectAnimationId = readIfMask(1, 2) { readLong() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -96,9 +97,9 @@ class TLAvailableEffect() : TLObject() {
         size += SIZE_INT32
         size += SIZE_INT64
         size += computeTLStringSerializedSize(emoticon)
-        size += getIntIfMask(staticIconId, 1) { SIZE_INT64 }
+        size += getIntIfMask(1, staticIconId, 1) { SIZE_INT64 }
         size += SIZE_INT64
-        size += getIntIfMask(effectAnimationId, 2) { SIZE_INT64 }
+        size += getIntIfMask(1, effectAnimationId, 2) { SIZE_INT64 }
         return size
     }
 

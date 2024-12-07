@@ -69,6 +69,7 @@ class TLPageBlockEmbed() : TLAbsPageBlock() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(fullWidth, 1)
         updateFlags(allowScrolling, 8)
         updateFlags(url, 2)
@@ -83,24 +84,24 @@ class TLPageBlockEmbed() : TLAbsPageBlock() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(url, 2) { writeString(it) }
-        doIfMask(html, 4) { writeString(it) }
-        doIfMask(posterPhotoId, 16) { writeLong(it) }
-        doIfMask(w, 32) { writeInt(it) }
-        doIfMask(h, 32) { writeInt(it) }
+        doIfMask(1, url, 2) { writeString(it) }
+        doIfMask(1, html, 4) { writeString(it) }
+        doIfMask(1, posterPhotoId, 16) { writeLong(it) }
+        doIfMask(1, w, 32) { writeInt(it) }
+        doIfMask(1, h, 32) { writeInt(it) }
         writeTLObject(caption)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        fullWidth = isMask(1)
-        allowScrolling = isMask(8)
-        url = readIfMask(2) { readString() }
-        html = readIfMask(4) { readString() }
-        posterPhotoId = readIfMask(16) { readLong() }
-        w = readIfMask(32) { readInt() }
-        h = readIfMask(32) { readInt() }
+        fullWidth = isMask(1, 1)
+        allowScrolling = isMask(1, 8)
+        url = readIfMask(1, 2) { readString() }
+        html = readIfMask(1, 4) { readString() }
+        posterPhotoId = readIfMask(1, 16) { readLong() }
+        w = readIfMask(1, 32) { readInt() }
+        h = readIfMask(1, 32) { readInt() }
         caption = readTLObject<TLPageCaption>(TLPageCaption::class, TLPageCaption.CONSTRUCTOR_ID)
     }
 
@@ -109,11 +110,11 @@ class TLPageBlockEmbed() : TLAbsPageBlock() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(url, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(html, 4) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(posterPhotoId, 16) { SIZE_INT64 }
-        size += getIntIfMask(w, 32) { SIZE_INT32 }
-        size += getIntIfMask(h, 32) { SIZE_INT32 }
+        size += getIntIfMask(1, url, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, html, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, posterPhotoId, 16) { SIZE_INT64 }
+        size += getIntIfMask(1, w, 32) { SIZE_INT32 }
+        size += getIntIfMask(1, h, 32) { SIZE_INT32 }
         size += caption.computeSerializedSize()
         return size
     }

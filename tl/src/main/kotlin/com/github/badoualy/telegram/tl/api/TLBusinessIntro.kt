@@ -46,6 +46,7 @@ class TLBusinessIntro() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(sticker, 1)
     }
 
@@ -56,7 +57,7 @@ class TLBusinessIntro() : TLObject() {
         writeInt(_flags)
         writeString(title)
         writeString(description)
-        doIfMask(sticker, 1) { writeTLObject(it) }
+        doIfMask(1, sticker, 1) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
@@ -64,7 +65,7 @@ class TLBusinessIntro() : TLObject() {
         _flags = readInt()
         title = readString()
         description = readString()
-        sticker = readIfMask(1) { readTLObject<TLAbsDocument>() }
+        sticker = readIfMask(1, 1) { readTLObject<TLAbsDocument>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -74,7 +75,7 @@ class TLBusinessIntro() : TLObject() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(title)
         size += computeTLStringSerializedSize(description)
-        size += getIntIfMask(sticker, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, sticker, 1) { it.computeSerializedSize() }
         return size
     }
 

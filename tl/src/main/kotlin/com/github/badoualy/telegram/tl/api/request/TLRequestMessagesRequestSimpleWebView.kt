@@ -75,6 +75,7 @@ class TLRequestMessagesRequestSimpleWebView() : TLMethod<TLWebViewResultUrl>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(fromSwitchWebview, 2)
         updateFlags(fromSideMenu, 4)
         updateFlags(compact, 128)
@@ -89,22 +90,22 @@ class TLRequestMessagesRequestSimpleWebView() : TLMethod<TLWebViewResultUrl>() {
 
         writeInt(_flags)
         writeTLObject(bot)
-        doIfMask(url, 8) { writeString(it) }
-        doIfMask(startParam, 16) { writeString(it) }
-        doIfMask(themeParams, 1) { writeTLObject(it) }
+        doIfMask(1, url, 8) { writeString(it) }
+        doIfMask(1, startParam, 16) { writeString(it) }
+        doIfMask(1, themeParams, 1) { writeTLObject(it) }
         writeString(platform)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        fromSwitchWebview = isMask(2)
-        fromSideMenu = isMask(4)
-        compact = isMask(128)
+        fromSwitchWebview = isMask(1, 2)
+        fromSideMenu = isMask(1, 4)
+        compact = isMask(1, 128)
         bot = readTLObject<TLAbsInputUser>()
-        url = readIfMask(8) { readString() }
-        startParam = readIfMask(16) { readString() }
-        themeParams = readIfMask(1) { readTLObject<TLDataJSON>(TLDataJSON::class, TLDataJSON.CONSTRUCTOR_ID) }
+        url = readIfMask(1, 8) { readString() }
+        startParam = readIfMask(1, 16) { readString() }
+        themeParams = readIfMask(1, 1) { readTLObject<TLDataJSON>(TLDataJSON::class, TLDataJSON.CONSTRUCTOR_ID) }
         platform = readString()
     }
 
@@ -114,9 +115,9 @@ class TLRequestMessagesRequestSimpleWebView() : TLMethod<TLWebViewResultUrl>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += bot.computeSerializedSize()
-        size += getIntIfMask(url, 8) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(startParam, 16) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(themeParams, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, url, 8) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, startParam, 16) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, themeParams, 1) { it.computeSerializedSize() }
         size += computeTLStringSerializedSize(platform)
         return size
     }

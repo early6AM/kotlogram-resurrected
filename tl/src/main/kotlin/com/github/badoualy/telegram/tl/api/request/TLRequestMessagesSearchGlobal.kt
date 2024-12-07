@@ -79,6 +79,7 @@ class TLRequestMessagesSearchGlobal() : TLMethod<TLAbsMessages>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(broadcastsOnly, 2)
         updateFlags(folderId, 1)
     }
@@ -88,7 +89,7 @@ class TLRequestMessagesSearchGlobal() : TLMethod<TLAbsMessages>() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(folderId, 1) { writeInt(it) }
+        doIfMask(1, folderId, 1) { writeInt(it) }
         writeString(q)
         writeTLObject(filter)
         writeInt(minDate)
@@ -102,8 +103,8 @@ class TLRequestMessagesSearchGlobal() : TLMethod<TLAbsMessages>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        broadcastsOnly = isMask(2)
-        folderId = readIfMask(1) { readInt() }
+        broadcastsOnly = isMask(1, 2)
+        folderId = readIfMask(1, 1) { readInt() }
         q = readString()
         filter = readTLObject<TLAbsMessagesFilter>()
         minDate = readInt()
@@ -119,7 +120,7 @@ class TLRequestMessagesSearchGlobal() : TLMethod<TLAbsMessages>() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(folderId, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, folderId, 1) { SIZE_INT32 }
         size += computeTLStringSerializedSize(q)
         size += filter.computeSerializedSize()
         size += SIZE_INT32

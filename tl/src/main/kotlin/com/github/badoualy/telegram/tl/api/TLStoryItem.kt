@@ -128,6 +128,7 @@ class TLStoryItem() : TLAbsStoryItem() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(pinned, 32)
         updateFlags(_public, 128)
         updateFlags(closeFriends, 256)
@@ -154,42 +155,42 @@ class TLStoryItem() : TLAbsStoryItem() {
         writeInt(_flags)
         writeInt(id)
         writeInt(date)
-        doIfMask(fromId, 262144) { writeTLObject(it) }
-        doIfMask(fwdFrom, 131072) { writeTLObject(it) }
+        doIfMask(1, fromId, 262144) { writeTLObject(it) }
+        doIfMask(1, fwdFrom, 131072) { writeTLObject(it) }
         writeInt(expireDate)
-        doIfMask(caption, 1) { writeString(it) }
-        doIfMask(entities, 2) { writeTLVector(it) }
+        doIfMask(1, caption, 1) { writeString(it) }
+        doIfMask(1, entities, 2) { writeTLVector(it) }
         writeTLObject(media)
-        doIfMask(mediaAreas, 16384) { writeTLVector(it) }
-        doIfMask(privacy, 4) { writeTLVector(it) }
-        doIfMask(views, 8) { writeTLObject(it) }
-        doIfMask(sentReaction, 32768) { writeTLObject(it) }
+        doIfMask(1, mediaAreas, 16384) { writeTLVector(it) }
+        doIfMask(1, privacy, 4) { writeTLVector(it) }
+        doIfMask(1, views, 8) { writeTLObject(it) }
+        doIfMask(1, sentReaction, 32768) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        pinned = isMask(32)
-        _public = isMask(128)
-        closeFriends = isMask(256)
-        min = isMask(512)
-        noforwards = isMask(1024)
-        edited = isMask(2048)
-        contacts = isMask(4096)
-        selectedContacts = isMask(8192)
-        out = isMask(65536)
+        pinned = isMask(1, 32)
+        _public = isMask(1, 128)
+        closeFriends = isMask(1, 256)
+        min = isMask(1, 512)
+        noforwards = isMask(1, 1024)
+        edited = isMask(1, 2048)
+        contacts = isMask(1, 4096)
+        selectedContacts = isMask(1, 8192)
+        out = isMask(1, 65536)
         id = readInt()
         date = readInt()
-        fromId = readIfMask(262144) { readTLObject<TLAbsPeer>() }
-        fwdFrom = readIfMask(131072) { readTLObject<TLStoryFwdHeader>(TLStoryFwdHeader::class, TLStoryFwdHeader.CONSTRUCTOR_ID) }
+        fromId = readIfMask(1, 262144) { readTLObject<TLAbsPeer>() }
+        fwdFrom = readIfMask(1, 131072) { readTLObject<TLStoryFwdHeader>(TLStoryFwdHeader::class, TLStoryFwdHeader.CONSTRUCTOR_ID) }
         expireDate = readInt()
-        caption = readIfMask(1) { readString() }
-        entities = readIfMask(2) { readTLVector<TLAbsMessageEntity>() }
+        caption = readIfMask(1, 1) { readString() }
+        entities = readIfMask(1, 2) { readTLVector<TLAbsMessageEntity>() }
         media = readTLObject<TLAbsMessageMedia>()
-        mediaAreas = readIfMask(16384) { readTLVector<TLAbsMediaArea>() }
-        privacy = readIfMask(4) { readTLVector<TLAbsPrivacyRule>() }
-        views = readIfMask(8) { readTLObject<TLStoryViews>(TLStoryViews::class, TLStoryViews.CONSTRUCTOR_ID) }
-        sentReaction = readIfMask(32768) { readTLObject<TLAbsReaction>() }
+        mediaAreas = readIfMask(1, 16384) { readTLVector<TLAbsMediaArea>() }
+        privacy = readIfMask(1, 4) { readTLVector<TLAbsPrivacyRule>() }
+        views = readIfMask(1, 8) { readTLObject<TLStoryViews>(TLStoryViews::class, TLStoryViews.CONSTRUCTOR_ID) }
+        sentReaction = readIfMask(1, 32768) { readTLObject<TLAbsReaction>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -199,16 +200,16 @@ class TLStoryItem() : TLAbsStoryItem() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(fromId, 262144) { it.computeSerializedSize() }
-        size += getIntIfMask(fwdFrom, 131072) { it.computeSerializedSize() }
+        size += getIntIfMask(1, fromId, 262144) { it.computeSerializedSize() }
+        size += getIntIfMask(1, fwdFrom, 131072) { it.computeSerializedSize() }
         size += SIZE_INT32
-        size += getIntIfMask(caption, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(entities, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, caption, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, entities, 2) { it.computeSerializedSize() }
         size += media.computeSerializedSize()
-        size += getIntIfMask(mediaAreas, 16384) { it.computeSerializedSize() }
-        size += getIntIfMask(privacy, 4) { it.computeSerializedSize() }
-        size += getIntIfMask(views, 8) { it.computeSerializedSize() }
-        size += getIntIfMask(sentReaction, 32768) { it.computeSerializedSize() }
+        size += getIntIfMask(1, mediaAreas, 16384) { it.computeSerializedSize() }
+        size += getIntIfMask(1, privacy, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, views, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, sentReaction, 32768) { it.computeSerializedSize() }
         return size
     }
 

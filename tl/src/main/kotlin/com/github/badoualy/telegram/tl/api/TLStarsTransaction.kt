@@ -106,6 +106,7 @@ class TLStarsTransaction() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(refund, 8)
         updateFlags(pending, 16)
         updateFlags(failed, 64)
@@ -129,35 +130,35 @@ class TLStarsTransaction() : TLObject() {
         writeLong(stars)
         writeInt(date)
         writeTLObject(peer)
-        doIfMask(title, 1) { writeString(it) }
-        doIfMask(description, 2) { writeString(it) }
-        doIfMask(photo, 4) { writeTLObject(it) }
-        doIfMask(transactionDate, 32) { writeInt(it) }
-        doIfMask(transactionUrl, 32) { writeString(it) }
-        doIfMask(botPayload, 128) { writeTLBytes(it) }
-        doIfMask(msgId, 256) { writeInt(it) }
-        doIfMask(extendedMedia, 512) { writeTLVector(it) }
+        doIfMask(1, title, 1) { writeString(it) }
+        doIfMask(1, description, 2) { writeString(it) }
+        doIfMask(1, photo, 4) { writeTLObject(it) }
+        doIfMask(1, transactionDate, 32) { writeInt(it) }
+        doIfMask(1, transactionUrl, 32) { writeString(it) }
+        doIfMask(1, botPayload, 128) { writeTLBytes(it) }
+        doIfMask(1, msgId, 256) { writeInt(it) }
+        doIfMask(1, extendedMedia, 512) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        refund = isMask(8)
-        pending = isMask(16)
-        failed = isMask(64)
-        gift = isMask(1024)
+        refund = isMask(1, 8)
+        pending = isMask(1, 16)
+        failed = isMask(1, 64)
+        gift = isMask(1, 1024)
         id = readString()
         stars = readLong()
         date = readInt()
         peer = readTLObject<TLAbsStarsTransactionPeer>()
-        title = readIfMask(1) { readString() }
-        description = readIfMask(2) { readString() }
-        photo = readIfMask(4) { readTLObject<TLAbsWebDocument>() }
-        transactionDate = readIfMask(32) { readInt() }
-        transactionUrl = readIfMask(32) { readString() }
-        botPayload = readIfMask(128) { readTLBytes() }
-        msgId = readIfMask(256) { readInt() }
-        extendedMedia = readIfMask(512) { readTLVector<TLAbsMessageMedia>() }
+        title = readIfMask(1, 1) { readString() }
+        description = readIfMask(1, 2) { readString() }
+        photo = readIfMask(1, 4) { readTLObject<TLAbsWebDocument>() }
+        transactionDate = readIfMask(1, 32) { readInt() }
+        transactionUrl = readIfMask(1, 32) { readString() }
+        botPayload = readIfMask(1, 128) { readTLBytes() }
+        msgId = readIfMask(1, 256) { readInt() }
+        extendedMedia = readIfMask(1, 512) { readTLVector<TLAbsMessageMedia>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -169,14 +170,14 @@ class TLStarsTransaction() : TLObject() {
         size += SIZE_INT64
         size += SIZE_INT32
         size += peer.computeSerializedSize()
-        size += getIntIfMask(title, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(description, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(photo, 4) { it.computeSerializedSize() }
-        size += getIntIfMask(transactionDate, 32) { SIZE_INT32 }
-        size += getIntIfMask(transactionUrl, 32) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(botPayload, 128) { computeTLBytesSerializedSize(it) }
-        size += getIntIfMask(msgId, 256) { SIZE_INT32 }
-        size += getIntIfMask(extendedMedia, 512) { it.computeSerializedSize() }
+        size += getIntIfMask(1, title, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, description, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, photo, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, transactionDate, 32) { SIZE_INT32 }
+        size += getIntIfMask(1, transactionUrl, 32) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, botPayload, 128) { computeTLBytesSerializedSize(it) }
+        size += getIntIfMask(1, msgId, 256) { SIZE_INT32 }
+        size += getIntIfMask(1, extendedMedia, 512) { it.computeSerializedSize() }
         return size
     }
 

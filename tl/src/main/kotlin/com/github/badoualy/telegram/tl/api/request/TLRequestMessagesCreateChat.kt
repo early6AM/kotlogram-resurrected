@@ -50,6 +50,7 @@ class TLRequestMessagesCreateChat() : TLMethod<TLInvitedUsers>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(ttlPeriod, 1)
     }
 
@@ -60,7 +61,7 @@ class TLRequestMessagesCreateChat() : TLMethod<TLInvitedUsers>() {
         writeInt(_flags)
         writeTLVector(users)
         writeString(title)
-        doIfMask(ttlPeriod, 1) { writeInt(it) }
+        doIfMask(1, ttlPeriod, 1) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -68,7 +69,7 @@ class TLRequestMessagesCreateChat() : TLMethod<TLInvitedUsers>() {
         _flags = readInt()
         users = readTLVector<TLAbsInputUser>()
         title = readString()
-        ttlPeriod = readIfMask(1) { readInt() }
+        ttlPeriod = readIfMask(1, 1) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -78,7 +79,7 @@ class TLRequestMessagesCreateChat() : TLMethod<TLInvitedUsers>() {
         size += SIZE_INT32
         size += users.computeSerializedSize()
         size += computeTLStringSerializedSize(title)
-        size += getIntIfMask(ttlPeriod, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, ttlPeriod, 1) { SIZE_INT32 }
         return size
     }
 

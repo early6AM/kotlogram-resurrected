@@ -49,6 +49,7 @@ class TLBusinessWorkHours() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(openNow, 1)
     }
 
@@ -64,7 +65,7 @@ class TLBusinessWorkHours() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        openNow = isMask(1)
+        openNow = isMask(1, 1)
         timezoneId = readString()
         weeklyOpen = readTLVector<TLBusinessWeeklyOpen>()
     }

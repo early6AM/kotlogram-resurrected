@@ -52,6 +52,7 @@ class TLStoryFwdHeader() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(modified, 8)
         updateFlags(from, 1)
         updateFlags(fromName, 2)
@@ -63,18 +64,18 @@ class TLStoryFwdHeader() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(from, 1) { writeTLObject(it) }
-        doIfMask(fromName, 2) { writeString(it) }
-        doIfMask(storyId, 4) { writeInt(it) }
+        doIfMask(1, from, 1) { writeTLObject(it) }
+        doIfMask(1, fromName, 2) { writeString(it) }
+        doIfMask(1, storyId, 4) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        modified = isMask(8)
-        from = readIfMask(1) { readTLObject<TLAbsPeer>() }
-        fromName = readIfMask(2) { readString() }
-        storyId = readIfMask(4) { readInt() }
+        modified = isMask(1, 8)
+        from = readIfMask(1, 1) { readTLObject<TLAbsPeer>() }
+        fromName = readIfMask(1, 2) { readString() }
+        storyId = readIfMask(1, 4) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -82,9 +83,9 @@ class TLStoryFwdHeader() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(from, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(fromName, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(storyId, 4) { SIZE_INT32 }
+        size += getIntIfMask(1, from, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, fromName, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, storyId, 4) { SIZE_INT32 }
         return size
     }
 

@@ -82,6 +82,7 @@ class TLMessageMediaGiveawayResults() : TLAbsMessageMedia() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(onlyNewSubscribers, 1)
         updateFlags(refunded, 4)
         updateFlags(additionalPeersCount, 8)
@@ -94,29 +95,29 @@ class TLMessageMediaGiveawayResults() : TLAbsMessageMedia() {
 
         writeInt(_flags)
         writeLong(channelId)
-        doIfMask(additionalPeersCount, 8) { writeInt(it) }
+        doIfMask(1, additionalPeersCount, 8) { writeInt(it) }
         writeInt(launchMsgId)
         writeInt(winnersCount)
         writeInt(unclaimedCount)
         writeTLVector(winners)
         writeInt(months)
-        doIfMask(prizeDescription, 2) { writeString(it) }
+        doIfMask(1, prizeDescription, 2) { writeString(it) }
         writeInt(untilDate)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        onlyNewSubscribers = isMask(1)
-        refunded = isMask(4)
+        onlyNewSubscribers = isMask(1, 1)
+        refunded = isMask(1, 4)
         channelId = readLong()
-        additionalPeersCount = readIfMask(8) { readInt() }
+        additionalPeersCount = readIfMask(1, 8) { readInt() }
         launchMsgId = readInt()
         winnersCount = readInt()
         unclaimedCount = readInt()
         winners = readTLLongVector()
         months = readInt()
-        prizeDescription = readIfMask(2) { readString() }
+        prizeDescription = readIfMask(1, 2) { readString() }
         untilDate = readInt()
     }
 
@@ -126,13 +127,13 @@ class TLMessageMediaGiveawayResults() : TLAbsMessageMedia() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT64
-        size += getIntIfMask(additionalPeersCount, 8) { SIZE_INT32 }
+        size += getIntIfMask(1, additionalPeersCount, 8) { SIZE_INT32 }
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
         size += winners.computeSerializedSize()
         size += SIZE_INT32
-        size += getIntIfMask(prizeDescription, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, prizeDescription, 2) { computeTLStringSerializedSize(it) }
         size += SIZE_INT32
         return size
     }

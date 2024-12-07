@@ -46,6 +46,7 @@ class TLReactionCount() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(chosenOrder, 1)
     }
 
@@ -54,7 +55,7 @@ class TLReactionCount() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(chosenOrder, 1) { writeInt(it) }
+        doIfMask(1, chosenOrder, 1) { writeInt(it) }
         writeTLObject(reaction)
         writeInt(count)
     }
@@ -62,7 +63,7 @@ class TLReactionCount() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        chosenOrder = readIfMask(1) { readInt() }
+        chosenOrder = readIfMask(1, 1) { readInt() }
         reaction = readTLObject<TLAbsReaction>()
         count = readInt()
     }
@@ -72,7 +73,7 @@ class TLReactionCount() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(chosenOrder, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, chosenOrder, 1) { SIZE_INT32 }
         size += reaction.computeSerializedSize()
         size += SIZE_INT32
         return size

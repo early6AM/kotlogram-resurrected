@@ -44,6 +44,7 @@ class TLRequestMessagesDeleteMessages() : TLMethod<TLAffectedMessages>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(revoke, 1)
     }
 
@@ -58,7 +59,7 @@ class TLRequestMessagesDeleteMessages() : TLMethod<TLAffectedMessages>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        revoke = isMask(1)
+        revoke = isMask(1, 1)
         id = readTLIntVector()
     }
 

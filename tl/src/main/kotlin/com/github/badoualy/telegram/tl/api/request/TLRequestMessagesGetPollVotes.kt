@@ -59,6 +59,7 @@ class TLRequestMessagesGetPollVotes() : TLMethod<TLVotesList>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(option, 1)
         updateFlags(offset, 2)
     }
@@ -70,8 +71,8 @@ class TLRequestMessagesGetPollVotes() : TLMethod<TLVotesList>() {
         writeInt(_flags)
         writeTLObject(peer)
         writeInt(id)
-        doIfMask(option, 1) { writeTLBytes(it) }
-        doIfMask(offset, 2) { writeString(it) }
+        doIfMask(1, option, 1) { writeTLBytes(it) }
+        doIfMask(1, offset, 2) { writeString(it) }
         writeInt(limit)
     }
 
@@ -80,8 +81,8 @@ class TLRequestMessagesGetPollVotes() : TLMethod<TLVotesList>() {
         _flags = readInt()
         peer = readTLObject<TLAbsInputPeer>()
         id = readInt()
-        option = readIfMask(1) { readTLBytes() }
-        offset = readIfMask(2) { readString() }
+        option = readIfMask(1, 1) { readTLBytes() }
+        offset = readIfMask(1, 2) { readString() }
         limit = readInt()
     }
 
@@ -92,8 +93,8 @@ class TLRequestMessagesGetPollVotes() : TLMethod<TLVotesList>() {
         size += SIZE_INT32
         size += peer.computeSerializedSize()
         size += SIZE_INT32
-        size += getIntIfMask(option, 1) { computeTLBytesSerializedSize(it) }
-        size += getIntIfMask(offset, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, option, 1) { computeTLBytesSerializedSize(it) }
+        size += getIntIfMask(1, offset, 2) { computeTLStringSerializedSize(it) }
         size += SIZE_INT32
         return size
     }

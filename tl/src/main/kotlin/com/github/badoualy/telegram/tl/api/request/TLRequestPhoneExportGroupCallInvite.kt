@@ -44,6 +44,7 @@ class TLRequestPhoneExportGroupCallInvite() : TLMethod<TLExportedGroupCallInvite
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(canSelfUnmute, 1)
     }
 
@@ -58,7 +59,7 @@ class TLRequestPhoneExportGroupCallInvite() : TLMethod<TLExportedGroupCallInvite
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        canSelfUnmute = isMask(1)
+        canSelfUnmute = isMask(1, 1)
         call = readTLObject<TLInputGroupCall>(TLInputGroupCall::class, TLInputGroupCall.CONSTRUCTOR_ID)
     }
 

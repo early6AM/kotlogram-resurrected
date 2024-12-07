@@ -78,6 +78,7 @@ class TLCodeSettings() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(allowFlashcall, 1)
         updateFlags(currentNumber, 2)
         updateFlags(allowAppHash, 16)
@@ -87,7 +88,7 @@ class TLCodeSettings() : TLObject() {
         updateFlags(logoutTokens, 64)
         updateFlags(token, 256)
         // If field is not serialized force it to false
-        if (appSandbox != null && !isMask(256)) appSandbox = null
+        if (appSandbox != null && !isMask(1, 256)) appSandbox = null
     }
 
     @Throws(IOException::class)
@@ -95,23 +96,23 @@ class TLCodeSettings() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(logoutTokens, 64) { writeTLVector(it) }
-        doIfMask(token, 256) { writeString(it) }
-        doIfMask(appSandbox, 256) { writeBoolean(it) }
+        doIfMask(1, logoutTokens, 64) { writeTLVector(it) }
+        doIfMask(1, token, 256) { writeString(it) }
+        doIfMask(1, appSandbox, 256) { writeBoolean(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        allowFlashcall = isMask(1)
-        currentNumber = isMask(2)
-        allowAppHash = isMask(16)
-        allowMissedCall = isMask(32)
-        allowFirebase = isMask(128)
-        unknownNumber = isMask(512)
-        logoutTokens = readIfMask(64) { readTLBytesVector() }
-        token = readIfMask(256) { readString() }
-        appSandbox = readIfMask(256) { readBoolean() }
+        allowFlashcall = isMask(1, 1)
+        currentNumber = isMask(1, 2)
+        allowAppHash = isMask(1, 16)
+        allowMissedCall = isMask(1, 32)
+        allowFirebase = isMask(1, 128)
+        unknownNumber = isMask(1, 512)
+        logoutTokens = readIfMask(1, 64) { readTLBytesVector() }
+        token = readIfMask(1, 256) { readString() }
+        appSandbox = readIfMask(1, 256) { readBoolean() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -119,9 +120,9 @@ class TLCodeSettings() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(logoutTokens, 64) { it.computeSerializedSize() }
-        size += getIntIfMask(token, 256) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(appSandbox, 256) { SIZE_BOOLEAN }
+        size += getIntIfMask(1, logoutTokens, 64) { it.computeSerializedSize() }
+        size += getIntIfMask(1, token, 256) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, appSandbox, 256) { SIZE_BOOLEAN }
         return size
     }
 

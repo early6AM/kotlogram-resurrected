@@ -130,6 +130,7 @@ class TLChannelAdminLogEventsFilter() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(join, 1)
         updateFlags(leave, 2)
         updateFlags(invite, 4)
@@ -161,25 +162,25 @@ class TLChannelAdminLogEventsFilter() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        join = isMask(1)
-        leave = isMask(2)
-        invite = isMask(4)
-        ban = isMask(8)
-        unban = isMask(16)
-        kick = isMask(32)
-        unkick = isMask(64)
-        promote = isMask(128)
-        demote = isMask(256)
-        info = isMask(512)
-        settings = isMask(1024)
-        pinned = isMask(2048)
-        edit = isMask(4096)
-        delete = isMask(8192)
-        groupCall = isMask(16384)
-        invites = isMask(32768)
-        send = isMask(65536)
-        forums = isMask(131072)
-        subExtend = isMask(262144)
+        join = isMask(1, 1)
+        leave = isMask(1, 2)
+        invite = isMask(1, 4)
+        ban = isMask(1, 8)
+        unban = isMask(1, 16)
+        kick = isMask(1, 32)
+        unkick = isMask(1, 64)
+        promote = isMask(1, 128)
+        demote = isMask(1, 256)
+        info = isMask(1, 512)
+        settings = isMask(1, 1024)
+        pinned = isMask(1, 2048)
+        edit = isMask(1, 4096)
+        delete = isMask(1, 8192)
+        groupCall = isMask(1, 16384)
+        invites = isMask(1, 32768)
+        send = isMask(1, 65536)
+        forums = isMask(1, 131072)
+        subExtend = isMask(1, 262144)
     }
 
     override fun computeSerializedSize(): Int {

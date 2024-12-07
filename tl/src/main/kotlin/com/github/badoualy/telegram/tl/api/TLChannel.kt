@@ -86,8 +86,6 @@ class TLChannel() : TLAbsChat() {
     @Transient
     var forum: Boolean = false
 
-    var _flags2: Int = 0
-
     @Transient
     var storiesHidden: Boolean = false
 
@@ -156,7 +154,6 @@ class TLChannel() : TLAbsChat() {
             joinToSend: Boolean,
             joinRequest: Boolean,
             forum: Boolean,
-            _flags2: Int,
             storiesHidden: Boolean,
             storiesHiddenMin: Boolean,
             storiesUnavailable: Boolean,
@@ -198,7 +195,6 @@ class TLChannel() : TLAbsChat() {
         this.joinToSend = joinToSend
         this.joinRequest = joinRequest
         this.forum = forum
-        this._flags2 = _flags2
         this.storiesHidden = storiesHidden
         this.storiesHiddenMin = storiesHiddenMin
         this.storiesUnavailable = storiesUnavailable
@@ -223,6 +219,7 @@ class TLChannel() : TLAbsChat() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(creator, 1)
         updateFlags(left, 4)
         updateFlags(broadcast, 32)
@@ -261,12 +258,12 @@ class TLChannel() : TLAbsChat() {
         updateFlags(level, 1024)
 
         // Following parameters might be forced to true by another field that updated the flags
-        creator = isMask(1)
-        left = isMask(4)
-        verified = isMask(128)
-        megagroup = isMask(256)
-        restricted = isMask(512)
-        storiesHiddenMin = isMask(4)
+        creator = isMask(1, 1)
+        left = isMask(1, 4)
+        verified = isMask(1, 128)
+        megagroup = isMask(1, 256)
+        restricted = isMask(1, 512)
+        storiesHiddenMin = isMask(2, 4)
     }
 
     @Throws(IOException::class)
@@ -276,68 +273,68 @@ class TLChannel() : TLAbsChat() {
         writeInt(_flags)
         writeInt(_flags2)
         writeLong(id)
-        doIfMask(accessHash, 8192) { writeLong(it) }
+        doIfMask(1, accessHash, 8192) { writeLong(it) }
         writeString(title)
-        doIfMask(username, 64) { writeString(it) }
+        doIfMask(1, username, 64) { writeString(it) }
         writeTLObject(photo)
         writeInt(date)
-        doIfMask(restrictionReason, 512) { writeTLVector(it) }
-        doIfMask(adminRights, 16384) { writeTLObject(it) }
-        doIfMask(bannedRights, 32768) { writeTLObject(it) }
-        doIfMask(defaultBannedRights, 262144) { writeTLObject(it) }
-        doIfMask(participantsCount, 131072) { writeInt(it) }
-        doIfMask(usernames, 1) { writeTLVector(it) }
-        doIfMask(storiesMaxId, 16) { writeInt(it) }
-        doIfMask(color, 128) { writeTLObject(it) }
-        doIfMask(profileColor, 256) { writeTLObject(it) }
-        doIfMask(emojiStatus, 512) { writeTLObject(it) }
-        doIfMask(level, 1024) { writeInt(it) }
+        doIfMask(1, restrictionReason, 512) { writeTLVector(it) }
+        doIfMask(1, adminRights, 16384) { writeTLObject(it) }
+        doIfMask(1, bannedRights, 32768) { writeTLObject(it) }
+        doIfMask(1, defaultBannedRights, 262144) { writeTLObject(it) }
+        doIfMask(1, participantsCount, 131072) { writeInt(it) }
+        doIfMask(2, usernames, 1) { writeTLVector(it) }
+        doIfMask(2, storiesMaxId, 16) { writeInt(it) }
+        doIfMask(2, color, 128) { writeTLObject(it) }
+        doIfMask(2, profileColor, 256) { writeTLObject(it) }
+        doIfMask(2, emojiStatus, 512) { writeTLObject(it) }
+        doIfMask(2, level, 1024) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        creator = isMask(1)
-        left = isMask(4)
-        broadcast = isMask(32)
-        verified = isMask(128)
-        megagroup = isMask(256)
-        restricted = isMask(512)
-        signatures = isMask(2048)
-        min = isMask(4096)
-        scam = isMask(524288)
-        hasLink = isMask(1048576)
-        hasGeo = isMask(2097152)
-        slowmodeEnabled = isMask(4194304)
-        callActive = isMask(8388608)
-        callNotEmpty = isMask(16777216)
-        fake = isMask(33554432)
-        gigagroup = isMask(67108864)
-        noforwards = isMask(134217728)
-        joinToSend = isMask(268435456)
-        joinRequest = isMask(536870912)
-        forum = isMask(1073741824)
+        creator = isMask(1, 1)
+        left = isMask(1, 4)
+        broadcast = isMask(1, 32)
+        verified = isMask(1, 128)
+        megagroup = isMask(1, 256)
+        restricted = isMask(1, 512)
+        signatures = isMask(1, 2048)
+        min = isMask(1, 4096)
+        scam = isMask(1, 524288)
+        hasLink = isMask(1, 1048576)
+        hasGeo = isMask(1, 2097152)
+        slowmodeEnabled = isMask(1, 4194304)
+        callActive = isMask(1, 8388608)
+        callNotEmpty = isMask(1, 16777216)
+        fake = isMask(1, 33554432)
+        gigagroup = isMask(1, 67108864)
+        noforwards = isMask(1, 134217728)
+        joinToSend = isMask(1, 268435456)
+        joinRequest = isMask(1, 536870912)
+        forum = isMask(1, 1073741824)
         _flags2 = readInt()
-        storiesHidden = isMask(2)
-        storiesHiddenMin = isMask(4)
-        storiesUnavailable = isMask(8)
+        storiesHidden = isMask(2, 2)
+        storiesHiddenMin = isMask(2, 4)
+        storiesUnavailable = isMask(2, 8)
         id = readLong()
-        accessHash = readIfMask(8192) { readLong() }
+        accessHash = readIfMask(1, 8192) { readLong() }
         title = readString()
-        username = readIfMask(64) { readString() }
+        username = readIfMask(1, 64) { readString() }
         photo = readTLObject<TLAbsChatPhoto>()
         date = readInt()
-        restrictionReason = readIfMask(512) { readTLVector<TLRestrictionReason>() }
-        adminRights = readIfMask(16384) { readTLObject<TLChatAdminRights>(TLChatAdminRights::class, TLChatAdminRights.CONSTRUCTOR_ID) }
-        bannedRights = readIfMask(32768) { readTLObject<TLChatBannedRights>(TLChatBannedRights::class, TLChatBannedRights.CONSTRUCTOR_ID) }
-        defaultBannedRights = readIfMask(262144) { readTLObject<TLChatBannedRights>(TLChatBannedRights::class, TLChatBannedRights.CONSTRUCTOR_ID) }
-        participantsCount = readIfMask(131072) { readInt() }
-        usernames = readIfMask(1) { readTLVector<TLUsername>() }
-        storiesMaxId = readIfMask(16) { readInt() }
-        color = readIfMask(128) { readTLObject<TLPeerColor>(TLPeerColor::class, TLPeerColor.CONSTRUCTOR_ID) }
-        profileColor = readIfMask(256) { readTLObject<TLPeerColor>(TLPeerColor::class, TLPeerColor.CONSTRUCTOR_ID) }
-        emojiStatus = readIfMask(512) { readTLObject<TLAbsEmojiStatus>() }
-        level = readIfMask(1024) { readInt() }
+        restrictionReason = readIfMask(1, 512) { readTLVector<TLRestrictionReason>() }
+        adminRights = readIfMask(1, 16384) { readTLObject<TLChatAdminRights>(TLChatAdminRights::class, TLChatAdminRights.CONSTRUCTOR_ID) }
+        bannedRights = readIfMask(1, 32768) { readTLObject<TLChatBannedRights>(TLChatBannedRights::class, TLChatBannedRights.CONSTRUCTOR_ID) }
+        defaultBannedRights = readIfMask(1, 262144) { readTLObject<TLChatBannedRights>(TLChatBannedRights::class, TLChatBannedRights.CONSTRUCTOR_ID) }
+        participantsCount = readIfMask(1, 131072) { readInt() }
+        usernames = readIfMask(2, 1) { readTLVector<TLUsername>() }
+        storiesMaxId = readIfMask(2, 16) { readInt() }
+        color = readIfMask(2, 128) { readTLObject<TLPeerColor>(TLPeerColor::class, TLPeerColor.CONSTRUCTOR_ID) }
+        profileColor = readIfMask(2, 256) { readTLObject<TLPeerColor>(TLPeerColor::class, TLPeerColor.CONSTRUCTOR_ID) }
+        emojiStatus = readIfMask(2, 512) { readTLObject<TLAbsEmojiStatus>() }
+        level = readIfMask(2, 1024) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -347,22 +344,22 @@ class TLChannel() : TLAbsChat() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT64
-        size += getIntIfMask(accessHash, 8192) { SIZE_INT64 }
+        size += getIntIfMask(1, accessHash, 8192) { SIZE_INT64 }
         size += computeTLStringSerializedSize(title)
-        size += getIntIfMask(username, 64) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, username, 64) { computeTLStringSerializedSize(it) }
         size += photo.computeSerializedSize()
         size += SIZE_INT32
-        size += getIntIfMask(restrictionReason, 512) { it.computeSerializedSize() }
-        size += getIntIfMask(adminRights, 16384) { it.computeSerializedSize() }
-        size += getIntIfMask(bannedRights, 32768) { it.computeSerializedSize() }
-        size += getIntIfMask(defaultBannedRights, 262144) { it.computeSerializedSize() }
-        size += getIntIfMask(participantsCount, 131072) { SIZE_INT32 }
-        size += getIntIfMask(usernames, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(storiesMaxId, 16) { SIZE_INT32 }
-        size += getIntIfMask(color, 128) { it.computeSerializedSize() }
-        size += getIntIfMask(profileColor, 256) { it.computeSerializedSize() }
-        size += getIntIfMask(emojiStatus, 512) { it.computeSerializedSize() }
-        size += getIntIfMask(level, 1024) { SIZE_INT32 }
+        size += getIntIfMask(1, restrictionReason, 512) { it.computeSerializedSize() }
+        size += getIntIfMask(1, adminRights, 16384) { it.computeSerializedSize() }
+        size += getIntIfMask(1, bannedRights, 32768) { it.computeSerializedSize() }
+        size += getIntIfMask(1, defaultBannedRights, 262144) { it.computeSerializedSize() }
+        size += getIntIfMask(1, participantsCount, 131072) { SIZE_INT32 }
+        size += getIntIfMask(2, usernames, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(2, storiesMaxId, 16) { SIZE_INT32 }
+        size += getIntIfMask(2, color, 128) { it.computeSerializedSize() }
+        size += getIntIfMask(2, profileColor, 256) { it.computeSerializedSize() }
+        size += getIntIfMask(2, emojiStatus, 512) { it.computeSerializedSize() }
+        size += getIntIfMask(2, level, 1024) { SIZE_INT32 }
         return size
     }
 

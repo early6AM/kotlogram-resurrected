@@ -67,6 +67,7 @@ class TLDialogFolder() : TLAbsDialog() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(pinned, 4)
     }
 
@@ -87,7 +88,7 @@ class TLDialogFolder() : TLAbsDialog() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        pinned = isMask(4)
+        pinned = isMask(1, 4)
         folder = readTLObject<TLFolder>(TLFolder::class, TLFolder.CONSTRUCTOR_ID)
         peer = readTLObject<TLAbsPeer>()
         topMessage = readInt()

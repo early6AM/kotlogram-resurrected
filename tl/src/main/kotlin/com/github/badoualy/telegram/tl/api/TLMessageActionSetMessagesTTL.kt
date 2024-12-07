@@ -39,6 +39,7 @@ class TLMessageActionSetMessagesTTL() : TLAbsMessageAction() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(autoSettingFrom, 1)
     }
 
@@ -48,14 +49,14 @@ class TLMessageActionSetMessagesTTL() : TLAbsMessageAction() {
 
         writeInt(_flags)
         writeInt(period)
-        doIfMask(autoSettingFrom, 1) { writeLong(it) }
+        doIfMask(1, autoSettingFrom, 1) { writeLong(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         period = readInt()
-        autoSettingFrom = readIfMask(1) { readLong() }
+        autoSettingFrom = readIfMask(1, 1) { readLong() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -64,7 +65,7 @@ class TLMessageActionSetMessagesTTL() : TLAbsMessageAction() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(autoSettingFrom, 1) { SIZE_INT64 }
+        size += getIntIfMask(1, autoSettingFrom, 1) { SIZE_INT64 }
         return size
     }
 

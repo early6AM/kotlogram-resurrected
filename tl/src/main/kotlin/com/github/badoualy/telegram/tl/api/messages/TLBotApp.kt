@@ -56,6 +56,7 @@ class TLBotApp() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(inactive, 1)
         updateFlags(requestWriteAccess, 2)
         updateFlags(hasSettings, 4)
@@ -72,9 +73,9 @@ class TLBotApp() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        inactive = isMask(1)
-        requestWriteAccess = isMask(2)
-        hasSettings = isMask(4)
+        inactive = isMask(1, 1)
+        requestWriteAccess = isMask(1, 2)
+        hasSettings = isMask(1, 4)
         app = readTLObject<TLAbsBotApp>()
     }
 

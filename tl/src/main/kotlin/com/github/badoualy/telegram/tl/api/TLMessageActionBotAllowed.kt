@@ -52,6 +52,7 @@ class TLMessageActionBotAllowed() : TLAbsMessageAction() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(attachMenu, 2)
         updateFlags(fromRequest, 8)
         updateFlags(domain, 1)
@@ -63,17 +64,17 @@ class TLMessageActionBotAllowed() : TLAbsMessageAction() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(domain, 1) { writeString(it) }
-        doIfMask(app, 4) { writeTLObject(it) }
+        doIfMask(1, domain, 1) { writeString(it) }
+        doIfMask(1, app, 4) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        attachMenu = isMask(2)
-        fromRequest = isMask(8)
-        domain = readIfMask(1) { readString() }
-        app = readIfMask(4) { readTLObject<TLAbsBotApp>() }
+        attachMenu = isMask(1, 2)
+        fromRequest = isMask(1, 8)
+        domain = readIfMask(1, 1) { readString() }
+        app = readIfMask(1, 4) { readTLObject<TLAbsBotApp>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -81,8 +82,8 @@ class TLMessageActionBotAllowed() : TLAbsMessageAction() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(domain, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(app, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, domain, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, app, 4) { it.computeSerializedSize() }
         return size
     }
 

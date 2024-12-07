@@ -69,13 +69,14 @@ class TLChannelParticipantAdmin() : TLAbsChannelParticipant() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(canEdit, 1)
         updateFlags(self, 2)
         updateFlags(inviterId, 2)
         updateFlags(rank, 4)
 
         // Following parameters might be forced to true by another field that updated the flags
-        self = isMask(2)
+        self = isMask(1, 2)
     }
 
     @Throws(IOException::class)
@@ -84,24 +85,24 @@ class TLChannelParticipantAdmin() : TLAbsChannelParticipant() {
 
         writeInt(_flags)
         writeLong(userId)
-        doIfMask(inviterId, 2) { writeLong(it) }
+        doIfMask(1, inviterId, 2) { writeLong(it) }
         writeLong(promotedBy)
         writeInt(date)
         writeTLObject(adminRights)
-        doIfMask(rank, 4) { writeString(it) }
+        doIfMask(1, rank, 4) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        canEdit = isMask(1)
-        self = isMask(2)
+        canEdit = isMask(1, 1)
+        self = isMask(1, 2)
         userId = readLong()
-        inviterId = readIfMask(2) { readLong() }
+        inviterId = readIfMask(1, 2) { readLong() }
         promotedBy = readLong()
         date = readInt()
         adminRights = readTLObject<TLChatAdminRights>(TLChatAdminRights::class, TLChatAdminRights.CONSTRUCTOR_ID)
-        rank = readIfMask(4) { readString() }
+        rank = readIfMask(1, 4) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -110,11 +111,11 @@ class TLChannelParticipantAdmin() : TLAbsChannelParticipant() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT64
-        size += getIntIfMask(inviterId, 2) { SIZE_INT64 }
+        size += getIntIfMask(1, inviterId, 2) { SIZE_INT64 }
         size += SIZE_INT64
         size += SIZE_INT32
         size += adminRights.computeSerializedSize()
-        size += getIntIfMask(rank, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, rank, 4) { computeTLStringSerializedSize(it) }
         return size
     }
 

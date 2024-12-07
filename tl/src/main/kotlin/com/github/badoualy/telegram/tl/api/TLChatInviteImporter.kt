@@ -62,6 +62,7 @@ class TLChatInviteImporter() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(requested, 1)
         updateFlags(viaChatlist, 8)
         updateFlags(about, 4)
@@ -75,19 +76,19 @@ class TLChatInviteImporter() : TLObject() {
         writeInt(_flags)
         writeLong(userId)
         writeInt(date)
-        doIfMask(about, 4) { writeString(it) }
-        doIfMask(approvedBy, 2) { writeLong(it) }
+        doIfMask(1, about, 4) { writeString(it) }
+        doIfMask(1, approvedBy, 2) { writeLong(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        requested = isMask(1)
-        viaChatlist = isMask(8)
+        requested = isMask(1, 1)
+        viaChatlist = isMask(1, 8)
         userId = readLong()
         date = readInt()
-        about = readIfMask(4) { readString() }
-        approvedBy = readIfMask(2) { readLong() }
+        about = readIfMask(1, 4) { readString() }
+        approvedBy = readIfMask(1, 2) { readLong() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -97,8 +98,8 @@ class TLChatInviteImporter() : TLObject() {
         size += SIZE_INT32
         size += SIZE_INT64
         size += SIZE_INT32
-        size += getIntIfMask(about, 4) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(approvedBy, 2) { SIZE_INT64 }
+        size += getIntIfMask(1, about, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, approvedBy, 2) { SIZE_INT64 }
         return size
     }
 

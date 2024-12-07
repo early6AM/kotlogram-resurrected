@@ -55,6 +55,7 @@ class TLRequestAuthSignUp() : TLMethod<TLAbsAuthorization>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(noJoinedNotifications, 1)
     }
 
@@ -72,7 +73,7 @@ class TLRequestAuthSignUp() : TLMethod<TLAbsAuthorization>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        noJoinedNotifications = isMask(1)
+        noJoinedNotifications = isMask(1, 1)
         phoneNumber = readString()
         phoneCodeHash = readString()
         firstName = readString()

@@ -115,6 +115,7 @@ class MTProtoHandler {
             .subscribeBy(
                 onNext = onMessageReceived(),
                 onError = {
+                    it.printStackTrace()
                     System.err.println("${Thread.currentThread().id} $tag messageSubject onErrorReceived() $it")
                     // TODO: enable?
                     resetConnection()

@@ -89,6 +89,7 @@ class TLMessageFwdHeader() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(imported, 128)
         updateFlags(savedOut, 2048)
         updateFlags(fromId, 1)
@@ -108,35 +109,35 @@ class TLMessageFwdHeader() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(fromId, 1) { writeTLObject(it) }
-        doIfMask(fromName, 32) { writeString(it) }
+        doIfMask(1, fromId, 1) { writeTLObject(it) }
+        doIfMask(1, fromName, 32) { writeString(it) }
         writeInt(date)
-        doIfMask(channelPost, 4) { writeInt(it) }
-        doIfMask(postAuthor, 8) { writeString(it) }
-        doIfMask(savedFromPeer, 16) { writeTLObject(it) }
-        doIfMask(savedFromMsgId, 16) { writeInt(it) }
-        doIfMask(savedFromId, 256) { writeTLObject(it) }
-        doIfMask(savedFromName, 512) { writeString(it) }
-        doIfMask(savedDate, 1024) { writeInt(it) }
-        doIfMask(psaType, 64) { writeString(it) }
+        doIfMask(1, channelPost, 4) { writeInt(it) }
+        doIfMask(1, postAuthor, 8) { writeString(it) }
+        doIfMask(1, savedFromPeer, 16) { writeTLObject(it) }
+        doIfMask(1, savedFromMsgId, 16) { writeInt(it) }
+        doIfMask(1, savedFromId, 256) { writeTLObject(it) }
+        doIfMask(1, savedFromName, 512) { writeString(it) }
+        doIfMask(1, savedDate, 1024) { writeInt(it) }
+        doIfMask(1, psaType, 64) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        imported = isMask(128)
-        savedOut = isMask(2048)
-        fromId = readIfMask(1) { readTLObject<TLAbsPeer>() }
-        fromName = readIfMask(32) { readString() }
+        imported = isMask(1, 128)
+        savedOut = isMask(1, 2048)
+        fromId = readIfMask(1, 1) { readTLObject<TLAbsPeer>() }
+        fromName = readIfMask(1, 32) { readString() }
         date = readInt()
-        channelPost = readIfMask(4) { readInt() }
-        postAuthor = readIfMask(8) { readString() }
-        savedFromPeer = readIfMask(16) { readTLObject<TLAbsPeer>() }
-        savedFromMsgId = readIfMask(16) { readInt() }
-        savedFromId = readIfMask(256) { readTLObject<TLAbsPeer>() }
-        savedFromName = readIfMask(512) { readString() }
-        savedDate = readIfMask(1024) { readInt() }
-        psaType = readIfMask(64) { readString() }
+        channelPost = readIfMask(1, 4) { readInt() }
+        postAuthor = readIfMask(1, 8) { readString() }
+        savedFromPeer = readIfMask(1, 16) { readTLObject<TLAbsPeer>() }
+        savedFromMsgId = readIfMask(1, 16) { readInt() }
+        savedFromId = readIfMask(1, 256) { readTLObject<TLAbsPeer>() }
+        savedFromName = readIfMask(1, 512) { readString() }
+        savedDate = readIfMask(1, 1024) { readInt() }
+        psaType = readIfMask(1, 64) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -144,17 +145,17 @@ class TLMessageFwdHeader() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(fromId, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(fromName, 32) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, fromId, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, fromName, 32) { computeTLStringSerializedSize(it) }
         size += SIZE_INT32
-        size += getIntIfMask(channelPost, 4) { SIZE_INT32 }
-        size += getIntIfMask(postAuthor, 8) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(savedFromPeer, 16) { it.computeSerializedSize() }
-        size += getIntIfMask(savedFromMsgId, 16) { SIZE_INT32 }
-        size += getIntIfMask(savedFromId, 256) { it.computeSerializedSize() }
-        size += getIntIfMask(savedFromName, 512) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(savedDate, 1024) { SIZE_INT32 }
-        size += getIntIfMask(psaType, 64) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, channelPost, 4) { SIZE_INT32 }
+        size += getIntIfMask(1, postAuthor, 8) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, savedFromPeer, 16) { it.computeSerializedSize() }
+        size += getIntIfMask(1, savedFromMsgId, 16) { SIZE_INT32 }
+        size += getIntIfMask(1, savedFromId, 256) { it.computeSerializedSize() }
+        size += getIntIfMask(1, savedFromName, 512) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, savedDate, 1024) { SIZE_INT32 }
+        size += getIntIfMask(1, psaType, 64) { computeTLStringSerializedSize(it) }
         return size
     }
 

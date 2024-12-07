@@ -49,6 +49,7 @@ class TLRequestChannelsGetAdminedPublicChannels() : TLMethod<TLAbsChats>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(byLocation, 1)
         updateFlags(checkLimit, 2)
         updateFlags(forPersonal, 4)
@@ -64,9 +65,9 @@ class TLRequestChannelsGetAdminedPublicChannels() : TLMethod<TLAbsChats>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        byLocation = isMask(1)
-        checkLimit = isMask(2)
-        forPersonal = isMask(4)
+        byLocation = isMask(1, 1)
+        checkLimit = isMask(1, 2)
+        forPersonal = isMask(1, 4)
     }
 
     override fun computeSerializedSize(): Int {

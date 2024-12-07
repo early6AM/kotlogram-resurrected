@@ -46,6 +46,7 @@ class TLMessageViews() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(views, 1)
         updateFlags(forwards, 2)
         updateFlags(replies, 4)
@@ -56,17 +57,17 @@ class TLMessageViews() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(views, 1) { writeInt(it) }
-        doIfMask(forwards, 2) { writeInt(it) }
-        doIfMask(replies, 4) { writeTLObject(it) }
+        doIfMask(1, views, 1) { writeInt(it) }
+        doIfMask(1, forwards, 2) { writeInt(it) }
+        doIfMask(1, replies, 4) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        views = readIfMask(1) { readInt() }
-        forwards = readIfMask(2) { readInt() }
-        replies = readIfMask(4) { readTLObject<TLMessageReplies>(TLMessageReplies::class, TLMessageReplies.CONSTRUCTOR_ID) }
+        views = readIfMask(1, 1) { readInt() }
+        forwards = readIfMask(1, 2) { readInt() }
+        replies = readIfMask(1, 4) { readTLObject<TLMessageReplies>(TLMessageReplies::class, TLMessageReplies.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -74,9 +75,9 @@ class TLMessageViews() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(views, 1) { SIZE_INT32 }
-        size += getIntIfMask(forwards, 2) { SIZE_INT32 }
-        size += getIntIfMask(replies, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, views, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, forwards, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, replies, 4) { it.computeSerializedSize() }
         return size
     }
 

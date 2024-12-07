@@ -53,6 +53,7 @@ class TLChatPhoto() : TLAbsChatPhoto() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(hasVideo, 1)
         updateFlags(strippedThumb, 2)
     }
@@ -63,16 +64,16 @@ class TLChatPhoto() : TLAbsChatPhoto() {
 
         writeInt(_flags)
         writeLong(photoId)
-        doIfMask(strippedThumb, 2) { writeTLBytes(it) }
+        doIfMask(1, strippedThumb, 2) { writeTLBytes(it) }
         writeInt(dcId)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        hasVideo = isMask(1)
+        hasVideo = isMask(1, 1)
         photoId = readLong()
-        strippedThumb = readIfMask(2) { readTLBytes() }
+        strippedThumb = readIfMask(1, 2) { readTLBytes() }
         dcId = readInt()
     }
 
@@ -82,7 +83,7 @@ class TLChatPhoto() : TLAbsChatPhoto() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT64
-        size += getIntIfMask(strippedThumb, 2) { computeTLBytesSerializedSize(it) }
+        size += getIntIfMask(1, strippedThumb, 2) { computeTLBytesSerializedSize(it) }
         size += SIZE_INT32
         return size
     }

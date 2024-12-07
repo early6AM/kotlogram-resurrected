@@ -48,6 +48,7 @@ class TLRequestMessagesSetBotPrecheckoutResults() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(success, 2)
         updateFlags(error, 1)
     }
@@ -58,15 +59,15 @@ class TLRequestMessagesSetBotPrecheckoutResults() : TLMethod<TLBool>() {
 
         writeInt(_flags)
         writeLong(queryId)
-        doIfMask(error, 1) { writeString(it) }
+        doIfMask(1, error, 1) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        success = isMask(2)
+        success = isMask(1, 2)
         queryId = readLong()
-        error = readIfMask(1) { readString() }
+        error = readIfMask(1, 1) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -75,7 +76,7 @@ class TLRequestMessagesSetBotPrecheckoutResults() : TLMethod<TLBool>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT64
-        size += getIntIfMask(error, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, error, 1) { computeTLStringSerializedSize(it) }
         return size
     }
 

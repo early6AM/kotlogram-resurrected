@@ -37,6 +37,7 @@ class TLChatReactionsAll() : TLAbsChatReactions() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(allowCustom, 1)
     }
 
@@ -50,7 +51,7 @@ class TLChatReactionsAll() : TLAbsChatReactions() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        allowCustom = isMask(1)
+        allowCustom = isMask(1, 1)
     }
 
     override fun computeSerializedSize(): Int {

@@ -39,6 +39,7 @@ class TLRequestAccountUpdateBusinessLocation() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(geoPoint, 2)
         updateFlags(address, 1)
     }
@@ -48,15 +49,15 @@ class TLRequestAccountUpdateBusinessLocation() : TLMethod<TLBool>() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(geoPoint, 2) { writeTLObject(it) }
-        doIfMask(address, 1) { writeString(it) }
+        doIfMask(1, geoPoint, 2) { writeTLObject(it) }
+        doIfMask(1, address, 1) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        geoPoint = readIfMask(2) { readTLObject<TLAbsInputGeoPoint>() }
-        address = readIfMask(1) { readString() }
+        geoPoint = readIfMask(1, 2) { readTLObject<TLAbsInputGeoPoint>() }
+        address = readIfMask(1, 1) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -64,8 +65,8 @@ class TLRequestAccountUpdateBusinessLocation() : TLMethod<TLBool>() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(geoPoint, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(address, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, geoPoint, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, address, 1) { computeTLStringSerializedSize(it) }
         return size
     }
 

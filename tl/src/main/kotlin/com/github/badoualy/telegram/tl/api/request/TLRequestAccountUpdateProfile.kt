@@ -45,6 +45,7 @@ class TLRequestAccountUpdateProfile() : TLMethod<TLAbsUser>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(firstName, 1)
         updateFlags(lastName, 2)
         updateFlags(about, 4)
@@ -55,17 +56,17 @@ class TLRequestAccountUpdateProfile() : TLMethod<TLAbsUser>() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(firstName, 1) { writeString(it) }
-        doIfMask(lastName, 2) { writeString(it) }
-        doIfMask(about, 4) { writeString(it) }
+        doIfMask(1, firstName, 1) { writeString(it) }
+        doIfMask(1, lastName, 2) { writeString(it) }
+        doIfMask(1, about, 4) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        firstName = readIfMask(1) { readString() }
-        lastName = readIfMask(2) { readString() }
-        about = readIfMask(4) { readString() }
+        firstName = readIfMask(1, 1) { readString() }
+        lastName = readIfMask(1, 2) { readString() }
+        about = readIfMask(1, 4) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -73,9 +74,9 @@ class TLRequestAccountUpdateProfile() : TLMethod<TLAbsUser>() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(firstName, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(lastName, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(about, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, firstName, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, lastName, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, about, 4) { computeTLStringSerializedSize(it) }
         return size
     }
 

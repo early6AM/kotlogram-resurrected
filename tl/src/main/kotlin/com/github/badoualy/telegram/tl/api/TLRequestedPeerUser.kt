@@ -54,6 +54,7 @@ class TLRequestedPeerUser() : TLAbsRequestedPeer() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(firstName, 1)
         updateFlags(lastName, 1)
         updateFlags(username, 2)
@@ -66,20 +67,20 @@ class TLRequestedPeerUser() : TLAbsRequestedPeer() {
 
         writeInt(_flags)
         writeLong(userId)
-        doIfMask(firstName, 1) { writeString(it) }
-        doIfMask(lastName, 1) { writeString(it) }
-        doIfMask(username, 2) { writeString(it) }
-        doIfMask(photo, 4) { writeTLObject(it) }
+        doIfMask(1, firstName, 1) { writeString(it) }
+        doIfMask(1, lastName, 1) { writeString(it) }
+        doIfMask(1, username, 2) { writeString(it) }
+        doIfMask(1, photo, 4) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         userId = readLong()
-        firstName = readIfMask(1) { readString() }
-        lastName = readIfMask(1) { readString() }
-        username = readIfMask(2) { readString() }
-        photo = readIfMask(4) { readTLObject<TLAbsPhoto>() }
+        firstName = readIfMask(1, 1) { readString() }
+        lastName = readIfMask(1, 1) { readString() }
+        username = readIfMask(1, 2) { readString() }
+        photo = readIfMask(1, 4) { readTLObject<TLAbsPhoto>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -88,10 +89,10 @@ class TLRequestedPeerUser() : TLAbsRequestedPeer() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT64
-        size += getIntIfMask(firstName, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(lastName, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(username, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(photo, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, firstName, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, lastName, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, username, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, photo, 4) { it.computeSerializedSize() }
         return size
     }
 

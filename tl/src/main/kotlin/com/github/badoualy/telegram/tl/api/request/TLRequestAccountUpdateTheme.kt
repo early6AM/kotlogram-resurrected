@@ -65,6 +65,7 @@ class TLRequestAccountUpdateTheme() : TLMethod<TLTheme>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(slug, 1)
         updateFlags(title, 2)
         updateFlags(document, 4)
@@ -78,10 +79,10 @@ class TLRequestAccountUpdateTheme() : TLMethod<TLTheme>() {
         writeInt(_flags)
         writeString(format)
         writeTLObject(theme)
-        doIfMask(slug, 1) { writeString(it) }
-        doIfMask(title, 2) { writeString(it) }
-        doIfMask(document, 4) { writeTLObject(it) }
-        doIfMask(settings, 8) { writeTLVector(it) }
+        doIfMask(1, slug, 1) { writeString(it) }
+        doIfMask(1, title, 2) { writeString(it) }
+        doIfMask(1, document, 4) { writeTLObject(it) }
+        doIfMask(1, settings, 8) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
@@ -89,10 +90,10 @@ class TLRequestAccountUpdateTheme() : TLMethod<TLTheme>() {
         _flags = readInt()
         format = readString()
         theme = readTLObject<TLAbsInputTheme>()
-        slug = readIfMask(1) { readString() }
-        title = readIfMask(2) { readString() }
-        document = readIfMask(4) { readTLObject<TLAbsInputDocument>() }
-        settings = readIfMask(8) { readTLVector<TLInputThemeSettings>() }
+        slug = readIfMask(1, 1) { readString() }
+        title = readIfMask(1, 2) { readString() }
+        document = readIfMask(1, 4) { readTLObject<TLAbsInputDocument>() }
+        settings = readIfMask(1, 8) { readTLVector<TLInputThemeSettings>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -102,10 +103,10 @@ class TLRequestAccountUpdateTheme() : TLMethod<TLTheme>() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(format)
         size += theme.computeSerializedSize()
-        size += getIntIfMask(slug, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(title, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(document, 4) { it.computeSerializedSize() }
-        size += getIntIfMask(settings, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, slug, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, title, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, document, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, settings, 8) { it.computeSerializedSize() }
         return size
     }
 

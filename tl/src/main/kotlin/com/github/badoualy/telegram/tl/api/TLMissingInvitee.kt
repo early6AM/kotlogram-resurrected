@@ -50,6 +50,7 @@ class TLMissingInvitee() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(premiumWouldAllowInvite, 1)
         updateFlags(premiumRequiredForPm, 2)
     }
@@ -65,8 +66,8 @@ class TLMissingInvitee() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        premiumWouldAllowInvite = isMask(1)
-        premiumRequiredForPm = isMask(2)
+        premiumWouldAllowInvite = isMask(1, 1)
+        premiumRequiredForPm = isMask(1, 2)
         userId = readLong()
     }
 

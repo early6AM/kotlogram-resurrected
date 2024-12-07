@@ -36,6 +36,7 @@ class TLAuthorizationSignUpRequired() : TLAbsAuthorization() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(termsOfService, 1)
     }
 
@@ -44,13 +45,13 @@ class TLAuthorizationSignUpRequired() : TLAbsAuthorization() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(termsOfService, 1) { writeTLObject(it) }
+        doIfMask(1, termsOfService, 1) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        termsOfService = readIfMask(1) { readTLObject<TLTermsOfService>(TLTermsOfService::class, TLTermsOfService.CONSTRUCTOR_ID) }
+        termsOfService = readIfMask(1, 1) { readTLObject<TLTermsOfService>(TLTermsOfService::class, TLTermsOfService.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -58,7 +59,7 @@ class TLAuthorizationSignUpRequired() : TLAbsAuthorization() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(termsOfService, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, termsOfService, 1) { it.computeSerializedSize() }
         return size
     }
 

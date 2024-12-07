@@ -53,6 +53,7 @@ class TLInputMediaWebPage() : TLAbsInputMedia() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(forceLargeMedia, 1)
         updateFlags(forceSmallMedia, 2)
         updateFlags(optional, 4)
@@ -69,9 +70,9 @@ class TLInputMediaWebPage() : TLAbsInputMedia() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        forceLargeMedia = isMask(1)
-        forceSmallMedia = isMask(2)
-        optional = isMask(4)
+        forceLargeMedia = isMask(1, 1)
+        forceSmallMedia = isMask(1, 2)
+        optional = isMask(1, 4)
         url = readString()
     }
 

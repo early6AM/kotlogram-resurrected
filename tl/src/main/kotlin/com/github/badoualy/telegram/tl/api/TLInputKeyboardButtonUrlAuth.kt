@@ -55,6 +55,7 @@ class TLInputKeyboardButtonUrlAuth() : TLAbsKeyboardButton() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(requestWriteAccess, 1)
         updateFlags(fwdText, 2)
     }
@@ -65,7 +66,7 @@ class TLInputKeyboardButtonUrlAuth() : TLAbsKeyboardButton() {
 
         writeInt(_flags)
         writeString(text)
-        doIfMask(fwdText, 2) { writeString(it) }
+        doIfMask(1, fwdText, 2) { writeString(it) }
         writeString(url)
         writeTLObject(bot)
     }
@@ -73,9 +74,9 @@ class TLInputKeyboardButtonUrlAuth() : TLAbsKeyboardButton() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        requestWriteAccess = isMask(1)
+        requestWriteAccess = isMask(1, 1)
         text = readString()
-        fwdText = readIfMask(2) { readString() }
+        fwdText = readIfMask(1, 2) { readString() }
         url = readString()
         bot = readTLObject<TLAbsInputUser>()
     }
@@ -86,7 +87,7 @@ class TLInputKeyboardButtonUrlAuth() : TLAbsKeyboardButton() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += computeTLStringSerializedSize(text)
-        size += getIntIfMask(fwdText, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, fwdText, 2) { computeTLStringSerializedSize(it) }
         size += computeTLStringSerializedSize(url)
         size += bot.computeSerializedSize()
         return size

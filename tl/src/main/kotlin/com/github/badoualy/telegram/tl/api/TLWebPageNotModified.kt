@@ -35,6 +35,7 @@ class TLWebPageNotModified() : TLAbsWebPage() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(cachedPageViews, 1)
     }
 
@@ -43,13 +44,13 @@ class TLWebPageNotModified() : TLAbsWebPage() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(cachedPageViews, 1) { writeInt(it) }
+        doIfMask(1, cachedPageViews, 1) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        cachedPageViews = readIfMask(1) { readInt() }
+        cachedPageViews = readIfMask(1, 1) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -57,7 +58,7 @@ class TLWebPageNotModified() : TLAbsWebPage() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(cachedPageViews, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, cachedPageViews, 1) { SIZE_INT32 }
         return size
     }
 

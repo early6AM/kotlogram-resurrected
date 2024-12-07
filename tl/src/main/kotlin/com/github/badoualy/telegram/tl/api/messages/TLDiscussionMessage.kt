@@ -66,6 +66,7 @@ class TLDiscussionMessage() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(maxId, 1)
         updateFlags(readInboxMaxId, 2)
         updateFlags(readOutboxMaxId, 4)
@@ -77,9 +78,9 @@ class TLDiscussionMessage() : TLObject() {
 
         writeInt(_flags)
         writeTLVector(messages)
-        doIfMask(maxId, 1) { writeInt(it) }
-        doIfMask(readInboxMaxId, 2) { writeInt(it) }
-        doIfMask(readOutboxMaxId, 4) { writeInt(it) }
+        doIfMask(1, maxId, 1) { writeInt(it) }
+        doIfMask(1, readInboxMaxId, 2) { writeInt(it) }
+        doIfMask(1, readOutboxMaxId, 4) { writeInt(it) }
         writeInt(unreadCount)
         writeTLVector(chats)
         writeTLVector(users)
@@ -89,9 +90,9 @@ class TLDiscussionMessage() : TLObject() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         messages = readTLVector<TLAbsMessage>()
-        maxId = readIfMask(1) { readInt() }
-        readInboxMaxId = readIfMask(2) { readInt() }
-        readOutboxMaxId = readIfMask(4) { readInt() }
+        maxId = readIfMask(1, 1) { readInt() }
+        readInboxMaxId = readIfMask(1, 2) { readInt() }
+        readOutboxMaxId = readIfMask(1, 4) { readInt() }
         unreadCount = readInt()
         chats = readTLVector<TLAbsChat>()
         users = readTLVector<TLAbsUser>()
@@ -103,9 +104,9 @@ class TLDiscussionMessage() : TLObject() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += messages.computeSerializedSize()
-        size += getIntIfMask(maxId, 1) { SIZE_INT32 }
-        size += getIntIfMask(readInboxMaxId, 2) { SIZE_INT32 }
-        size += getIntIfMask(readOutboxMaxId, 4) { SIZE_INT32 }
+        size += getIntIfMask(1, maxId, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, readInboxMaxId, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, readOutboxMaxId, 4) { SIZE_INT32 }
         size += SIZE_INT32
         size += chats.computeSerializedSize()
         size += users.computeSerializedSize()

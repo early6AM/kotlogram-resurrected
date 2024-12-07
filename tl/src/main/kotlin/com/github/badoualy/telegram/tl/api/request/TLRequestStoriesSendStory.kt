@@ -98,6 +98,7 @@ class TLRequestStoriesSendStory() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(pinned, 4)
         updateFlags(noforwards, 16)
         updateFlags(fwdModified, 128)
@@ -116,32 +117,32 @@ class TLRequestStoriesSendStory() : TLMethod<TLAbsUpdates>() {
         writeInt(_flags)
         writeTLObject(peer)
         writeTLObject(media)
-        doIfMask(mediaAreas, 32) { writeTLVector(it) }
-        doIfMask(caption, 1) { writeString(it) }
-        doIfMask(entities, 2) { writeTLVector(it) }
+        doIfMask(1, mediaAreas, 32) { writeTLVector(it) }
+        doIfMask(1, caption, 1) { writeString(it) }
+        doIfMask(1, entities, 2) { writeTLVector(it) }
         writeTLVector(privacyRules)
         writeLong(randomId)
-        doIfMask(period, 8) { writeInt(it) }
-        doIfMask(fwdFromId, 64) { writeTLObject(it) }
-        doIfMask(fwdFromStory, 64) { writeInt(it) }
+        doIfMask(1, period, 8) { writeInt(it) }
+        doIfMask(1, fwdFromId, 64) { writeTLObject(it) }
+        doIfMask(1, fwdFromStory, 64) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        pinned = isMask(4)
-        noforwards = isMask(16)
-        fwdModified = isMask(128)
+        pinned = isMask(1, 4)
+        noforwards = isMask(1, 16)
+        fwdModified = isMask(1, 128)
         peer = readTLObject<TLAbsInputPeer>()
         media = readTLObject<TLAbsInputMedia>()
-        mediaAreas = readIfMask(32) { readTLVector<TLAbsMediaArea>() }
-        caption = readIfMask(1) { readString() }
-        entities = readIfMask(2) { readTLVector<TLAbsMessageEntity>() }
+        mediaAreas = readIfMask(1, 32) { readTLVector<TLAbsMediaArea>() }
+        caption = readIfMask(1, 1) { readString() }
+        entities = readIfMask(1, 2) { readTLVector<TLAbsMessageEntity>() }
         privacyRules = readTLVector<TLAbsInputPrivacyRule>()
         randomId = readLong()
-        period = readIfMask(8) { readInt() }
-        fwdFromId = readIfMask(64) { readTLObject<TLAbsInputPeer>() }
-        fwdFromStory = readIfMask(64) { readInt() }
+        period = readIfMask(1, 8) { readInt() }
+        fwdFromId = readIfMask(1, 64) { readTLObject<TLAbsInputPeer>() }
+        fwdFromStory = readIfMask(1, 64) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -151,14 +152,14 @@ class TLRequestStoriesSendStory() : TLMethod<TLAbsUpdates>() {
         size += SIZE_INT32
         size += peer.computeSerializedSize()
         size += media.computeSerializedSize()
-        size += getIntIfMask(mediaAreas, 32) { it.computeSerializedSize() }
-        size += getIntIfMask(caption, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(entities, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, mediaAreas, 32) { it.computeSerializedSize() }
+        size += getIntIfMask(1, caption, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, entities, 2) { it.computeSerializedSize() }
         size += privacyRules.computeSerializedSize()
         size += SIZE_INT64
-        size += getIntIfMask(period, 8) { SIZE_INT32 }
-        size += getIntIfMask(fwdFromId, 64) { it.computeSerializedSize() }
-        size += getIntIfMask(fwdFromStory, 64) { SIZE_INT32 }
+        size += getIntIfMask(1, period, 8) { SIZE_INT32 }
+        size += getIntIfMask(1, fwdFromId, 64) { it.computeSerializedSize() }
+        size += getIntIfMask(1, fwdFromStory, 64) { SIZE_INT32 }
         return size
     }
 

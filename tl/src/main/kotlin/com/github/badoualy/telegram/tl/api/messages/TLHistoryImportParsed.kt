@@ -49,6 +49,7 @@ class TLHistoryImportParsed() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(pm, 1)
         updateFlags(group, 2)
         updateFlags(title, 4)
@@ -59,15 +60,15 @@ class TLHistoryImportParsed() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(title, 4) { writeString(it) }
+        doIfMask(1, title, 4) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        pm = isMask(1)
-        group = isMask(2)
-        title = readIfMask(4) { readString() }
+        pm = isMask(1, 1)
+        group = isMask(1, 2)
+        title = readIfMask(1, 4) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -75,7 +76,7 @@ class TLHistoryImportParsed() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(title, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, title, 4) { computeTLStringSerializedSize(it) }
         return size
     }
 

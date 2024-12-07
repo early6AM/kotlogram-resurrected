@@ -66,6 +66,7 @@ class TLBotInfo() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(hasPreviewMedias, 64)
         updateFlags(userId, 1)
         updateFlags(description, 2)
@@ -80,24 +81,24 @@ class TLBotInfo() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(userId, 1) { writeLong(it) }
-        doIfMask(description, 2) { writeString(it) }
-        doIfMask(descriptionPhoto, 16) { writeTLObject(it) }
-        doIfMask(descriptionDocument, 32) { writeTLObject(it) }
-        doIfMask(commands, 4) { writeTLVector(it) }
-        doIfMask(menuButton, 8) { writeTLObject(it) }
+        doIfMask(1, userId, 1) { writeLong(it) }
+        doIfMask(1, description, 2) { writeString(it) }
+        doIfMask(1, descriptionPhoto, 16) { writeTLObject(it) }
+        doIfMask(1, descriptionDocument, 32) { writeTLObject(it) }
+        doIfMask(1, commands, 4) { writeTLVector(it) }
+        doIfMask(1, menuButton, 8) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        hasPreviewMedias = isMask(64)
-        userId = readIfMask(1) { readLong() }
-        description = readIfMask(2) { readString() }
-        descriptionPhoto = readIfMask(16) { readTLObject<TLAbsPhoto>() }
-        descriptionDocument = readIfMask(32) { readTLObject<TLAbsDocument>() }
-        commands = readIfMask(4) { readTLVector<TLBotCommand>() }
-        menuButton = readIfMask(8) { readTLObject<TLAbsBotMenuButton>() }
+        hasPreviewMedias = isMask(1, 64)
+        userId = readIfMask(1, 1) { readLong() }
+        description = readIfMask(1, 2) { readString() }
+        descriptionPhoto = readIfMask(1, 16) { readTLObject<TLAbsPhoto>() }
+        descriptionDocument = readIfMask(1, 32) { readTLObject<TLAbsDocument>() }
+        commands = readIfMask(1, 4) { readTLVector<TLBotCommand>() }
+        menuButton = readIfMask(1, 8) { readTLObject<TLAbsBotMenuButton>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -105,12 +106,12 @@ class TLBotInfo() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(userId, 1) { SIZE_INT64 }
-        size += getIntIfMask(description, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(descriptionPhoto, 16) { it.computeSerializedSize() }
-        size += getIntIfMask(descriptionDocument, 32) { it.computeSerializedSize() }
-        size += getIntIfMask(commands, 4) { it.computeSerializedSize() }
-        size += getIntIfMask(menuButton, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, userId, 1) { SIZE_INT64 }
+        size += getIntIfMask(1, description, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, descriptionPhoto, 16) { it.computeSerializedSize() }
+        size += getIntIfMask(1, descriptionDocument, 32) { it.computeSerializedSize() }
+        size += getIntIfMask(1, commands, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, menuButton, 8) { it.computeSerializedSize() }
         return size
     }
 

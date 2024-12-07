@@ -39,6 +39,7 @@ class TLRequestStatsLoadAsyncGraph() : TLMethod<TLAbsStatsGraph>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(x, 1)
     }
 
@@ -48,14 +49,14 @@ class TLRequestStatsLoadAsyncGraph() : TLMethod<TLAbsStatsGraph>() {
 
         writeInt(_flags)
         writeString(token)
-        doIfMask(x, 1) { writeLong(it) }
+        doIfMask(1, x, 1) { writeLong(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         token = readString()
-        x = readIfMask(1) { readLong() }
+        x = readIfMask(1, 1) { readLong() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -64,7 +65,7 @@ class TLRequestStatsLoadAsyncGraph() : TLMethod<TLAbsStatsGraph>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += computeTLStringSerializedSize(token)
-        size += getIntIfMask(x, 1) { SIZE_INT64 }
+        size += getIntIfMask(1, x, 1) { SIZE_INT64 }
         return size
     }
 

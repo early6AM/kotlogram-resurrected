@@ -40,6 +40,7 @@ class TLRequestMessagesGetWebPagePreview() : TLMethod<TLAbsMessageMedia>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(entities, 8)
     }
 
@@ -49,14 +50,14 @@ class TLRequestMessagesGetWebPagePreview() : TLMethod<TLAbsMessageMedia>() {
 
         writeInt(_flags)
         writeString(message)
-        doIfMask(entities, 8) { writeTLVector(it) }
+        doIfMask(1, entities, 8) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         message = readString()
-        entities = readIfMask(8) { readTLVector<TLAbsMessageEntity>() }
+        entities = readIfMask(1, 8) { readTLVector<TLAbsMessageEntity>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -65,7 +66,7 @@ class TLRequestMessagesGetWebPagePreview() : TLMethod<TLAbsMessageMedia>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += computeTLStringSerializedSize(message)
-        size += getIntIfMask(entities, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, entities, 8) { it.computeSerializedSize() }
         return size
     }
 

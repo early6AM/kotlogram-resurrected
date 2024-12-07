@@ -96,6 +96,7 @@ class TLPassword() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(hasRecovery, 1)
         updateFlags(hasSecureValues, 2)
         updateFlags(hasPassword, 4)
@@ -108,7 +109,7 @@ class TLPassword() : TLObject() {
         updateFlags(loginEmailPattern, 64)
 
         // Following parameters might be forced to true by another field that updated the flags
-        hasPassword = isMask(4)
+        hasPassword = isMask(1, 4)
     }
 
     @Throws(IOException::class)
@@ -116,34 +117,34 @@ class TLPassword() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(currentAlgo, 4) { writeTLObject(it) }
-        doIfMask(srpB, 4) { writeTLBytes(it) }
-        doIfMask(srpId, 4) { writeLong(it) }
-        doIfMask(hint, 8) { writeString(it) }
-        doIfMask(emailUnconfirmedPattern, 16) { writeString(it) }
+        doIfMask(1, currentAlgo, 4) { writeTLObject(it) }
+        doIfMask(1, srpB, 4) { writeTLBytes(it) }
+        doIfMask(1, srpId, 4) { writeLong(it) }
+        doIfMask(1, hint, 8) { writeString(it) }
+        doIfMask(1, emailUnconfirmedPattern, 16) { writeString(it) }
         writeTLObject(newAlgo)
         writeTLObject(newSecureAlgo)
         writeTLBytes(secureRandom)
-        doIfMask(pendingResetDate, 32) { writeInt(it) }
-        doIfMask(loginEmailPattern, 64) { writeString(it) }
+        doIfMask(1, pendingResetDate, 32) { writeInt(it) }
+        doIfMask(1, loginEmailPattern, 64) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        hasRecovery = isMask(1)
-        hasSecureValues = isMask(2)
-        hasPassword = isMask(4)
-        currentAlgo = readIfMask(4) { readTLObject<TLAbsPasswordKdfAlgo>() }
-        srpB = readIfMask(4) { readTLBytes() }
-        srpId = readIfMask(4) { readLong() }
-        hint = readIfMask(8) { readString() }
-        emailUnconfirmedPattern = readIfMask(16) { readString() }
+        hasRecovery = isMask(1, 1)
+        hasSecureValues = isMask(1, 2)
+        hasPassword = isMask(1, 4)
+        currentAlgo = readIfMask(1, 4) { readTLObject<TLAbsPasswordKdfAlgo>() }
+        srpB = readIfMask(1, 4) { readTLBytes() }
+        srpId = readIfMask(1, 4) { readLong() }
+        hint = readIfMask(1, 8) { readString() }
+        emailUnconfirmedPattern = readIfMask(1, 16) { readString() }
         newAlgo = readTLObject<TLAbsPasswordKdfAlgo>()
         newSecureAlgo = readTLObject<TLAbsSecurePasswordKdfAlgo>()
         secureRandom = readTLBytes()
-        pendingResetDate = readIfMask(32) { readInt() }
-        loginEmailPattern = readIfMask(64) { readString() }
+        pendingResetDate = readIfMask(1, 32) { readInt() }
+        loginEmailPattern = readIfMask(1, 64) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -151,16 +152,16 @@ class TLPassword() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(currentAlgo, 4) { it.computeSerializedSize() }
-        size += getIntIfMask(srpB, 4) { computeTLBytesSerializedSize(it) }
-        size += getIntIfMask(srpId, 4) { SIZE_INT64 }
-        size += getIntIfMask(hint, 8) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(emailUnconfirmedPattern, 16) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, currentAlgo, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, srpB, 4) { computeTLBytesSerializedSize(it) }
+        size += getIntIfMask(1, srpId, 4) { SIZE_INT64 }
+        size += getIntIfMask(1, hint, 8) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, emailUnconfirmedPattern, 16) { computeTLStringSerializedSize(it) }
         size += newAlgo.computeSerializedSize()
         size += newSecureAlgo.computeSerializedSize()
         size += computeTLBytesSerializedSize(secureRandom)
-        size += getIntIfMask(pendingResetDate, 32) { SIZE_INT32 }
-        size += getIntIfMask(loginEmailPattern, 64) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, pendingResetDate, 32) { SIZE_INT32 }
+        size += getIntIfMask(1, loginEmailPattern, 64) { computeTLStringSerializedSize(it) }
         return size
     }
 

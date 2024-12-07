@@ -61,6 +61,7 @@ class TLRequestChannelsCreateForumTopic() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(iconColor, 1)
         updateFlags(iconEmojiId, 8)
         updateFlags(sendAs, 4)
@@ -73,10 +74,10 @@ class TLRequestChannelsCreateForumTopic() : TLMethod<TLAbsUpdates>() {
         writeInt(_flags)
         writeTLObject(channel)
         writeString(title)
-        doIfMask(iconColor, 1) { writeInt(it) }
-        doIfMask(iconEmojiId, 8) { writeLong(it) }
+        doIfMask(1, iconColor, 1) { writeInt(it) }
+        doIfMask(1, iconEmojiId, 8) { writeLong(it) }
         writeLong(randomId)
-        doIfMask(sendAs, 4) { writeTLObject(it) }
+        doIfMask(1, sendAs, 4) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
@@ -84,10 +85,10 @@ class TLRequestChannelsCreateForumTopic() : TLMethod<TLAbsUpdates>() {
         _flags = readInt()
         channel = readTLObject<TLAbsInputChannel>()
         title = readString()
-        iconColor = readIfMask(1) { readInt() }
-        iconEmojiId = readIfMask(8) { readLong() }
+        iconColor = readIfMask(1, 1) { readInt() }
+        iconEmojiId = readIfMask(1, 8) { readLong() }
         randomId = readLong()
-        sendAs = readIfMask(4) { readTLObject<TLAbsInputPeer>() }
+        sendAs = readIfMask(1, 4) { readTLObject<TLAbsInputPeer>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -97,10 +98,10 @@ class TLRequestChannelsCreateForumTopic() : TLMethod<TLAbsUpdates>() {
         size += SIZE_INT32
         size += channel.computeSerializedSize()
         size += computeTLStringSerializedSize(title)
-        size += getIntIfMask(iconColor, 1) { SIZE_INT32 }
-        size += getIntIfMask(iconEmojiId, 8) { SIZE_INT64 }
+        size += getIntIfMask(1, iconColor, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, iconEmojiId, 8) { SIZE_INT64 }
         size += SIZE_INT64
-        size += getIntIfMask(sendAs, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, sendAs, 4) { it.computeSerializedSize() }
         return size
     }
 

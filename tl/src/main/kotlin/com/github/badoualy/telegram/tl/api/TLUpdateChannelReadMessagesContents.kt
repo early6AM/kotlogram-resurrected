@@ -47,6 +47,7 @@ class TLUpdateChannelReadMessagesContents() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(topMsgId, 1)
     }
 
@@ -56,7 +57,7 @@ class TLUpdateChannelReadMessagesContents() : TLAbsUpdate() {
 
         writeInt(_flags)
         writeLong(channelId)
-        doIfMask(topMsgId, 1) { writeInt(it) }
+        doIfMask(1, topMsgId, 1) { writeInt(it) }
         writeTLVector(messages)
     }
 
@@ -64,7 +65,7 @@ class TLUpdateChannelReadMessagesContents() : TLAbsUpdate() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         channelId = readLong()
-        topMsgId = readIfMask(1) { readInt() }
+        topMsgId = readIfMask(1, 1) { readInt() }
         messages = readTLIntVector()
     }
 
@@ -74,7 +75,7 @@ class TLUpdateChannelReadMessagesContents() : TLAbsUpdate() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT64
-        size += getIntIfMask(topMsgId, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, topMsgId, 1) { SIZE_INT32 }
         size += messages.computeSerializedSize()
         return size
     }

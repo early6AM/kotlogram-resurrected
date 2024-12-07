@@ -50,6 +50,7 @@ class TLRequestMessagesDeleteChatUser() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(revokeHistory, 1)
     }
 
@@ -65,7 +66,7 @@ class TLRequestMessagesDeleteChatUser() : TLMethod<TLAbsUpdates>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        revokeHistory = isMask(1)
+        revokeHistory = isMask(1, 1)
         chatId = readLong()
         userId = readTLObject<TLAbsInputUser>()
     }

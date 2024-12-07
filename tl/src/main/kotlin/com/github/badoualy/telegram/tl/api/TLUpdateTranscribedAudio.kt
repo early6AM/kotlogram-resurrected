@@ -56,6 +56,7 @@ class TLUpdateTranscribedAudio() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(pending, 1)
     }
 
@@ -73,7 +74,7 @@ class TLUpdateTranscribedAudio() : TLAbsUpdate() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        pending = isMask(1)
+        pending = isMask(1, 1)
         peer = readTLObject<TLAbsPeer>()
         msgId = readInt()
         transcriptionId = readLong()

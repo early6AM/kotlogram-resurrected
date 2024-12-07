@@ -59,6 +59,7 @@ class TLMessageReactions() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(min, 1)
         updateFlags(canSeeList, 4)
         updateFlags(reactionsAsTags, 8)
@@ -71,17 +72,17 @@ class TLMessageReactions() : TLObject() {
 
         writeInt(_flags)
         writeTLVector(results)
-        doIfMask(recentReactions, 2) { writeTLVector(it) }
+        doIfMask(1, recentReactions, 2) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        min = isMask(1)
-        canSeeList = isMask(4)
-        reactionsAsTags = isMask(8)
+        min = isMask(1, 1)
+        canSeeList = isMask(1, 4)
+        reactionsAsTags = isMask(1, 8)
         results = readTLVector<TLReactionCount>()
-        recentReactions = readIfMask(2) { readTLVector<TLMessagePeerReaction>() }
+        recentReactions = readIfMask(1, 2) { readTLVector<TLMessagePeerReaction>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -90,7 +91,7 @@ class TLMessageReactions() : TLObject() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += results.computeSerializedSize()
-        size += getIntIfMask(recentReactions, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, recentReactions, 2) { it.computeSerializedSize() }
         return size
     }
 

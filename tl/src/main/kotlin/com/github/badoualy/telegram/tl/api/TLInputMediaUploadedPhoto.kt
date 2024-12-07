@@ -52,6 +52,7 @@ class TLInputMediaUploadedPhoto() : TLAbsInputMedia() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(spoiler, 4)
         updateFlags(stickers, 1)
         updateFlags(ttlSeconds, 2)
@@ -63,17 +64,17 @@ class TLInputMediaUploadedPhoto() : TLAbsInputMedia() {
 
         writeInt(_flags)
         writeTLObject(file)
-        doIfMask(stickers, 1) { writeTLVector(it) }
-        doIfMask(ttlSeconds, 2) { writeInt(it) }
+        doIfMask(1, stickers, 1) { writeTLVector(it) }
+        doIfMask(1, ttlSeconds, 2) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        spoiler = isMask(4)
+        spoiler = isMask(1, 4)
         file = readTLObject<TLAbsInputFile>()
-        stickers = readIfMask(1) { readTLVector<TLAbsInputDocument>() }
-        ttlSeconds = readIfMask(2) { readInt() }
+        stickers = readIfMask(1, 1) { readTLVector<TLAbsInputDocument>() }
+        ttlSeconds = readIfMask(1, 2) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -82,8 +83,8 @@ class TLInputMediaUploadedPhoto() : TLAbsInputMedia() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += file.computeSerializedSize()
-        size += getIntIfMask(stickers, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(ttlSeconds, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, stickers, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, ttlSeconds, 2) { SIZE_INT32 }
         return size
     }
 

@@ -41,6 +41,7 @@ class TLSentCodeTypeSetUpEmailRequired() : TLAbsSentCodeType() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(appleSigninAllowed, 1)
         updateFlags(googleSigninAllowed, 2)
     }
@@ -55,8 +56,8 @@ class TLSentCodeTypeSetUpEmailRequired() : TLAbsSentCodeType() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        appleSigninAllowed = isMask(1)
-        googleSigninAllowed = isMask(2)
+        appleSigninAllowed = isMask(1, 1)
+        googleSigninAllowed = isMask(1, 2)
     }
 
     override fun computeSerializedSize(): Int {

@@ -62,6 +62,7 @@ class TLRequestPaymentsSendPaymentForm() : TLMethod<TLAbsPaymentResult>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(requestedInfoId, 1)
         updateFlags(shippingOptionId, 2)
         updateFlags(tipAmount, 4)
@@ -74,10 +75,10 @@ class TLRequestPaymentsSendPaymentForm() : TLMethod<TLAbsPaymentResult>() {
         writeInt(_flags)
         writeLong(formId)
         writeTLObject(invoice)
-        doIfMask(requestedInfoId, 1) { writeString(it) }
-        doIfMask(shippingOptionId, 2) { writeString(it) }
+        doIfMask(1, requestedInfoId, 1) { writeString(it) }
+        doIfMask(1, shippingOptionId, 2) { writeString(it) }
         writeTLObject(credentials)
-        doIfMask(tipAmount, 4) { writeLong(it) }
+        doIfMask(1, tipAmount, 4) { writeLong(it) }
     }
 
     @Throws(IOException::class)
@@ -85,10 +86,10 @@ class TLRequestPaymentsSendPaymentForm() : TLMethod<TLAbsPaymentResult>() {
         _flags = readInt()
         formId = readLong()
         invoice = readTLObject<TLAbsInputInvoice>()
-        requestedInfoId = readIfMask(1) { readString() }
-        shippingOptionId = readIfMask(2) { readString() }
+        requestedInfoId = readIfMask(1, 1) { readString() }
+        shippingOptionId = readIfMask(1, 2) { readString() }
         credentials = readTLObject<TLAbsInputPaymentCredentials>()
-        tipAmount = readIfMask(4) { readLong() }
+        tipAmount = readIfMask(1, 4) { readLong() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -98,10 +99,10 @@ class TLRequestPaymentsSendPaymentForm() : TLMethod<TLAbsPaymentResult>() {
         size += SIZE_INT32
         size += SIZE_INT64
         size += invoice.computeSerializedSize()
-        size += getIntIfMask(requestedInfoId, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(shippingOptionId, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, requestedInfoId, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, shippingOptionId, 2) { computeTLStringSerializedSize(it) }
         size += credentials.computeSerializedSize()
-        size += getIntIfMask(tipAmount, 4) { SIZE_INT64 }
+        size += getIntIfMask(1, tipAmount, 4) { SIZE_INT64 }
         return size
     }
 

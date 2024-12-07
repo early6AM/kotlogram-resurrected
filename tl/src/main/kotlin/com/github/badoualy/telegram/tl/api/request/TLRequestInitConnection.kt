@@ -78,6 +78,7 @@ class TLRequestInitConnection<T : TLObject>() : TLMethod<T>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(proxy, 1)
         updateFlags(params, 2)
     }
@@ -94,8 +95,8 @@ class TLRequestInitConnection<T : TLObject>() : TLMethod<T>() {
         writeString(systemLangCode)
         writeString(langPack)
         writeString(langCode)
-        doIfMask(proxy, 1) { writeTLObject(it) }
-        doIfMask(params, 2) { writeTLObject(it) }
+        doIfMask(1, proxy, 1) { writeTLObject(it) }
+        doIfMask(1, params, 2) { writeTLObject(it) }
         writeTLMethod(query!!)
     }
 
@@ -109,8 +110,8 @@ class TLRequestInitConnection<T : TLObject>() : TLMethod<T>() {
         systemLangCode = readString()
         langPack = readString()
         langCode = readString()
-        proxy = readIfMask(1) { readTLObject<TLInputClientProxy>(TLInputClientProxy::class, TLInputClientProxy.CONSTRUCTOR_ID) }
-        params = readIfMask(2) { readTLObject<TLAbsJSONValue>() }
+        proxy = readIfMask(1, 1) { readTLObject<TLInputClientProxy>(TLInputClientProxy::class, TLInputClientProxy.CONSTRUCTOR_ID) }
+        params = readIfMask(1, 2) { readTLObject<TLAbsJSONValue>() }
         query = readTLMethod()
     }
 
@@ -126,8 +127,8 @@ class TLRequestInitConnection<T : TLObject>() : TLMethod<T>() {
         size += computeTLStringSerializedSize(systemLangCode)
         size += computeTLStringSerializedSize(langPack)
         size += computeTLStringSerializedSize(langCode)
-        size += getIntIfMask(proxy, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(params, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, proxy, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, params, 2) { it.computeSerializedSize() }
         size += query!!.computeSerializedSize()
         return size
     }

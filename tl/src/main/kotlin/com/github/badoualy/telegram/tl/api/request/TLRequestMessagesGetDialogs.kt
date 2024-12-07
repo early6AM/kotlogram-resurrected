@@ -66,6 +66,7 @@ class TLRequestMessagesGetDialogs() : TLMethod<TLAbsDialogs>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(excludePinned, 1)
         updateFlags(folderId, 2)
     }
@@ -75,7 +76,7 @@ class TLRequestMessagesGetDialogs() : TLMethod<TLAbsDialogs>() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(folderId, 2) { writeInt(it) }
+        doIfMask(1, folderId, 2) { writeInt(it) }
         writeInt(offsetDate)
         writeInt(offsetId)
         writeTLObject(offsetPeer)
@@ -86,8 +87,8 @@ class TLRequestMessagesGetDialogs() : TLMethod<TLAbsDialogs>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        excludePinned = isMask(1)
-        folderId = readIfMask(2) { readInt() }
+        excludePinned = isMask(1, 1)
+        folderId = readIfMask(1, 2) { readInt() }
         offsetDate = readInt()
         offsetId = readInt()
         offsetPeer = readTLObject<TLAbsInputPeer>()
@@ -100,7 +101,7 @@ class TLRequestMessagesGetDialogs() : TLMethod<TLAbsDialogs>() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(folderId, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, folderId, 2) { SIZE_INT32 }
         size += SIZE_INT32
         size += SIZE_INT32
         size += offsetPeer.computeSerializedSize()

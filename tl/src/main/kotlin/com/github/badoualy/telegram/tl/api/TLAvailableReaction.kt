@@ -81,6 +81,7 @@ class TLAvailableReaction() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(inactive, 1)
         updateFlags(premium, 4)
         updateFlags(aroundAnimation, 2)
@@ -99,15 +100,15 @@ class TLAvailableReaction() : TLObject() {
         writeTLObject(selectAnimation)
         writeTLObject(activateAnimation)
         writeTLObject(effectAnimation)
-        doIfMask(aroundAnimation, 2) { writeTLObject(it) }
-        doIfMask(centerIcon, 2) { writeTLObject(it) }
+        doIfMask(1, aroundAnimation, 2) { writeTLObject(it) }
+        doIfMask(1, centerIcon, 2) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        inactive = isMask(1)
-        premium = isMask(4)
+        inactive = isMask(1, 1)
+        premium = isMask(1, 4)
         reaction = readString()
         title = readString()
         staticIcon = readTLObject<TLAbsDocument>()
@@ -115,8 +116,8 @@ class TLAvailableReaction() : TLObject() {
         selectAnimation = readTLObject<TLAbsDocument>()
         activateAnimation = readTLObject<TLAbsDocument>()
         effectAnimation = readTLObject<TLAbsDocument>()
-        aroundAnimation = readIfMask(2) { readTLObject<TLAbsDocument>() }
-        centerIcon = readIfMask(2) { readTLObject<TLAbsDocument>() }
+        aroundAnimation = readIfMask(1, 2) { readTLObject<TLAbsDocument>() }
+        centerIcon = readIfMask(1, 2) { readTLObject<TLAbsDocument>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -131,8 +132,8 @@ class TLAvailableReaction() : TLObject() {
         size += selectAnimation.computeSerializedSize()
         size += activateAnimation.computeSerializedSize()
         size += effectAnimation.computeSerializedSize()
-        size += getIntIfMask(aroundAnimation, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(centerIcon, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, aroundAnimation, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, centerIcon, 2) { it.computeSerializedSize() }
         return size
     }
 

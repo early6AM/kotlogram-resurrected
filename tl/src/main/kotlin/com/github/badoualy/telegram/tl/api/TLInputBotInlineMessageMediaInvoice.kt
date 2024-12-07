@@ -66,6 +66,7 @@ class TLInputBotInlineMessageMediaInvoice() : TLAbsInputBotInlineMessage() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(photo, 1)
         updateFlags(replyMarkup, 4)
     }
@@ -77,12 +78,12 @@ class TLInputBotInlineMessageMediaInvoice() : TLAbsInputBotInlineMessage() {
         writeInt(_flags)
         writeString(title)
         writeString(description)
-        doIfMask(photo, 1) { writeTLObject(it) }
+        doIfMask(1, photo, 1) { writeTLObject(it) }
         writeTLObject(invoice)
         writeTLBytes(payload)
         writeString(provider)
         writeTLObject(providerData)
-        doIfMask(replyMarkup, 4) { writeTLObject(it) }
+        doIfMask(1, replyMarkup, 4) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
@@ -90,12 +91,12 @@ class TLInputBotInlineMessageMediaInvoice() : TLAbsInputBotInlineMessage() {
         _flags = readInt()
         title = readString()
         description = readString()
-        photo = readIfMask(1) { readTLObject<TLInputWebDocument>(TLInputWebDocument::class, TLInputWebDocument.CONSTRUCTOR_ID) }
+        photo = readIfMask(1, 1) { readTLObject<TLInputWebDocument>(TLInputWebDocument::class, TLInputWebDocument.CONSTRUCTOR_ID) }
         invoice = readTLObject<TLInvoice>(TLInvoice::class, TLInvoice.CONSTRUCTOR_ID)
         payload = readTLBytes()
         provider = readString()
         providerData = readTLObject<TLDataJSON>(TLDataJSON::class, TLDataJSON.CONSTRUCTOR_ID)
-        replyMarkup = readIfMask(4) { readTLObject<TLAbsReplyMarkup>() }
+        replyMarkup = readIfMask(1, 4) { readTLObject<TLAbsReplyMarkup>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -105,12 +106,12 @@ class TLInputBotInlineMessageMediaInvoice() : TLAbsInputBotInlineMessage() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(title)
         size += computeTLStringSerializedSize(description)
-        size += getIntIfMask(photo, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, photo, 1) { it.computeSerializedSize() }
         size += invoice.computeSerializedSize()
         size += computeTLBytesSerializedSize(payload)
         size += computeTLStringSerializedSize(provider)
         size += providerData.computeSerializedSize()
-        size += getIntIfMask(replyMarkup, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, replyMarkup, 4) { it.computeSerializedSize() }
         return size
     }
 

@@ -39,6 +39,7 @@ class TLRequestAccountDeleteAccount() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(password, 1)
     }
 
@@ -48,14 +49,14 @@ class TLRequestAccountDeleteAccount() : TLMethod<TLBool>() {
 
         writeInt(_flags)
         writeString(reason)
-        doIfMask(password, 1) { writeTLObject(it) }
+        doIfMask(1, password, 1) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         reason = readString()
-        password = readIfMask(1) { readTLObject<TLAbsInputCheckPasswordSRP>() }
+        password = readIfMask(1, 1) { readTLObject<TLAbsInputCheckPasswordSRP>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -64,7 +65,7 @@ class TLRequestAccountDeleteAccount() : TLMethod<TLBool>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += computeTLStringSerializedSize(reason)
-        size += getIntIfMask(password, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, password, 1) { it.computeSerializedSize() }
         return size
     }
 

@@ -59,6 +59,7 @@ class TLRequestMessagesUpdatePinnedMessage() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(silent, 1)
         updateFlags(unpin, 2)
         updateFlags(pmOneside, 4)
@@ -76,9 +77,9 @@ class TLRequestMessagesUpdatePinnedMessage() : TLMethod<TLAbsUpdates>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        silent = isMask(1)
-        unpin = isMask(2)
-        pmOneside = isMask(4)
+        silent = isMask(1, 1)
+        unpin = isMask(1, 2)
+        pmOneside = isMask(1, 4)
         peer = readTLObject<TLAbsInputPeer>()
         id = readInt()
     }

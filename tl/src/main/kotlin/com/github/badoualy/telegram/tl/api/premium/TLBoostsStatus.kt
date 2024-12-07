@@ -80,6 +80,7 @@ class TLBoostsStatus() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(myBoost, 4)
         updateFlags(giftBoosts, 16)
         updateFlags(nextLevelBoosts, 1)
@@ -88,7 +89,7 @@ class TLBoostsStatus() : TLObject() {
         updateFlags(myBoostSlots, 4)
 
         // Following parameters might be forced to true by another field that updated the flags
-        myBoost = isMask(4)
+        myBoost = isMask(1, 4)
     }
 
     @Throws(IOException::class)
@@ -99,27 +100,27 @@ class TLBoostsStatus() : TLObject() {
         writeInt(level)
         writeInt(currentLevelBoosts)
         writeInt(boosts)
-        doIfMask(giftBoosts, 16) { writeInt(it) }
-        doIfMask(nextLevelBoosts, 1) { writeInt(it) }
-        doIfMask(premiumAudience, 2) { writeTLObject(it) }
+        doIfMask(1, giftBoosts, 16) { writeInt(it) }
+        doIfMask(1, nextLevelBoosts, 1) { writeInt(it) }
+        doIfMask(1, premiumAudience, 2) { writeTLObject(it) }
         writeString(boostUrl)
-        doIfMask(prepaidGiveaways, 8) { writeTLVector(it) }
-        doIfMask(myBoostSlots, 4) { writeTLVector(it) }
+        doIfMask(1, prepaidGiveaways, 8) { writeTLVector(it) }
+        doIfMask(1, myBoostSlots, 4) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        myBoost = isMask(4)
+        myBoost = isMask(1, 4)
         level = readInt()
         currentLevelBoosts = readInt()
         boosts = readInt()
-        giftBoosts = readIfMask(16) { readInt() }
-        nextLevelBoosts = readIfMask(1) { readInt() }
-        premiumAudience = readIfMask(2) { readTLObject<TLStatsPercentValue>(TLStatsPercentValue::class, TLStatsPercentValue.CONSTRUCTOR_ID) }
+        giftBoosts = readIfMask(1, 16) { readInt() }
+        nextLevelBoosts = readIfMask(1, 1) { readInt() }
+        premiumAudience = readIfMask(1, 2) { readTLObject<TLStatsPercentValue>(TLStatsPercentValue::class, TLStatsPercentValue.CONSTRUCTOR_ID) }
         boostUrl = readString()
-        prepaidGiveaways = readIfMask(8) { readTLVector<TLPrepaidGiveaway>() }
-        myBoostSlots = readIfMask(4) { readTLIntVector() }
+        prepaidGiveaways = readIfMask(1, 8) { readTLVector<TLPrepaidGiveaway>() }
+        myBoostSlots = readIfMask(1, 4) { readTLIntVector() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -130,12 +131,12 @@ class TLBoostsStatus() : TLObject() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(giftBoosts, 16) { SIZE_INT32 }
-        size += getIntIfMask(nextLevelBoosts, 1) { SIZE_INT32 }
-        size += getIntIfMask(premiumAudience, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, giftBoosts, 16) { SIZE_INT32 }
+        size += getIntIfMask(1, nextLevelBoosts, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, premiumAudience, 2) { it.computeSerializedSize() }
         size += computeTLStringSerializedSize(boostUrl)
-        size += getIntIfMask(prepaidGiveaways, 8) { it.computeSerializedSize() }
-        size += getIntIfMask(myBoostSlots, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, prepaidGiveaways, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, myBoostSlots, 4) { it.computeSerializedSize() }
         return size
     }
 

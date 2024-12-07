@@ -68,6 +68,7 @@ class TLUpdateShortSentMessage() : TLAbsUpdates() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(out, 2)
         updateFlags(media, 512)
         updateFlags(entities, 128)
@@ -83,22 +84,22 @@ class TLUpdateShortSentMessage() : TLAbsUpdates() {
         writeInt(pts)
         writeInt(ptsCount)
         writeInt(date)
-        doIfMask(media, 512) { writeTLObject(it) }
-        doIfMask(entities, 128) { writeTLVector(it) }
-        doIfMask(ttlPeriod, 33554432) { writeInt(it) }
+        doIfMask(1, media, 512) { writeTLObject(it) }
+        doIfMask(1, entities, 128) { writeTLVector(it) }
+        doIfMask(1, ttlPeriod, 33554432) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        out = isMask(2)
+        out = isMask(1, 2)
         id = readInt()
         pts = readInt()
         ptsCount = readInt()
         date = readInt()
-        media = readIfMask(512) { readTLObject<TLAbsMessageMedia>() }
-        entities = readIfMask(128) { readTLVector<TLAbsMessageEntity>() }
-        ttlPeriod = readIfMask(33554432) { readInt() }
+        media = readIfMask(1, 512) { readTLObject<TLAbsMessageMedia>() }
+        entities = readIfMask(1, 128) { readTLVector<TLAbsMessageEntity>() }
+        ttlPeriod = readIfMask(1, 33554432) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -110,9 +111,9 @@ class TLUpdateShortSentMessage() : TLAbsUpdates() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(media, 512) { it.computeSerializedSize() }
-        size += getIntIfMask(entities, 128) { it.computeSerializedSize() }
-        size += getIntIfMask(ttlPeriod, 33554432) { SIZE_INT32 }
+        size += getIntIfMask(1, media, 512) { it.computeSerializedSize() }
+        size += getIntIfMask(1, entities, 128) { it.computeSerializedSize() }
+        size += getIntIfMask(1, ttlPeriod, 33554432) { SIZE_INT32 }
         return size
     }
 

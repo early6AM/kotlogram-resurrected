@@ -58,13 +58,14 @@ class TLAuthorization() : TLAbsAuthorization() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(setupPasswordRequired, 2)
         updateFlags(otherwiseReloginDays, 2)
         updateFlags(tmpSessions, 1)
         updateFlags(futureAuthToken, 4)
 
         // Following parameters might be forced to true by another field that updated the flags
-        setupPasswordRequired = isMask(2)
+        setupPasswordRequired = isMask(1, 2)
     }
 
     @Throws(IOException::class)
@@ -72,19 +73,19 @@ class TLAuthorization() : TLAbsAuthorization() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(otherwiseReloginDays, 2) { writeInt(it) }
-        doIfMask(tmpSessions, 1) { writeInt(it) }
-        doIfMask(futureAuthToken, 4) { writeTLBytes(it) }
+        doIfMask(1, otherwiseReloginDays, 2) { writeInt(it) }
+        doIfMask(1, tmpSessions, 1) { writeInt(it) }
+        doIfMask(1, futureAuthToken, 4) { writeTLBytes(it) }
         writeTLObject(user)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        setupPasswordRequired = isMask(2)
-        otherwiseReloginDays = readIfMask(2) { readInt() }
-        tmpSessions = readIfMask(1) { readInt() }
-        futureAuthToken = readIfMask(4) { readTLBytes() }
+        setupPasswordRequired = isMask(1, 2)
+        otherwiseReloginDays = readIfMask(1, 2) { readInt() }
+        tmpSessions = readIfMask(1, 1) { readInt() }
+        futureAuthToken = readIfMask(1, 4) { readTLBytes() }
         user = readTLObject<TLAbsUser>()
     }
 
@@ -93,9 +94,9 @@ class TLAuthorization() : TLAbsAuthorization() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(otherwiseReloginDays, 2) { SIZE_INT32 }
-        size += getIntIfMask(tmpSessions, 1) { SIZE_INT32 }
-        size += getIntIfMask(futureAuthToken, 4) { computeTLBytesSerializedSize(it) }
+        size += getIntIfMask(1, otherwiseReloginDays, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, tmpSessions, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, futureAuthToken, 4) { computeTLBytesSerializedSize(it) }
         size += user.computeSerializedSize()
         return size
     }

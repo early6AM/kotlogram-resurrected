@@ -77,6 +77,7 @@ class TLCheckedGiftCode() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(viaGiveaway, 4)
         updateFlags(fromId, 16)
         updateFlags(giveawayMsgId, 8)
@@ -89,12 +90,12 @@ class TLCheckedGiftCode() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(fromId, 16) { writeTLObject(it) }
-        doIfMask(giveawayMsgId, 8) { writeInt(it) }
-        doIfMask(toId, 1) { writeLong(it) }
+        doIfMask(1, fromId, 16) { writeTLObject(it) }
+        doIfMask(1, giveawayMsgId, 8) { writeInt(it) }
+        doIfMask(1, toId, 1) { writeLong(it) }
         writeInt(date)
         writeInt(months)
-        doIfMask(usedDate, 2) { writeInt(it) }
+        doIfMask(1, usedDate, 2) { writeInt(it) }
         writeTLVector(chats)
         writeTLVector(users)
     }
@@ -102,13 +103,13 @@ class TLCheckedGiftCode() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        viaGiveaway = isMask(4)
-        fromId = readIfMask(16) { readTLObject<TLAbsPeer>() }
-        giveawayMsgId = readIfMask(8) { readInt() }
-        toId = readIfMask(1) { readLong() }
+        viaGiveaway = isMask(1, 4)
+        fromId = readIfMask(1, 16) { readTLObject<TLAbsPeer>() }
+        giveawayMsgId = readIfMask(1, 8) { readInt() }
+        toId = readIfMask(1, 1) { readLong() }
         date = readInt()
         months = readInt()
-        usedDate = readIfMask(2) { readInt() }
+        usedDate = readIfMask(1, 2) { readInt() }
         chats = readTLVector<TLAbsChat>()
         users = readTLVector<TLAbsUser>()
     }
@@ -118,12 +119,12 @@ class TLCheckedGiftCode() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(fromId, 16) { it.computeSerializedSize() }
-        size += getIntIfMask(giveawayMsgId, 8) { SIZE_INT32 }
-        size += getIntIfMask(toId, 1) { SIZE_INT64 }
+        size += getIntIfMask(1, fromId, 16) { it.computeSerializedSize() }
+        size += getIntIfMask(1, giveawayMsgId, 8) { SIZE_INT32 }
+        size += getIntIfMask(1, toId, 1) { SIZE_INT64 }
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(usedDate, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, usedDate, 2) { SIZE_INT32 }
         size += chats.computeSerializedSize()
         size += users.computeSerializedSize()
         return size

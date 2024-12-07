@@ -69,6 +69,7 @@ class TLBotInlineMessageMediaInvoice() : TLAbsBotInlineMessage() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(shippingAddressRequested, 2)
         updateFlags(test, 8)
         updateFlags(photo, 1)
@@ -82,23 +83,23 @@ class TLBotInlineMessageMediaInvoice() : TLAbsBotInlineMessage() {
         writeInt(_flags)
         writeString(title)
         writeString(description)
-        doIfMask(photo, 1) { writeTLObject(it) }
+        doIfMask(1, photo, 1) { writeTLObject(it) }
         writeString(currency)
         writeLong(totalAmount)
-        doIfMask(replyMarkup, 4) { writeTLObject(it) }
+        doIfMask(1, replyMarkup, 4) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        shippingAddressRequested = isMask(2)
-        test = isMask(8)
+        shippingAddressRequested = isMask(1, 2)
+        test = isMask(1, 8)
         title = readString()
         description = readString()
-        photo = readIfMask(1) { readTLObject<TLAbsWebDocument>() }
+        photo = readIfMask(1, 1) { readTLObject<TLAbsWebDocument>() }
         currency = readString()
         totalAmount = readLong()
-        replyMarkup = readIfMask(4) { readTLObject<TLAbsReplyMarkup>() }
+        replyMarkup = readIfMask(1, 4) { readTLObject<TLAbsReplyMarkup>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -108,10 +109,10 @@ class TLBotInlineMessageMediaInvoice() : TLAbsBotInlineMessage() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(title)
         size += computeTLStringSerializedSize(description)
-        size += getIntIfMask(photo, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, photo, 1) { it.computeSerializedSize() }
         size += computeTLStringSerializedSize(currency)
         size += SIZE_INT64
-        size += getIntIfMask(replyMarkup, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, replyMarkup, 4) { it.computeSerializedSize() }
         return size
     }
 

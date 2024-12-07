@@ -40,6 +40,7 @@ class TLPasswordSettings() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(email, 1)
         updateFlags(secureSettings, 2)
     }
@@ -49,15 +50,15 @@ class TLPasswordSettings() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(email, 1) { writeString(it) }
-        doIfMask(secureSettings, 2) { writeTLObject(it) }
+        doIfMask(1, email, 1) { writeString(it) }
+        doIfMask(1, secureSettings, 2) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        email = readIfMask(1) { readString() }
-        secureSettings = readIfMask(2) { readTLObject<TLSecureSecretSettings>(TLSecureSecretSettings::class, TLSecureSecretSettings.CONSTRUCTOR_ID) }
+        email = readIfMask(1, 1) { readString() }
+        secureSettings = readIfMask(1, 2) { readTLObject<TLSecureSecretSettings>(TLSecureSecretSettings::class, TLSecureSecretSettings.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -65,8 +66,8 @@ class TLPasswordSettings() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(email, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(secureSettings, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, email, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, secureSettings, 2) { it.computeSerializedSize() }
         return size
     }
 

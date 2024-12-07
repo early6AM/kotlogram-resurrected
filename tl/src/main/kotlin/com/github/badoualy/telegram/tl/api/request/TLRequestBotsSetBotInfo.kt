@@ -54,6 +54,7 @@ class TLRequestBotsSetBotInfo() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(bot, 4)
         updateFlags(name, 8)
         updateFlags(about, 1)
@@ -65,21 +66,21 @@ class TLRequestBotsSetBotInfo() : TLMethod<TLBool>() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(bot, 4) { writeTLObject(it) }
+        doIfMask(1, bot, 4) { writeTLObject(it) }
         writeString(langCode)
-        doIfMask(name, 8) { writeString(it) }
-        doIfMask(about, 1) { writeString(it) }
-        doIfMask(description, 2) { writeString(it) }
+        doIfMask(1, name, 8) { writeString(it) }
+        doIfMask(1, about, 1) { writeString(it) }
+        doIfMask(1, description, 2) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        bot = readIfMask(4) { readTLObject<TLAbsInputUser>() }
+        bot = readIfMask(1, 4) { readTLObject<TLAbsInputUser>() }
         langCode = readString()
-        name = readIfMask(8) { readString() }
-        about = readIfMask(1) { readString() }
-        description = readIfMask(2) { readString() }
+        name = readIfMask(1, 8) { readString() }
+        about = readIfMask(1, 1) { readString() }
+        description = readIfMask(1, 2) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -87,11 +88,11 @@ class TLRequestBotsSetBotInfo() : TLMethod<TLBool>() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(bot, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, bot, 4) { it.computeSerializedSize() }
         size += computeTLStringSerializedSize(langCode)
-        size += getIntIfMask(name, 8) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(about, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(description, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, name, 8) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, about, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, description, 2) { computeTLStringSerializedSize(it) }
         return size
     }
 

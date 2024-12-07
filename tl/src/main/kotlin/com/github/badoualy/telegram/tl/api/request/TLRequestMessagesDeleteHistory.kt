@@ -65,6 +65,7 @@ class TLRequestMessagesDeleteHistory() : TLMethod<TLAffectedHistory>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(justClear, 1)
         updateFlags(revoke, 2)
         updateFlags(minDate, 4)
@@ -78,19 +79,19 @@ class TLRequestMessagesDeleteHistory() : TLMethod<TLAffectedHistory>() {
         writeInt(_flags)
         writeTLObject(peer)
         writeInt(maxId)
-        doIfMask(minDate, 4) { writeInt(it) }
-        doIfMask(maxDate, 8) { writeInt(it) }
+        doIfMask(1, minDate, 4) { writeInt(it) }
+        doIfMask(1, maxDate, 8) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        justClear = isMask(1)
-        revoke = isMask(2)
+        justClear = isMask(1, 1)
+        revoke = isMask(1, 2)
         peer = readTLObject<TLAbsInputPeer>()
         maxId = readInt()
-        minDate = readIfMask(4) { readInt() }
-        maxDate = readIfMask(8) { readInt() }
+        minDate = readIfMask(1, 4) { readInt() }
+        maxDate = readIfMask(1, 8) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -100,8 +101,8 @@ class TLRequestMessagesDeleteHistory() : TLMethod<TLAffectedHistory>() {
         size += SIZE_INT32
         size += peer.computeSerializedSize()
         size += SIZE_INT32
-        size += getIntIfMask(minDate, 4) { SIZE_INT32 }
-        size += getIntIfMask(maxDate, 8) { SIZE_INT32 }
+        size += getIntIfMask(1, minDate, 4) { SIZE_INT32 }
+        size += getIntIfMask(1, maxDate, 8) { SIZE_INT32 }
         return size
     }
 

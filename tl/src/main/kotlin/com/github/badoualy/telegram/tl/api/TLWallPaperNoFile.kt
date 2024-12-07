@@ -53,6 +53,7 @@ class TLWallPaperNoFile() : TLAbsWallPaper() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(default, 2)
         updateFlags(dark, 16)
         updateFlags(settings, 4)
@@ -64,16 +65,16 @@ class TLWallPaperNoFile() : TLAbsWallPaper() {
 
         writeLong(id)
         writeInt(_flags)
-        doIfMask(settings, 4) { writeTLObject(it) }
+        doIfMask(1, settings, 4) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         id = readLong()
         _flags = readInt()
-        default = isMask(2)
-        dark = isMask(16)
-        settings = readIfMask(4) { readTLObject<TLWallPaperSettings>(TLWallPaperSettings::class, TLWallPaperSettings.CONSTRUCTOR_ID) }
+        default = isMask(1, 2)
+        dark = isMask(1, 16)
+        settings = readIfMask(1, 4) { readTLObject<TLWallPaperSettings>(TLWallPaperSettings::class, TLWallPaperSettings.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -82,7 +83,7 @@ class TLWallPaperNoFile() : TLAbsWallPaper() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT64
         size += SIZE_INT32
-        size += getIntIfMask(settings, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, settings, 4) { it.computeSerializedSize() }
         return size
     }
 

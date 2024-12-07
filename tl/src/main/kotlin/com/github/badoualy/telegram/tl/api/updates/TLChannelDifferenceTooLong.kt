@@ -65,6 +65,7 @@ class TLChannelDifferenceTooLong() : TLAbsChannelDifference() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(_final, 1)
         updateFlags(timeout, 2)
     }
@@ -74,7 +75,7 @@ class TLChannelDifferenceTooLong() : TLAbsChannelDifference() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(timeout, 2) { writeInt(it) }
+        doIfMask(1, timeout, 2) { writeInt(it) }
         writeTLObject(dialog)
         writeTLVector(messages)
         writeTLVector(chats)
@@ -84,8 +85,8 @@ class TLChannelDifferenceTooLong() : TLAbsChannelDifference() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        _final = isMask(1)
-        timeout = readIfMask(2) { readInt() }
+        _final = isMask(1, 1)
+        timeout = readIfMask(1, 2) { readInt() }
         dialog = readTLObject<TLAbsDialog>()
         messages = readTLVector<TLAbsMessage>()
         chats = readTLVector<TLAbsChat>()
@@ -97,7 +98,7 @@ class TLChannelDifferenceTooLong() : TLAbsChannelDifference() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(timeout, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, timeout, 2) { SIZE_INT32 }
         size += dialog.computeSerializedSize()
         size += messages.computeSerializedSize()
         size += chats.computeSerializedSize()

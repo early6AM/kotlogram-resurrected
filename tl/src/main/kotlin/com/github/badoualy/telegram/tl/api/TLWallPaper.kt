@@ -75,6 +75,7 @@ class TLWallPaper() : TLAbsWallPaper() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(creator, 1)
         updateFlags(default, 2)
         updateFlags(pattern, 8)
@@ -91,21 +92,21 @@ class TLWallPaper() : TLAbsWallPaper() {
         writeLong(accessHash)
         writeString(slug)
         writeTLObject(document)
-        doIfMask(settings, 4) { writeTLObject(it) }
+        doIfMask(1, settings, 4) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         id = readLong()
         _flags = readInt()
-        creator = isMask(1)
-        default = isMask(2)
-        pattern = isMask(8)
-        dark = isMask(16)
+        creator = isMask(1, 1)
+        default = isMask(1, 2)
+        pattern = isMask(1, 8)
+        dark = isMask(1, 16)
         accessHash = readLong()
         slug = readString()
         document = readTLObject<TLAbsDocument>()
-        settings = readIfMask(4) { readTLObject<TLWallPaperSettings>(TLWallPaperSettings::class, TLWallPaperSettings.CONSTRUCTOR_ID) }
+        settings = readIfMask(1, 4) { readTLObject<TLWallPaperSettings>(TLWallPaperSettings::class, TLWallPaperSettings.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -117,7 +118,7 @@ class TLWallPaper() : TLAbsWallPaper() {
         size += SIZE_INT64
         size += computeTLStringSerializedSize(slug)
         size += document.computeSerializedSize()
-        size += getIntIfMask(settings, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, settings, 4) { it.computeSerializedSize() }
         return size
     }
 

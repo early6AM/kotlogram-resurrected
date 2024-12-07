@@ -38,6 +38,7 @@ class TLMessageEditData() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(caption, 1)
     }
 
@@ -51,7 +52,7 @@ class TLMessageEditData() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        caption = isMask(1)
+        caption = isMask(1, 1)
     }
 
     override fun computeSerializedSize(): Int {

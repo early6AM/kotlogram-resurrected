@@ -39,6 +39,7 @@ class TLRequestAuthRecoverPassword() : TLMethod<TLAbsAuthorization>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(newSettings, 1)
     }
 
@@ -48,14 +49,14 @@ class TLRequestAuthRecoverPassword() : TLMethod<TLAbsAuthorization>() {
 
         writeInt(_flags)
         writeString(code)
-        doIfMask(newSettings, 1) { writeTLObject(it) }
+        doIfMask(1, newSettings, 1) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         code = readString()
-        newSettings = readIfMask(1) { readTLObject<TLPasswordInputSettings>(TLPasswordInputSettings::class, TLPasswordInputSettings.CONSTRUCTOR_ID) }
+        newSettings = readIfMask(1, 1) { readTLObject<TLPasswordInputSettings>(TLPasswordInputSettings::class, TLPasswordInputSettings.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -64,7 +65,7 @@ class TLRequestAuthRecoverPassword() : TLMethod<TLAbsAuthorization>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += computeTLStringSerializedSize(code)
-        size += getIntIfMask(newSettings, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, newSettings, 1) { it.computeSerializedSize() }
         return size
     }
 

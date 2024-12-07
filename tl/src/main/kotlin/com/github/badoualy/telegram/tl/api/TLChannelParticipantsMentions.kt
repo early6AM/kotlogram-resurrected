@@ -38,6 +38,7 @@ class TLChannelParticipantsMentions() : TLAbsChannelParticipantsFilter() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(q, 1)
         updateFlags(topMsgId, 2)
     }
@@ -47,15 +48,15 @@ class TLChannelParticipantsMentions() : TLAbsChannelParticipantsFilter() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(q, 1) { writeString(it) }
-        doIfMask(topMsgId, 2) { writeInt(it) }
+        doIfMask(1, q, 1) { writeString(it) }
+        doIfMask(1, topMsgId, 2) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        q = readIfMask(1) { readString() }
-        topMsgId = readIfMask(2) { readInt() }
+        q = readIfMask(1, 1) { readString() }
+        topMsgId = readIfMask(1, 2) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -63,8 +64,8 @@ class TLChannelParticipantsMentions() : TLAbsChannelParticipantsFilter() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(q, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(topMsgId, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, q, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, topMsgId, 2) { SIZE_INT32 }
         return size
     }
 

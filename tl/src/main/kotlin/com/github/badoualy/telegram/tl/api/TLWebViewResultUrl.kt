@@ -49,6 +49,7 @@ class TLWebViewResultUrl() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(fullsize, 2)
         updateFlags(queryId, 1)
     }
@@ -58,15 +59,15 @@ class TLWebViewResultUrl() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(queryId, 1) { writeLong(it) }
+        doIfMask(1, queryId, 1) { writeLong(it) }
         writeString(url)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        fullsize = isMask(2)
-        queryId = readIfMask(1) { readLong() }
+        fullsize = isMask(1, 2)
+        queryId = readIfMask(1, 1) { readLong() }
         url = readString()
     }
 
@@ -75,7 +76,7 @@ class TLWebViewResultUrl() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(queryId, 1) { SIZE_INT64 }
+        size += getIntIfMask(1, queryId, 1) { SIZE_INT64 }
         size += computeTLStringSerializedSize(url)
         return size
     }

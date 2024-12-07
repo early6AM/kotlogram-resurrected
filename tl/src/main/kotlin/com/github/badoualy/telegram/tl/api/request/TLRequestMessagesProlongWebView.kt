@@ -65,6 +65,7 @@ class TLRequestMessagesProlongWebView() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(silent, 32)
         updateFlags(replyTo, 1)
         updateFlags(sendAs, 8192)
@@ -78,19 +79,19 @@ class TLRequestMessagesProlongWebView() : TLMethod<TLBool>() {
         writeTLObject(peer)
         writeTLObject(bot)
         writeLong(queryId)
-        doIfMask(replyTo, 1) { writeTLObject(it) }
-        doIfMask(sendAs, 8192) { writeTLObject(it) }
+        doIfMask(1, replyTo, 1) { writeTLObject(it) }
+        doIfMask(1, sendAs, 8192) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        silent = isMask(32)
+        silent = isMask(1, 32)
         peer = readTLObject<TLAbsInputPeer>()
         bot = readTLObject<TLAbsInputUser>()
         queryId = readLong()
-        replyTo = readIfMask(1) { readTLObject<TLAbsInputReplyTo>() }
-        sendAs = readIfMask(8192) { readTLObject<TLAbsInputPeer>() }
+        replyTo = readIfMask(1, 1) { readTLObject<TLAbsInputReplyTo>() }
+        sendAs = readIfMask(1, 8192) { readTLObject<TLAbsInputPeer>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -101,8 +102,8 @@ class TLRequestMessagesProlongWebView() : TLMethod<TLBool>() {
         size += peer.computeSerializedSize()
         size += bot.computeSerializedSize()
         size += SIZE_INT64
-        size += getIntIfMask(replyTo, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(sendAs, 8192) { it.computeSerializedSize() }
+        size += getIntIfMask(1, replyTo, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, sendAs, 8192) { it.computeSerializedSize() }
         return size
     }
 

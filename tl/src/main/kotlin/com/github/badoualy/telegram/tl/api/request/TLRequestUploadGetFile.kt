@@ -59,6 +59,7 @@ class TLRequestUploadGetFile() : TLMethod<TLAbsFile>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(precise, 1)
         updateFlags(cdnSupported, 2)
     }
@@ -76,8 +77,8 @@ class TLRequestUploadGetFile() : TLMethod<TLAbsFile>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        precise = isMask(1)
-        cdnSupported = isMask(2)
+        precise = isMask(1, 1)
+        cdnSupported = isMask(1, 2)
         location = readTLObject<TLAbsInputFileLocation>()
         offset = readLong()
         limit = readInt()

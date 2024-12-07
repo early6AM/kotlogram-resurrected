@@ -37,6 +37,7 @@ class TLUserStatusLastMonth() : TLAbsUserStatus() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(byMe, 1)
     }
 
@@ -50,7 +51,7 @@ class TLUserStatusLastMonth() : TLAbsUserStatus() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        byMe = isMask(1)
+        byMe = isMask(1, 1)
     }
 
     override fun computeSerializedSize(): Int {

@@ -50,6 +50,7 @@ class TLAutoSaveSettings() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(photos, 1)
         updateFlags(videos, 2)
         updateFlags(videoMaxSize, 4)
@@ -60,15 +61,15 @@ class TLAutoSaveSettings() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(videoMaxSize, 4) { writeLong(it) }
+        doIfMask(1, videoMaxSize, 4) { writeLong(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        photos = isMask(1)
-        videos = isMask(2)
-        videoMaxSize = readIfMask(4) { readLong() }
+        photos = isMask(1, 1)
+        videos = isMask(1, 2)
+        videoMaxSize = readIfMask(1, 4) { readLong() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -76,7 +77,7 @@ class TLAutoSaveSettings() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(videoMaxSize, 4) { SIZE_INT64 }
+        size += getIntIfMask(1, videoMaxSize, 4) { SIZE_INT64 }
         return size
     }
 

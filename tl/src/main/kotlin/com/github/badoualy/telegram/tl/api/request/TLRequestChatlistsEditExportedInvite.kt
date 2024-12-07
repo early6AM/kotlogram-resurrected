@@ -55,6 +55,7 @@ class TLRequestChatlistsEditExportedInvite() : TLMethod<TLExportedChatlistInvite
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(title, 2)
         updateFlags(peers, 4)
     }
@@ -66,8 +67,8 @@ class TLRequestChatlistsEditExportedInvite() : TLMethod<TLExportedChatlistInvite
         writeInt(_flags)
         writeTLObject(chatlist)
         writeString(slug)
-        doIfMask(title, 2) { writeString(it) }
-        doIfMask(peers, 4) { writeTLVector(it) }
+        doIfMask(1, title, 2) { writeString(it) }
+        doIfMask(1, peers, 4) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
@@ -75,8 +76,8 @@ class TLRequestChatlistsEditExportedInvite() : TLMethod<TLExportedChatlistInvite
         _flags = readInt()
         chatlist = readTLObject<TLInputChatlistDialogFilter>(TLInputChatlistDialogFilter::class, TLInputChatlistDialogFilter.CONSTRUCTOR_ID)
         slug = readString()
-        title = readIfMask(2) { readString() }
-        peers = readIfMask(4) { readTLVector<TLAbsInputPeer>() }
+        title = readIfMask(1, 2) { readString() }
+        peers = readIfMask(1, 4) { readTLVector<TLAbsInputPeer>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -86,8 +87,8 @@ class TLRequestChatlistsEditExportedInvite() : TLMethod<TLExportedChatlistInvite
         size += SIZE_INT32
         size += chatlist.computeSerializedSize()
         size += computeTLStringSerializedSize(slug)
-        size += getIntIfMask(title, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(peers, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, title, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, peers, 4) { it.computeSerializedSize() }
         return size
     }
 

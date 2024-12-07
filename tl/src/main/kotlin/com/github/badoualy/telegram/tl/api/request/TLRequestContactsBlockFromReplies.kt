@@ -53,6 +53,7 @@ class TLRequestContactsBlockFromReplies() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(deleteMessage, 1)
         updateFlags(deleteHistory, 2)
         updateFlags(reportSpam, 4)
@@ -69,9 +70,9 @@ class TLRequestContactsBlockFromReplies() : TLMethod<TLAbsUpdates>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        deleteMessage = isMask(1)
-        deleteHistory = isMask(2)
-        reportSpam = isMask(4)
+        deleteMessage = isMask(1, 1)
+        deleteHistory = isMask(1, 2)
+        reportSpam = isMask(1, 4)
         msgId = readInt()
     }
 

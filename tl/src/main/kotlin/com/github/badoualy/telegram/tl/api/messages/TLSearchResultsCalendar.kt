@@ -77,6 +77,7 @@ class TLSearchResultsCalendar() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(inexact, 1)
         updateFlags(offsetIdOffset, 2)
     }
@@ -89,7 +90,7 @@ class TLSearchResultsCalendar() : TLObject() {
         writeInt(count)
         writeInt(minDate)
         writeInt(minMsgId)
-        doIfMask(offsetIdOffset, 2) { writeInt(it) }
+        doIfMask(1, offsetIdOffset, 2) { writeInt(it) }
         writeTLVector(periods)
         writeTLVector(messages)
         writeTLVector(chats)
@@ -99,11 +100,11 @@ class TLSearchResultsCalendar() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        inexact = isMask(1)
+        inexact = isMask(1, 1)
         count = readInt()
         minDate = readInt()
         minMsgId = readInt()
-        offsetIdOffset = readIfMask(2) { readInt() }
+        offsetIdOffset = readIfMask(1, 2) { readInt() }
         periods = readTLVector<TLSearchResultsCalendarPeriod>()
         messages = readTLVector<TLAbsMessage>()
         chats = readTLVector<TLAbsChat>()
@@ -118,7 +119,7 @@ class TLSearchResultsCalendar() : TLObject() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(offsetIdOffset, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, offsetIdOffset, 2) { SIZE_INT32 }
         size += periods.computeSerializedSize()
         size += messages.computeSerializedSize()
         size += chats.computeSerializedSize()

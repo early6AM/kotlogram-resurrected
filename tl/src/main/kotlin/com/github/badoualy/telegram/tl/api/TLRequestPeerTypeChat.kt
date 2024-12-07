@@ -60,6 +60,7 @@ class TLRequestPeerTypeChat() : TLAbsRequestPeerType() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(creator, 1)
         updateFlags(botParticipant, 32)
         updateFlags(hasUsername, 8)
@@ -73,21 +74,21 @@ class TLRequestPeerTypeChat() : TLAbsRequestPeerType() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(hasUsername, 8) { writeBoolean(it) }
-        doIfMask(forum, 16) { writeBoolean(it) }
-        doIfMask(userAdminRights, 2) { writeTLObject(it) }
-        doIfMask(botAdminRights, 4) { writeTLObject(it) }
+        doIfMask(1, hasUsername, 8) { writeBoolean(it) }
+        doIfMask(1, forum, 16) { writeBoolean(it) }
+        doIfMask(1, userAdminRights, 2) { writeTLObject(it) }
+        doIfMask(1, botAdminRights, 4) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        creator = isMask(1)
-        botParticipant = isMask(32)
-        hasUsername = readIfMask(8) { readBoolean() }
-        forum = readIfMask(16) { readBoolean() }
-        userAdminRights = readIfMask(2) { readTLObject<TLChatAdminRights>(TLChatAdminRights::class, TLChatAdminRights.CONSTRUCTOR_ID) }
-        botAdminRights = readIfMask(4) { readTLObject<TLChatAdminRights>(TLChatAdminRights::class, TLChatAdminRights.CONSTRUCTOR_ID) }
+        creator = isMask(1, 1)
+        botParticipant = isMask(1, 32)
+        hasUsername = readIfMask(1, 8) { readBoolean() }
+        forum = readIfMask(1, 16) { readBoolean() }
+        userAdminRights = readIfMask(1, 2) { readTLObject<TLChatAdminRights>(TLChatAdminRights::class, TLChatAdminRights.CONSTRUCTOR_ID) }
+        botAdminRights = readIfMask(1, 4) { readTLObject<TLChatAdminRights>(TLChatAdminRights::class, TLChatAdminRights.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -95,10 +96,10 @@ class TLRequestPeerTypeChat() : TLAbsRequestPeerType() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(hasUsername, 8) { SIZE_BOOLEAN }
-        size += getIntIfMask(forum, 16) { SIZE_BOOLEAN }
-        size += getIntIfMask(userAdminRights, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(botAdminRights, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, hasUsername, 8) { SIZE_BOOLEAN }
+        size += getIntIfMask(1, forum, 16) { SIZE_BOOLEAN }
+        size += getIntIfMask(1, userAdminRights, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, botAdminRights, 4) { it.computeSerializedSize() }
         return size
     }
 

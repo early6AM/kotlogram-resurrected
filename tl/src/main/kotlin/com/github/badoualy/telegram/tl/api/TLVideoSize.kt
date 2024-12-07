@@ -54,6 +54,7 @@ class TLVideoSize() : TLAbsVideoSize() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(videoStartTs, 1)
     }
 
@@ -66,7 +67,7 @@ class TLVideoSize() : TLAbsVideoSize() {
         writeInt(w)
         writeInt(h)
         writeInt(size)
-        doIfMask(videoStartTs, 1) { writeDouble(it) }
+        doIfMask(1, videoStartTs, 1) { writeDouble(it) }
     }
 
     @Throws(IOException::class)
@@ -76,7 +77,7 @@ class TLVideoSize() : TLAbsVideoSize() {
         w = readInt()
         h = readInt()
         size = readInt()
-        videoStartTs = readIfMask(1) { readDouble() }
+        videoStartTs = readIfMask(1, 1) { readDouble() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -88,7 +89,7 @@ class TLVideoSize() : TLAbsVideoSize() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(videoStartTs, 1) { SIZE_DOUBLE }
+        size += getIntIfMask(1, videoStartTs, 1) { SIZE_DOUBLE }
         return size
     }
 

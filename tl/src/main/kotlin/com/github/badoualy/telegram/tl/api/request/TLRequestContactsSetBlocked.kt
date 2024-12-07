@@ -49,6 +49,7 @@ class TLRequestContactsSetBlocked() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(myStoriesFrom, 1)
     }
 
@@ -64,7 +65,7 @@ class TLRequestContactsSetBlocked() : TLMethod<TLBool>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        myStoriesFrom = isMask(1)
+        myStoriesFrom = isMask(1, 1)
         id = readTLVector<TLAbsInputPeer>()
         limit = readInt()
     }

@@ -57,6 +57,7 @@ class TLRequestUpdatesGetDifference() : TLMethod<TLAbsDifference>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(ptsLimit, 2)
         updateFlags(ptsTotalLimit, 1)
         updateFlags(qtsLimit, 4)
@@ -68,22 +69,22 @@ class TLRequestUpdatesGetDifference() : TLMethod<TLAbsDifference>() {
 
         writeInt(_flags)
         writeInt(pts)
-        doIfMask(ptsLimit, 2) { writeInt(it) }
-        doIfMask(ptsTotalLimit, 1) { writeInt(it) }
+        doIfMask(1, ptsLimit, 2) { writeInt(it) }
+        doIfMask(1, ptsTotalLimit, 1) { writeInt(it) }
         writeInt(date)
         writeInt(qts)
-        doIfMask(qtsLimit, 4) { writeInt(it) }
+        doIfMask(1, qtsLimit, 4) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         pts = readInt()
-        ptsLimit = readIfMask(2) { readInt() }
-        ptsTotalLimit = readIfMask(1) { readInt() }
+        ptsLimit = readIfMask(1, 2) { readInt() }
+        ptsTotalLimit = readIfMask(1, 1) { readInt() }
         date = readInt()
         qts = readInt()
-        qtsLimit = readIfMask(4) { readInt() }
+        qtsLimit = readIfMask(1, 4) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -92,11 +93,11 @@ class TLRequestUpdatesGetDifference() : TLMethod<TLAbsDifference>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(ptsLimit, 2) { SIZE_INT32 }
-        size += getIntIfMask(ptsTotalLimit, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, ptsLimit, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, ptsTotalLimit, 1) { SIZE_INT32 }
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(qtsLimit, 4) { SIZE_INT32 }
+        size += getIntIfMask(1, qtsLimit, 4) { SIZE_INT32 }
         return size
     }
 

@@ -41,6 +41,7 @@ class TLRequestPaymentsGetPaymentForm() : TLMethod<TLAbsPaymentForm>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(themeParams, 1)
     }
 
@@ -50,14 +51,14 @@ class TLRequestPaymentsGetPaymentForm() : TLMethod<TLAbsPaymentForm>() {
 
         writeInt(_flags)
         writeTLObject(invoice)
-        doIfMask(themeParams, 1) { writeTLObject(it) }
+        doIfMask(1, themeParams, 1) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         invoice = readTLObject<TLAbsInputInvoice>()
-        themeParams = readIfMask(1) { readTLObject<TLDataJSON>(TLDataJSON::class, TLDataJSON.CONSTRUCTOR_ID) }
+        themeParams = readIfMask(1, 1) { readTLObject<TLDataJSON>(TLDataJSON::class, TLDataJSON.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -66,7 +67,7 @@ class TLRequestPaymentsGetPaymentForm() : TLMethod<TLAbsPaymentForm>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += invoice.computeSerializedSize()
-        size += getIntIfMask(themeParams, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, themeParams, 1) { it.computeSerializedSize() }
         return size
     }
 

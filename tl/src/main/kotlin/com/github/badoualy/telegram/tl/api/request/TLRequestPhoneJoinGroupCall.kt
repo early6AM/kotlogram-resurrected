@@ -64,6 +64,7 @@ class TLRequestPhoneJoinGroupCall() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(muted, 1)
         updateFlags(videoStopped, 4)
         updateFlags(inviteHash, 2)
@@ -76,18 +77,18 @@ class TLRequestPhoneJoinGroupCall() : TLMethod<TLAbsUpdates>() {
         writeInt(_flags)
         writeTLObject(call)
         writeTLObject(joinAs)
-        doIfMask(inviteHash, 2) { writeString(it) }
+        doIfMask(1, inviteHash, 2) { writeString(it) }
         writeTLObject(params)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        muted = isMask(1)
-        videoStopped = isMask(4)
+        muted = isMask(1, 1)
+        videoStopped = isMask(1, 4)
         call = readTLObject<TLInputGroupCall>(TLInputGroupCall::class, TLInputGroupCall.CONSTRUCTOR_ID)
         joinAs = readTLObject<TLAbsInputPeer>()
-        inviteHash = readIfMask(2) { readString() }
+        inviteHash = readIfMask(1, 2) { readString() }
         params = readTLObject<TLDataJSON>(TLDataJSON::class, TLDataJSON.CONSTRUCTOR_ID)
     }
 
@@ -98,7 +99,7 @@ class TLRequestPhoneJoinGroupCall() : TLMethod<TLAbsUpdates>() {
         size += SIZE_INT32
         size += call.computeSerializedSize()
         size += joinAs.computeSerializedSize()
-        size += getIntIfMask(inviteHash, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, inviteHash, 2) { computeTLStringSerializedSize(it) }
         size += params.computeSerializedSize()
         return size
     }

@@ -55,6 +55,7 @@ class TLRequestAccountCreateTheme() : TLMethod<TLTheme>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(document, 4)
         updateFlags(settings, 8)
     }
@@ -66,8 +67,8 @@ class TLRequestAccountCreateTheme() : TLMethod<TLTheme>() {
         writeInt(_flags)
         writeString(slug)
         writeString(title)
-        doIfMask(document, 4) { writeTLObject(it) }
-        doIfMask(settings, 8) { writeTLVector(it) }
+        doIfMask(1, document, 4) { writeTLObject(it) }
+        doIfMask(1, settings, 8) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
@@ -75,8 +76,8 @@ class TLRequestAccountCreateTheme() : TLMethod<TLTheme>() {
         _flags = readInt()
         slug = readString()
         title = readString()
-        document = readIfMask(4) { readTLObject<TLAbsInputDocument>() }
-        settings = readIfMask(8) { readTLVector<TLInputThemeSettings>() }
+        document = readIfMask(1, 4) { readTLObject<TLAbsInputDocument>() }
+        settings = readIfMask(1, 8) { readTLVector<TLInputThemeSettings>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -86,8 +87,8 @@ class TLRequestAccountCreateTheme() : TLMethod<TLTheme>() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(slug)
         size += computeTLStringSerializedSize(title)
-        size += getIntIfMask(document, 4) { it.computeSerializedSize() }
-        size += getIntIfMask(settings, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, document, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, settings, 8) { it.computeSerializedSize() }
         return size
     }
 

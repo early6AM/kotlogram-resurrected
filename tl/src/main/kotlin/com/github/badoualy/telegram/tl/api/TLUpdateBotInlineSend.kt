@@ -54,6 +54,7 @@ class TLUpdateBotInlineSend() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(geo, 1)
         updateFlags(msgId, 2)
     }
@@ -65,9 +66,9 @@ class TLUpdateBotInlineSend() : TLAbsUpdate() {
         writeInt(_flags)
         writeLong(userId)
         writeString(query)
-        doIfMask(geo, 1) { writeTLObject(it) }
+        doIfMask(1, geo, 1) { writeTLObject(it) }
         writeString(id)
-        doIfMask(msgId, 2) { writeTLObject(it) }
+        doIfMask(1, msgId, 2) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
@@ -75,9 +76,9 @@ class TLUpdateBotInlineSend() : TLAbsUpdate() {
         _flags = readInt()
         userId = readLong()
         query = readString()
-        geo = readIfMask(1) { readTLObject<TLAbsGeoPoint>() }
+        geo = readIfMask(1, 1) { readTLObject<TLAbsGeoPoint>() }
         id = readString()
-        msgId = readIfMask(2) { readTLObject<TLAbsInputBotInlineMessageID>() }
+        msgId = readIfMask(1, 2) { readTLObject<TLAbsInputBotInlineMessageID>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -87,9 +88,9 @@ class TLUpdateBotInlineSend() : TLAbsUpdate() {
         size += SIZE_INT32
         size += SIZE_INT64
         size += computeTLStringSerializedSize(query)
-        size += getIntIfMask(geo, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, geo, 1) { it.computeSerializedSize() }
         size += computeTLStringSerializedSize(id)
-        size += getIntIfMask(msgId, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, msgId, 2) { it.computeSerializedSize() }
         return size
     }
 

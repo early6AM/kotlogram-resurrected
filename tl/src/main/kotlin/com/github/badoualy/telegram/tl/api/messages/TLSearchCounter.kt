@@ -50,6 +50,7 @@ class TLSearchCounter() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(inexact, 2)
     }
 
@@ -65,7 +66,7 @@ class TLSearchCounter() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        inexact = isMask(2)
+        inexact = isMask(1, 2)
         filter = readTLObject<TLAbsMessagesFilter>()
         count = readInt()
     }

@@ -47,6 +47,7 @@ class TLChannelDifferenceEmpty() : TLAbsChannelDifference() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(_final, 1)
         updateFlags(timeout, 2)
     }
@@ -57,15 +58,15 @@ class TLChannelDifferenceEmpty() : TLAbsChannelDifference() {
 
         writeInt(_flags)
         writeInt(pts)
-        doIfMask(timeout, 2) { writeInt(it) }
+        doIfMask(1, timeout, 2) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        _final = isMask(1)
+        _final = isMask(1, 1)
         pts = readInt()
-        timeout = readIfMask(2) { readInt() }
+        timeout = readIfMask(1, 2) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -74,7 +75,7 @@ class TLChannelDifferenceEmpty() : TLAbsChannelDifference() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(timeout, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, timeout, 2) { SIZE_INT32 }
         return size
     }
 

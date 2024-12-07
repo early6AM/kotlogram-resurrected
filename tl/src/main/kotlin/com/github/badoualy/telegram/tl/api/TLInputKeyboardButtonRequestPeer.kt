@@ -65,6 +65,7 @@ class TLInputKeyboardButtonRequestPeer() : TLAbsKeyboardButton() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(nameRequested, 1)
         updateFlags(usernameRequested, 2)
         updateFlags(photoRequested, 4)
@@ -84,9 +85,9 @@ class TLInputKeyboardButtonRequestPeer() : TLAbsKeyboardButton() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        nameRequested = isMask(1)
-        usernameRequested = isMask(2)
-        photoRequested = isMask(4)
+        nameRequested = isMask(1, 1)
+        usernameRequested = isMask(1, 2)
+        photoRequested = isMask(1, 4)
         text = readString()
         buttonId = readInt()
         peerType = readTLObject<TLAbsRequestPeerType>()

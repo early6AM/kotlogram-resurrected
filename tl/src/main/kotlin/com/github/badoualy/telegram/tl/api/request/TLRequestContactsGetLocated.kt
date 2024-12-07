@@ -49,6 +49,7 @@ class TLRequestContactsGetLocated() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(background, 2)
         updateFlags(selfExpires, 1)
     }
@@ -59,15 +60,15 @@ class TLRequestContactsGetLocated() : TLMethod<TLAbsUpdates>() {
 
         writeInt(_flags)
         writeTLObject(geoPoint)
-        doIfMask(selfExpires, 1) { writeInt(it) }
+        doIfMask(1, selfExpires, 1) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        background = isMask(2)
+        background = isMask(1, 2)
         geoPoint = readTLObject<TLAbsInputGeoPoint>()
-        selfExpires = readIfMask(1) { readInt() }
+        selfExpires = readIfMask(1, 1) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -76,7 +77,7 @@ class TLRequestContactsGetLocated() : TLMethod<TLAbsUpdates>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += geoPoint.computeSerializedSize()
-        size += getIntIfMask(selfExpires, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, selfExpires, 1) { SIZE_INT32 }
         return size
     }
 

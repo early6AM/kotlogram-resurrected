@@ -61,6 +61,7 @@ class TLThemeSettings() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(messageColorsAnimated, 4)
         updateFlags(outboxAccentColor, 8)
         updateFlags(messageColors, 1)
@@ -74,20 +75,20 @@ class TLThemeSettings() : TLObject() {
         writeInt(_flags)
         writeTLObject(baseTheme)
         writeInt(accentColor)
-        doIfMask(outboxAccentColor, 8) { writeInt(it) }
-        doIfMask(messageColors, 1) { writeTLVector(it) }
-        doIfMask(wallpaper, 2) { writeTLObject(it) }
+        doIfMask(1, outboxAccentColor, 8) { writeInt(it) }
+        doIfMask(1, messageColors, 1) { writeTLVector(it) }
+        doIfMask(1, wallpaper, 2) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        messageColorsAnimated = isMask(4)
+        messageColorsAnimated = isMask(1, 4)
         baseTheme = readTLObject<TLAbsBaseTheme>()
         accentColor = readInt()
-        outboxAccentColor = readIfMask(8) { readInt() }
-        messageColors = readIfMask(1) { readTLIntVector() }
-        wallpaper = readIfMask(2) { readTLObject<TLAbsWallPaper>() }
+        outboxAccentColor = readIfMask(1, 8) { readInt() }
+        messageColors = readIfMask(1, 1) { readTLIntVector() }
+        wallpaper = readIfMask(1, 2) { readTLObject<TLAbsWallPaper>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -97,9 +98,9 @@ class TLThemeSettings() : TLObject() {
         size += SIZE_INT32
         size += baseTheme.computeSerializedSize()
         size += SIZE_INT32
-        size += getIntIfMask(outboxAccentColor, 8) { SIZE_INT32 }
-        size += getIntIfMask(messageColors, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(wallpaper, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, outboxAccentColor, 8) { SIZE_INT32 }
+        size += getIntIfMask(1, messageColors, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, wallpaper, 2) { it.computeSerializedSize() }
         return size
     }
 

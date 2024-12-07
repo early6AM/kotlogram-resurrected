@@ -77,6 +77,7 @@ class TLPoll() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(closed, 1)
         updateFlags(publicVoters, 2)
         updateFlags(multipleChoice, 4)
@@ -93,22 +94,22 @@ class TLPoll() : TLObject() {
         writeInt(_flags)
         writeTLObject(question)
         writeTLVector(answers)
-        doIfMask(closePeriod, 16) { writeInt(it) }
-        doIfMask(closeDate, 32) { writeInt(it) }
+        doIfMask(1, closePeriod, 16) { writeInt(it) }
+        doIfMask(1, closeDate, 32) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         id = readLong()
         _flags = readInt()
-        closed = isMask(1)
-        publicVoters = isMask(2)
-        multipleChoice = isMask(4)
-        quiz = isMask(8)
+        closed = isMask(1, 1)
+        publicVoters = isMask(1, 2)
+        multipleChoice = isMask(1, 4)
+        quiz = isMask(1, 8)
         question = readTLObject<TLTextWithEntities>(TLTextWithEntities::class, TLTextWithEntities.CONSTRUCTOR_ID)
         answers = readTLVector<TLPollAnswer>()
-        closePeriod = readIfMask(16) { readInt() }
-        closeDate = readIfMask(32) { readInt() }
+        closePeriod = readIfMask(1, 16) { readInt() }
+        closeDate = readIfMask(1, 32) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -119,8 +120,8 @@ class TLPoll() : TLObject() {
         size += SIZE_INT32
         size += question.computeSerializedSize()
         size += answers.computeSerializedSize()
-        size += getIntIfMask(closePeriod, 16) { SIZE_INT32 }
-        size += getIntIfMask(closeDate, 32) { SIZE_INT32 }
+        size += getIntIfMask(1, closePeriod, 16) { SIZE_INT32 }
+        size += getIntIfMask(1, closeDate, 32) { SIZE_INT32 }
         return size
     }
 

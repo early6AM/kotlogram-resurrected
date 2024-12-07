@@ -63,6 +63,7 @@ class TLEncryptedChatRequested() : TLAbsEncryptedChat() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(folderId, 1)
     }
 
@@ -71,7 +72,7 @@ class TLEncryptedChatRequested() : TLAbsEncryptedChat() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(folderId, 1) { writeInt(it) }
+        doIfMask(1, folderId, 1) { writeInt(it) }
         writeInt(id)
         writeLong(accessHash)
         writeInt(date)
@@ -83,7 +84,7 @@ class TLEncryptedChatRequested() : TLAbsEncryptedChat() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        folderId = readIfMask(1) { readInt() }
+        folderId = readIfMask(1, 1) { readInt() }
         id = readInt()
         accessHash = readLong()
         date = readInt()
@@ -97,7 +98,7 @@ class TLEncryptedChatRequested() : TLAbsEncryptedChat() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(folderId, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, folderId, 1) { SIZE_INT32 }
         size += SIZE_INT32
         size += SIZE_INT64
         size += SIZE_INT32

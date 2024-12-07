@@ -47,6 +47,7 @@ class TLRequestMessagesGetQuickReplyMessages() : TLMethod<TLAbsMessages>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(id, 1)
     }
 
@@ -56,7 +57,7 @@ class TLRequestMessagesGetQuickReplyMessages() : TLMethod<TLAbsMessages>() {
 
         writeInt(_flags)
         writeInt(shortcutId)
-        doIfMask(id, 1) { writeTLVector(it) }
+        doIfMask(1, id, 1) { writeTLVector(it) }
         writeLong(hash)
     }
 
@@ -64,7 +65,7 @@ class TLRequestMessagesGetQuickReplyMessages() : TLMethod<TLAbsMessages>() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         shortcutId = readInt()
-        id = readIfMask(1) { readTLIntVector() }
+        id = readIfMask(1, 1) { readTLIntVector() }
         hash = readLong()
     }
 
@@ -74,7 +75,7 @@ class TLRequestMessagesGetQuickReplyMessages() : TLMethod<TLAbsMessages>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(id, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, id, 1) { it.computeSerializedSize() }
         size += SIZE_INT64
         return size
     }

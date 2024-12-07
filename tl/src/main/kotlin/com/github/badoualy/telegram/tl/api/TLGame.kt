@@ -63,6 +63,7 @@ class TLGame() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(document, 1)
     }
 
@@ -77,7 +78,7 @@ class TLGame() : TLObject() {
         writeString(title)
         writeString(description)
         writeTLObject(photo)
-        doIfMask(document, 1) { writeTLObject(it) }
+        doIfMask(1, document, 1) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
@@ -89,7 +90,7 @@ class TLGame() : TLObject() {
         title = readString()
         description = readString()
         photo = readTLObject<TLAbsPhoto>()
-        document = readIfMask(1) { readTLObject<TLAbsDocument>() }
+        document = readIfMask(1, 1) { readTLObject<TLAbsDocument>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -103,7 +104,7 @@ class TLGame() : TLObject() {
         size += computeTLStringSerializedSize(title)
         size += computeTLStringSerializedSize(description)
         size += photo.computeSerializedSize()
-        size += getIntIfMask(document, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, document, 1) { it.computeSerializedSize() }
         return size
     }
 

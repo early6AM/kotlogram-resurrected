@@ -56,6 +56,7 @@ class TLRequestPremiumGetBoostsList() : TLMethod<TLBoostsList>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(gifts, 1)
     }
 
@@ -72,7 +73,7 @@ class TLRequestPremiumGetBoostsList() : TLMethod<TLBoostsList>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        gifts = isMask(1)
+        gifts = isMask(1, 1)
         peer = readTLObject<TLAbsInputPeer>()
         offset = readString()
         limit = readInt()

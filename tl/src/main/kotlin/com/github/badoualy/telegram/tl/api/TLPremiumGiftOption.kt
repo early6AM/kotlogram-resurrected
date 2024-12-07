@@ -55,6 +55,7 @@ class TLPremiumGiftOption() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(storeProduct, 1)
     }
 
@@ -67,7 +68,7 @@ class TLPremiumGiftOption() : TLObject() {
         writeString(currency)
         writeLong(amount)
         writeString(botUrl)
-        doIfMask(storeProduct, 1) { writeString(it) }
+        doIfMask(1, storeProduct, 1) { writeString(it) }
     }
 
     @Throws(IOException::class)
@@ -77,7 +78,7 @@ class TLPremiumGiftOption() : TLObject() {
         currency = readString()
         amount = readLong()
         botUrl = readString()
-        storeProduct = readIfMask(1) { readString() }
+        storeProduct = readIfMask(1, 1) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -89,7 +90,7 @@ class TLPremiumGiftOption() : TLObject() {
         size += computeTLStringSerializedSize(currency)
         size += SIZE_INT64
         size += computeTLStringSerializedSize(botUrl)
-        size += getIntIfMask(storeProduct, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, storeProduct, 1) { computeTLStringSerializedSize(it) }
         return size
     }
 

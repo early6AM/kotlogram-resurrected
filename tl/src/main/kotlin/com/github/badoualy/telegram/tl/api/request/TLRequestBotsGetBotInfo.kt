@@ -42,6 +42,7 @@ class TLRequestBotsGetBotInfo() : TLMethod<TLBotInfo>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(bot, 1)
     }
 
@@ -50,14 +51,14 @@ class TLRequestBotsGetBotInfo() : TLMethod<TLBotInfo>() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(bot, 1) { writeTLObject(it) }
+        doIfMask(1, bot, 1) { writeTLObject(it) }
         writeString(langCode)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        bot = readIfMask(1) { readTLObject<TLAbsInputUser>() }
+        bot = readIfMask(1, 1) { readTLObject<TLAbsInputUser>() }
         langCode = readString()
     }
 
@@ -66,7 +67,7 @@ class TLRequestBotsGetBotInfo() : TLMethod<TLBotInfo>() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(bot, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, bot, 1) { it.computeSerializedSize() }
         size += computeTLStringSerializedSize(langCode)
         return size
     }

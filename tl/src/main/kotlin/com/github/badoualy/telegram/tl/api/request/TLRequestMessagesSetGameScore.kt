@@ -64,6 +64,7 @@ class TLRequestMessagesSetGameScore() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(editMessage, 1)
         updateFlags(force, 2)
     }
@@ -82,8 +83,8 @@ class TLRequestMessagesSetGameScore() : TLMethod<TLAbsUpdates>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        editMessage = isMask(1)
-        force = isMask(2)
+        editMessage = isMask(1, 1)
+        force = isMask(1, 2)
         peer = readTLObject<TLAbsInputPeer>()
         id = readInt()
         userId = readTLObject<TLAbsInputUser>()

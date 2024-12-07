@@ -58,6 +58,7 @@ class TLPublicForwards() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(nextOffset, 1)
     }
 
@@ -68,7 +69,7 @@ class TLPublicForwards() : TLObject() {
         writeInt(_flags)
         writeInt(count)
         writeTLVector(forwards)
-        doIfMask(nextOffset, 1) { writeString(it) }
+        doIfMask(1, nextOffset, 1) { writeString(it) }
         writeTLVector(chats)
         writeTLVector(users)
     }
@@ -78,7 +79,7 @@ class TLPublicForwards() : TLObject() {
         _flags = readInt()
         count = readInt()
         forwards = readTLVector<TLAbsPublicForward>()
-        nextOffset = readIfMask(1) { readString() }
+        nextOffset = readIfMask(1, 1) { readString() }
         chats = readTLVector<TLAbsChat>()
         users = readTLVector<TLAbsUser>()
     }
@@ -90,7 +91,7 @@ class TLPublicForwards() : TLObject() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += forwards.computeSerializedSize()
-        size += getIntIfMask(nextOffset, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, nextOffset, 1) { computeTLStringSerializedSize(it) }
         size += chats.computeSerializedSize()
         size += users.computeSerializedSize()
         return size

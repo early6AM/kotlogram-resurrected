@@ -59,8 +59,6 @@ class TLMessage() : TLAbsMessage() {
     @Transient
     var invertMedia: Boolean = false
 
-    var _flags2: Int = 0
-
     @Transient
     var offline: Boolean = false
 
@@ -132,7 +130,6 @@ class TLMessage() : TLAbsMessage() {
             pinned: Boolean,
             noforwards: Boolean,
             invertMedia: Boolean,
-            _flags2: Int,
             offline: Boolean,
             id: Int,
             fromId: TLAbsPeer?,
@@ -172,7 +169,6 @@ class TLMessage() : TLAbsMessage() {
         this.pinned = pinned
         this.noforwards = noforwards
         this.invertMedia = invertMedia
-        this._flags2 = _flags2
         this.offline = offline
         this.id = id
         this.fromId = fromId
@@ -204,6 +200,7 @@ class TLMessage() : TLAbsMessage() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(out, 2)
         updateFlags(mentioned, 16)
         updateFlags(mediaUnread, 32)
@@ -240,8 +237,8 @@ class TLMessage() : TLAbsMessage() {
         updateFlags(factcheck, 8)
 
         // Following parameters might be forced to true by another field that updated the flags
-        out = isMask(2)
-        offline = isMask(2)
+        out = isMask(1, 2)
+        offline = isMask(2, 2)
     }
 
     @Throws(IOException::class)
@@ -251,75 +248,75 @@ class TLMessage() : TLAbsMessage() {
         writeInt(_flags)
         writeInt(_flags2)
         writeInt(id)
-        doIfMask(fromId, 256) { writeTLObject(it) }
-        doIfMask(fromBoostsApplied, 536870912) { writeInt(it) }
+        doIfMask(1, fromId, 256) { writeTLObject(it) }
+        doIfMask(1, fromBoostsApplied, 536870912) { writeInt(it) }
         writeTLObject(peerId)
-        doIfMask(savedPeerId, 268435456) { writeTLObject(it) }
-        doIfMask(fwdFrom, 4) { writeTLObject(it) }
-        doIfMask(viaBotId, 2048) { writeLong(it) }
-        doIfMask(viaBusinessBotId, 1) { writeLong(it) }
-        doIfMask(replyTo, 8) { writeTLObject(it) }
+        doIfMask(1, savedPeerId, 268435456) { writeTLObject(it) }
+        doIfMask(1, fwdFrom, 4) { writeTLObject(it) }
+        doIfMask(1, viaBotId, 2048) { writeLong(it) }
+        doIfMask(2, viaBusinessBotId, 1) { writeLong(it) }
+        doIfMask(1, replyTo, 8) { writeTLObject(it) }
         writeInt(date)
         writeString(message)
-        doIfMask(media, 512) { writeTLObject(it) }
-        doIfMask(replyMarkup, 64) { writeTLObject(it) }
-        doIfMask(entities, 128) { writeTLVector(it) }
-        doIfMask(views, 1024) { writeInt(it) }
-        doIfMask(forwards, 1024) { writeInt(it) }
-        doIfMask(replies, 8388608) { writeTLObject(it) }
-        doIfMask(editDate, 32768) { writeInt(it) }
-        doIfMask(postAuthor, 65536) { writeString(it) }
-        doIfMask(groupedId, 131072) { writeLong(it) }
-        doIfMask(reactions, 1048576) { writeTLObject(it) }
-        doIfMask(restrictionReason, 4194304) { writeTLVector(it) }
-        doIfMask(ttlPeriod, 33554432) { writeInt(it) }
-        doIfMask(quickReplyShortcutId, 1073741824) { writeInt(it) }
-        doIfMask(effect, 4) { writeLong(it) }
-        doIfMask(factcheck, 8) { writeTLObject(it) }
+        doIfMask(1, media, 512) { writeTLObject(it) }
+        doIfMask(1, replyMarkup, 64) { writeTLObject(it) }
+        doIfMask(1, entities, 128) { writeTLVector(it) }
+        doIfMask(1, views, 1024) { writeInt(it) }
+        doIfMask(1, forwards, 1024) { writeInt(it) }
+        doIfMask(1, replies, 8388608) { writeTLObject(it) }
+        doIfMask(1, editDate, 32768) { writeInt(it) }
+        doIfMask(1, postAuthor, 65536) { writeString(it) }
+        doIfMask(1, groupedId, 131072) { writeLong(it) }
+        doIfMask(1, reactions, 1048576) { writeTLObject(it) }
+        doIfMask(1, restrictionReason, 4194304) { writeTLVector(it) }
+        doIfMask(1, ttlPeriod, 33554432) { writeInt(it) }
+        doIfMask(1, quickReplyShortcutId, 1073741824) { writeInt(it) }
+        doIfMask(2, effect, 4) { writeLong(it) }
+        doIfMask(2, factcheck, 8) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        out = isMask(2)
-        mentioned = isMask(16)
-        mediaUnread = isMask(32)
-        silent = isMask(8192)
-        post = isMask(16384)
-        fromScheduled = isMask(262144)
-        legacy = isMask(524288)
-        editHide = isMask(2097152)
-        pinned = isMask(16777216)
-        noforwards = isMask(67108864)
-        invertMedia = isMask(134217728)
+        out = isMask(1, 2)
+        mentioned = isMask(1, 16)
+        mediaUnread = isMask(1, 32)
+        silent = isMask(1, 8192)
+        post = isMask(1, 16384)
+        fromScheduled = isMask(1, 262144)
+        legacy = isMask(1, 524288)
+        editHide = isMask(1, 2097152)
+        pinned = isMask(1, 16777216)
+        noforwards = isMask(1, 67108864)
+        invertMedia = isMask(1, 134217728)
         _flags2 = readInt()
-        offline = isMask(2)
+        offline = isMask(2, 2)
         id = readInt()
-        fromId = readIfMask(256) { readTLObject<TLAbsPeer>() }
-        fromBoostsApplied = readIfMask(536870912) { readInt() }
+        fromId = readIfMask(1, 256) { readTLObject<TLAbsPeer>() }
+        fromBoostsApplied = readIfMask(1, 536870912) { readInt() }
         peerId = readTLObject<TLAbsPeer>()
-        savedPeerId = readIfMask(268435456) { readTLObject<TLAbsPeer>() }
-        fwdFrom = readIfMask(4) { readTLObject<TLMessageFwdHeader>(TLMessageFwdHeader::class, TLMessageFwdHeader.CONSTRUCTOR_ID) }
-        viaBotId = readIfMask(2048) { readLong() }
-        viaBusinessBotId = readIfMask(1) { readLong() }
-        replyTo = readIfMask(8) { readTLObject<TLAbsMessageReplyHeader>() }
+        savedPeerId = readIfMask(1, 268435456) { readTLObject<TLAbsPeer>() }
+        fwdFrom = readIfMask(1, 4) { readTLObject<TLMessageFwdHeader>(TLMessageFwdHeader::class, TLMessageFwdHeader.CONSTRUCTOR_ID) }
+        viaBotId = readIfMask(1, 2048) { readLong() }
+        viaBusinessBotId = readIfMask(2, 1) { readLong() }
+        replyTo = readIfMask(1, 8) { readTLObject<TLAbsMessageReplyHeader>() }
         date = readInt()
         message = readString()
-        media = readIfMask(512) { readTLObject<TLAbsMessageMedia>() }
-        replyMarkup = readIfMask(64) { readTLObject<TLAbsReplyMarkup>() }
-        entities = readIfMask(128) { readTLVector<TLAbsMessageEntity>() }
-        views = readIfMask(1024) { readInt() }
-        forwards = readIfMask(1024) { readInt() }
-        replies = readIfMask(8388608) { readTLObject<TLMessageReplies>(TLMessageReplies::class, TLMessageReplies.CONSTRUCTOR_ID) }
-        editDate = readIfMask(32768) { readInt() }
-        postAuthor = readIfMask(65536) { readString() }
-        groupedId = readIfMask(131072) { readLong() }
-        reactions = readIfMask(1048576) { readTLObject<TLMessageReactions>(TLMessageReactions::class, TLMessageReactions.CONSTRUCTOR_ID) }
-        restrictionReason = readIfMask(4194304) { readTLVector<TLRestrictionReason>() }
-        ttlPeriod = readIfMask(33554432) { readInt() }
-        quickReplyShortcutId = readIfMask(1073741824) { readInt() }
-        effect = readIfMask(4) { readLong() }
-        factcheck = readIfMask(8) { readTLObject<TLFactCheck>(TLFactCheck::class, TLFactCheck.CONSTRUCTOR_ID) }
+        media = readIfMask(1, 512) { readTLObject<TLAbsMessageMedia>() }
+        replyMarkup = readIfMask(1, 64) { readTLObject<TLAbsReplyMarkup>() }
+        entities = readIfMask(1, 128) { readTLVector<TLAbsMessageEntity>() }
+        views = readIfMask(1, 1024) { readInt() }
+        forwards = readIfMask(1, 1024) { readInt() }
+        replies = readIfMask(1, 8388608) { readTLObject<TLMessageReplies>(TLMessageReplies::class, TLMessageReplies.CONSTRUCTOR_ID) }
+        editDate = readIfMask(1, 32768) { readInt() }
+        postAuthor = readIfMask(1, 65536) { readString() }
+        groupedId = readIfMask(1, 131072) { readLong() }
+        reactions = readIfMask(1, 1048576) { readTLObject<TLMessageReactions>(TLMessageReactions::class, TLMessageReactions.CONSTRUCTOR_ID) }
+        restrictionReason = readIfMask(1, 4194304) { readTLVector<TLRestrictionReason>() }
+        ttlPeriod = readIfMask(1, 33554432) { readInt() }
+        quickReplyShortcutId = readIfMask(1, 1073741824) { readInt() }
+        effect = readIfMask(2, 4) { readLong() }
+        factcheck = readIfMask(2, 8) { readTLObject<TLFactCheck>(TLFactCheck::class, TLFactCheck.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -329,31 +326,31 @@ class TLMessage() : TLAbsMessage() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(fromId, 256) { it.computeSerializedSize() }
-        size += getIntIfMask(fromBoostsApplied, 536870912) { SIZE_INT32 }
+        size += getIntIfMask(1, fromId, 256) { it.computeSerializedSize() }
+        size += getIntIfMask(1, fromBoostsApplied, 536870912) { SIZE_INT32 }
         size += peerId.computeSerializedSize()
-        size += getIntIfMask(savedPeerId, 268435456) { it.computeSerializedSize() }
-        size += getIntIfMask(fwdFrom, 4) { it.computeSerializedSize() }
-        size += getIntIfMask(viaBotId, 2048) { SIZE_INT64 }
-        size += getIntIfMask(viaBusinessBotId, 1) { SIZE_INT64 }
-        size += getIntIfMask(replyTo, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, savedPeerId, 268435456) { it.computeSerializedSize() }
+        size += getIntIfMask(1, fwdFrom, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, viaBotId, 2048) { SIZE_INT64 }
+        size += getIntIfMask(2, viaBusinessBotId, 1) { SIZE_INT64 }
+        size += getIntIfMask(1, replyTo, 8) { it.computeSerializedSize() }
         size += SIZE_INT32
         size += computeTLStringSerializedSize(message)
-        size += getIntIfMask(media, 512) { it.computeSerializedSize() }
-        size += getIntIfMask(replyMarkup, 64) { it.computeSerializedSize() }
-        size += getIntIfMask(entities, 128) { it.computeSerializedSize() }
-        size += getIntIfMask(views, 1024) { SIZE_INT32 }
-        size += getIntIfMask(forwards, 1024) { SIZE_INT32 }
-        size += getIntIfMask(replies, 8388608) { it.computeSerializedSize() }
-        size += getIntIfMask(editDate, 32768) { SIZE_INT32 }
-        size += getIntIfMask(postAuthor, 65536) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(groupedId, 131072) { SIZE_INT64 }
-        size += getIntIfMask(reactions, 1048576) { it.computeSerializedSize() }
-        size += getIntIfMask(restrictionReason, 4194304) { it.computeSerializedSize() }
-        size += getIntIfMask(ttlPeriod, 33554432) { SIZE_INT32 }
-        size += getIntIfMask(quickReplyShortcutId, 1073741824) { SIZE_INT32 }
-        size += getIntIfMask(effect, 4) { SIZE_INT64 }
-        size += getIntIfMask(factcheck, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, media, 512) { it.computeSerializedSize() }
+        size += getIntIfMask(1, replyMarkup, 64) { it.computeSerializedSize() }
+        size += getIntIfMask(1, entities, 128) { it.computeSerializedSize() }
+        size += getIntIfMask(1, views, 1024) { SIZE_INT32 }
+        size += getIntIfMask(1, forwards, 1024) { SIZE_INT32 }
+        size += getIntIfMask(1, replies, 8388608) { it.computeSerializedSize() }
+        size += getIntIfMask(1, editDate, 32768) { SIZE_INT32 }
+        size += getIntIfMask(1, postAuthor, 65536) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, groupedId, 131072) { SIZE_INT64 }
+        size += getIntIfMask(1, reactions, 1048576) { it.computeSerializedSize() }
+        size += getIntIfMask(1, restrictionReason, 4194304) { it.computeSerializedSize() }
+        size += getIntIfMask(1, ttlPeriod, 33554432) { SIZE_INT32 }
+        size += getIntIfMask(1, quickReplyShortcutId, 1073741824) { SIZE_INT32 }
+        size += getIntIfMask(2, effect, 4) { SIZE_INT64 }
+        size += getIntIfMask(2, factcheck, 8) { it.computeSerializedSize() }
         return size
     }
 

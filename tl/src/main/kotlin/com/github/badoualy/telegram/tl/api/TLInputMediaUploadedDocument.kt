@@ -74,6 +74,7 @@ class TLInputMediaUploadedDocument() : TLAbsInputMedia() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(nosoundVideo, 8)
         updateFlags(forceFile, 16)
         updateFlags(spoiler, 32)
@@ -88,25 +89,25 @@ class TLInputMediaUploadedDocument() : TLAbsInputMedia() {
 
         writeInt(_flags)
         writeTLObject(file)
-        doIfMask(thumb, 4) { writeTLObject(it) }
+        doIfMask(1, thumb, 4) { writeTLObject(it) }
         writeString(mimeType)
         writeTLVector(attributes)
-        doIfMask(stickers, 1) { writeTLVector(it) }
-        doIfMask(ttlSeconds, 2) { writeInt(it) }
+        doIfMask(1, stickers, 1) { writeTLVector(it) }
+        doIfMask(1, ttlSeconds, 2) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        nosoundVideo = isMask(8)
-        forceFile = isMask(16)
-        spoiler = isMask(32)
+        nosoundVideo = isMask(1, 8)
+        forceFile = isMask(1, 16)
+        spoiler = isMask(1, 32)
         file = readTLObject<TLAbsInputFile>()
-        thumb = readIfMask(4) { readTLObject<TLAbsInputFile>() }
+        thumb = readIfMask(1, 4) { readTLObject<TLAbsInputFile>() }
         mimeType = readString()
         attributes = readTLVector<TLAbsDocumentAttribute>()
-        stickers = readIfMask(1) { readTLVector<TLAbsInputDocument>() }
-        ttlSeconds = readIfMask(2) { readInt() }
+        stickers = readIfMask(1, 1) { readTLVector<TLAbsInputDocument>() }
+        ttlSeconds = readIfMask(1, 2) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -115,11 +116,11 @@ class TLInputMediaUploadedDocument() : TLAbsInputMedia() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += file.computeSerializedSize()
-        size += getIntIfMask(thumb, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, thumb, 4) { it.computeSerializedSize() }
         size += computeTLStringSerializedSize(mimeType)
         size += attributes.computeSerializedSize()
-        size += getIntIfMask(stickers, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(ttlSeconds, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, stickers, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, ttlSeconds, 2) { SIZE_INT32 }
         return size
     }
 

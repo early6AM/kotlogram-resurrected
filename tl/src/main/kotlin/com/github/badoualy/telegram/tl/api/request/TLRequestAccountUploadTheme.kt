@@ -51,6 +51,7 @@ class TLRequestAccountUploadTheme() : TLMethod<TLAbsDocument>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(thumb, 1)
     }
 
@@ -60,7 +61,7 @@ class TLRequestAccountUploadTheme() : TLMethod<TLAbsDocument>() {
 
         writeInt(_flags)
         writeTLObject(file)
-        doIfMask(thumb, 1) { writeTLObject(it) }
+        doIfMask(1, thumb, 1) { writeTLObject(it) }
         writeString(fileName)
         writeString(mimeType)
     }
@@ -69,7 +70,7 @@ class TLRequestAccountUploadTheme() : TLMethod<TLAbsDocument>() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         file = readTLObject<TLAbsInputFile>()
-        thumb = readIfMask(1) { readTLObject<TLAbsInputFile>() }
+        thumb = readIfMask(1, 1) { readTLObject<TLAbsInputFile>() }
         fileName = readString()
         mimeType = readString()
     }
@@ -80,7 +81,7 @@ class TLRequestAccountUploadTheme() : TLMethod<TLAbsDocument>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += file.computeSerializedSize()
-        size += getIntIfMask(thumb, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, thumb, 1) { it.computeSerializedSize() }
         size += computeTLStringSerializedSize(fileName)
         size += computeTLStringSerializedSize(mimeType)
         return size

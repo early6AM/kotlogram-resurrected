@@ -69,6 +69,7 @@ class TLPhoneCallRequested() : TLAbsPhoneCall() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(video, 64)
     }
 
@@ -89,7 +90,7 @@ class TLPhoneCallRequested() : TLAbsPhoneCall() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        video = isMask(64)
+        video = isMask(1, 64)
         id = readLong()
         accessHash = readLong()
         date = readInt()

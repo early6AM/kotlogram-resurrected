@@ -57,6 +57,7 @@ class TLRequestContactsAddContact() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(addPhonePrivacyException, 1)
     }
 
@@ -74,7 +75,7 @@ class TLRequestContactsAddContact() : TLMethod<TLAbsUpdates>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        addPhonePrivacyException = isMask(1)
+        addPhonePrivacyException = isMask(1, 1)
         id = readTLObject<TLAbsInputUser>()
         firstName = readString()
         lastName = readString()

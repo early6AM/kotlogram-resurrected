@@ -78,7 +78,7 @@ object AuthKeyCreation {
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {
-                println("${Thread.currentThread().id} ${connection!!.tag} finally closing connection")
+                println("${Thread.currentThread().id} ${connection?.tag} finally closing connection")
                 try {
                     connection?.close()
                 } catch (e1: IOException) {

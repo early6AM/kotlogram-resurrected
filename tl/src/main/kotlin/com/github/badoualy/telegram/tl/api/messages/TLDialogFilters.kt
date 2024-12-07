@@ -43,6 +43,7 @@ class TLDialogFilters() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(tagsEnabled, 1)
     }
 
@@ -57,7 +58,7 @@ class TLDialogFilters() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        tagsEnabled = isMask(1)
+        tagsEnabled = isMask(1, 1)
         filters = readTLVector<TLAbsDialogFilter>()
     }
 

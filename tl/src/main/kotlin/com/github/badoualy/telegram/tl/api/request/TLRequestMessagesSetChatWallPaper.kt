@@ -64,6 +64,7 @@ class TLRequestMessagesSetChatWallPaper() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(forBoth, 8)
         updateFlags(revert, 16)
         updateFlags(wallpaper, 1)
@@ -77,20 +78,20 @@ class TLRequestMessagesSetChatWallPaper() : TLMethod<TLAbsUpdates>() {
 
         writeInt(_flags)
         writeTLObject(peer)
-        doIfMask(wallpaper, 1) { writeTLObject(it) }
-        doIfMask(settings, 4) { writeTLObject(it) }
-        doIfMask(id, 2) { writeInt(it) }
+        doIfMask(1, wallpaper, 1) { writeTLObject(it) }
+        doIfMask(1, settings, 4) { writeTLObject(it) }
+        doIfMask(1, id, 2) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        forBoth = isMask(8)
-        revert = isMask(16)
+        forBoth = isMask(1, 8)
+        revert = isMask(1, 16)
         peer = readTLObject<TLAbsInputPeer>()
-        wallpaper = readIfMask(1) { readTLObject<TLAbsInputWallPaper>() }
-        settings = readIfMask(4) { readTLObject<TLWallPaperSettings>(TLWallPaperSettings::class, TLWallPaperSettings.CONSTRUCTOR_ID) }
-        id = readIfMask(2) { readInt() }
+        wallpaper = readIfMask(1, 1) { readTLObject<TLAbsInputWallPaper>() }
+        settings = readIfMask(1, 4) { readTLObject<TLWallPaperSettings>(TLWallPaperSettings::class, TLWallPaperSettings.CONSTRUCTOR_ID) }
+        id = readIfMask(1, 2) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -99,9 +100,9 @@ class TLRequestMessagesSetChatWallPaper() : TLMethod<TLAbsUpdates>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += peer.computeSerializedSize()
-        size += getIntIfMask(wallpaper, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(settings, 4) { it.computeSerializedSize() }
-        size += getIntIfMask(id, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, wallpaper, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, settings, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, id, 2) { SIZE_INT32 }
         return size
     }
 

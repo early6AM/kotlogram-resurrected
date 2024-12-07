@@ -42,6 +42,7 @@ class TLRequestMessagesTogglePeerTranslations() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(disabled, 1)
     }
 
@@ -56,7 +57,7 @@ class TLRequestMessagesTogglePeerTranslations() : TLMethod<TLBool>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        disabled = isMask(1)
+        disabled = isMask(1, 1)
         peer = readTLObject<TLAbsInputPeer>()
     }
 

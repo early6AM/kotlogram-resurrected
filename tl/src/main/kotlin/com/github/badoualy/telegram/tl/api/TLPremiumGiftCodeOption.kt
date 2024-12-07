@@ -59,6 +59,7 @@ class TLPremiumGiftCodeOption() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(storeProduct, 1)
         updateFlags(storeQuantity, 2)
     }
@@ -70,8 +71,8 @@ class TLPremiumGiftCodeOption() : TLObject() {
         writeInt(_flags)
         writeInt(users)
         writeInt(months)
-        doIfMask(storeProduct, 1) { writeString(it) }
-        doIfMask(storeQuantity, 2) { writeInt(it) }
+        doIfMask(1, storeProduct, 1) { writeString(it) }
+        doIfMask(1, storeQuantity, 2) { writeInt(it) }
         writeString(currency)
         writeLong(amount)
     }
@@ -81,8 +82,8 @@ class TLPremiumGiftCodeOption() : TLObject() {
         _flags = readInt()
         users = readInt()
         months = readInt()
-        storeProduct = readIfMask(1) { readString() }
-        storeQuantity = readIfMask(2) { readInt() }
+        storeProduct = readIfMask(1, 1) { readString() }
+        storeQuantity = readIfMask(1, 2) { readInt() }
         currency = readString()
         amount = readLong()
     }
@@ -94,8 +95,8 @@ class TLPremiumGiftCodeOption() : TLObject() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(storeProduct, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(storeQuantity, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, storeProduct, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, storeQuantity, 2) { SIZE_INT32 }
         size += computeTLStringSerializedSize(currency)
         size += SIZE_INT64
         return size

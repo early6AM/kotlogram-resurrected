@@ -82,6 +82,7 @@ class TLDcOption() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(ipv6, 1)
         updateFlags(mediaOnly, 2)
         updateFlags(tcpoOnly, 4)
@@ -99,22 +100,22 @@ class TLDcOption() : TLObject() {
         writeInt(id)
         writeString(ipAddress)
         writeInt(port)
-        doIfMask(secret, 1024) { writeTLBytes(it) }
+        doIfMask(1, secret, 1024) { writeTLBytes(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        ipv6 = isMask(1)
-        mediaOnly = isMask(2)
-        tcpoOnly = isMask(4)
-        cdn = isMask(8)
-        static = isMask(16)
-        thisPortOnly = isMask(32)
+        ipv6 = isMask(1, 1)
+        mediaOnly = isMask(1, 2)
+        tcpoOnly = isMask(1, 4)
+        cdn = isMask(1, 8)
+        static = isMask(1, 16)
+        thisPortOnly = isMask(1, 32)
         id = readInt()
         ipAddress = readString()
         port = readInt()
-        secret = readIfMask(1024) { readTLBytes() }
+        secret = readIfMask(1, 1024) { readTLBytes() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -125,7 +126,7 @@ class TLDcOption() : TLObject() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(ipAddress)
         size += SIZE_INT32
-        size += getIntIfMask(secret, 1024) { computeTLBytesSerializedSize(it) }
+        size += getIntIfMask(1, secret, 1024) { computeTLBytesSerializedSize(it) }
         return size
     }
 

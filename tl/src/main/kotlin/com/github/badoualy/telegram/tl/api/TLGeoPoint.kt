@@ -51,6 +51,7 @@ class TLGeoPoint() : TLAbsGeoPoint() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(accuracyRadius, 1)
     }
 
@@ -62,7 +63,7 @@ class TLGeoPoint() : TLAbsGeoPoint() {
         writeDouble(_long)
         writeDouble(lat)
         writeLong(accessHash)
-        doIfMask(accuracyRadius, 1) { writeInt(it) }
+        doIfMask(1, accuracyRadius, 1) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -71,7 +72,7 @@ class TLGeoPoint() : TLAbsGeoPoint() {
         _long = readDouble()
         lat = readDouble()
         accessHash = readLong()
-        accuracyRadius = readIfMask(1) { readInt() }
+        accuracyRadius = readIfMask(1, 1) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -82,7 +83,7 @@ class TLGeoPoint() : TLAbsGeoPoint() {
         size += SIZE_DOUBLE
         size += SIZE_DOUBLE
         size += SIZE_INT64
-        size += getIntIfMask(accuracyRadius, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, accuracyRadius, 1) { SIZE_INT32 }
         return size
     }
 

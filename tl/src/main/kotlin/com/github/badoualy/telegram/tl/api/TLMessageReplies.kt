@@ -66,6 +66,7 @@ class TLMessageReplies() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(comments, 1)
         updateFlags(recentRepliers, 2)
         updateFlags(channelId, 1)
@@ -73,7 +74,7 @@ class TLMessageReplies() : TLObject() {
         updateFlags(readMaxId, 8)
 
         // Following parameters might be forced to true by another field that updated the flags
-        comments = isMask(1)
+        comments = isMask(1, 1)
     }
 
     @Throws(IOException::class)
@@ -83,22 +84,22 @@ class TLMessageReplies() : TLObject() {
         writeInt(_flags)
         writeInt(replies)
         writeInt(repliesPts)
-        doIfMask(recentRepliers, 2) { writeTLVector(it) }
-        doIfMask(channelId, 1) { writeLong(it) }
-        doIfMask(maxId, 4) { writeInt(it) }
-        doIfMask(readMaxId, 8) { writeInt(it) }
+        doIfMask(1, recentRepliers, 2) { writeTLVector(it) }
+        doIfMask(1, channelId, 1) { writeLong(it) }
+        doIfMask(1, maxId, 4) { writeInt(it) }
+        doIfMask(1, readMaxId, 8) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        comments = isMask(1)
+        comments = isMask(1, 1)
         replies = readInt()
         repliesPts = readInt()
-        recentRepliers = readIfMask(2) { readTLVector<TLAbsPeer>() }
-        channelId = readIfMask(1) { readLong() }
-        maxId = readIfMask(4) { readInt() }
-        readMaxId = readIfMask(8) { readInt() }
+        recentRepliers = readIfMask(1, 2) { readTLVector<TLAbsPeer>() }
+        channelId = readIfMask(1, 1) { readLong() }
+        maxId = readIfMask(1, 4) { readInt() }
+        readMaxId = readIfMask(1, 8) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -108,10 +109,10 @@ class TLMessageReplies() : TLObject() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(recentRepliers, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(channelId, 1) { SIZE_INT64 }
-        size += getIntIfMask(maxId, 4) { SIZE_INT32 }
-        size += getIntIfMask(readMaxId, 8) { SIZE_INT32 }
+        size += getIntIfMask(1, recentRepliers, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, channelId, 1) { SIZE_INT64 }
+        size += getIntIfMask(1, maxId, 4) { SIZE_INT32 }
+        size += getIntIfMask(1, readMaxId, 8) { SIZE_INT32 }
         return size
     }
 

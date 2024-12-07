@@ -51,7 +51,7 @@ class TelegramClientImpl internal constructor(
     private val exportedHandlerMap = ConcurrentHashMap<Int, MTProtoHandler>()
     private val exportedHandlerTimeoutMap = ConcurrentHashMap<Int, Long>()
 
-    override var timeout: Long = TimeUnit.SECONDS.toMillis(5)
+    override var timeout: Long = TimeUnit.SECONDS.toMillis(20)
     override var exportedClientTimeout: Long = TimeUnit.MINUTES.toMillis(1)
     override var requestRetryCount: Int = DEFAULT_RETRY_COUNT
         set(value) {
@@ -191,6 +191,7 @@ class TelegramClientImpl internal constructor(
             println("${Thread.currentThread().id} Current stacktrace: $stackTrace")
             mtProtoHandler.executeMethods(methods)
                 .doOnEach {
+                    it.error?.printStackTrace()
                     println("${Thread.currentThread().id} notification: $it")
                 }
                 .timeout(timeout, TimeUnit.MILLISECONDS)

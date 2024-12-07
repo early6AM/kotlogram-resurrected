@@ -54,6 +54,7 @@ class TLUpdateReadChannelDiscussionInbox() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(broadcastId, 1)
         updateFlags(broadcastPost, 1)
     }
@@ -66,8 +67,8 @@ class TLUpdateReadChannelDiscussionInbox() : TLAbsUpdate() {
         writeLong(channelId)
         writeInt(topMsgId)
         writeInt(readMaxId)
-        doIfMask(broadcastId, 1) { writeLong(it) }
-        doIfMask(broadcastPost, 1) { writeInt(it) }
+        doIfMask(1, broadcastId, 1) { writeLong(it) }
+        doIfMask(1, broadcastPost, 1) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -76,8 +77,8 @@ class TLUpdateReadChannelDiscussionInbox() : TLAbsUpdate() {
         channelId = readLong()
         topMsgId = readInt()
         readMaxId = readInt()
-        broadcastId = readIfMask(1) { readLong() }
-        broadcastPost = readIfMask(1) { readInt() }
+        broadcastId = readIfMask(1, 1) { readLong() }
+        broadcastPost = readIfMask(1, 1) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -88,8 +89,8 @@ class TLUpdateReadChannelDiscussionInbox() : TLAbsUpdate() {
         size += SIZE_INT64
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(broadcastId, 1) { SIZE_INT64 }
-        size += getIntIfMask(broadcastPost, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, broadcastId, 1) { SIZE_INT64 }
+        size += getIntIfMask(1, broadcastPost, 1) { SIZE_INT32 }
         return size
     }
 

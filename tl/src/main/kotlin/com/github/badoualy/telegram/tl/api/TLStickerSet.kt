@@ -116,6 +116,7 @@ class TLStickerSet() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(archived, 2)
         updateFlags(official, 4)
         updateFlags(masks, 8)
@@ -135,15 +136,15 @@ class TLStickerSet() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(installedDate, 1) { writeInt(it) }
+        doIfMask(1, installedDate, 1) { writeInt(it) }
         writeLong(id)
         writeLong(accessHash)
         writeString(title)
         writeString(shortName)
-        doIfMask(thumbs, 16) { writeTLVector(it) }
-        doIfMask(thumbDcId, 16) { writeInt(it) }
-        doIfMask(thumbVersion, 16) { writeInt(it) }
-        doIfMask(thumbDocumentId, 256) { writeLong(it) }
+        doIfMask(1, thumbs, 16) { writeTLVector(it) }
+        doIfMask(1, thumbDcId, 16) { writeInt(it) }
+        doIfMask(1, thumbVersion, 16) { writeInt(it) }
+        doIfMask(1, thumbDocumentId, 256) { writeLong(it) }
         writeInt(count)
         writeInt(hash)
     }
@@ -151,22 +152,22 @@ class TLStickerSet() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        archived = isMask(2)
-        official = isMask(4)
-        masks = isMask(8)
-        emojis = isMask(128)
-        textColor = isMask(512)
-        channelEmojiStatus = isMask(1024)
-        creator = isMask(2048)
-        installedDate = readIfMask(1) { readInt() }
+        archived = isMask(1, 2)
+        official = isMask(1, 4)
+        masks = isMask(1, 8)
+        emojis = isMask(1, 128)
+        textColor = isMask(1, 512)
+        channelEmojiStatus = isMask(1, 1024)
+        creator = isMask(1, 2048)
+        installedDate = readIfMask(1, 1) { readInt() }
         id = readLong()
         accessHash = readLong()
         title = readString()
         shortName = readString()
-        thumbs = readIfMask(16) { readTLVector<TLAbsPhotoSize>() }
-        thumbDcId = readIfMask(16) { readInt() }
-        thumbVersion = readIfMask(16) { readInt() }
-        thumbDocumentId = readIfMask(256) { readLong() }
+        thumbs = readIfMask(1, 16) { readTLVector<TLAbsPhotoSize>() }
+        thumbDcId = readIfMask(1, 16) { readInt() }
+        thumbVersion = readIfMask(1, 16) { readInt() }
+        thumbDocumentId = readIfMask(1, 256) { readLong() }
         count = readInt()
         hash = readInt()
     }
@@ -176,15 +177,15 @@ class TLStickerSet() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(installedDate, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, installedDate, 1) { SIZE_INT32 }
         size += SIZE_INT64
         size += SIZE_INT64
         size += computeTLStringSerializedSize(title)
         size += computeTLStringSerializedSize(shortName)
-        size += getIntIfMask(thumbs, 16) { it.computeSerializedSize() }
-        size += getIntIfMask(thumbDcId, 16) { SIZE_INT32 }
-        size += getIntIfMask(thumbVersion, 16) { SIZE_INT32 }
-        size += getIntIfMask(thumbDocumentId, 256) { SIZE_INT64 }
+        size += getIntIfMask(1, thumbs, 16) { it.computeSerializedSize() }
+        size += getIntIfMask(1, thumbDcId, 16) { SIZE_INT32 }
+        size += getIntIfMask(1, thumbVersion, 16) { SIZE_INT32 }
+        size += getIntIfMask(1, thumbDocumentId, 256) { SIZE_INT64 }
         size += SIZE_INT32
         size += SIZE_INT32
         return size

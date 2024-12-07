@@ -56,6 +56,7 @@ class TLRequestMessagesGetSearchCounters() : TLMethod<TLObjectVector<TLSearchCou
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(savedPeerId, 4)
         updateFlags(topMsgId, 1)
     }
@@ -66,8 +67,8 @@ class TLRequestMessagesGetSearchCounters() : TLMethod<TLObjectVector<TLSearchCou
 
         writeInt(_flags)
         writeTLObject(peer)
-        doIfMask(savedPeerId, 4) { writeTLObject(it) }
-        doIfMask(topMsgId, 1) { writeInt(it) }
+        doIfMask(1, savedPeerId, 4) { writeTLObject(it) }
+        doIfMask(1, topMsgId, 1) { writeInt(it) }
         writeTLVector(filters)
     }
 
@@ -75,8 +76,8 @@ class TLRequestMessagesGetSearchCounters() : TLMethod<TLObjectVector<TLSearchCou
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         peer = readTLObject<TLAbsInputPeer>()
-        savedPeerId = readIfMask(4) { readTLObject<TLAbsInputPeer>() }
-        topMsgId = readIfMask(1) { readInt() }
+        savedPeerId = readIfMask(1, 4) { readTLObject<TLAbsInputPeer>() }
+        topMsgId = readIfMask(1, 1) { readInt() }
         filters = readTLVector<TLAbsMessagesFilter>()
     }
 
@@ -86,8 +87,8 @@ class TLRequestMessagesGetSearchCounters() : TLMethod<TLObjectVector<TLSearchCou
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += peer.computeSerializedSize()
-        size += getIntIfMask(savedPeerId, 4) { it.computeSerializedSize() }
-        size += getIntIfMask(topMsgId, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, savedPeerId, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, topMsgId, 1) { SIZE_INT32 }
         size += filters.computeSerializedSize()
         return size
     }

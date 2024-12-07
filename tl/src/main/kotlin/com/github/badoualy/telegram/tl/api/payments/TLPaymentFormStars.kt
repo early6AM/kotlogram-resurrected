@@ -66,6 +66,7 @@ class TLPaymentFormStars() : TLAbsPaymentForm() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(photo, 32)
     }
 
@@ -78,7 +79,7 @@ class TLPaymentFormStars() : TLAbsPaymentForm() {
         writeLong(botId)
         writeString(title)
         writeString(description)
-        doIfMask(photo, 32) { writeTLObject(it) }
+        doIfMask(1, photo, 32) { writeTLObject(it) }
         writeTLObject(invoice)
         writeTLVector(users)
     }
@@ -90,7 +91,7 @@ class TLPaymentFormStars() : TLAbsPaymentForm() {
         botId = readLong()
         title = readString()
         description = readString()
-        photo = readIfMask(32) { readTLObject<TLAbsWebDocument>() }
+        photo = readIfMask(1, 32) { readTLObject<TLAbsWebDocument>() }
         invoice = readTLObject<TLInvoice>(TLInvoice::class, TLInvoice.CONSTRUCTOR_ID)
         users = readTLVector<TLAbsUser>()
     }
@@ -104,7 +105,7 @@ class TLPaymentFormStars() : TLAbsPaymentForm() {
         size += SIZE_INT64
         size += computeTLStringSerializedSize(title)
         size += computeTLStringSerializedSize(description)
-        size += getIntIfMask(photo, 32) { it.computeSerializedSize() }
+        size += getIntIfMask(1, photo, 32) { it.computeSerializedSize() }
         size += invoice.computeSerializedSize()
         size += users.computeSerializedSize()
         return size

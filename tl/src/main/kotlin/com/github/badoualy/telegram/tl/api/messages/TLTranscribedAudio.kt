@@ -57,6 +57,7 @@ class TLTranscribedAudio() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(pending, 1)
         updateFlags(trialRemainsNum, 2)
         updateFlags(trialRemainsUntilDate, 2)
@@ -69,18 +70,18 @@ class TLTranscribedAudio() : TLObject() {
         writeInt(_flags)
         writeLong(transcriptionId)
         writeString(text)
-        doIfMask(trialRemainsNum, 2) { writeInt(it) }
-        doIfMask(trialRemainsUntilDate, 2) { writeInt(it) }
+        doIfMask(1, trialRemainsNum, 2) { writeInt(it) }
+        doIfMask(1, trialRemainsUntilDate, 2) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        pending = isMask(1)
+        pending = isMask(1, 1)
         transcriptionId = readLong()
         text = readString()
-        trialRemainsNum = readIfMask(2) { readInt() }
-        trialRemainsUntilDate = readIfMask(2) { readInt() }
+        trialRemainsNum = readIfMask(1, 2) { readInt() }
+        trialRemainsUntilDate = readIfMask(1, 2) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -90,8 +91,8 @@ class TLTranscribedAudio() : TLObject() {
         size += SIZE_INT32
         size += SIZE_INT64
         size += computeTLStringSerializedSize(text)
-        size += getIntIfMask(trialRemainsNum, 2) { SIZE_INT32 }
-        size += getIntIfMask(trialRemainsUntilDate, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, trialRemainsNum, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, trialRemainsUntilDate, 2) { SIZE_INT32 }
         return size
     }
 

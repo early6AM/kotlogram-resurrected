@@ -67,6 +67,7 @@ class TLInputSecureValue() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(data, 1)
         updateFlags(frontSide, 2)
         updateFlags(reverseSide, 4)
@@ -82,26 +83,26 @@ class TLInputSecureValue() : TLObject() {
 
         writeInt(_flags)
         writeTLObject(type)
-        doIfMask(data, 1) { writeTLObject(it) }
-        doIfMask(frontSide, 2) { writeTLObject(it) }
-        doIfMask(reverseSide, 4) { writeTLObject(it) }
-        doIfMask(selfie, 8) { writeTLObject(it) }
-        doIfMask(translation, 64) { writeTLVector(it) }
-        doIfMask(files, 16) { writeTLVector(it) }
-        doIfMask(plainData, 32) { writeTLObject(it) }
+        doIfMask(1, data, 1) { writeTLObject(it) }
+        doIfMask(1, frontSide, 2) { writeTLObject(it) }
+        doIfMask(1, reverseSide, 4) { writeTLObject(it) }
+        doIfMask(1, selfie, 8) { writeTLObject(it) }
+        doIfMask(1, translation, 64) { writeTLVector(it) }
+        doIfMask(1, files, 16) { writeTLVector(it) }
+        doIfMask(1, plainData, 32) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         type = readTLObject<TLAbsSecureValueType>()
-        data = readIfMask(1) { readTLObject<TLSecureData>(TLSecureData::class, TLSecureData.CONSTRUCTOR_ID) }
-        frontSide = readIfMask(2) { readTLObject<TLAbsInputSecureFile>() }
-        reverseSide = readIfMask(4) { readTLObject<TLAbsInputSecureFile>() }
-        selfie = readIfMask(8) { readTLObject<TLAbsInputSecureFile>() }
-        translation = readIfMask(64) { readTLVector<TLAbsInputSecureFile>() }
-        files = readIfMask(16) { readTLVector<TLAbsInputSecureFile>() }
-        plainData = readIfMask(32) { readTLObject<TLAbsSecurePlainData>() }
+        data = readIfMask(1, 1) { readTLObject<TLSecureData>(TLSecureData::class, TLSecureData.CONSTRUCTOR_ID) }
+        frontSide = readIfMask(1, 2) { readTLObject<TLAbsInputSecureFile>() }
+        reverseSide = readIfMask(1, 4) { readTLObject<TLAbsInputSecureFile>() }
+        selfie = readIfMask(1, 8) { readTLObject<TLAbsInputSecureFile>() }
+        translation = readIfMask(1, 64) { readTLVector<TLAbsInputSecureFile>() }
+        files = readIfMask(1, 16) { readTLVector<TLAbsInputSecureFile>() }
+        plainData = readIfMask(1, 32) { readTLObject<TLAbsSecurePlainData>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -110,13 +111,13 @@ class TLInputSecureValue() : TLObject() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += type.computeSerializedSize()
-        size += getIntIfMask(data, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(frontSide, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(reverseSide, 4) { it.computeSerializedSize() }
-        size += getIntIfMask(selfie, 8) { it.computeSerializedSize() }
-        size += getIntIfMask(translation, 64) { it.computeSerializedSize() }
-        size += getIntIfMask(files, 16) { it.computeSerializedSize() }
-        size += getIntIfMask(plainData, 32) { it.computeSerializedSize() }
+        size += getIntIfMask(1, data, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, frontSide, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, reverseSide, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, selfie, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, translation, 64) { it.computeSerializedSize() }
+        size += getIntIfMask(1, files, 16) { it.computeSerializedSize() }
+        size += getIntIfMask(1, plainData, 32) { it.computeSerializedSize() }
         return size
     }
 

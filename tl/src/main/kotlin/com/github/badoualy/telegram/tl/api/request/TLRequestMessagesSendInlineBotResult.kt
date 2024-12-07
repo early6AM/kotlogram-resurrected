@@ -91,6 +91,7 @@ class TLRequestMessagesSendInlineBotResult() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(silent, 32)
         updateFlags(background, 64)
         updateFlags(clearDraft, 128)
@@ -107,30 +108,30 @@ class TLRequestMessagesSendInlineBotResult() : TLMethod<TLAbsUpdates>() {
 
         writeInt(_flags)
         writeTLObject(peer)
-        doIfMask(replyTo, 1) { writeTLObject(it) }
+        doIfMask(1, replyTo, 1) { writeTLObject(it) }
         writeLong(randomId)
         writeLong(queryId)
         writeString(id)
-        doIfMask(scheduleDate, 1024) { writeInt(it) }
-        doIfMask(sendAs, 8192) { writeTLObject(it) }
-        doIfMask(quickReplyShortcut, 131072) { writeTLObject(it) }
+        doIfMask(1, scheduleDate, 1024) { writeInt(it) }
+        doIfMask(1, sendAs, 8192) { writeTLObject(it) }
+        doIfMask(1, quickReplyShortcut, 131072) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        silent = isMask(32)
-        background = isMask(64)
-        clearDraft = isMask(128)
-        hideVia = isMask(2048)
+        silent = isMask(1, 32)
+        background = isMask(1, 64)
+        clearDraft = isMask(1, 128)
+        hideVia = isMask(1, 2048)
         peer = readTLObject<TLAbsInputPeer>()
-        replyTo = readIfMask(1) { readTLObject<TLAbsInputReplyTo>() }
+        replyTo = readIfMask(1, 1) { readTLObject<TLAbsInputReplyTo>() }
         randomId = readLong()
         queryId = readLong()
         id = readString()
-        scheduleDate = readIfMask(1024) { readInt() }
-        sendAs = readIfMask(8192) { readTLObject<TLAbsInputPeer>() }
-        quickReplyShortcut = readIfMask(131072) { readTLObject<TLAbsInputQuickReplyShortcut>() }
+        scheduleDate = readIfMask(1, 1024) { readInt() }
+        sendAs = readIfMask(1, 8192) { readTLObject<TLAbsInputPeer>() }
+        quickReplyShortcut = readIfMask(1, 131072) { readTLObject<TLAbsInputQuickReplyShortcut>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -139,13 +140,13 @@ class TLRequestMessagesSendInlineBotResult() : TLMethod<TLAbsUpdates>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += peer.computeSerializedSize()
-        size += getIntIfMask(replyTo, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, replyTo, 1) { it.computeSerializedSize() }
         size += SIZE_INT64
         size += SIZE_INT64
         size += computeTLStringSerializedSize(id)
-        size += getIntIfMask(scheduleDate, 1024) { SIZE_INT32 }
-        size += getIntIfMask(sendAs, 8192) { it.computeSerializedSize() }
-        size += getIntIfMask(quickReplyShortcut, 131072) { it.computeSerializedSize() }
+        size += getIntIfMask(1, scheduleDate, 1024) { SIZE_INT32 }
+        size += getIntIfMask(1, sendAs, 8192) { it.computeSerializedSize() }
+        size += getIntIfMask(1, quickReplyShortcut, 131072) { it.computeSerializedSize() }
         return size
     }
 

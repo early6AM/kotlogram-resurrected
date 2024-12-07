@@ -50,6 +50,7 @@ class TLInputStickerSetItem() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(maskCoords, 1)
         updateFlags(keywords, 2)
     }
@@ -61,8 +62,8 @@ class TLInputStickerSetItem() : TLObject() {
         writeInt(_flags)
         writeTLObject(document)
         writeString(emoji)
-        doIfMask(maskCoords, 1) { writeTLObject(it) }
-        doIfMask(keywords, 2) { writeString(it) }
+        doIfMask(1, maskCoords, 1) { writeTLObject(it) }
+        doIfMask(1, keywords, 2) { writeString(it) }
     }
 
     @Throws(IOException::class)
@@ -70,8 +71,8 @@ class TLInputStickerSetItem() : TLObject() {
         _flags = readInt()
         document = readTLObject<TLAbsInputDocument>()
         emoji = readString()
-        maskCoords = readIfMask(1) { readTLObject<TLMaskCoords>(TLMaskCoords::class, TLMaskCoords.CONSTRUCTOR_ID) }
-        keywords = readIfMask(2) { readString() }
+        maskCoords = readIfMask(1, 1) { readTLObject<TLMaskCoords>(TLMaskCoords::class, TLMaskCoords.CONSTRUCTOR_ID) }
+        keywords = readIfMask(1, 2) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -81,8 +82,8 @@ class TLInputStickerSetItem() : TLObject() {
         size += SIZE_INT32
         size += document.computeSerializedSize()
         size += computeTLStringSerializedSize(emoji)
-        size += getIntIfMask(maskCoords, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(keywords, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, maskCoords, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, keywords, 2) { computeTLStringSerializedSize(it) }
         return size
     }
 

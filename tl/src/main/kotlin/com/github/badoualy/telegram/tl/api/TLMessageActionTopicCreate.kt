@@ -46,6 +46,7 @@ class TLMessageActionTopicCreate() : TLAbsMessageAction() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(iconEmojiId, 1)
     }
 
@@ -56,7 +57,7 @@ class TLMessageActionTopicCreate() : TLAbsMessageAction() {
         writeInt(_flags)
         writeString(title)
         writeInt(iconColor)
-        doIfMask(iconEmojiId, 1) { writeLong(it) }
+        doIfMask(1, iconEmojiId, 1) { writeLong(it) }
     }
 
     @Throws(IOException::class)
@@ -64,7 +65,7 @@ class TLMessageActionTopicCreate() : TLAbsMessageAction() {
         _flags = readInt()
         title = readString()
         iconColor = readInt()
-        iconEmojiId = readIfMask(1) { readLong() }
+        iconEmojiId = readIfMask(1, 1) { readLong() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -74,7 +75,7 @@ class TLMessageActionTopicCreate() : TLAbsMessageAction() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(title)
         size += SIZE_INT32
-        size += getIntIfMask(iconEmojiId, 1) { SIZE_INT64 }
+        size += getIntIfMask(1, iconEmojiId, 1) { SIZE_INT64 }
         return size
     }
 

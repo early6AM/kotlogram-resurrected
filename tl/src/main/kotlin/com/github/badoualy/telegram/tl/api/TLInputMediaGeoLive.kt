@@ -55,6 +55,7 @@ class TLInputMediaGeoLive() : TLAbsInputMedia() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(stopped, 1)
         updateFlags(heading, 4)
         updateFlags(period, 2)
@@ -67,19 +68,19 @@ class TLInputMediaGeoLive() : TLAbsInputMedia() {
 
         writeInt(_flags)
         writeTLObject(geoPoint)
-        doIfMask(heading, 4) { writeInt(it) }
-        doIfMask(period, 2) { writeInt(it) }
-        doIfMask(proximityNotificationRadius, 8) { writeInt(it) }
+        doIfMask(1, heading, 4) { writeInt(it) }
+        doIfMask(1, period, 2) { writeInt(it) }
+        doIfMask(1, proximityNotificationRadius, 8) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        stopped = isMask(1)
+        stopped = isMask(1, 1)
         geoPoint = readTLObject<TLAbsInputGeoPoint>()
-        heading = readIfMask(4) { readInt() }
-        period = readIfMask(2) { readInt() }
-        proximityNotificationRadius = readIfMask(8) { readInt() }
+        heading = readIfMask(1, 4) { readInt() }
+        period = readIfMask(1, 2) { readInt() }
+        proximityNotificationRadius = readIfMask(1, 8) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -88,9 +89,9 @@ class TLInputMediaGeoLive() : TLAbsInputMedia() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += geoPoint.computeSerializedSize()
-        size += getIntIfMask(heading, 4) { SIZE_INT32 }
-        size += getIntIfMask(period, 2) { SIZE_INT32 }
-        size += getIntIfMask(proximityNotificationRadius, 8) { SIZE_INT32 }
+        size += getIntIfMask(1, heading, 4) { SIZE_INT32 }
+        size += getIntIfMask(1, period, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, proximityNotificationRadius, 8) { SIZE_INT32 }
         return size
     }
 

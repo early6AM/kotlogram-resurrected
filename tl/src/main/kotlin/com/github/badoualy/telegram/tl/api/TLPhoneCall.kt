@@ -91,6 +91,7 @@ class TLPhoneCall() : TLAbsPhoneCall() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(p2pAllowed, 32)
         updateFlags(video, 64)
         updateFlags(customParameters, 128)
@@ -111,14 +112,14 @@ class TLPhoneCall() : TLAbsPhoneCall() {
         writeTLObject(protocol)
         writeTLVector(connections)
         writeInt(startDate)
-        doIfMask(customParameters, 128) { writeTLObject(it) }
+        doIfMask(1, customParameters, 128) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        p2pAllowed = isMask(32)
-        video = isMask(64)
+        p2pAllowed = isMask(1, 32)
+        video = isMask(1, 64)
         id = readLong()
         accessHash = readLong()
         date = readInt()
@@ -129,7 +130,7 @@ class TLPhoneCall() : TLAbsPhoneCall() {
         protocol = readTLObject<TLPhoneCallProtocol>(TLPhoneCallProtocol::class, TLPhoneCallProtocol.CONSTRUCTOR_ID)
         connections = readTLVector<TLAbsPhoneConnection>()
         startDate = readInt()
-        customParameters = readIfMask(128) { readTLObject<TLDataJSON>(TLDataJSON::class, TLDataJSON.CONSTRUCTOR_ID) }
+        customParameters = readIfMask(1, 128) { readTLObject<TLDataJSON>(TLDataJSON::class, TLDataJSON.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -147,7 +148,7 @@ class TLPhoneCall() : TLAbsPhoneCall() {
         size += protocol.computeSerializedSize()
         size += connections.computeSerializedSize()
         size += SIZE_INT32
-        size += getIntIfMask(customParameters, 128) { it.computeSerializedSize() }
+        size += getIntIfMask(1, customParameters, 128) { it.computeSerializedSize() }
         return size
     }
 

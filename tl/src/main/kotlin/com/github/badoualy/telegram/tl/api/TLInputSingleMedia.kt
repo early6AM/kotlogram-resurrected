@@ -52,6 +52,7 @@ class TLInputSingleMedia() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(entities, 1)
     }
 
@@ -63,7 +64,7 @@ class TLInputSingleMedia() : TLObject() {
         writeTLObject(media)
         writeLong(randomId)
         writeString(message)
-        doIfMask(entities, 1) { writeTLVector(it) }
+        doIfMask(1, entities, 1) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
@@ -72,7 +73,7 @@ class TLInputSingleMedia() : TLObject() {
         media = readTLObject<TLAbsInputMedia>()
         randomId = readLong()
         message = readString()
-        entities = readIfMask(1) { readTLVector<TLAbsMessageEntity>() }
+        entities = readIfMask(1, 1) { readTLVector<TLAbsMessageEntity>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -83,7 +84,7 @@ class TLInputSingleMedia() : TLObject() {
         size += media.computeSerializedSize()
         size += SIZE_INT64
         size += computeTLStringSerializedSize(message)
-        size += getIntIfMask(entities, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, entities, 1) { it.computeSerializedSize() }
         return size
     }
 

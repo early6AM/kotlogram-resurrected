@@ -52,8 +52,6 @@ class TLChannelFull() : TLAbsChatFull() {
     @Transient
     var blocked: Boolean = false
 
-    var _flags2: Int = 0
-
     @Transient
     var canDeleteChannel: Boolean = false
 
@@ -179,7 +177,6 @@ class TLChannelFull() : TLAbsChatFull() {
             hasScheduled: Boolean,
             canViewStats: Boolean,
             blocked: Boolean,
-            _flags2: Int,
             canDeleteChannel: Boolean,
             antispam: Boolean,
             participantsHidden: Boolean,
@@ -240,7 +237,6 @@ class TLChannelFull() : TLAbsChatFull() {
         this.hasScheduled = hasScheduled
         this.canViewStats = canViewStats
         this.blocked = blocked
-        this._flags2 = _flags2
         this.canDeleteChannel = canDeleteChannel
         this.antispam = antispam
         this.participantsHidden = participantsHidden
@@ -296,6 +292,7 @@ class TLChannelFull() : TLAbsChatFull() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(canViewParticipants, 8)
         updateFlags(canSetUsername, 64)
         updateFlags(canSetStickers, 128)
@@ -348,20 +345,20 @@ class TLChannelFull() : TLAbsChatFull() {
         updateFlags(emojiset, 1024)
 
         // Following parameters might be forced to true by another field that updated the flags
-        canViewParticipants = isMask(8)
-        canSetUsername = isMask(64)
-        canSetStickers = isMask(128)
-        hiddenPrehistory = isMask(1024)
-        canDeleteChannel = isMask(1)
-        antispam = isMask(2)
-        participantsHidden = isMask(4)
-        translationsDisabled = isMask(8)
-        storiesPinnedAvailable = isMask(32)
-        viewForumAsMessages = isMask(64)
-        restrictedSponsored = isMask(2048)
-        canViewRevenue = isMask(4096)
-        paidMediaAllowed = isMask(16384)
-        canViewStarsRevenue = isMask(32768)
+        canViewParticipants = isMask(1, 8)
+        canSetUsername = isMask(1, 64)
+        canSetStickers = isMask(1, 128)
+        hiddenPrehistory = isMask(1, 1024)
+        canDeleteChannel = isMask(2, 1)
+        antispam = isMask(2, 2)
+        participantsHidden = isMask(2, 4)
+        translationsDisabled = isMask(2, 8)
+        storiesPinnedAvailable = isMask(2, 32)
+        viewForumAsMessages = isMask(2, 64)
+        restrictedSponsored = isMask(2, 2048)
+        canViewRevenue = isMask(2, 4096)
+        paidMediaAllowed = isMask(2, 16384)
+        canViewStarsRevenue = isMask(2, 32768)
     }
 
     @Throws(IOException::class)
@@ -372,110 +369,110 @@ class TLChannelFull() : TLAbsChatFull() {
         writeInt(_flags2)
         writeLong(id)
         writeString(about)
-        doIfMask(participantsCount, 1) { writeInt(it) }
-        doIfMask(adminsCount, 2) { writeInt(it) }
-        doIfMask(kickedCount, 4) { writeInt(it) }
-        doIfMask(bannedCount, 4) { writeInt(it) }
-        doIfMask(onlineCount, 8192) { writeInt(it) }
+        doIfMask(1, participantsCount, 1) { writeInt(it) }
+        doIfMask(1, adminsCount, 2) { writeInt(it) }
+        doIfMask(1, kickedCount, 4) { writeInt(it) }
+        doIfMask(1, bannedCount, 4) { writeInt(it) }
+        doIfMask(1, onlineCount, 8192) { writeInt(it) }
         writeInt(readInboxMaxId)
         writeInt(readOutboxMaxId)
         writeInt(unreadCount)
         writeTLObject(chatPhoto)
         writeTLObject(notifySettings)
-        doIfMask(exportedInvite, 8388608) { writeTLObject(it) }
+        doIfMask(1, exportedInvite, 8388608) { writeTLObject(it) }
         writeTLVector(botInfo)
-        doIfMask(migratedFromChatId, 16) { writeLong(it) }
-        doIfMask(migratedFromMaxId, 16) { writeInt(it) }
-        doIfMask(pinnedMsgId, 32) { writeInt(it) }
-        doIfMask(stickerset, 256) { writeTLObject(it) }
-        doIfMask(availableMinId, 512) { writeInt(it) }
-        doIfMask(folderId, 2048) { writeInt(it) }
-        doIfMask(linkedChatId, 16384) { writeLong(it) }
-        doIfMask(location, 32768) { writeTLObject(it) }
-        doIfMask(slowmodeSeconds, 131072) { writeInt(it) }
-        doIfMask(slowmodeNextSendDate, 262144) { writeInt(it) }
-        doIfMask(statsDc, 4096) { writeInt(it) }
+        doIfMask(1, migratedFromChatId, 16) { writeLong(it) }
+        doIfMask(1, migratedFromMaxId, 16) { writeInt(it) }
+        doIfMask(1, pinnedMsgId, 32) { writeInt(it) }
+        doIfMask(1, stickerset, 256) { writeTLObject(it) }
+        doIfMask(1, availableMinId, 512) { writeInt(it) }
+        doIfMask(1, folderId, 2048) { writeInt(it) }
+        doIfMask(1, linkedChatId, 16384) { writeLong(it) }
+        doIfMask(1, location, 32768) { writeTLObject(it) }
+        doIfMask(1, slowmodeSeconds, 131072) { writeInt(it) }
+        doIfMask(1, slowmodeNextSendDate, 262144) { writeInt(it) }
+        doIfMask(1, statsDc, 4096) { writeInt(it) }
         writeInt(pts)
-        doIfMask(call, 2097152) { writeTLObject(it) }
-        doIfMask(ttlPeriod, 16777216) { writeInt(it) }
-        doIfMask(pendingSuggestions, 33554432) { writeTLVector(it) }
-        doIfMask(groupcallDefaultJoinAs, 67108864) { writeTLObject(it) }
-        doIfMask(themeEmoticon, 134217728) { writeString(it) }
-        doIfMask(requestsPending, 268435456) { writeInt(it) }
-        doIfMask(recentRequesters, 268435456) { writeTLVector(it) }
-        doIfMask(defaultSendAs, 536870912) { writeTLObject(it) }
-        doIfMask(availableReactions, 1073741824) { writeTLObject(it) }
-        doIfMask(reactionsLimit, 8192) { writeInt(it) }
-        doIfMask(stories, 16) { writeTLObject(it) }
-        doIfMask(wallpaper, 128) { writeTLObject(it) }
-        doIfMask(boostsApplied, 256) { writeInt(it) }
-        doIfMask(boostsUnrestrict, 512) { writeInt(it) }
-        doIfMask(emojiset, 1024) { writeTLObject(it) }
+        doIfMask(1, call, 2097152) { writeTLObject(it) }
+        doIfMask(1, ttlPeriod, 16777216) { writeInt(it) }
+        doIfMask(1, pendingSuggestions, 33554432) { writeTLVector(it) }
+        doIfMask(1, groupcallDefaultJoinAs, 67108864) { writeTLObject(it) }
+        doIfMask(1, themeEmoticon, 134217728) { writeString(it) }
+        doIfMask(1, requestsPending, 268435456) { writeInt(it) }
+        doIfMask(1, recentRequesters, 268435456) { writeTLVector(it) }
+        doIfMask(1, defaultSendAs, 536870912) { writeTLObject(it) }
+        doIfMask(1, availableReactions, 1073741824) { writeTLObject(it) }
+        doIfMask(2, reactionsLimit, 8192) { writeInt(it) }
+        doIfMask(2, stories, 16) { writeTLObject(it) }
+        doIfMask(2, wallpaper, 128) { writeTLObject(it) }
+        doIfMask(2, boostsApplied, 256) { writeInt(it) }
+        doIfMask(2, boostsUnrestrict, 512) { writeInt(it) }
+        doIfMask(2, emojiset, 1024) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        canViewParticipants = isMask(8)
-        canSetUsername = isMask(64)
-        canSetStickers = isMask(128)
-        hiddenPrehistory = isMask(1024)
-        canSetLocation = isMask(65536)
-        hasScheduled = isMask(524288)
-        canViewStats = isMask(1048576)
-        blocked = isMask(4194304)
+        canViewParticipants = isMask(1, 8)
+        canSetUsername = isMask(1, 64)
+        canSetStickers = isMask(1, 128)
+        hiddenPrehistory = isMask(1, 1024)
+        canSetLocation = isMask(1, 65536)
+        hasScheduled = isMask(1, 524288)
+        canViewStats = isMask(1, 1048576)
+        blocked = isMask(1, 4194304)
         _flags2 = readInt()
-        canDeleteChannel = isMask(1)
-        antispam = isMask(2)
-        participantsHidden = isMask(4)
-        translationsDisabled = isMask(8)
-        storiesPinnedAvailable = isMask(32)
-        viewForumAsMessages = isMask(64)
-        restrictedSponsored = isMask(2048)
-        canViewRevenue = isMask(4096)
-        paidMediaAllowed = isMask(16384)
-        canViewStarsRevenue = isMask(32768)
+        canDeleteChannel = isMask(2, 1)
+        antispam = isMask(2, 2)
+        participantsHidden = isMask(2, 4)
+        translationsDisabled = isMask(2, 8)
+        storiesPinnedAvailable = isMask(2, 32)
+        viewForumAsMessages = isMask(2, 64)
+        restrictedSponsored = isMask(2, 2048)
+        canViewRevenue = isMask(2, 4096)
+        paidMediaAllowed = isMask(2, 16384)
+        canViewStarsRevenue = isMask(2, 32768)
         id = readLong()
         about = readString()
-        participantsCount = readIfMask(1) { readInt() }
-        adminsCount = readIfMask(2) { readInt() }
-        kickedCount = readIfMask(4) { readInt() }
-        bannedCount = readIfMask(4) { readInt() }
-        onlineCount = readIfMask(8192) { readInt() }
+        participantsCount = readIfMask(1, 1) { readInt() }
+        adminsCount = readIfMask(1, 2) { readInt() }
+        kickedCount = readIfMask(1, 4) { readInt() }
+        bannedCount = readIfMask(1, 4) { readInt() }
+        onlineCount = readIfMask(1, 8192) { readInt() }
         readInboxMaxId = readInt()
         readOutboxMaxId = readInt()
         unreadCount = readInt()
         chatPhoto = readTLObject<TLAbsPhoto>()
         notifySettings = readTLObject<TLPeerNotifySettings>(TLPeerNotifySettings::class, TLPeerNotifySettings.CONSTRUCTOR_ID)
-        exportedInvite = readIfMask(8388608) { readTLObject<TLAbsExportedChatInvite>() }
+        exportedInvite = readIfMask(1, 8388608) { readTLObject<TLAbsExportedChatInvite>() }
         botInfo = readTLVector<TLBotInfo>()
-        migratedFromChatId = readIfMask(16) { readLong() }
-        migratedFromMaxId = readIfMask(16) { readInt() }
-        pinnedMsgId = readIfMask(32) { readInt() }
-        stickerset = readIfMask(256) { readTLObject<TLStickerSet>(TLStickerSet::class, TLStickerSet.CONSTRUCTOR_ID) }
-        availableMinId = readIfMask(512) { readInt() }
-        folderId = readIfMask(2048) { readInt() }
-        linkedChatId = readIfMask(16384) { readLong() }
-        location = readIfMask(32768) { readTLObject<TLAbsChannelLocation>() }
-        slowmodeSeconds = readIfMask(131072) { readInt() }
-        slowmodeNextSendDate = readIfMask(262144) { readInt() }
-        statsDc = readIfMask(4096) { readInt() }
+        migratedFromChatId = readIfMask(1, 16) { readLong() }
+        migratedFromMaxId = readIfMask(1, 16) { readInt() }
+        pinnedMsgId = readIfMask(1, 32) { readInt() }
+        stickerset = readIfMask(1, 256) { readTLObject<TLStickerSet>(TLStickerSet::class, TLStickerSet.CONSTRUCTOR_ID) }
+        availableMinId = readIfMask(1, 512) { readInt() }
+        folderId = readIfMask(1, 2048) { readInt() }
+        linkedChatId = readIfMask(1, 16384) { readLong() }
+        location = readIfMask(1, 32768) { readTLObject<TLAbsChannelLocation>() }
+        slowmodeSeconds = readIfMask(1, 131072) { readInt() }
+        slowmodeNextSendDate = readIfMask(1, 262144) { readInt() }
+        statsDc = readIfMask(1, 4096) { readInt() }
         pts = readInt()
-        call = readIfMask(2097152) { readTLObject<TLInputGroupCall>(TLInputGroupCall::class, TLInputGroupCall.CONSTRUCTOR_ID) }
-        ttlPeriod = readIfMask(16777216) { readInt() }
-        pendingSuggestions = readIfMask(33554432) { readTLStringVector() }
-        groupcallDefaultJoinAs = readIfMask(67108864) { readTLObject<TLAbsPeer>() }
-        themeEmoticon = readIfMask(134217728) { readString() }
-        requestsPending = readIfMask(268435456) { readInt() }
-        recentRequesters = readIfMask(268435456) { readTLLongVector() }
-        defaultSendAs = readIfMask(536870912) { readTLObject<TLAbsPeer>() }
-        availableReactions = readIfMask(1073741824) { readTLObject<TLAbsChatReactions>() }
-        reactionsLimit = readIfMask(8192) { readInt() }
-        stories = readIfMask(16) { readTLObject<TLPeerStories>(TLPeerStories::class, TLPeerStories.CONSTRUCTOR_ID) }
-        wallpaper = readIfMask(128) { readTLObject<TLAbsWallPaper>() }
-        boostsApplied = readIfMask(256) { readInt() }
-        boostsUnrestrict = readIfMask(512) { readInt() }
-        emojiset = readIfMask(1024) { readTLObject<TLStickerSet>(TLStickerSet::class, TLStickerSet.CONSTRUCTOR_ID) }
+        call = readIfMask(1, 2097152) { readTLObject<TLInputGroupCall>(TLInputGroupCall::class, TLInputGroupCall.CONSTRUCTOR_ID) }
+        ttlPeriod = readIfMask(1, 16777216) { readInt() }
+        pendingSuggestions = readIfMask(1, 33554432) { readTLStringVector() }
+        groupcallDefaultJoinAs = readIfMask(1, 67108864) { readTLObject<TLAbsPeer>() }
+        themeEmoticon = readIfMask(1, 134217728) { readString() }
+        requestsPending = readIfMask(1, 268435456) { readInt() }
+        recentRequesters = readIfMask(1, 268435456) { readTLLongVector() }
+        defaultSendAs = readIfMask(1, 536870912) { readTLObject<TLAbsPeer>() }
+        availableReactions = readIfMask(1, 1073741824) { readTLObject<TLAbsChatReactions>() }
+        reactionsLimit = readIfMask(2, 8192) { readInt() }
+        stories = readIfMask(2, 16) { readTLObject<TLPeerStories>(TLPeerStories::class, TLPeerStories.CONSTRUCTOR_ID) }
+        wallpaper = readIfMask(2, 128) { readTLObject<TLAbsWallPaper>() }
+        boostsApplied = readIfMask(2, 256) { readInt() }
+        boostsUnrestrict = readIfMask(2, 512) { readInt() }
+        emojiset = readIfMask(2, 1024) { readTLObject<TLStickerSet>(TLStickerSet::class, TLStickerSet.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -486,45 +483,45 @@ class TLChannelFull() : TLAbsChatFull() {
         size += SIZE_INT32
         size += SIZE_INT64
         size += computeTLStringSerializedSize(about)
-        size += getIntIfMask(participantsCount, 1) { SIZE_INT32 }
-        size += getIntIfMask(adminsCount, 2) { SIZE_INT32 }
-        size += getIntIfMask(kickedCount, 4) { SIZE_INT32 }
-        size += getIntIfMask(bannedCount, 4) { SIZE_INT32 }
-        size += getIntIfMask(onlineCount, 8192) { SIZE_INT32 }
+        size += getIntIfMask(1, participantsCount, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, adminsCount, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, kickedCount, 4) { SIZE_INT32 }
+        size += getIntIfMask(1, bannedCount, 4) { SIZE_INT32 }
+        size += getIntIfMask(1, onlineCount, 8192) { SIZE_INT32 }
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
         size += chatPhoto.computeSerializedSize()
         size += notifySettings.computeSerializedSize()
-        size += getIntIfMask(exportedInvite, 8388608) { it.computeSerializedSize() }
+        size += getIntIfMask(1, exportedInvite, 8388608) { it.computeSerializedSize() }
         size += botInfo.computeSerializedSize()
-        size += getIntIfMask(migratedFromChatId, 16) { SIZE_INT64 }
-        size += getIntIfMask(migratedFromMaxId, 16) { SIZE_INT32 }
-        size += getIntIfMask(pinnedMsgId, 32) { SIZE_INT32 }
-        size += getIntIfMask(stickerset, 256) { it.computeSerializedSize() }
-        size += getIntIfMask(availableMinId, 512) { SIZE_INT32 }
-        size += getIntIfMask(folderId, 2048) { SIZE_INT32 }
-        size += getIntIfMask(linkedChatId, 16384) { SIZE_INT64 }
-        size += getIntIfMask(location, 32768) { it.computeSerializedSize() }
-        size += getIntIfMask(slowmodeSeconds, 131072) { SIZE_INT32 }
-        size += getIntIfMask(slowmodeNextSendDate, 262144) { SIZE_INT32 }
-        size += getIntIfMask(statsDc, 4096) { SIZE_INT32 }
+        size += getIntIfMask(1, migratedFromChatId, 16) { SIZE_INT64 }
+        size += getIntIfMask(1, migratedFromMaxId, 16) { SIZE_INT32 }
+        size += getIntIfMask(1, pinnedMsgId, 32) { SIZE_INT32 }
+        size += getIntIfMask(1, stickerset, 256) { it.computeSerializedSize() }
+        size += getIntIfMask(1, availableMinId, 512) { SIZE_INT32 }
+        size += getIntIfMask(1, folderId, 2048) { SIZE_INT32 }
+        size += getIntIfMask(1, linkedChatId, 16384) { SIZE_INT64 }
+        size += getIntIfMask(1, location, 32768) { it.computeSerializedSize() }
+        size += getIntIfMask(1, slowmodeSeconds, 131072) { SIZE_INT32 }
+        size += getIntIfMask(1, slowmodeNextSendDate, 262144) { SIZE_INT32 }
+        size += getIntIfMask(1, statsDc, 4096) { SIZE_INT32 }
         size += SIZE_INT32
-        size += getIntIfMask(call, 2097152) { it.computeSerializedSize() }
-        size += getIntIfMask(ttlPeriod, 16777216) { SIZE_INT32 }
-        size += getIntIfMask(pendingSuggestions, 33554432) { it.computeSerializedSize() }
-        size += getIntIfMask(groupcallDefaultJoinAs, 67108864) { it.computeSerializedSize() }
-        size += getIntIfMask(themeEmoticon, 134217728) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(requestsPending, 268435456) { SIZE_INT32 }
-        size += getIntIfMask(recentRequesters, 268435456) { it.computeSerializedSize() }
-        size += getIntIfMask(defaultSendAs, 536870912) { it.computeSerializedSize() }
-        size += getIntIfMask(availableReactions, 1073741824) { it.computeSerializedSize() }
-        size += getIntIfMask(reactionsLimit, 8192) { SIZE_INT32 }
-        size += getIntIfMask(stories, 16) { it.computeSerializedSize() }
-        size += getIntIfMask(wallpaper, 128) { it.computeSerializedSize() }
-        size += getIntIfMask(boostsApplied, 256) { SIZE_INT32 }
-        size += getIntIfMask(boostsUnrestrict, 512) { SIZE_INT32 }
-        size += getIntIfMask(emojiset, 1024) { it.computeSerializedSize() }
+        size += getIntIfMask(1, call, 2097152) { it.computeSerializedSize() }
+        size += getIntIfMask(1, ttlPeriod, 16777216) { SIZE_INT32 }
+        size += getIntIfMask(1, pendingSuggestions, 33554432) { it.computeSerializedSize() }
+        size += getIntIfMask(1, groupcallDefaultJoinAs, 67108864) { it.computeSerializedSize() }
+        size += getIntIfMask(1, themeEmoticon, 134217728) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, requestsPending, 268435456) { SIZE_INT32 }
+        size += getIntIfMask(1, recentRequesters, 268435456) { it.computeSerializedSize() }
+        size += getIntIfMask(1, defaultSendAs, 536870912) { it.computeSerializedSize() }
+        size += getIntIfMask(1, availableReactions, 1073741824) { it.computeSerializedSize() }
+        size += getIntIfMask(2, reactionsLimit, 8192) { SIZE_INT32 }
+        size += getIntIfMask(2, stories, 16) { it.computeSerializedSize() }
+        size += getIntIfMask(2, wallpaper, 128) { it.computeSerializedSize() }
+        size += getIntIfMask(2, boostsApplied, 256) { SIZE_INT32 }
+        size += getIntIfMask(2, boostsUnrestrict, 512) { SIZE_INT32 }
+        size += getIntIfMask(2, emojiset, 1024) { it.computeSerializedSize() }
         return size
     }
 

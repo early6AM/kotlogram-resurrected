@@ -62,6 +62,7 @@ class TLBotBusinessConnection() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(canReply, 1)
         updateFlags(disabled, 2)
     }
@@ -80,8 +81,8 @@ class TLBotBusinessConnection() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        canReply = isMask(1)
-        disabled = isMask(2)
+        canReply = isMask(1, 1)
+        disabled = isMask(1, 2)
         connectionId = readString()
         userId = readLong()
         dcId = readInt()

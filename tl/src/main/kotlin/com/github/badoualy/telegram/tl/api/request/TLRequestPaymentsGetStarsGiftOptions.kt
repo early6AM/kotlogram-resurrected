@@ -40,6 +40,7 @@ class TLRequestPaymentsGetStarsGiftOptions() : TLMethod<TLObjectVector<TLStarsGi
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(userId, 1)
     }
 
@@ -48,13 +49,13 @@ class TLRequestPaymentsGetStarsGiftOptions() : TLMethod<TLObjectVector<TLStarsGi
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(userId, 1) { writeTLObject(it) }
+        doIfMask(1, userId, 1) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        userId = readIfMask(1) { readTLObject<TLAbsInputUser>() }
+        userId = readIfMask(1, 1) { readTLObject<TLAbsInputUser>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -62,7 +63,7 @@ class TLRequestPaymentsGetStarsGiftOptions() : TLMethod<TLObjectVector<TLStarsGi
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(userId, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, userId, 1) { it.computeSerializedSize() }
         return size
     }
 

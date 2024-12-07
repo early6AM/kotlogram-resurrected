@@ -70,6 +70,7 @@ class TLDocumentAttributeVideo() : TLAbsDocumentAttribute() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(roundMessage, 1)
         updateFlags(supportsStreaming, 2)
         updateFlags(nosound, 8)
@@ -85,21 +86,21 @@ class TLDocumentAttributeVideo() : TLAbsDocumentAttribute() {
         writeDouble(duration)
         writeInt(w)
         writeInt(h)
-        doIfMask(preloadPrefixSize, 4) { writeInt(it) }
-        doIfMask(videoStartTs, 16) { writeDouble(it) }
+        doIfMask(1, preloadPrefixSize, 4) { writeInt(it) }
+        doIfMask(1, videoStartTs, 16) { writeDouble(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        roundMessage = isMask(1)
-        supportsStreaming = isMask(2)
-        nosound = isMask(8)
+        roundMessage = isMask(1, 1)
+        supportsStreaming = isMask(1, 2)
+        nosound = isMask(1, 8)
         duration = readDouble()
         w = readInt()
         h = readInt()
-        preloadPrefixSize = readIfMask(4) { readInt() }
-        videoStartTs = readIfMask(16) { readDouble() }
+        preloadPrefixSize = readIfMask(1, 4) { readInt() }
+        videoStartTs = readIfMask(1, 16) { readDouble() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -110,8 +111,8 @@ class TLDocumentAttributeVideo() : TLAbsDocumentAttribute() {
         size += SIZE_DOUBLE
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(preloadPrefixSize, 4) { SIZE_INT32 }
-        size += getIntIfMask(videoStartTs, 16) { SIZE_DOUBLE }
+        size += getIntIfMask(1, preloadPrefixSize, 4) { SIZE_INT32 }
+        size += getIntIfMask(1, videoStartTs, 16) { SIZE_DOUBLE }
         return size
     }
 

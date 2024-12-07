@@ -52,6 +52,7 @@ class TLKeyboardButtonSwitchInline() : TLAbsKeyboardButton() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(samePeer, 1)
         updateFlags(peerTypes, 2)
     }
@@ -63,16 +64,16 @@ class TLKeyboardButtonSwitchInline() : TLAbsKeyboardButton() {
         writeInt(_flags)
         writeString(text)
         writeString(query)
-        doIfMask(peerTypes, 2) { writeTLVector(it) }
+        doIfMask(1, peerTypes, 2) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        samePeer = isMask(1)
+        samePeer = isMask(1, 1)
         text = readString()
         query = readString()
-        peerTypes = readIfMask(2) { readTLVector<TLAbsInlineQueryPeerType>() }
+        peerTypes = readIfMask(1, 2) { readTLVector<TLAbsInlineQueryPeerType>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -82,7 +83,7 @@ class TLKeyboardButtonSwitchInline() : TLAbsKeyboardButton() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(text)
         size += computeTLStringSerializedSize(query)
-        size += getIntIfMask(peerTypes, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, peerTypes, 2) { it.computeSerializedSize() }
         return size
     }
 

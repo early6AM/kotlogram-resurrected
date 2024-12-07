@@ -59,6 +59,7 @@ class TLTermsOfService() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(popup, 1)
         updateFlags(minAgeConfirm, 2)
     }
@@ -71,17 +72,17 @@ class TLTermsOfService() : TLObject() {
         writeTLObject(id)
         writeString(text)
         writeTLVector(entities)
-        doIfMask(minAgeConfirm, 2) { writeInt(it) }
+        doIfMask(1, minAgeConfirm, 2) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        popup = isMask(1)
+        popup = isMask(1, 1)
         id = readTLObject<TLDataJSON>(TLDataJSON::class, TLDataJSON.CONSTRUCTOR_ID)
         text = readString()
         entities = readTLVector<TLAbsMessageEntity>()
-        minAgeConfirm = readIfMask(2) { readInt() }
+        minAgeConfirm = readIfMask(1, 2) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -92,7 +93,7 @@ class TLTermsOfService() : TLObject() {
         size += id.computeSerializedSize()
         size += computeTLStringSerializedSize(text)
         size += entities.computeSerializedSize()
-        size += getIntIfMask(minAgeConfirm, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, minAgeConfirm, 2) { SIZE_INT32 }
         return size
     }
 

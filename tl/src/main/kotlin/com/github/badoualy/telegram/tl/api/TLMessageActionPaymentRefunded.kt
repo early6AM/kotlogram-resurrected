@@ -55,6 +55,7 @@ class TLMessageActionPaymentRefunded() : TLAbsMessageAction() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(payload, 1)
     }
 
@@ -66,7 +67,7 @@ class TLMessageActionPaymentRefunded() : TLAbsMessageAction() {
         writeTLObject(peer)
         writeString(currency)
         writeLong(totalAmount)
-        doIfMask(payload, 1) { writeTLBytes(it) }
+        doIfMask(1, payload, 1) { writeTLBytes(it) }
         writeTLObject(charge)
     }
 
@@ -76,7 +77,7 @@ class TLMessageActionPaymentRefunded() : TLAbsMessageAction() {
         peer = readTLObject<TLAbsPeer>()
         currency = readString()
         totalAmount = readLong()
-        payload = readIfMask(1) { readTLBytes() }
+        payload = readIfMask(1, 1) { readTLBytes() }
         charge = readTLObject<TLPaymentCharge>(TLPaymentCharge::class, TLPaymentCharge.CONSTRUCTOR_ID)
     }
 
@@ -88,7 +89,7 @@ class TLMessageActionPaymentRefunded() : TLAbsMessageAction() {
         size += peer.computeSerializedSize()
         size += computeTLStringSerializedSize(currency)
         size += SIZE_INT64
-        size += getIntIfMask(payload, 1) { computeTLBytesSerializedSize(it) }
+        size += getIntIfMask(1, payload, 1) { computeTLBytesSerializedSize(it) }
         size += charge.computeSerializedSize()
         return size
     }

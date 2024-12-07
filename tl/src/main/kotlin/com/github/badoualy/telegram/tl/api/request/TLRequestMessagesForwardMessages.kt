@@ -101,6 +101,7 @@ class TLRequestMessagesForwardMessages() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(silent, 32)
         updateFlags(background, 64)
         updateFlags(withMyScore, 256)
@@ -122,29 +123,29 @@ class TLRequestMessagesForwardMessages() : TLMethod<TLAbsUpdates>() {
         writeTLVector(id)
         writeTLVector(randomId)
         writeTLObject(toPeer)
-        doIfMask(topMsgId, 512) { writeInt(it) }
-        doIfMask(scheduleDate, 1024) { writeInt(it) }
-        doIfMask(sendAs, 8192) { writeTLObject(it) }
-        doIfMask(quickReplyShortcut, 131072) { writeTLObject(it) }
+        doIfMask(1, topMsgId, 512) { writeInt(it) }
+        doIfMask(1, scheduleDate, 1024) { writeInt(it) }
+        doIfMask(1, sendAs, 8192) { writeTLObject(it) }
+        doIfMask(1, quickReplyShortcut, 131072) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        silent = isMask(32)
-        background = isMask(64)
-        withMyScore = isMask(256)
-        dropAuthor = isMask(2048)
-        dropMediaCaptions = isMask(4096)
-        noforwards = isMask(16384)
+        silent = isMask(1, 32)
+        background = isMask(1, 64)
+        withMyScore = isMask(1, 256)
+        dropAuthor = isMask(1, 2048)
+        dropMediaCaptions = isMask(1, 4096)
+        noforwards = isMask(1, 16384)
         fromPeer = readTLObject<TLAbsInputPeer>()
         id = readTLIntVector()
         randomId = readTLLongVector()
         toPeer = readTLObject<TLAbsInputPeer>()
-        topMsgId = readIfMask(512) { readInt() }
-        scheduleDate = readIfMask(1024) { readInt() }
-        sendAs = readIfMask(8192) { readTLObject<TLAbsInputPeer>() }
-        quickReplyShortcut = readIfMask(131072) { readTLObject<TLAbsInputQuickReplyShortcut>() }
+        topMsgId = readIfMask(1, 512) { readInt() }
+        scheduleDate = readIfMask(1, 1024) { readInt() }
+        sendAs = readIfMask(1, 8192) { readTLObject<TLAbsInputPeer>() }
+        quickReplyShortcut = readIfMask(1, 131072) { readTLObject<TLAbsInputQuickReplyShortcut>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -156,10 +157,10 @@ class TLRequestMessagesForwardMessages() : TLMethod<TLAbsUpdates>() {
         size += id.computeSerializedSize()
         size += randomId.computeSerializedSize()
         size += toPeer.computeSerializedSize()
-        size += getIntIfMask(topMsgId, 512) { SIZE_INT32 }
-        size += getIntIfMask(scheduleDate, 1024) { SIZE_INT32 }
-        size += getIntIfMask(sendAs, 8192) { it.computeSerializedSize() }
-        size += getIntIfMask(quickReplyShortcut, 131072) { it.computeSerializedSize() }
+        size += getIntIfMask(1, topMsgId, 512) { SIZE_INT32 }
+        size += getIntIfMask(1, scheduleDate, 1024) { SIZE_INT32 }
+        size += getIntIfMask(1, sendAs, 8192) { it.computeSerializedSize() }
+        size += getIntIfMask(1, quickReplyShortcut, 131072) { it.computeSerializedSize() }
         return size
     }
 

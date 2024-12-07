@@ -48,6 +48,7 @@ class TLSavedDialog() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(pinned, 4)
     }
 
@@ -63,7 +64,7 @@ class TLSavedDialog() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        pinned = isMask(4)
+        pinned = isMask(1, 4)
         peer = readTLObject<TLAbsPeer>()
         topMessage = readInt()
     }

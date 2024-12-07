@@ -79,6 +79,7 @@ class TLInputStorePaymentPremiumGiveaway() : TLAbsInputStorePaymentPurpose() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(onlyNewSubscribers, 1)
         updateFlags(winnersAreVisible, 8)
         updateFlags(additionalPeers, 2)
@@ -92,9 +93,9 @@ class TLInputStorePaymentPremiumGiveaway() : TLAbsInputStorePaymentPurpose() {
 
         writeInt(_flags)
         writeTLObject(boostPeer)
-        doIfMask(additionalPeers, 2) { writeTLVector(it) }
-        doIfMask(countriesIso2, 4) { writeTLVector(it) }
-        doIfMask(prizeDescription, 16) { writeString(it) }
+        doIfMask(1, additionalPeers, 2) { writeTLVector(it) }
+        doIfMask(1, countriesIso2, 4) { writeTLVector(it) }
+        doIfMask(1, prizeDescription, 16) { writeString(it) }
         writeLong(randomId)
         writeInt(untilDate)
         writeString(currency)
@@ -104,12 +105,12 @@ class TLInputStorePaymentPremiumGiveaway() : TLAbsInputStorePaymentPurpose() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        onlyNewSubscribers = isMask(1)
-        winnersAreVisible = isMask(8)
+        onlyNewSubscribers = isMask(1, 1)
+        winnersAreVisible = isMask(1, 8)
         boostPeer = readTLObject<TLAbsInputPeer>()
-        additionalPeers = readIfMask(2) { readTLVector<TLAbsInputPeer>() }
-        countriesIso2 = readIfMask(4) { readTLStringVector() }
-        prizeDescription = readIfMask(16) { readString() }
+        additionalPeers = readIfMask(1, 2) { readTLVector<TLAbsInputPeer>() }
+        countriesIso2 = readIfMask(1, 4) { readTLStringVector() }
+        prizeDescription = readIfMask(1, 16) { readString() }
         randomId = readLong()
         untilDate = readInt()
         currency = readString()
@@ -122,9 +123,9 @@ class TLInputStorePaymentPremiumGiveaway() : TLAbsInputStorePaymentPurpose() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += boostPeer.computeSerializedSize()
-        size += getIntIfMask(additionalPeers, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(countriesIso2, 4) { it.computeSerializedSize() }
-        size += getIntIfMask(prizeDescription, 16) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, additionalPeers, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, countriesIso2, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, prizeDescription, 16) { computeTLStringSerializedSize(it) }
         size += SIZE_INT64
         size += SIZE_INT32
         size += computeTLStringSerializedSize(currency)

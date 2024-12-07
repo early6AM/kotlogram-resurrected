@@ -47,6 +47,7 @@ class TLUpdatePeerWallpaper() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(wallpaperOverridden, 2)
         updateFlags(wallpaper, 1)
     }
@@ -57,15 +58,15 @@ class TLUpdatePeerWallpaper() : TLAbsUpdate() {
 
         writeInt(_flags)
         writeTLObject(peer)
-        doIfMask(wallpaper, 1) { writeTLObject(it) }
+        doIfMask(1, wallpaper, 1) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        wallpaperOverridden = isMask(2)
+        wallpaperOverridden = isMask(1, 2)
         peer = readTLObject<TLAbsPeer>()
-        wallpaper = readIfMask(1) { readTLObject<TLAbsWallPaper>() }
+        wallpaper = readIfMask(1, 1) { readTLObject<TLAbsWallPaper>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -74,7 +75,7 @@ class TLUpdatePeerWallpaper() : TLAbsUpdate() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += peer.computeSerializedSize()
-        size += getIntIfMask(wallpaper, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, wallpaper, 1) { it.computeSerializedSize() }
         return size
     }
 

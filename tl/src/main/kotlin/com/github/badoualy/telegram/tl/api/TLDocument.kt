@@ -76,6 +76,7 @@ class TLDocument() : TLAbsDocument() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(thumbs, 1)
         updateFlags(videoThumbs, 2)
     }
@@ -91,8 +92,8 @@ class TLDocument() : TLAbsDocument() {
         writeInt(date)
         writeString(mimeType)
         writeLong(size)
-        doIfMask(thumbs, 1) { writeTLVector(it) }
-        doIfMask(videoThumbs, 2) { writeTLVector(it) }
+        doIfMask(1, thumbs, 1) { writeTLVector(it) }
+        doIfMask(1, videoThumbs, 2) { writeTLVector(it) }
         writeInt(dcId)
         writeTLVector(attributes)
     }
@@ -106,8 +107,8 @@ class TLDocument() : TLAbsDocument() {
         date = readInt()
         mimeType = readString()
         size = readLong()
-        thumbs = readIfMask(1) { readTLVector<TLAbsPhotoSize>() }
-        videoThumbs = readIfMask(2) { readTLVector<TLAbsVideoSize>() }
+        thumbs = readIfMask(1, 1) { readTLVector<TLAbsPhotoSize>() }
+        videoThumbs = readIfMask(1, 2) { readTLVector<TLAbsVideoSize>() }
         dcId = readInt()
         attributes = readTLVector<TLAbsDocumentAttribute>()
     }
@@ -123,8 +124,8 @@ class TLDocument() : TLAbsDocument() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(mimeType)
         size += SIZE_INT64
-        size += getIntIfMask(thumbs, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(videoThumbs, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, thumbs, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, videoThumbs, 2) { it.computeSerializedSize() }
         size += SIZE_INT32
         size += attributes.computeSerializedSize()
         return size

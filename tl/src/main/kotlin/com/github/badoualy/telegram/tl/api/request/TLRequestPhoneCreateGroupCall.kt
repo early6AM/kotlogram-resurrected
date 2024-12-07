@@ -57,6 +57,7 @@ class TLRequestPhoneCreateGroupCall() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(rtmpStream, 4)
         updateFlags(title, 1)
         updateFlags(scheduleDate, 2)
@@ -69,18 +70,18 @@ class TLRequestPhoneCreateGroupCall() : TLMethod<TLAbsUpdates>() {
         writeInt(_flags)
         writeTLObject(peer)
         writeInt(randomId)
-        doIfMask(title, 1) { writeString(it) }
-        doIfMask(scheduleDate, 2) { writeInt(it) }
+        doIfMask(1, title, 1) { writeString(it) }
+        doIfMask(1, scheduleDate, 2) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        rtmpStream = isMask(4)
+        rtmpStream = isMask(1, 4)
         peer = readTLObject<TLAbsInputPeer>()
         randomId = readInt()
-        title = readIfMask(1) { readString() }
-        scheduleDate = readIfMask(2) { readInt() }
+        title = readIfMask(1, 1) { readString() }
+        scheduleDate = readIfMask(1, 2) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -90,8 +91,8 @@ class TLRequestPhoneCreateGroupCall() : TLMethod<TLAbsUpdates>() {
         size += SIZE_INT32
         size += peer.computeSerializedSize()
         size += SIZE_INT32
-        size += getIntIfMask(title, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(scheduleDate, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, title, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, scheduleDate, 2) { SIZE_INT32 }
         return size
     }
 

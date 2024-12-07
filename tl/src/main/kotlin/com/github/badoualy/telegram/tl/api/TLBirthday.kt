@@ -46,6 +46,7 @@ class TLBirthday() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(year, 1)
     }
 
@@ -56,7 +57,7 @@ class TLBirthday() : TLObject() {
         writeInt(_flags)
         writeInt(day)
         writeInt(month)
-        doIfMask(year, 1) { writeInt(it) }
+        doIfMask(1, year, 1) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -64,7 +65,7 @@ class TLBirthday() : TLObject() {
         _flags = readInt()
         day = readInt()
         month = readInt()
-        year = readIfMask(1) { readInt() }
+        year = readIfMask(1, 1) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -74,7 +75,7 @@ class TLBirthday() : TLObject() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(year, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, year, 1) { SIZE_INT32 }
         return size
     }
 

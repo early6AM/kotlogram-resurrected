@@ -41,6 +41,7 @@ class TLSendAsPeer() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(premiumRequired, 1)
     }
 
@@ -55,7 +56,7 @@ class TLSendAsPeer() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        premiumRequired = isMask(1)
+        premiumRequired = isMask(1, 1)
         peer = readTLObject<TLAbsPeer>()
     }
 

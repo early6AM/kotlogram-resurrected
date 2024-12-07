@@ -48,6 +48,7 @@ class TLRequestPhoneToggleGroupCallSettings() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(resetInviteHash, 2)
         updateFlags(joinMuted, 1)
     }
@@ -58,15 +59,15 @@ class TLRequestPhoneToggleGroupCallSettings() : TLMethod<TLAbsUpdates>() {
 
         writeInt(_flags)
         writeTLObject(call)
-        doIfMask(joinMuted, 1) { writeBoolean(it) }
+        doIfMask(1, joinMuted, 1) { writeBoolean(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        resetInviteHash = isMask(2)
+        resetInviteHash = isMask(1, 2)
         call = readTLObject<TLInputGroupCall>(TLInputGroupCall::class, TLInputGroupCall.CONSTRUCTOR_ID)
-        joinMuted = readIfMask(1) { readBoolean() }
+        joinMuted = readIfMask(1, 1) { readBoolean() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -75,7 +76,7 @@ class TLRequestPhoneToggleGroupCallSettings() : TLMethod<TLAbsUpdates>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += call.computeSerializedSize()
-        size += getIntIfMask(joinMuted, 1) { SIZE_BOOLEAN }
+        size += getIntIfMask(1, joinMuted, 1) { SIZE_BOOLEAN }
         return size
     }
 

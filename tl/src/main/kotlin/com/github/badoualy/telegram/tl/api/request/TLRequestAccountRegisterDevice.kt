@@ -61,6 +61,7 @@ class TLRequestAccountRegisterDevice() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(noMuted, 1)
     }
 
@@ -79,7 +80,7 @@ class TLRequestAccountRegisterDevice() : TLMethod<TLBool>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        noMuted = isMask(1)
+        noMuted = isMask(1, 1)
         tokenType = readInt()
         token = readString()
         appSandbox = readBoolean()

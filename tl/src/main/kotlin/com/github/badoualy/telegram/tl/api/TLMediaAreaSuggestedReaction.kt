@@ -52,6 +52,7 @@ class TLMediaAreaSuggestedReaction() : TLAbsMediaArea() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(dark, 1)
         updateFlags(flipped, 2)
     }
@@ -68,8 +69,8 @@ class TLMediaAreaSuggestedReaction() : TLAbsMediaArea() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        dark = isMask(1)
-        flipped = isMask(2)
+        dark = isMask(1, 1)
+        flipped = isMask(1, 2)
         coordinates = readTLObject<TLMediaAreaCoordinates>(TLMediaAreaCoordinates::class, TLMediaAreaCoordinates.CONSTRUCTOR_ID)
         reaction = readTLObject<TLAbsReaction>()
     }

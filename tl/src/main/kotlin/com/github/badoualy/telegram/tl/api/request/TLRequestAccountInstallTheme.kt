@@ -53,6 +53,7 @@ class TLRequestAccountInstallTheme() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(dark, 1)
         updateFlags(theme, 2)
         updateFlags(format, 4)
@@ -64,18 +65,18 @@ class TLRequestAccountInstallTheme() : TLMethod<TLBool>() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(theme, 2) { writeTLObject(it) }
-        doIfMask(format, 4) { writeString(it) }
-        doIfMask(baseTheme, 8) { writeTLObject(it) }
+        doIfMask(1, theme, 2) { writeTLObject(it) }
+        doIfMask(1, format, 4) { writeString(it) }
+        doIfMask(1, baseTheme, 8) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        dark = isMask(1)
-        theme = readIfMask(2) { readTLObject<TLAbsInputTheme>() }
-        format = readIfMask(4) { readString() }
-        baseTheme = readIfMask(8) { readTLObject<TLAbsBaseTheme>() }
+        dark = isMask(1, 1)
+        theme = readIfMask(1, 2) { readTLObject<TLAbsInputTheme>() }
+        format = readIfMask(1, 4) { readString() }
+        baseTheme = readIfMask(1, 8) { readTLObject<TLAbsBaseTheme>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -83,9 +84,9 @@ class TLRequestAccountInstallTheme() : TLMethod<TLBool>() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(theme, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(format, 4) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(baseTheme, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, theme, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, format, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, baseTheme, 8) { it.computeSerializedSize() }
         return size
     }
 

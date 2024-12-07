@@ -35,6 +35,7 @@ class TLInputBotInlineMessageGame() : TLAbsInputBotInlineMessage() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(replyMarkup, 4)
     }
 
@@ -43,13 +44,13 @@ class TLInputBotInlineMessageGame() : TLAbsInputBotInlineMessage() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(replyMarkup, 4) { writeTLObject(it) }
+        doIfMask(1, replyMarkup, 4) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        replyMarkup = readIfMask(4) { readTLObject<TLAbsReplyMarkup>() }
+        replyMarkup = readIfMask(1, 4) { readTLObject<TLAbsReplyMarkup>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -57,7 +58,7 @@ class TLInputBotInlineMessageGame() : TLAbsInputBotInlineMessage() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(replyMarkup, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, replyMarkup, 4) { it.computeSerializedSize() }
         return size
     }
 

@@ -52,6 +52,7 @@ class TLStoryViewPublicRepost() : TLAbsStoryView() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(blocked, 1)
         updateFlags(blockedMyStoriesFrom, 2)
     }
@@ -68,8 +69,8 @@ class TLStoryViewPublicRepost() : TLAbsStoryView() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        blocked = isMask(1)
-        blockedMyStoriesFrom = isMask(2)
+        blocked = isMask(1, 1)
+        blockedMyStoriesFrom = isMask(1, 2)
         peerId = readTLObject<TLAbsPeer>()
         story = readTLObject<TLAbsStoryItem>()
     }

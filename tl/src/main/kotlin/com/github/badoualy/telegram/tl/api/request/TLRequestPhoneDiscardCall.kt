@@ -59,6 +59,7 @@ class TLRequestPhoneDiscardCall() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(video, 1)
     }
 
@@ -76,7 +77,7 @@ class TLRequestPhoneDiscardCall() : TLMethod<TLAbsUpdates>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        video = isMask(1)
+        video = isMask(1, 1)
         peer = readTLObject<TLInputPhoneCall>(TLInputPhoneCall::class, TLInputPhoneCall.CONSTRUCTOR_ID)
         duration = readInt()
         reason = readTLObject<TLAbsPhoneCallDiscardReason>()

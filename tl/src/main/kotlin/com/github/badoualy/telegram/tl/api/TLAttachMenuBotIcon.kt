@@ -47,6 +47,7 @@ class TLAttachMenuBotIcon() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(colors, 1)
     }
 
@@ -57,7 +58,7 @@ class TLAttachMenuBotIcon() : TLObject() {
         writeInt(_flags)
         writeString(name)
         writeTLObject(icon)
-        doIfMask(colors, 1) { writeTLVector(it) }
+        doIfMask(1, colors, 1) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
@@ -65,7 +66,7 @@ class TLAttachMenuBotIcon() : TLObject() {
         _flags = readInt()
         name = readString()
         icon = readTLObject<TLAbsDocument>()
-        colors = readIfMask(1) { readTLVector<TLAttachMenuBotIconColor>() }
+        colors = readIfMask(1, 1) { readTLVector<TLAttachMenuBotIconColor>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -75,7 +76,7 @@ class TLAttachMenuBotIcon() : TLObject() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(name)
         size += icon.computeSerializedSize()
-        size += getIntIfMask(colors, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, colors, 1) { it.computeSerializedSize() }
         return size
     }
 

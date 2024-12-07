@@ -45,6 +45,7 @@ class TLUpdateDraftMessage() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(topMsgId, 1)
     }
 
@@ -54,7 +55,7 @@ class TLUpdateDraftMessage() : TLAbsUpdate() {
 
         writeInt(_flags)
         writeTLObject(peer)
-        doIfMask(topMsgId, 1) { writeInt(it) }
+        doIfMask(1, topMsgId, 1) { writeInt(it) }
         writeTLObject(draft)
     }
 
@@ -62,7 +63,7 @@ class TLUpdateDraftMessage() : TLAbsUpdate() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         peer = readTLObject<TLAbsPeer>()
-        topMsgId = readIfMask(1) { readInt() }
+        topMsgId = readIfMask(1, 1) { readInt() }
         draft = readTLObject<TLAbsDraftMessage>()
     }
 
@@ -72,7 +73,7 @@ class TLUpdateDraftMessage() : TLAbsUpdate() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += peer.computeSerializedSize()
-        size += getIntIfMask(topMsgId, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, topMsgId, 1) { SIZE_INT32 }
         size += draft.computeSerializedSize()
         return size
     }

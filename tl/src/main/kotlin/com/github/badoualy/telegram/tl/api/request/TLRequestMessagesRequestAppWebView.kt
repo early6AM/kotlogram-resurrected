@@ -72,6 +72,7 @@ class TLRequestMessagesRequestAppWebView() : TLMethod<TLWebViewResultUrl>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(writeAllowed, 1)
         updateFlags(compact, 128)
         updateFlags(startParam, 2)
@@ -85,20 +86,20 @@ class TLRequestMessagesRequestAppWebView() : TLMethod<TLWebViewResultUrl>() {
         writeInt(_flags)
         writeTLObject(peer)
         writeTLObject(app)
-        doIfMask(startParam, 2) { writeString(it) }
-        doIfMask(themeParams, 4) { writeTLObject(it) }
+        doIfMask(1, startParam, 2) { writeString(it) }
+        doIfMask(1, themeParams, 4) { writeTLObject(it) }
         writeString(platform)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        writeAllowed = isMask(1)
-        compact = isMask(128)
+        writeAllowed = isMask(1, 1)
+        compact = isMask(1, 128)
         peer = readTLObject<TLAbsInputPeer>()
         app = readTLObject<TLAbsInputBotApp>()
-        startParam = readIfMask(2) { readString() }
-        themeParams = readIfMask(4) { readTLObject<TLDataJSON>(TLDataJSON::class, TLDataJSON.CONSTRUCTOR_ID) }
+        startParam = readIfMask(1, 2) { readString() }
+        themeParams = readIfMask(1, 4) { readTLObject<TLDataJSON>(TLDataJSON::class, TLDataJSON.CONSTRUCTOR_ID) }
         platform = readString()
     }
 
@@ -109,8 +110,8 @@ class TLRequestMessagesRequestAppWebView() : TLMethod<TLWebViewResultUrl>() {
         size += SIZE_INT32
         size += peer.computeSerializedSize()
         size += app.computeSerializedSize()
-        size += getIntIfMask(startParam, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(themeParams, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, startParam, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, themeParams, 4) { it.computeSerializedSize() }
         size += computeTLStringSerializedSize(platform)
         return size
     }

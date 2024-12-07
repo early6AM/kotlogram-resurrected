@@ -52,6 +52,7 @@ class TLChannelParticipantSelf() : TLAbsChannelParticipant() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(viaRequest, 1)
     }
 
@@ -68,7 +69,7 @@ class TLChannelParticipantSelf() : TLAbsChannelParticipant() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        viaRequest = isMask(1)
+        viaRequest = isMask(1, 1)
         userId = readLong()
         inviterId = readLong()
         date = readInt()

@@ -65,6 +65,7 @@ class TLRequestStoriesGetStoryReactionsList() : TLMethod<TLStoryReactionsList>()
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(forwardsFirst, 4)
         updateFlags(reaction, 1)
         updateFlags(offset, 2)
@@ -77,19 +78,19 @@ class TLRequestStoriesGetStoryReactionsList() : TLMethod<TLStoryReactionsList>()
         writeInt(_flags)
         writeTLObject(peer)
         writeInt(id)
-        doIfMask(reaction, 1) { writeTLObject(it) }
-        doIfMask(offset, 2) { writeString(it) }
+        doIfMask(1, reaction, 1) { writeTLObject(it) }
+        doIfMask(1, offset, 2) { writeString(it) }
         writeInt(limit)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        forwardsFirst = isMask(4)
+        forwardsFirst = isMask(1, 4)
         peer = readTLObject<TLAbsInputPeer>()
         id = readInt()
-        reaction = readIfMask(1) { readTLObject<TLAbsReaction>() }
-        offset = readIfMask(2) { readString() }
+        reaction = readIfMask(1, 1) { readTLObject<TLAbsReaction>() }
+        offset = readIfMask(1, 2) { readString() }
         limit = readInt()
     }
 
@@ -100,8 +101,8 @@ class TLRequestStoriesGetStoryReactionsList() : TLMethod<TLStoryReactionsList>()
         size += SIZE_INT32
         size += peer.computeSerializedSize()
         size += SIZE_INT32
-        size += getIntIfMask(reaction, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(offset, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, reaction, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, offset, 2) { computeTLStringSerializedSize(it) }
         size += SIZE_INT32
         return size
     }

@@ -47,6 +47,7 @@ class TLCountryCode() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(prefixes, 1)
         updateFlags(patterns, 2)
     }
@@ -57,16 +58,16 @@ class TLCountryCode() : TLObject() {
 
         writeInt(_flags)
         writeString(countryCode)
-        doIfMask(prefixes, 1) { writeTLVector(it) }
-        doIfMask(patterns, 2) { writeTLVector(it) }
+        doIfMask(1, prefixes, 1) { writeTLVector(it) }
+        doIfMask(1, patterns, 2) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         countryCode = readString()
-        prefixes = readIfMask(1) { readTLStringVector() }
-        patterns = readIfMask(2) { readTLStringVector() }
+        prefixes = readIfMask(1, 1) { readTLStringVector() }
+        patterns = readIfMask(1, 2) { readTLStringVector() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -75,8 +76,8 @@ class TLCountryCode() : TLObject() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += computeTLStringSerializedSize(countryCode)
-        size += getIntIfMask(prefixes, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(patterns, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, prefixes, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, patterns, 2) { it.computeSerializedSize() }
         return size
     }
 

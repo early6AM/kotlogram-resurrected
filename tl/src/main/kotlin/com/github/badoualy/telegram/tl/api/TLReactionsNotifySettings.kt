@@ -50,6 +50,7 @@ class TLReactionsNotifySettings() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(messagesNotifyFrom, 1)
         updateFlags(storiesNotifyFrom, 2)
     }
@@ -59,8 +60,8 @@ class TLReactionsNotifySettings() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(messagesNotifyFrom, 1) { writeTLObject(it) }
-        doIfMask(storiesNotifyFrom, 2) { writeTLObject(it) }
+        doIfMask(1, messagesNotifyFrom, 1) { writeTLObject(it) }
+        doIfMask(1, storiesNotifyFrom, 2) { writeTLObject(it) }
         writeTLObject(sound)
         writeBoolean(showPreviews)
     }
@@ -68,8 +69,8 @@ class TLReactionsNotifySettings() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        messagesNotifyFrom = readIfMask(1) { readTLObject<TLAbsReactionNotificationsFrom>() }
-        storiesNotifyFrom = readIfMask(2) { readTLObject<TLAbsReactionNotificationsFrom>() }
+        messagesNotifyFrom = readIfMask(1, 1) { readTLObject<TLAbsReactionNotificationsFrom>() }
+        storiesNotifyFrom = readIfMask(1, 2) { readTLObject<TLAbsReactionNotificationsFrom>() }
         sound = readTLObject<TLAbsNotificationSound>()
         showPreviews = readBoolean()
     }
@@ -79,8 +80,8 @@ class TLReactionsNotifySettings() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(messagesNotifyFrom, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(storiesNotifyFrom, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, messagesNotifyFrom, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, storiesNotifyFrom, 2) { it.computeSerializedSize() }
         size += sound.computeSerializedSize()
         size += SIZE_BOOLEAN
         return size

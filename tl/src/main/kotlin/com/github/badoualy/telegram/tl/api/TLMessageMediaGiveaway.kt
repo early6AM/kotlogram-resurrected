@@ -70,6 +70,7 @@ class TLMessageMediaGiveaway() : TLAbsMessageMedia() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(onlyNewSubscribers, 1)
         updateFlags(winnersAreVisible, 4)
         updateFlags(countriesIso2, 2)
@@ -82,8 +83,8 @@ class TLMessageMediaGiveaway() : TLAbsMessageMedia() {
 
         writeInt(_flags)
         writeTLVector(channels)
-        doIfMask(countriesIso2, 2) { writeTLVector(it) }
-        doIfMask(prizeDescription, 8) { writeString(it) }
+        doIfMask(1, countriesIso2, 2) { writeTLVector(it) }
+        doIfMask(1, prizeDescription, 8) { writeString(it) }
         writeInt(quantity)
         writeInt(months)
         writeInt(untilDate)
@@ -92,11 +93,11 @@ class TLMessageMediaGiveaway() : TLAbsMessageMedia() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        onlyNewSubscribers = isMask(1)
-        winnersAreVisible = isMask(4)
+        onlyNewSubscribers = isMask(1, 1)
+        winnersAreVisible = isMask(1, 4)
         channels = readTLLongVector()
-        countriesIso2 = readIfMask(2) { readTLStringVector() }
-        prizeDescription = readIfMask(8) { readString() }
+        countriesIso2 = readIfMask(1, 2) { readTLStringVector() }
+        prizeDescription = readIfMask(1, 8) { readString() }
         quantity = readInt()
         months = readInt()
         untilDate = readInt()
@@ -108,8 +109,8 @@ class TLMessageMediaGiveaway() : TLAbsMessageMedia() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += channels.computeSerializedSize()
-        size += getIntIfMask(countriesIso2, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(prizeDescription, 8) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, countriesIso2, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, prizeDescription, 8) { computeTLStringSerializedSize(it) }
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32

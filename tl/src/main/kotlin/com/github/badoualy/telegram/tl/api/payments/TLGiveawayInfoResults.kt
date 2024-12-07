@@ -64,12 +64,13 @@ class TLGiveawayInfoResults() : TLAbsGiveawayInfo() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(winner, 1)
         updateFlags(refunded, 2)
         updateFlags(giftCodeSlug, 1)
 
         // Following parameters might be forced to true by another field that updated the flags
-        winner = isMask(1)
+        winner = isMask(1, 1)
     }
 
     @Throws(IOException::class)
@@ -78,7 +79,7 @@ class TLGiveawayInfoResults() : TLAbsGiveawayInfo() {
 
         writeInt(_flags)
         writeInt(startDate)
-        doIfMask(giftCodeSlug, 1) { writeString(it) }
+        doIfMask(1, giftCodeSlug, 1) { writeString(it) }
         writeInt(finishDate)
         writeInt(winnersCount)
         writeInt(activatedCount)
@@ -87,10 +88,10 @@ class TLGiveawayInfoResults() : TLAbsGiveawayInfo() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        winner = isMask(1)
-        refunded = isMask(2)
+        winner = isMask(1, 1)
+        refunded = isMask(1, 2)
         startDate = readInt()
-        giftCodeSlug = readIfMask(1) { readString() }
+        giftCodeSlug = readIfMask(1, 1) { readString() }
         finishDate = readInt()
         winnersCount = readInt()
         activatedCount = readInt()
@@ -102,7 +103,7 @@ class TLGiveawayInfoResults() : TLAbsGiveawayInfo() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(giftCodeSlug, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, giftCodeSlug, 1) { computeTLStringSerializedSize(it) }
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32

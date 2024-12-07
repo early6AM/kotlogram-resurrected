@@ -103,6 +103,7 @@ class TLInvoice() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(test, 1)
         updateFlags(nameRequested, 2)
         updateFlags(phoneRequested, 4)
@@ -124,28 +125,28 @@ class TLInvoice() : TLObject() {
         writeInt(_flags)
         writeString(currency)
         writeTLVector(prices)
-        doIfMask(maxTipAmount, 256) { writeLong(it) }
-        doIfMask(suggestedTipAmounts, 256) { writeTLVector(it) }
-        doIfMask(termsUrl, 1024) { writeString(it) }
+        doIfMask(1, maxTipAmount, 256) { writeLong(it) }
+        doIfMask(1, suggestedTipAmounts, 256) { writeTLVector(it) }
+        doIfMask(1, termsUrl, 1024) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        test = isMask(1)
-        nameRequested = isMask(2)
-        phoneRequested = isMask(4)
-        emailRequested = isMask(8)
-        shippingAddressRequested = isMask(16)
-        flexible = isMask(32)
-        phoneToProvider = isMask(64)
-        emailToProvider = isMask(128)
-        recurring = isMask(512)
+        test = isMask(1, 1)
+        nameRequested = isMask(1, 2)
+        phoneRequested = isMask(1, 4)
+        emailRequested = isMask(1, 8)
+        shippingAddressRequested = isMask(1, 16)
+        flexible = isMask(1, 32)
+        phoneToProvider = isMask(1, 64)
+        emailToProvider = isMask(1, 128)
+        recurring = isMask(1, 512)
         currency = readString()
         prices = readTLVector<TLLabeledPrice>()
-        maxTipAmount = readIfMask(256) { readLong() }
-        suggestedTipAmounts = readIfMask(256) { readTLLongVector() }
-        termsUrl = readIfMask(1024) { readString() }
+        maxTipAmount = readIfMask(1, 256) { readLong() }
+        suggestedTipAmounts = readIfMask(1, 256) { readTLLongVector() }
+        termsUrl = readIfMask(1, 1024) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -155,9 +156,9 @@ class TLInvoice() : TLObject() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(currency)
         size += prices.computeSerializedSize()
-        size += getIntIfMask(maxTipAmount, 256) { SIZE_INT64 }
-        size += getIntIfMask(suggestedTipAmounts, 256) { it.computeSerializedSize() }
-        size += getIntIfMask(termsUrl, 1024) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, maxTipAmount, 256) { SIZE_INT64 }
+        size += getIntIfMask(1, suggestedTipAmounts, 256) { it.computeSerializedSize() }
+        size += getIntIfMask(1, termsUrl, 1024) { computeTLStringSerializedSize(it) }
         return size
     }
 

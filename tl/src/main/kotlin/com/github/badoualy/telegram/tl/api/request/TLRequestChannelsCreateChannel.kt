@@ -75,6 +75,7 @@ class TLRequestChannelsCreateChannel() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(broadcast, 1)
         updateFlags(megagroup, 2)
         updateFlags(forImport, 8)
@@ -91,23 +92,23 @@ class TLRequestChannelsCreateChannel() : TLMethod<TLAbsUpdates>() {
         writeInt(_flags)
         writeString(title)
         writeString(about)
-        doIfMask(geoPoint, 4) { writeTLObject(it) }
-        doIfMask(address, 4) { writeString(it) }
-        doIfMask(ttlPeriod, 16) { writeInt(it) }
+        doIfMask(1, geoPoint, 4) { writeTLObject(it) }
+        doIfMask(1, address, 4) { writeString(it) }
+        doIfMask(1, ttlPeriod, 16) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        broadcast = isMask(1)
-        megagroup = isMask(2)
-        forImport = isMask(8)
-        forum = isMask(32)
+        broadcast = isMask(1, 1)
+        megagroup = isMask(1, 2)
+        forImport = isMask(1, 8)
+        forum = isMask(1, 32)
         title = readString()
         about = readString()
-        geoPoint = readIfMask(4) { readTLObject<TLAbsInputGeoPoint>() }
-        address = readIfMask(4) { readString() }
-        ttlPeriod = readIfMask(16) { readInt() }
+        geoPoint = readIfMask(1, 4) { readTLObject<TLAbsInputGeoPoint>() }
+        address = readIfMask(1, 4) { readString() }
+        ttlPeriod = readIfMask(1, 16) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -117,9 +118,9 @@ class TLRequestChannelsCreateChannel() : TLMethod<TLAbsUpdates>() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(title)
         size += computeTLStringSerializedSize(about)
-        size += getIntIfMask(geoPoint, 4) { it.computeSerializedSize() }
-        size += getIntIfMask(address, 4) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(ttlPeriod, 16) { SIZE_INT32 }
+        size += getIntIfMask(1, geoPoint, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, address, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, ttlPeriod, 16) { SIZE_INT32 }
         return size
     }
 

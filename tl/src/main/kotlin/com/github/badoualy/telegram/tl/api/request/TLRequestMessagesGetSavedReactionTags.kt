@@ -40,6 +40,7 @@ class TLRequestMessagesGetSavedReactionTags() : TLMethod<TLAbsSavedReactionTags>
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(peer, 1)
     }
 
@@ -48,14 +49,14 @@ class TLRequestMessagesGetSavedReactionTags() : TLMethod<TLAbsSavedReactionTags>
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(peer, 1) { writeTLObject(it) }
+        doIfMask(1, peer, 1) { writeTLObject(it) }
         writeLong(hash)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        peer = readIfMask(1) { readTLObject<TLAbsInputPeer>() }
+        peer = readIfMask(1, 1) { readTLObject<TLAbsInputPeer>() }
         hash = readLong()
     }
 
@@ -64,7 +65,7 @@ class TLRequestMessagesGetSavedReactionTags() : TLMethod<TLAbsSavedReactionTags>
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(peer, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, peer, 1) { it.computeSerializedSize() }
         size += SIZE_INT64
         return size
     }

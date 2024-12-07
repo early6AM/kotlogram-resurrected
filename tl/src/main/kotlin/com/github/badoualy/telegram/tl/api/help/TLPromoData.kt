@@ -68,6 +68,7 @@ class TLPromoData() : TLAbsPromoData() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(proxy, 1)
         updateFlags(psaType, 2)
         updateFlags(psaMessage, 4)
@@ -82,20 +83,20 @@ class TLPromoData() : TLAbsPromoData() {
         writeTLObject(peer)
         writeTLVector(chats)
         writeTLVector(users)
-        doIfMask(psaType, 2) { writeString(it) }
-        doIfMask(psaMessage, 4) { writeString(it) }
+        doIfMask(1, psaType, 2) { writeString(it) }
+        doIfMask(1, psaMessage, 4) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        proxy = isMask(1)
+        proxy = isMask(1, 1)
         expires = readInt()
         peer = readTLObject<TLAbsPeer>()
         chats = readTLVector<TLAbsChat>()
         users = readTLVector<TLAbsUser>()
-        psaType = readIfMask(2) { readString() }
-        psaMessage = readIfMask(4) { readString() }
+        psaType = readIfMask(1, 2) { readString() }
+        psaMessage = readIfMask(1, 4) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -107,8 +108,8 @@ class TLPromoData() : TLAbsPromoData() {
         size += peer.computeSerializedSize()
         size += chats.computeSerializedSize()
         size += users.computeSerializedSize()
-        size += getIntIfMask(psaType, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(psaMessage, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, psaType, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, psaMessage, 4) { computeTLStringSerializedSize(it) }
         return size
     }
 

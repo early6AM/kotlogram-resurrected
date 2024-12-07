@@ -46,6 +46,7 @@ class TLUpdateMessagePoll() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(poll, 1)
     }
 
@@ -55,7 +56,7 @@ class TLUpdateMessagePoll() : TLAbsUpdate() {
 
         writeInt(_flags)
         writeLong(pollId)
-        doIfMask(poll, 1) { writeTLObject(it) }
+        doIfMask(1, poll, 1) { writeTLObject(it) }
         writeTLObject(results)
     }
 
@@ -63,7 +64,7 @@ class TLUpdateMessagePoll() : TLAbsUpdate() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         pollId = readLong()
-        poll = readIfMask(1) { readTLObject<TLPoll>(TLPoll::class, TLPoll.CONSTRUCTOR_ID) }
+        poll = readIfMask(1, 1) { readTLObject<TLPoll>(TLPoll::class, TLPoll.CONSTRUCTOR_ID) }
         results = readTLObject<TLPollResults>(TLPollResults::class, TLPollResults.CONSTRUCTOR_ID)
     }
 
@@ -73,7 +74,7 @@ class TLUpdateMessagePoll() : TLAbsUpdate() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT64
-        size += getIntIfMask(poll, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, poll, 1) { it.computeSerializedSize() }
         size += results.computeSerializedSize()
         return size
     }

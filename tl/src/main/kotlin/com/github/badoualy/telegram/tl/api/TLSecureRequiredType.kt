@@ -53,6 +53,7 @@ class TLSecureRequiredType() : TLAbsSecureRequiredType() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(nativeNames, 1)
         updateFlags(selfieRequired, 2)
         updateFlags(translationRequired, 4)
@@ -69,9 +70,9 @@ class TLSecureRequiredType() : TLAbsSecureRequiredType() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        nativeNames = isMask(1)
-        selfieRequired = isMask(2)
-        translationRequired = isMask(4)
+        nativeNames = isMask(1, 1)
+        selfieRequired = isMask(1, 2)
+        translationRequired = isMask(1, 4)
         type = readTLObject<TLAbsSecureValueType>()
     }
 

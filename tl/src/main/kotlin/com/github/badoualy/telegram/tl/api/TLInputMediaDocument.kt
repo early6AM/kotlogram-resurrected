@@ -51,6 +51,7 @@ class TLInputMediaDocument() : TLAbsInputMedia() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(spoiler, 4)
         updateFlags(ttlSeconds, 1)
         updateFlags(query, 2)
@@ -62,17 +63,17 @@ class TLInputMediaDocument() : TLAbsInputMedia() {
 
         writeInt(_flags)
         writeTLObject(id)
-        doIfMask(ttlSeconds, 1) { writeInt(it) }
-        doIfMask(query, 2) { writeString(it) }
+        doIfMask(1, ttlSeconds, 1) { writeInt(it) }
+        doIfMask(1, query, 2) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        spoiler = isMask(4)
+        spoiler = isMask(1, 4)
         id = readTLObject<TLAbsInputDocument>()
-        ttlSeconds = readIfMask(1) { readInt() }
-        query = readIfMask(2) { readString() }
+        ttlSeconds = readIfMask(1, 1) { readInt() }
+        query = readIfMask(1, 2) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -81,8 +82,8 @@ class TLInputMediaDocument() : TLAbsInputMedia() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += id.computeSerializedSize()
-        size += getIntIfMask(ttlSeconds, 1) { SIZE_INT32 }
-        size += getIntIfMask(query, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, ttlSeconds, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, query, 2) { computeTLStringSerializedSize(it) }
         return size
     }
 

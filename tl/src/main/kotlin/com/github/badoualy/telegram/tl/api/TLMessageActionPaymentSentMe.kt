@@ -70,6 +70,7 @@ class TLMessageActionPaymentSentMe() : TLAbsMessageAction() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(recurringInit, 4)
         updateFlags(recurringUsed, 8)
         updateFlags(info, 1)
@@ -84,21 +85,21 @@ class TLMessageActionPaymentSentMe() : TLAbsMessageAction() {
         writeString(currency)
         writeLong(totalAmount)
         writeTLBytes(payload)
-        doIfMask(info, 1) { writeTLObject(it) }
-        doIfMask(shippingOptionId, 2) { writeString(it) }
+        doIfMask(1, info, 1) { writeTLObject(it) }
+        doIfMask(1, shippingOptionId, 2) { writeString(it) }
         writeTLObject(charge)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        recurringInit = isMask(4)
-        recurringUsed = isMask(8)
+        recurringInit = isMask(1, 4)
+        recurringUsed = isMask(1, 8)
         currency = readString()
         totalAmount = readLong()
         payload = readTLBytes()
-        info = readIfMask(1) { readTLObject<TLPaymentRequestedInfo>(TLPaymentRequestedInfo::class, TLPaymentRequestedInfo.CONSTRUCTOR_ID) }
-        shippingOptionId = readIfMask(2) { readString() }
+        info = readIfMask(1, 1) { readTLObject<TLPaymentRequestedInfo>(TLPaymentRequestedInfo::class, TLPaymentRequestedInfo.CONSTRUCTOR_ID) }
+        shippingOptionId = readIfMask(1, 2) { readString() }
         charge = readTLObject<TLPaymentCharge>(TLPaymentCharge::class, TLPaymentCharge.CONSTRUCTOR_ID)
     }
 
@@ -110,8 +111,8 @@ class TLMessageActionPaymentSentMe() : TLAbsMessageAction() {
         size += computeTLStringSerializedSize(currency)
         size += SIZE_INT64
         size += computeTLBytesSerializedSize(payload)
-        size += getIntIfMask(info, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(shippingOptionId, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, info, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, shippingOptionId, 2) { computeTLStringSerializedSize(it) }
         size += charge.computeSerializedSize()
         return size
     }

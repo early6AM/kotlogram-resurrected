@@ -50,6 +50,7 @@ class TLPaymentRequestedInfo() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(name, 1)
         updateFlags(phone, 2)
         updateFlags(email, 4)
@@ -61,19 +62,19 @@ class TLPaymentRequestedInfo() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(name, 1) { writeString(it) }
-        doIfMask(phone, 2) { writeString(it) }
-        doIfMask(email, 4) { writeString(it) }
-        doIfMask(shippingAddress, 8) { writeTLObject(it) }
+        doIfMask(1, name, 1) { writeString(it) }
+        doIfMask(1, phone, 2) { writeString(it) }
+        doIfMask(1, email, 4) { writeString(it) }
+        doIfMask(1, shippingAddress, 8) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        name = readIfMask(1) { readString() }
-        phone = readIfMask(2) { readString() }
-        email = readIfMask(4) { readString() }
-        shippingAddress = readIfMask(8) { readTLObject<TLPostAddress>(TLPostAddress::class, TLPostAddress.CONSTRUCTOR_ID) }
+        name = readIfMask(1, 1) { readString() }
+        phone = readIfMask(1, 2) { readString() }
+        email = readIfMask(1, 4) { readString() }
+        shippingAddress = readIfMask(1, 8) { readTLObject<TLPostAddress>(TLPostAddress::class, TLPostAddress.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -81,10 +82,10 @@ class TLPaymentRequestedInfo() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(name, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(phone, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(email, 4) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(shippingAddress, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, name, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, phone, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, email, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, shippingAddress, 8) { it.computeSerializedSize() }
         return size
     }
 

@@ -57,6 +57,7 @@ class TLRequestChannelsExportMessageLink() : TLMethod<TLExportedMessageLink>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(grouped, 1)
         updateFlags(thread, 2)
     }
@@ -73,8 +74,8 @@ class TLRequestChannelsExportMessageLink() : TLMethod<TLExportedMessageLink>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        grouped = isMask(1)
-        thread = isMask(2)
+        grouped = isMask(1, 1)
+        thread = isMask(1, 2)
         channel = readTLObject<TLAbsInputChannel>()
         id = readInt()
     }

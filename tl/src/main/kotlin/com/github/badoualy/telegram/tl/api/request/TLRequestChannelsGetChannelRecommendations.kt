@@ -36,6 +36,7 @@ class TLRequestChannelsGetChannelRecommendations() : TLMethod<TLAbsChats>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(channel, 1)
     }
 
@@ -44,13 +45,13 @@ class TLRequestChannelsGetChannelRecommendations() : TLMethod<TLAbsChats>() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(channel, 1) { writeTLObject(it) }
+        doIfMask(1, channel, 1) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        channel = readIfMask(1) { readTLObject<TLAbsInputChannel>() }
+        channel = readIfMask(1, 1) { readTLObject<TLAbsInputChannel>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -58,7 +59,7 @@ class TLRequestChannelsGetChannelRecommendations() : TLMethod<TLAbsChats>() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(channel, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, channel, 1) { it.computeSerializedSize() }
         return size
     }
 

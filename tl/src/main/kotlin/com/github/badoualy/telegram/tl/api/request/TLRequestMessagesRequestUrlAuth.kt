@@ -50,6 +50,7 @@ class TLRequestMessagesRequestUrlAuth() : TLMethod<TLAbsUrlAuthResult>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(peer, 2)
         updateFlags(msgId, 2)
         updateFlags(buttonId, 2)
@@ -61,19 +62,19 @@ class TLRequestMessagesRequestUrlAuth() : TLMethod<TLAbsUrlAuthResult>() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(peer, 2) { writeTLObject(it) }
-        doIfMask(msgId, 2) { writeInt(it) }
-        doIfMask(buttonId, 2) { writeInt(it) }
-        doIfMask(url, 4) { writeString(it) }
+        doIfMask(1, peer, 2) { writeTLObject(it) }
+        doIfMask(1, msgId, 2) { writeInt(it) }
+        doIfMask(1, buttonId, 2) { writeInt(it) }
+        doIfMask(1, url, 4) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        peer = readIfMask(2) { readTLObject<TLAbsInputPeer>() }
-        msgId = readIfMask(2) { readInt() }
-        buttonId = readIfMask(2) { readInt() }
-        url = readIfMask(4) { readString() }
+        peer = readIfMask(1, 2) { readTLObject<TLAbsInputPeer>() }
+        msgId = readIfMask(1, 2) { readInt() }
+        buttonId = readIfMask(1, 2) { readInt() }
+        url = readIfMask(1, 4) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -81,10 +82,10 @@ class TLRequestMessagesRequestUrlAuth() : TLMethod<TLAbsUrlAuthResult>() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(peer, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(msgId, 2) { SIZE_INT32 }
-        size += getIntIfMask(buttonId, 2) { SIZE_INT32 }
-        size += getIntIfMask(url, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, peer, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, msgId, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, buttonId, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, url, 4) { computeTLStringSerializedSize(it) }
         return size
     }
 

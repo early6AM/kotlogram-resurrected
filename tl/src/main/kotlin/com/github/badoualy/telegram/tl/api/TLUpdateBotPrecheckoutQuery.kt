@@ -63,6 +63,7 @@ class TLUpdateBotPrecheckoutQuery() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(info, 1)
         updateFlags(shippingOptionId, 2)
     }
@@ -75,8 +76,8 @@ class TLUpdateBotPrecheckoutQuery() : TLAbsUpdate() {
         writeLong(queryId)
         writeLong(userId)
         writeTLBytes(payload)
-        doIfMask(info, 1) { writeTLObject(it) }
-        doIfMask(shippingOptionId, 2) { writeString(it) }
+        doIfMask(1, info, 1) { writeTLObject(it) }
+        doIfMask(1, shippingOptionId, 2) { writeString(it) }
         writeString(currency)
         writeLong(totalAmount)
     }
@@ -87,8 +88,8 @@ class TLUpdateBotPrecheckoutQuery() : TLAbsUpdate() {
         queryId = readLong()
         userId = readLong()
         payload = readTLBytes()
-        info = readIfMask(1) { readTLObject<TLPaymentRequestedInfo>(TLPaymentRequestedInfo::class, TLPaymentRequestedInfo.CONSTRUCTOR_ID) }
-        shippingOptionId = readIfMask(2) { readString() }
+        info = readIfMask(1, 1) { readTLObject<TLPaymentRequestedInfo>(TLPaymentRequestedInfo::class, TLPaymentRequestedInfo.CONSTRUCTOR_ID) }
+        shippingOptionId = readIfMask(1, 2) { readString() }
         currency = readString()
         totalAmount = readLong()
     }
@@ -101,8 +102,8 @@ class TLUpdateBotPrecheckoutQuery() : TLAbsUpdate() {
         size += SIZE_INT64
         size += SIZE_INT64
         size += computeTLBytesSerializedSize(payload)
-        size += getIntIfMask(info, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(shippingOptionId, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, info, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, shippingOptionId, 2) { computeTLStringSerializedSize(it) }
         size += computeTLStringSerializedSize(currency)
         size += SIZE_INT64
         return size

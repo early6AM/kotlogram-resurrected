@@ -63,6 +63,7 @@ class TLReplyKeyboardMarkup() : TLAbsReplyMarkup() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(resize, 1)
         updateFlags(singleUse, 2)
         updateFlags(selective, 4)
@@ -76,18 +77,18 @@ class TLReplyKeyboardMarkup() : TLAbsReplyMarkup() {
 
         writeInt(_flags)
         writeTLVector(rows)
-        doIfMask(placeholder, 8) { writeString(it) }
+        doIfMask(1, placeholder, 8) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        resize = isMask(1)
-        singleUse = isMask(2)
-        selective = isMask(4)
-        persistent = isMask(16)
+        resize = isMask(1, 1)
+        singleUse = isMask(1, 2)
+        selective = isMask(1, 4)
+        persistent = isMask(1, 16)
         rows = readTLVector<TLKeyboardButtonRow>()
-        placeholder = readIfMask(8) { readString() }
+        placeholder = readIfMask(1, 8) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -96,7 +97,7 @@ class TLReplyKeyboardMarkup() : TLAbsReplyMarkup() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += rows.computeSerializedSize()
-        size += getIntIfMask(placeholder, 8) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, placeholder, 8) { computeTLStringSerializedSize(it) }
         return size
     }
 

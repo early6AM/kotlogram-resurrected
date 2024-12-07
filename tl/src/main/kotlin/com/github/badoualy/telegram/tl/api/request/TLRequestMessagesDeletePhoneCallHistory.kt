@@ -40,6 +40,7 @@ class TLRequestMessagesDeletePhoneCallHistory() : TLMethod<TLAffectedFoundMessag
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(revoke, 1)
     }
 
@@ -53,7 +54,7 @@ class TLRequestMessagesDeletePhoneCallHistory() : TLMethod<TLAffectedFoundMessag
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        revoke = isMask(1)
+        revoke = isMask(1, 1)
     }
 
     override fun computeSerializedSize(): Int {

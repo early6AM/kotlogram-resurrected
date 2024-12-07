@@ -41,6 +41,7 @@ class TLChannelMessagesFilter() : TLAbsChannelMessagesFilter() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(excludeNewMessages, 2)
     }
 
@@ -55,7 +56,7 @@ class TLChannelMessagesFilter() : TLAbsChannelMessagesFilter() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        excludeNewMessages = isMask(2)
+        excludeNewMessages = isMask(1, 2)
         ranges = readTLVector<TLMessageRange>()
     }
 

@@ -49,6 +49,7 @@ class TLMessageExtendedMediaPreview() : TLAbsMessageExtendedMedia() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(w, 1)
         updateFlags(h, 1)
         updateFlags(thumb, 2)
@@ -60,19 +61,19 @@ class TLMessageExtendedMediaPreview() : TLAbsMessageExtendedMedia() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(w, 1) { writeInt(it) }
-        doIfMask(h, 1) { writeInt(it) }
-        doIfMask(thumb, 2) { writeTLObject(it) }
-        doIfMask(videoDuration, 4) { writeInt(it) }
+        doIfMask(1, w, 1) { writeInt(it) }
+        doIfMask(1, h, 1) { writeInt(it) }
+        doIfMask(1, thumb, 2) { writeTLObject(it) }
+        doIfMask(1, videoDuration, 4) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        w = readIfMask(1) { readInt() }
-        h = readIfMask(1) { readInt() }
-        thumb = readIfMask(2) { readTLObject<TLAbsPhotoSize>() }
-        videoDuration = readIfMask(4) { readInt() }
+        w = readIfMask(1, 1) { readInt() }
+        h = readIfMask(1, 1) { readInt() }
+        thumb = readIfMask(1, 2) { readTLObject<TLAbsPhotoSize>() }
+        videoDuration = readIfMask(1, 4) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -80,10 +81,10 @@ class TLMessageExtendedMediaPreview() : TLAbsMessageExtendedMedia() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(w, 1) { SIZE_INT32 }
-        size += getIntIfMask(h, 1) { SIZE_INT32 }
-        size += getIntIfMask(thumb, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(videoDuration, 4) { SIZE_INT32 }
+        size += getIntIfMask(1, w, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, h, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, thumb, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, videoDuration, 4) { SIZE_INT32 }
         return size
     }
 

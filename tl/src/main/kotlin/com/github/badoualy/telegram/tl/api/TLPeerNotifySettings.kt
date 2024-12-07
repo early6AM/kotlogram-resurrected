@@ -78,6 +78,7 @@ class TLPeerNotifySettings() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(showPreviews, 1)
         updateFlags(silent, 2)
         updateFlags(muteUntil, 4)
@@ -96,33 +97,33 @@ class TLPeerNotifySettings() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(showPreviews, 1) { writeBoolean(it) }
-        doIfMask(silent, 2) { writeBoolean(it) }
-        doIfMask(muteUntil, 4) { writeInt(it) }
-        doIfMask(iosSound, 8) { writeTLObject(it) }
-        doIfMask(androidSound, 16) { writeTLObject(it) }
-        doIfMask(otherSound, 32) { writeTLObject(it) }
-        doIfMask(storiesMuted, 64) { writeBoolean(it) }
-        doIfMask(storiesHideSender, 128) { writeBoolean(it) }
-        doIfMask(storiesIosSound, 256) { writeTLObject(it) }
-        doIfMask(storiesAndroidSound, 512) { writeTLObject(it) }
-        doIfMask(storiesOtherSound, 1024) { writeTLObject(it) }
+        doIfMask(1, showPreviews, 1) { writeBoolean(it) }
+        doIfMask(1, silent, 2) { writeBoolean(it) }
+        doIfMask(1, muteUntil, 4) { writeInt(it) }
+        doIfMask(1, iosSound, 8) { writeTLObject(it) }
+        doIfMask(1, androidSound, 16) { writeTLObject(it) }
+        doIfMask(1, otherSound, 32) { writeTLObject(it) }
+        doIfMask(1, storiesMuted, 64) { writeBoolean(it) }
+        doIfMask(1, storiesHideSender, 128) { writeBoolean(it) }
+        doIfMask(1, storiesIosSound, 256) { writeTLObject(it) }
+        doIfMask(1, storiesAndroidSound, 512) { writeTLObject(it) }
+        doIfMask(1, storiesOtherSound, 1024) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        showPreviews = readIfMask(1) { readBoolean() }
-        silent = readIfMask(2) { readBoolean() }
-        muteUntil = readIfMask(4) { readInt() }
-        iosSound = readIfMask(8) { readTLObject<TLAbsNotificationSound>() }
-        androidSound = readIfMask(16) { readTLObject<TLAbsNotificationSound>() }
-        otherSound = readIfMask(32) { readTLObject<TLAbsNotificationSound>() }
-        storiesMuted = readIfMask(64) { readBoolean() }
-        storiesHideSender = readIfMask(128) { readBoolean() }
-        storiesIosSound = readIfMask(256) { readTLObject<TLAbsNotificationSound>() }
-        storiesAndroidSound = readIfMask(512) { readTLObject<TLAbsNotificationSound>() }
-        storiesOtherSound = readIfMask(1024) { readTLObject<TLAbsNotificationSound>() }
+        showPreviews = readIfMask(1, 1) { readBoolean() }
+        silent = readIfMask(1, 2) { readBoolean() }
+        muteUntil = readIfMask(1, 4) { readInt() }
+        iosSound = readIfMask(1, 8) { readTLObject<TLAbsNotificationSound>() }
+        androidSound = readIfMask(1, 16) { readTLObject<TLAbsNotificationSound>() }
+        otherSound = readIfMask(1, 32) { readTLObject<TLAbsNotificationSound>() }
+        storiesMuted = readIfMask(1, 64) { readBoolean() }
+        storiesHideSender = readIfMask(1, 128) { readBoolean() }
+        storiesIosSound = readIfMask(1, 256) { readTLObject<TLAbsNotificationSound>() }
+        storiesAndroidSound = readIfMask(1, 512) { readTLObject<TLAbsNotificationSound>() }
+        storiesOtherSound = readIfMask(1, 1024) { readTLObject<TLAbsNotificationSound>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -130,17 +131,17 @@ class TLPeerNotifySettings() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(showPreviews, 1) { SIZE_BOOLEAN }
-        size += getIntIfMask(silent, 2) { SIZE_BOOLEAN }
-        size += getIntIfMask(muteUntil, 4) { SIZE_INT32 }
-        size += getIntIfMask(iosSound, 8) { it.computeSerializedSize() }
-        size += getIntIfMask(androidSound, 16) { it.computeSerializedSize() }
-        size += getIntIfMask(otherSound, 32) { it.computeSerializedSize() }
-        size += getIntIfMask(storiesMuted, 64) { SIZE_BOOLEAN }
-        size += getIntIfMask(storiesHideSender, 128) { SIZE_BOOLEAN }
-        size += getIntIfMask(storiesIosSound, 256) { it.computeSerializedSize() }
-        size += getIntIfMask(storiesAndroidSound, 512) { it.computeSerializedSize() }
-        size += getIntIfMask(storiesOtherSound, 1024) { it.computeSerializedSize() }
+        size += getIntIfMask(1, showPreviews, 1) { SIZE_BOOLEAN }
+        size += getIntIfMask(1, silent, 2) { SIZE_BOOLEAN }
+        size += getIntIfMask(1, muteUntil, 4) { SIZE_INT32 }
+        size += getIntIfMask(1, iosSound, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, androidSound, 16) { it.computeSerializedSize() }
+        size += getIntIfMask(1, otherSound, 32) { it.computeSerializedSize() }
+        size += getIntIfMask(1, storiesMuted, 64) { SIZE_BOOLEAN }
+        size += getIntIfMask(1, storiesHideSender, 128) { SIZE_BOOLEAN }
+        size += getIntIfMask(1, storiesIosSound, 256) { it.computeSerializedSize() }
+        size += getIntIfMask(1, storiesAndroidSound, 512) { it.computeSerializedSize() }
+        size += getIntIfMask(1, storiesOtherSound, 1024) { it.computeSerializedSize() }
         return size
     }
 

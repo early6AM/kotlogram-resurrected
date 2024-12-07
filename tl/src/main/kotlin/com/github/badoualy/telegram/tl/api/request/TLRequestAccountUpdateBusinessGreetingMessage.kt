@@ -36,6 +36,7 @@ class TLRequestAccountUpdateBusinessGreetingMessage() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(message, 1)
     }
 
@@ -44,13 +45,13 @@ class TLRequestAccountUpdateBusinessGreetingMessage() : TLMethod<TLBool>() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(message, 1) { writeTLObject(it) }
+        doIfMask(1, message, 1) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        message = readIfMask(1) { readTLObject<TLInputBusinessGreetingMessage>(TLInputBusinessGreetingMessage::class, TLInputBusinessGreetingMessage.CONSTRUCTOR_ID) }
+        message = readIfMask(1, 1) { readTLObject<TLInputBusinessGreetingMessage>(TLInputBusinessGreetingMessage::class, TLInputBusinessGreetingMessage.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -58,7 +59,7 @@ class TLRequestAccountUpdateBusinessGreetingMessage() : TLMethod<TLBool>() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(message, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, message, 1) { it.computeSerializedSize() }
         return size
     }
 

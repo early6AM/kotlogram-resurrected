@@ -51,6 +51,7 @@ class TLRequestMessagesHideChatJoinRequest() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(approved, 1)
     }
 
@@ -66,7 +67,7 @@ class TLRequestMessagesHideChatJoinRequest() : TLMethod<TLAbsUpdates>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        approved = isMask(1)
+        approved = isMask(1, 1)
         peer = readTLObject<TLAbsInputPeer>()
         userId = readTLObject<TLAbsInputUser>()
     }

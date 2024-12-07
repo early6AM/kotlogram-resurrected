@@ -69,6 +69,7 @@ class TLForumTopics() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(orderByCreateDate, 1)
     }
 
@@ -88,7 +89,7 @@ class TLForumTopics() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        orderByCreateDate = isMask(1)
+        orderByCreateDate = isMask(1, 1)
         count = readInt()
         topics = readTLVector<TLAbsForumTopic>()
         messages = readTLVector<TLAbsMessage>()

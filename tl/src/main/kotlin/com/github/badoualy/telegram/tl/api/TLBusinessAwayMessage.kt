@@ -52,6 +52,7 @@ class TLBusinessAwayMessage() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(offlineOnly, 1)
     }
 
@@ -68,7 +69,7 @@ class TLBusinessAwayMessage() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        offlineOnly = isMask(1)
+        offlineOnly = isMask(1, 1)
         shortcutId = readInt()
         schedule = readTLObject<TLAbsBusinessAwayMessageSchedule>()
         recipients = readTLObject<TLBusinessRecipients>(TLBusinessRecipients::class, TLBusinessRecipients.CONSTRUCTOR_ID)

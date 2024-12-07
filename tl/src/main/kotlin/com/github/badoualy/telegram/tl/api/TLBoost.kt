@@ -79,6 +79,7 @@ class TLBoost() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(gift, 2)
         updateFlags(giveaway, 4)
         updateFlags(unclaimed, 8)
@@ -88,7 +89,7 @@ class TLBoost() : TLObject() {
         updateFlags(multiplier, 32)
 
         // Following parameters might be forced to true by another field that updated the flags
-        giveaway = isMask(4)
+        giveaway = isMask(1, 4)
     }
 
     @Throws(IOException::class)
@@ -97,27 +98,27 @@ class TLBoost() : TLObject() {
 
         writeInt(_flags)
         writeString(id)
-        doIfMask(userId, 1) { writeLong(it) }
-        doIfMask(giveawayMsgId, 4) { writeInt(it) }
+        doIfMask(1, userId, 1) { writeLong(it) }
+        doIfMask(1, giveawayMsgId, 4) { writeInt(it) }
         writeInt(date)
         writeInt(expires)
-        doIfMask(usedGiftSlug, 16) { writeString(it) }
-        doIfMask(multiplier, 32) { writeInt(it) }
+        doIfMask(1, usedGiftSlug, 16) { writeString(it) }
+        doIfMask(1, multiplier, 32) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        gift = isMask(2)
-        giveaway = isMask(4)
-        unclaimed = isMask(8)
+        gift = isMask(1, 2)
+        giveaway = isMask(1, 4)
+        unclaimed = isMask(1, 8)
         id = readString()
-        userId = readIfMask(1) { readLong() }
-        giveawayMsgId = readIfMask(4) { readInt() }
+        userId = readIfMask(1, 1) { readLong() }
+        giveawayMsgId = readIfMask(1, 4) { readInt() }
         date = readInt()
         expires = readInt()
-        usedGiftSlug = readIfMask(16) { readString() }
-        multiplier = readIfMask(32) { readInt() }
+        usedGiftSlug = readIfMask(1, 16) { readString() }
+        multiplier = readIfMask(1, 32) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -126,12 +127,12 @@ class TLBoost() : TLObject() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += computeTLStringSerializedSize(id)
-        size += getIntIfMask(userId, 1) { SIZE_INT64 }
-        size += getIntIfMask(giveawayMsgId, 4) { SIZE_INT32 }
+        size += getIntIfMask(1, userId, 1) { SIZE_INT64 }
+        size += getIntIfMask(1, giveawayMsgId, 4) { SIZE_INT32 }
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(usedGiftSlug, 16) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(multiplier, 32) { SIZE_INT32 }
+        size += getIntIfMask(1, usedGiftSlug, 16) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, multiplier, 32) { SIZE_INT32 }
         return size
     }
 

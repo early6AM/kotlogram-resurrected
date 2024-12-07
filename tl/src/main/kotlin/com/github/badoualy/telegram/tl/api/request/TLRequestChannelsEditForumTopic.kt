@@ -60,6 +60,7 @@ class TLRequestChannelsEditForumTopic() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(title, 1)
         updateFlags(iconEmojiId, 2)
         updateFlags(closed, 4)
@@ -73,10 +74,10 @@ class TLRequestChannelsEditForumTopic() : TLMethod<TLAbsUpdates>() {
         writeInt(_flags)
         writeTLObject(channel)
         writeInt(topicId)
-        doIfMask(title, 1) { writeString(it) }
-        doIfMask(iconEmojiId, 2) { writeLong(it) }
-        doIfMask(closed, 4) { writeBoolean(it) }
-        doIfMask(hidden, 8) { writeBoolean(it) }
+        doIfMask(1, title, 1) { writeString(it) }
+        doIfMask(1, iconEmojiId, 2) { writeLong(it) }
+        doIfMask(1, closed, 4) { writeBoolean(it) }
+        doIfMask(1, hidden, 8) { writeBoolean(it) }
     }
 
     @Throws(IOException::class)
@@ -84,10 +85,10 @@ class TLRequestChannelsEditForumTopic() : TLMethod<TLAbsUpdates>() {
         _flags = readInt()
         channel = readTLObject<TLAbsInputChannel>()
         topicId = readInt()
-        title = readIfMask(1) { readString() }
-        iconEmojiId = readIfMask(2) { readLong() }
-        closed = readIfMask(4) { readBoolean() }
-        hidden = readIfMask(8) { readBoolean() }
+        title = readIfMask(1, 1) { readString() }
+        iconEmojiId = readIfMask(1, 2) { readLong() }
+        closed = readIfMask(1, 4) { readBoolean() }
+        hidden = readIfMask(1, 8) { readBoolean() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -97,10 +98,10 @@ class TLRequestChannelsEditForumTopic() : TLMethod<TLAbsUpdates>() {
         size += SIZE_INT32
         size += channel.computeSerializedSize()
         size += SIZE_INT32
-        size += getIntIfMask(title, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(iconEmojiId, 2) { SIZE_INT64 }
-        size += getIntIfMask(closed, 4) { SIZE_BOOLEAN }
-        size += getIntIfMask(hidden, 8) { SIZE_BOOLEAN }
+        size += getIntIfMask(1, title, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, iconEmojiId, 2) { SIZE_INT64 }
+        size += getIntIfMask(1, closed, 4) { SIZE_BOOLEAN }
+        size += getIntIfMask(1, hidden, 8) { SIZE_BOOLEAN }
         return size
     }
 

@@ -47,6 +47,7 @@ class TLMessageEntityBlockquote() : TLAbsMessageEntity() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(collapsed, 1)
     }
 
@@ -62,7 +63,7 @@ class TLMessageEntityBlockquote() : TLAbsMessageEntity() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        collapsed = isMask(1)
+        collapsed = isMask(1, 1)
         offset = readInt()
         length = readInt()
     }

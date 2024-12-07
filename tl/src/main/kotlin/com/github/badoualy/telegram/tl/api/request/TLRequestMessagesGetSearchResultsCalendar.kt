@@ -60,6 +60,7 @@ class TLRequestMessagesGetSearchResultsCalendar() : TLMethod<TLSearchResultsCale
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(savedPeerId, 4)
     }
 
@@ -69,7 +70,7 @@ class TLRequestMessagesGetSearchResultsCalendar() : TLMethod<TLSearchResultsCale
 
         writeInt(_flags)
         writeTLObject(peer)
-        doIfMask(savedPeerId, 4) { writeTLObject(it) }
+        doIfMask(1, savedPeerId, 4) { writeTLObject(it) }
         writeTLObject(filter)
         writeInt(offsetId)
         writeInt(offsetDate)
@@ -79,7 +80,7 @@ class TLRequestMessagesGetSearchResultsCalendar() : TLMethod<TLSearchResultsCale
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         peer = readTLObject<TLAbsInputPeer>()
-        savedPeerId = readIfMask(4) { readTLObject<TLAbsInputPeer>() }
+        savedPeerId = readIfMask(1, 4) { readTLObject<TLAbsInputPeer>() }
         filter = readTLObject<TLAbsMessagesFilter>()
         offsetId = readInt()
         offsetDate = readInt()
@@ -91,7 +92,7 @@ class TLRequestMessagesGetSearchResultsCalendar() : TLMethod<TLSearchResultsCale
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += peer.computeSerializedSize()
-        size += getIntIfMask(savedPeerId, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, savedPeerId, 4) { it.computeSerializedSize() }
         size += filter.computeSerializedSize()
         size += SIZE_INT32
         size += SIZE_INT32

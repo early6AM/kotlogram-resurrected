@@ -52,6 +52,7 @@ class TLRequestPhoneSetCallRating() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(userInitiative, 1)
     }
 
@@ -68,7 +69,7 @@ class TLRequestPhoneSetCallRating() : TLMethod<TLAbsUpdates>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        userInitiative = isMask(1)
+        userInitiative = isMask(1, 1)
         peer = readTLObject<TLInputPhoneCall>(TLInputPhoneCall::class, TLInputPhoneCall.CONSTRUCTOR_ID)
         rating = readInt()
         comment = readString()

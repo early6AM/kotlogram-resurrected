@@ -47,6 +47,7 @@ class TLInputMediaPhotoExternal() : TLAbsInputMedia() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(spoiler, 2)
         updateFlags(ttlSeconds, 1)
     }
@@ -57,15 +58,15 @@ class TLInputMediaPhotoExternal() : TLAbsInputMedia() {
 
         writeInt(_flags)
         writeString(url)
-        doIfMask(ttlSeconds, 1) { writeInt(it) }
+        doIfMask(1, ttlSeconds, 1) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        spoiler = isMask(2)
+        spoiler = isMask(1, 2)
         url = readString()
-        ttlSeconds = readIfMask(1) { readInt() }
+        ttlSeconds = readIfMask(1, 1) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -74,7 +75,7 @@ class TLInputMediaPhotoExternal() : TLAbsInputMedia() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += computeTLStringSerializedSize(url)
-        size += getIntIfMask(ttlSeconds, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, ttlSeconds, 1) { SIZE_INT32 }
         return size
     }
 

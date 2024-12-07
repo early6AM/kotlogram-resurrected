@@ -50,6 +50,7 @@ class TLPageBlockPhoto() : TLAbsPageBlock() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(url, 1)
         updateFlags(webpageId, 1)
     }
@@ -61,8 +62,8 @@ class TLPageBlockPhoto() : TLAbsPageBlock() {
         writeInt(_flags)
         writeLong(photoId)
         writeTLObject(caption)
-        doIfMask(url, 1) { writeString(it) }
-        doIfMask(webpageId, 1) { writeLong(it) }
+        doIfMask(1, url, 1) { writeString(it) }
+        doIfMask(1, webpageId, 1) { writeLong(it) }
     }
 
     @Throws(IOException::class)
@@ -70,8 +71,8 @@ class TLPageBlockPhoto() : TLAbsPageBlock() {
         _flags = readInt()
         photoId = readLong()
         caption = readTLObject<TLPageCaption>(TLPageCaption::class, TLPageCaption.CONSTRUCTOR_ID)
-        url = readIfMask(1) { readString() }
-        webpageId = readIfMask(1) { readLong() }
+        url = readIfMask(1, 1) { readString() }
+        webpageId = readIfMask(1, 1) { readLong() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -81,8 +82,8 @@ class TLPageBlockPhoto() : TLAbsPageBlock() {
         size += SIZE_INT32
         size += SIZE_INT64
         size += caption.computeSerializedSize()
-        size += getIntIfMask(url, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(webpageId, 1) { SIZE_INT64 }
+        size += getIntIfMask(1, url, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, webpageId, 1) { SIZE_INT64 }
         return size
     }
 

@@ -51,6 +51,7 @@ class TLInputMediaPoll() : TLAbsInputMedia() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(correctAnswers, 1)
         updateFlags(solution, 2)
         updateFlags(solutionEntities, 2)
@@ -62,18 +63,18 @@ class TLInputMediaPoll() : TLAbsInputMedia() {
 
         writeInt(_flags)
         writeTLObject(poll)
-        doIfMask(correctAnswers, 1) { writeTLVector(it) }
-        doIfMask(solution, 2) { writeString(it) }
-        doIfMask(solutionEntities, 2) { writeTLVector(it) }
+        doIfMask(1, correctAnswers, 1) { writeTLVector(it) }
+        doIfMask(1, solution, 2) { writeString(it) }
+        doIfMask(1, solutionEntities, 2) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         poll = readTLObject<TLPoll>(TLPoll::class, TLPoll.CONSTRUCTOR_ID)
-        correctAnswers = readIfMask(1) { readTLBytesVector() }
-        solution = readIfMask(2) { readString() }
-        solutionEntities = readIfMask(2) { readTLVector<TLAbsMessageEntity>() }
+        correctAnswers = readIfMask(1, 1) { readTLBytesVector() }
+        solution = readIfMask(1, 2) { readString() }
+        solutionEntities = readIfMask(1, 2) { readTLVector<TLAbsMessageEntity>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -82,9 +83,9 @@ class TLInputMediaPoll() : TLAbsInputMedia() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += poll.computeSerializedSize()
-        size += getIntIfMask(correctAnswers, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(solution, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(solutionEntities, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, correctAnswers, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, solution, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, solutionEntities, 2) { it.computeSerializedSize() }
         return size
     }
 

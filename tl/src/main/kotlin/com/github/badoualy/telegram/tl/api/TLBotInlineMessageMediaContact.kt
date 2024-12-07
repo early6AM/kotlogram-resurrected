@@ -53,6 +53,7 @@ class TLBotInlineMessageMediaContact() : TLAbsBotInlineMessage() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(replyMarkup, 4)
     }
 
@@ -65,7 +66,7 @@ class TLBotInlineMessageMediaContact() : TLAbsBotInlineMessage() {
         writeString(firstName)
         writeString(lastName)
         writeString(vcard)
-        doIfMask(replyMarkup, 4) { writeTLObject(it) }
+        doIfMask(1, replyMarkup, 4) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
@@ -75,7 +76,7 @@ class TLBotInlineMessageMediaContact() : TLAbsBotInlineMessage() {
         firstName = readString()
         lastName = readString()
         vcard = readString()
-        replyMarkup = readIfMask(4) { readTLObject<TLAbsReplyMarkup>() }
+        replyMarkup = readIfMask(1, 4) { readTLObject<TLAbsReplyMarkup>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -87,7 +88,7 @@ class TLBotInlineMessageMediaContact() : TLAbsBotInlineMessage() {
         size += computeTLStringSerializedSize(firstName)
         size += computeTLStringSerializedSize(lastName)
         size += computeTLStringSerializedSize(vcard)
-        size += getIntIfMask(replyMarkup, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, replyMarkup, 4) { it.computeSerializedSize() }
         return size
     }
 

@@ -40,6 +40,7 @@ class TLRequestMessagesUpdateSavedReactionTag() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(title, 1)
     }
 
@@ -49,14 +50,14 @@ class TLRequestMessagesUpdateSavedReactionTag() : TLMethod<TLBool>() {
 
         writeInt(_flags)
         writeTLObject(reaction)
-        doIfMask(title, 1) { writeString(it) }
+        doIfMask(1, title, 1) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         reaction = readTLObject<TLAbsReaction>()
-        title = readIfMask(1) { readString() }
+        title = readIfMask(1, 1) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -65,7 +66,7 @@ class TLRequestMessagesUpdateSavedReactionTag() : TLMethod<TLBool>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += reaction.computeSerializedSize()
-        size += getIntIfMask(title, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, title, 1) { computeTLStringSerializedSize(it) }
         return size
     }
 

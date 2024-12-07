@@ -54,6 +54,7 @@ class TLRequestChannelsUpdateColor() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(forProfile, 2)
         updateFlags(color, 4)
         updateFlags(backgroundEmojiId, 1)
@@ -65,17 +66,17 @@ class TLRequestChannelsUpdateColor() : TLMethod<TLAbsUpdates>() {
 
         writeInt(_flags)
         writeTLObject(channel)
-        doIfMask(color, 4) { writeInt(it) }
-        doIfMask(backgroundEmojiId, 1) { writeLong(it) }
+        doIfMask(1, color, 4) { writeInt(it) }
+        doIfMask(1, backgroundEmojiId, 1) { writeLong(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        forProfile = isMask(2)
+        forProfile = isMask(1, 2)
         channel = readTLObject<TLAbsInputChannel>()
-        color = readIfMask(4) { readInt() }
-        backgroundEmojiId = readIfMask(1) { readLong() }
+        color = readIfMask(1, 4) { readInt() }
+        backgroundEmojiId = readIfMask(1, 1) { readLong() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -84,8 +85,8 @@ class TLRequestChannelsUpdateColor() : TLMethod<TLAbsUpdates>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += channel.computeSerializedSize()
-        size += getIntIfMask(color, 4) { SIZE_INT32 }
-        size += getIntIfMask(backgroundEmojiId, 1) { SIZE_INT64 }
+        size += getIntIfMask(1, color, 4) { SIZE_INT32 }
+        size += getIntIfMask(1, backgroundEmojiId, 1) { SIZE_INT64 }
         return size
     }
 

@@ -61,6 +61,7 @@ class TLBotInlineMessageMediaVenue() : TLAbsBotInlineMessage() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(replyMarkup, 4)
     }
 
@@ -75,7 +76,7 @@ class TLBotInlineMessageMediaVenue() : TLAbsBotInlineMessage() {
         writeString(provider)
         writeString(venueId)
         writeString(venueType)
-        doIfMask(replyMarkup, 4) { writeTLObject(it) }
+        doIfMask(1, replyMarkup, 4) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
@@ -87,7 +88,7 @@ class TLBotInlineMessageMediaVenue() : TLAbsBotInlineMessage() {
         provider = readString()
         venueId = readString()
         venueType = readString()
-        replyMarkup = readIfMask(4) { readTLObject<TLAbsReplyMarkup>() }
+        replyMarkup = readIfMask(1, 4) { readTLObject<TLAbsReplyMarkup>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -101,7 +102,7 @@ class TLBotInlineMessageMediaVenue() : TLAbsBotInlineMessage() {
         size += computeTLStringSerializedSize(provider)
         size += computeTLStringSerializedSize(venueId)
         size += computeTLStringSerializedSize(venueType)
-        size += getIntIfMask(replyMarkup, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, replyMarkup, 4) { it.computeSerializedSize() }
         return size
     }
 

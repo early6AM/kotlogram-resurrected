@@ -63,6 +63,7 @@ class TLPageRelatedArticle() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(title, 1)
         updateFlags(description, 2)
         updateFlags(photoId, 4)
@@ -77,11 +78,11 @@ class TLPageRelatedArticle() : TLObject() {
         writeInt(_flags)
         writeString(url)
         writeLong(webpageId)
-        doIfMask(title, 1) { writeString(it) }
-        doIfMask(description, 2) { writeString(it) }
-        doIfMask(photoId, 4) { writeLong(it) }
-        doIfMask(author, 8) { writeString(it) }
-        doIfMask(publishedDate, 16) { writeInt(it) }
+        doIfMask(1, title, 1) { writeString(it) }
+        doIfMask(1, description, 2) { writeString(it) }
+        doIfMask(1, photoId, 4) { writeLong(it) }
+        doIfMask(1, author, 8) { writeString(it) }
+        doIfMask(1, publishedDate, 16) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -89,11 +90,11 @@ class TLPageRelatedArticle() : TLObject() {
         _flags = readInt()
         url = readString()
         webpageId = readLong()
-        title = readIfMask(1) { readString() }
-        description = readIfMask(2) { readString() }
-        photoId = readIfMask(4) { readLong() }
-        author = readIfMask(8) { readString() }
-        publishedDate = readIfMask(16) { readInt() }
+        title = readIfMask(1, 1) { readString() }
+        description = readIfMask(1, 2) { readString() }
+        photoId = readIfMask(1, 4) { readLong() }
+        author = readIfMask(1, 8) { readString() }
+        publishedDate = readIfMask(1, 16) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -103,11 +104,11 @@ class TLPageRelatedArticle() : TLObject() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(url)
         size += SIZE_INT64
-        size += getIntIfMask(title, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(description, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(photoId, 4) { SIZE_INT64 }
-        size += getIntIfMask(author, 8) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(publishedDate, 16) { SIZE_INT32 }
+        size += getIntIfMask(1, title, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, description, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, photoId, 4) { SIZE_INT64 }
+        size += getIntIfMask(1, author, 8) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, publishedDate, 16) { SIZE_INT32 }
         return size
     }
 

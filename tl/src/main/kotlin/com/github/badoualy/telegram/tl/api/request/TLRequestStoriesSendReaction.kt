@@ -55,6 +55,7 @@ class TLRequestStoriesSendReaction() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(addToRecent, 1)
     }
 
@@ -71,7 +72,7 @@ class TLRequestStoriesSendReaction() : TLMethod<TLAbsUpdates>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        addToRecent = isMask(1)
+        addToRecent = isMask(1, 1)
         peer = readTLObject<TLAbsInputPeer>()
         storyId = readInt()
         reaction = readTLObject<TLAbsReaction>()

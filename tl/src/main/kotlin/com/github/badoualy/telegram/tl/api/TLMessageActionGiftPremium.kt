@@ -54,6 +54,7 @@ class TLMessageActionGiftPremium() : TLAbsMessageAction() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(cryptoCurrency, 1)
         updateFlags(cryptoAmount, 1)
     }
@@ -66,8 +67,8 @@ class TLMessageActionGiftPremium() : TLAbsMessageAction() {
         writeString(currency)
         writeLong(amount)
         writeInt(months)
-        doIfMask(cryptoCurrency, 1) { writeString(it) }
-        doIfMask(cryptoAmount, 1) { writeLong(it) }
+        doIfMask(1, cryptoCurrency, 1) { writeString(it) }
+        doIfMask(1, cryptoAmount, 1) { writeLong(it) }
     }
 
     @Throws(IOException::class)
@@ -76,8 +77,8 @@ class TLMessageActionGiftPremium() : TLAbsMessageAction() {
         currency = readString()
         amount = readLong()
         months = readInt()
-        cryptoCurrency = readIfMask(1) { readString() }
-        cryptoAmount = readIfMask(1) { readLong() }
+        cryptoCurrency = readIfMask(1, 1) { readString() }
+        cryptoAmount = readIfMask(1, 1) { readLong() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -88,8 +89,8 @@ class TLMessageActionGiftPremium() : TLAbsMessageAction() {
         size += computeTLStringSerializedSize(currency)
         size += SIZE_INT64
         size += SIZE_INT32
-        size += getIntIfMask(cryptoCurrency, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(cryptoAmount, 1) { SIZE_INT64 }
+        size += getIntIfMask(1, cryptoCurrency, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, cryptoAmount, 1) { SIZE_INT64 }
         return size
     }
 

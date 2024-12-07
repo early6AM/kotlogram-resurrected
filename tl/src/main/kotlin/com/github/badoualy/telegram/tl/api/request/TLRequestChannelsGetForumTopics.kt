@@ -62,6 +62,7 @@ class TLRequestChannelsGetForumTopics() : TLMethod<TLForumTopics>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(q, 1)
     }
 
@@ -71,7 +72,7 @@ class TLRequestChannelsGetForumTopics() : TLMethod<TLForumTopics>() {
 
         writeInt(_flags)
         writeTLObject(channel)
-        doIfMask(q, 1) { writeString(it) }
+        doIfMask(1, q, 1) { writeString(it) }
         writeInt(offsetDate)
         writeInt(offsetId)
         writeInt(offsetTopic)
@@ -82,7 +83,7 @@ class TLRequestChannelsGetForumTopics() : TLMethod<TLForumTopics>() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         channel = readTLObject<TLAbsInputChannel>()
-        q = readIfMask(1) { readString() }
+        q = readIfMask(1, 1) { readString() }
         offsetDate = readInt()
         offsetId = readInt()
         offsetTopic = readInt()
@@ -95,7 +96,7 @@ class TLRequestChannelsGetForumTopics() : TLMethod<TLForumTopics>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += channel.computeSerializedSize()
-        size += getIntIfMask(q, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, q, 1) { computeTLStringSerializedSize(it) }
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32

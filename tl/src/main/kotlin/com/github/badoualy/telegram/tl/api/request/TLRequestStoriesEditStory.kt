@@ -68,6 +68,7 @@ class TLRequestStoriesEditStory() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(media, 1)
         updateFlags(mediaAreas, 8)
         updateFlags(caption, 2)
@@ -82,11 +83,11 @@ class TLRequestStoriesEditStory() : TLMethod<TLAbsUpdates>() {
         writeInt(_flags)
         writeTLObject(peer)
         writeInt(id)
-        doIfMask(media, 1) { writeTLObject(it) }
-        doIfMask(mediaAreas, 8) { writeTLVector(it) }
-        doIfMask(caption, 2) { writeString(it) }
-        doIfMask(entities, 2) { writeTLVector(it) }
-        doIfMask(privacyRules, 4) { writeTLVector(it) }
+        doIfMask(1, media, 1) { writeTLObject(it) }
+        doIfMask(1, mediaAreas, 8) { writeTLVector(it) }
+        doIfMask(1, caption, 2) { writeString(it) }
+        doIfMask(1, entities, 2) { writeTLVector(it) }
+        doIfMask(1, privacyRules, 4) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
@@ -94,11 +95,11 @@ class TLRequestStoriesEditStory() : TLMethod<TLAbsUpdates>() {
         _flags = readInt()
         peer = readTLObject<TLAbsInputPeer>()
         id = readInt()
-        media = readIfMask(1) { readTLObject<TLAbsInputMedia>() }
-        mediaAreas = readIfMask(8) { readTLVector<TLAbsMediaArea>() }
-        caption = readIfMask(2) { readString() }
-        entities = readIfMask(2) { readTLVector<TLAbsMessageEntity>() }
-        privacyRules = readIfMask(4) { readTLVector<TLAbsInputPrivacyRule>() }
+        media = readIfMask(1, 1) { readTLObject<TLAbsInputMedia>() }
+        mediaAreas = readIfMask(1, 8) { readTLVector<TLAbsMediaArea>() }
+        caption = readIfMask(1, 2) { readString() }
+        entities = readIfMask(1, 2) { readTLVector<TLAbsMessageEntity>() }
+        privacyRules = readIfMask(1, 4) { readTLVector<TLAbsInputPrivacyRule>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -108,11 +109,11 @@ class TLRequestStoriesEditStory() : TLMethod<TLAbsUpdates>() {
         size += SIZE_INT32
         size += peer.computeSerializedSize()
         size += SIZE_INT32
-        size += getIntIfMask(media, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(mediaAreas, 8) { it.computeSerializedSize() }
-        size += getIntIfMask(caption, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(entities, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(privacyRules, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, media, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, mediaAreas, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, caption, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, entities, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, privacyRules, 4) { it.computeSerializedSize() }
         return size
     }
 

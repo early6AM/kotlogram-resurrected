@@ -96,6 +96,7 @@ class TLPaymentReceipt() : TLAbsPaymentReceipt() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(photo, 4)
         updateFlags(info, 1)
         updateFlags(shipping, 2)
@@ -112,11 +113,11 @@ class TLPaymentReceipt() : TLAbsPaymentReceipt() {
         writeLong(providerId)
         writeString(title)
         writeString(description)
-        doIfMask(photo, 4) { writeTLObject(it) }
+        doIfMask(1, photo, 4) { writeTLObject(it) }
         writeTLObject(invoice)
-        doIfMask(info, 1) { writeTLObject(it) }
-        doIfMask(shipping, 2) { writeTLObject(it) }
-        doIfMask(tipAmount, 8) { writeLong(it) }
+        doIfMask(1, info, 1) { writeTLObject(it) }
+        doIfMask(1, shipping, 2) { writeTLObject(it) }
+        doIfMask(1, tipAmount, 8) { writeLong(it) }
         writeString(currency)
         writeLong(totalAmount)
         writeString(credentialsTitle)
@@ -131,11 +132,11 @@ class TLPaymentReceipt() : TLAbsPaymentReceipt() {
         providerId = readLong()
         title = readString()
         description = readString()
-        photo = readIfMask(4) { readTLObject<TLAbsWebDocument>() }
+        photo = readIfMask(1, 4) { readTLObject<TLAbsWebDocument>() }
         invoice = readTLObject<TLInvoice>(TLInvoice::class, TLInvoice.CONSTRUCTOR_ID)
-        info = readIfMask(1) { readTLObject<TLPaymentRequestedInfo>(TLPaymentRequestedInfo::class, TLPaymentRequestedInfo.CONSTRUCTOR_ID) }
-        shipping = readIfMask(2) { readTLObject<TLShippingOption>(TLShippingOption::class, TLShippingOption.CONSTRUCTOR_ID) }
-        tipAmount = readIfMask(8) { readLong() }
+        info = readIfMask(1, 1) { readTLObject<TLPaymentRequestedInfo>(TLPaymentRequestedInfo::class, TLPaymentRequestedInfo.CONSTRUCTOR_ID) }
+        shipping = readIfMask(1, 2) { readTLObject<TLShippingOption>(TLShippingOption::class, TLShippingOption.CONSTRUCTOR_ID) }
+        tipAmount = readIfMask(1, 8) { readLong() }
         currency = readString()
         totalAmount = readLong()
         credentialsTitle = readString()
@@ -152,11 +153,11 @@ class TLPaymentReceipt() : TLAbsPaymentReceipt() {
         size += SIZE_INT64
         size += computeTLStringSerializedSize(title)
         size += computeTLStringSerializedSize(description)
-        size += getIntIfMask(photo, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, photo, 4) { it.computeSerializedSize() }
         size += invoice.computeSerializedSize()
-        size += getIntIfMask(info, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(shipping, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(tipAmount, 8) { SIZE_INT64 }
+        size += getIntIfMask(1, info, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, shipping, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, tipAmount, 8) { SIZE_INT64 }
         size += computeTLStringSerializedSize(currency)
         size += SIZE_INT64
         size += computeTLStringSerializedSize(credentialsTitle)

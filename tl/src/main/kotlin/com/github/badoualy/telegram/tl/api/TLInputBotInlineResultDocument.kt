@@ -57,6 +57,7 @@ class TLInputBotInlineResultDocument() : TLAbsInputBotInlineResult() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(title, 2)
         updateFlags(description, 4)
     }
@@ -68,8 +69,8 @@ class TLInputBotInlineResultDocument() : TLAbsInputBotInlineResult() {
         writeInt(_flags)
         writeString(id)
         writeString(type)
-        doIfMask(title, 2) { writeString(it) }
-        doIfMask(description, 4) { writeString(it) }
+        doIfMask(1, title, 2) { writeString(it) }
+        doIfMask(1, description, 4) { writeString(it) }
         writeTLObject(document)
         writeTLObject(sendMessage)
     }
@@ -79,8 +80,8 @@ class TLInputBotInlineResultDocument() : TLAbsInputBotInlineResult() {
         _flags = readInt()
         id = readString()
         type = readString()
-        title = readIfMask(2) { readString() }
-        description = readIfMask(4) { readString() }
+        title = readIfMask(1, 2) { readString() }
+        description = readIfMask(1, 4) { readString() }
         document = readTLObject<TLAbsInputDocument>()
         sendMessage = readTLObject<TLAbsInputBotInlineMessage>()
     }
@@ -92,8 +93,8 @@ class TLInputBotInlineResultDocument() : TLAbsInputBotInlineResult() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(id)
         size += computeTLStringSerializedSize(type)
-        size += getIntIfMask(title, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(description, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, title, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, description, 4) { computeTLStringSerializedSize(it) }
         size += document.computeSerializedSize()
         size += sendMessage.computeSerializedSize()
         return size

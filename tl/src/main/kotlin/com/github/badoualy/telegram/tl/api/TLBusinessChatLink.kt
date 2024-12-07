@@ -55,6 +55,7 @@ class TLBusinessChatLink() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(entities, 1)
         updateFlags(title, 2)
     }
@@ -66,8 +67,8 @@ class TLBusinessChatLink() : TLObject() {
         writeInt(_flags)
         writeString(link)
         writeString(message)
-        doIfMask(entities, 1) { writeTLVector(it) }
-        doIfMask(title, 2) { writeString(it) }
+        doIfMask(1, entities, 1) { writeTLVector(it) }
+        doIfMask(1, title, 2) { writeString(it) }
         writeInt(views)
     }
 
@@ -76,8 +77,8 @@ class TLBusinessChatLink() : TLObject() {
         _flags = readInt()
         link = readString()
         message = readString()
-        entities = readIfMask(1) { readTLVector<TLAbsMessageEntity>() }
-        title = readIfMask(2) { readString() }
+        entities = readIfMask(1, 1) { readTLVector<TLAbsMessageEntity>() }
+        title = readIfMask(1, 2) { readString() }
         views = readInt()
     }
 
@@ -88,8 +89,8 @@ class TLBusinessChatLink() : TLObject() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(link)
         size += computeTLStringSerializedSize(message)
-        size += getIntIfMask(entities, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(title, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, entities, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, title, 2) { computeTLStringSerializedSize(it) }
         size += SIZE_INT32
         return size
     }

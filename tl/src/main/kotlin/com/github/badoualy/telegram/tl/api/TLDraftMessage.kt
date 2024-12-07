@@ -70,6 +70,7 @@ class TLDraftMessage() : TLAbsDraftMessage() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(noWebpage, 2)
         updateFlags(invertMedia, 64)
         updateFlags(replyTo, 16)
@@ -83,25 +84,25 @@ class TLDraftMessage() : TLAbsDraftMessage() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(replyTo, 16) { writeTLObject(it) }
+        doIfMask(1, replyTo, 16) { writeTLObject(it) }
         writeString(message)
-        doIfMask(entities, 8) { writeTLVector(it) }
-        doIfMask(media, 32) { writeTLObject(it) }
+        doIfMask(1, entities, 8) { writeTLVector(it) }
+        doIfMask(1, media, 32) { writeTLObject(it) }
         writeInt(date)
-        doIfMask(effect, 128) { writeLong(it) }
+        doIfMask(1, effect, 128) { writeLong(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        noWebpage = isMask(2)
-        invertMedia = isMask(64)
-        replyTo = readIfMask(16) { readTLObject<TLAbsInputReplyTo>() }
+        noWebpage = isMask(1, 2)
+        invertMedia = isMask(1, 64)
+        replyTo = readIfMask(1, 16) { readTLObject<TLAbsInputReplyTo>() }
         message = readString()
-        entities = readIfMask(8) { readTLVector<TLAbsMessageEntity>() }
-        media = readIfMask(32) { readTLObject<TLAbsInputMedia>() }
+        entities = readIfMask(1, 8) { readTLVector<TLAbsMessageEntity>() }
+        media = readIfMask(1, 32) { readTLObject<TLAbsInputMedia>() }
         date = readInt()
-        effect = readIfMask(128) { readLong() }
+        effect = readIfMask(1, 128) { readLong() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -109,12 +110,12 @@ class TLDraftMessage() : TLAbsDraftMessage() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(replyTo, 16) { it.computeSerializedSize() }
+        size += getIntIfMask(1, replyTo, 16) { it.computeSerializedSize() }
         size += computeTLStringSerializedSize(message)
-        size += getIntIfMask(entities, 8) { it.computeSerializedSize() }
-        size += getIntIfMask(media, 32) { it.computeSerializedSize() }
+        size += getIntIfMask(1, entities, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, media, 32) { it.computeSerializedSize() }
         size += SIZE_INT32
-        size += getIntIfMask(effect, 128) { SIZE_INT64 }
+        size += getIntIfMask(1, effect, 128) { SIZE_INT64 }
         return size
     }
 

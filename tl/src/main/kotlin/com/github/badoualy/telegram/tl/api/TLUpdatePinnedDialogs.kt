@@ -39,6 +39,7 @@ class TLUpdatePinnedDialogs() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(folderId, 2)
         updateFlags(order, 1)
     }
@@ -48,15 +49,15 @@ class TLUpdatePinnedDialogs() : TLAbsUpdate() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(folderId, 2) { writeInt(it) }
-        doIfMask(order, 1) { writeTLVector(it) }
+        doIfMask(1, folderId, 2) { writeInt(it) }
+        doIfMask(1, order, 1) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        folderId = readIfMask(2) { readInt() }
-        order = readIfMask(1) { readTLVector<TLAbsDialogPeer>() }
+        folderId = readIfMask(1, 2) { readInt() }
+        order = readIfMask(1, 1) { readTLVector<TLAbsDialogPeer>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -64,8 +65,8 @@ class TLUpdatePinnedDialogs() : TLAbsUpdate() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(folderId, 2) { SIZE_INT32 }
-        size += getIntIfMask(order, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, folderId, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, order, 1) { it.computeSerializedSize() }
         return size
     }
 

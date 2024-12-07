@@ -52,6 +52,7 @@ class TLRequestAccountChangeAuthorizationSettings() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(confirmed, 8)
         updateFlags(encryptedRequestsDisabled, 1)
         updateFlags(callRequestsDisabled, 2)
@@ -63,17 +64,17 @@ class TLRequestAccountChangeAuthorizationSettings() : TLMethod<TLBool>() {
 
         writeInt(_flags)
         writeLong(hash)
-        doIfMask(encryptedRequestsDisabled, 1) { writeBoolean(it) }
-        doIfMask(callRequestsDisabled, 2) { writeBoolean(it) }
+        doIfMask(1, encryptedRequestsDisabled, 1) { writeBoolean(it) }
+        doIfMask(1, callRequestsDisabled, 2) { writeBoolean(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        confirmed = isMask(8)
+        confirmed = isMask(1, 8)
         hash = readLong()
-        encryptedRequestsDisabled = readIfMask(1) { readBoolean() }
-        callRequestsDisabled = readIfMask(2) { readBoolean() }
+        encryptedRequestsDisabled = readIfMask(1, 1) { readBoolean() }
+        callRequestsDisabled = readIfMask(1, 2) { readBoolean() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -82,8 +83,8 @@ class TLRequestAccountChangeAuthorizationSettings() : TLMethod<TLBool>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT64
-        size += getIntIfMask(encryptedRequestsDisabled, 1) { SIZE_BOOLEAN }
-        size += getIntIfMask(callRequestsDisabled, 2) { SIZE_BOOLEAN }
+        size += getIntIfMask(1, encryptedRequestsDisabled, 1) { SIZE_BOOLEAN }
+        size += getIntIfMask(1, callRequestsDisabled, 2) { SIZE_BOOLEAN }
         return size
     }
 

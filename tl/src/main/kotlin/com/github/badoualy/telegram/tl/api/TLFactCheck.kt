@@ -53,6 +53,7 @@ class TLFactCheck() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(needCheck, 1)
         updateFlags(country, 2)
         updateFlags(text, 2)
@@ -63,17 +64,17 @@ class TLFactCheck() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(country, 2) { writeString(it) }
-        doIfMask(text, 2) { writeTLObject(it) }
+        doIfMask(1, country, 2) { writeString(it) }
+        doIfMask(1, text, 2) { writeTLObject(it) }
         writeLong(hash)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        needCheck = isMask(1)
-        country = readIfMask(2) { readString() }
-        text = readIfMask(2) { readTLObject<TLTextWithEntities>(TLTextWithEntities::class, TLTextWithEntities.CONSTRUCTOR_ID) }
+        needCheck = isMask(1, 1)
+        country = readIfMask(1, 2) { readString() }
+        text = readIfMask(1, 2) { readTLObject<TLTextWithEntities>(TLTextWithEntities::class, TLTextWithEntities.CONSTRUCTOR_ID) }
         hash = readLong()
     }
 
@@ -82,8 +83,8 @@ class TLFactCheck() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(country, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(text, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, country, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, text, 2) { it.computeSerializedSize() }
         size += SIZE_INT64
         return size
     }

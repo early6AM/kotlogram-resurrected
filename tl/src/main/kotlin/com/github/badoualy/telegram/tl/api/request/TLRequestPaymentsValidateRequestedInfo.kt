@@ -53,6 +53,7 @@ class TLRequestPaymentsValidateRequestedInfo() : TLMethod<TLValidatedRequestedIn
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(save, 1)
     }
 
@@ -68,7 +69,7 @@ class TLRequestPaymentsValidateRequestedInfo() : TLMethod<TLValidatedRequestedIn
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        save = isMask(1)
+        save = isMask(1, 1)
         invoice = readTLObject<TLAbsInputInvoice>()
         info = readTLObject<TLPaymentRequestedInfo>(TLPaymentRequestedInfo::class, TLPaymentRequestedInfo.CONSTRUCTOR_ID)
     }

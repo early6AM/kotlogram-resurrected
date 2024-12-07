@@ -51,6 +51,7 @@ class TLStoryItemSkipped() : TLAbsStoryItem() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(closeFriends, 256)
     }
 
@@ -67,7 +68,7 @@ class TLStoryItemSkipped() : TLAbsStoryItem() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        closeFriends = isMask(256)
+        closeFriends = isMask(1, 256)
         id = readInt()
         date = readInt()
         expireDate = readInt()

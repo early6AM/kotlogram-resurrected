@@ -82,6 +82,7 @@ class TLRequestMessagesEditMessage() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(noWebpage, 2)
         updateFlags(invertMedia, 65536)
         updateFlags(message, 2048)
@@ -99,27 +100,27 @@ class TLRequestMessagesEditMessage() : TLMethod<TLAbsUpdates>() {
         writeInt(_flags)
         writeTLObject(peer)
         writeInt(id)
-        doIfMask(message, 2048) { writeString(it) }
-        doIfMask(media, 16384) { writeTLObject(it) }
-        doIfMask(replyMarkup, 4) { writeTLObject(it) }
-        doIfMask(entities, 8) { writeTLVector(it) }
-        doIfMask(scheduleDate, 32768) { writeInt(it) }
-        doIfMask(quickReplyShortcutId, 131072) { writeInt(it) }
+        doIfMask(1, message, 2048) { writeString(it) }
+        doIfMask(1, media, 16384) { writeTLObject(it) }
+        doIfMask(1, replyMarkup, 4) { writeTLObject(it) }
+        doIfMask(1, entities, 8) { writeTLVector(it) }
+        doIfMask(1, scheduleDate, 32768) { writeInt(it) }
+        doIfMask(1, quickReplyShortcutId, 131072) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        noWebpage = isMask(2)
-        invertMedia = isMask(65536)
+        noWebpage = isMask(1, 2)
+        invertMedia = isMask(1, 65536)
         peer = readTLObject<TLAbsInputPeer>()
         id = readInt()
-        message = readIfMask(2048) { readString() }
-        media = readIfMask(16384) { readTLObject<TLAbsInputMedia>() }
-        replyMarkup = readIfMask(4) { readTLObject<TLAbsReplyMarkup>() }
-        entities = readIfMask(8) { readTLVector<TLAbsMessageEntity>() }
-        scheduleDate = readIfMask(32768) { readInt() }
-        quickReplyShortcutId = readIfMask(131072) { readInt() }
+        message = readIfMask(1, 2048) { readString() }
+        media = readIfMask(1, 16384) { readTLObject<TLAbsInputMedia>() }
+        replyMarkup = readIfMask(1, 4) { readTLObject<TLAbsReplyMarkup>() }
+        entities = readIfMask(1, 8) { readTLVector<TLAbsMessageEntity>() }
+        scheduleDate = readIfMask(1, 32768) { readInt() }
+        quickReplyShortcutId = readIfMask(1, 131072) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -129,12 +130,12 @@ class TLRequestMessagesEditMessage() : TLMethod<TLAbsUpdates>() {
         size += SIZE_INT32
         size += peer.computeSerializedSize()
         size += SIZE_INT32
-        size += getIntIfMask(message, 2048) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(media, 16384) { it.computeSerializedSize() }
-        size += getIntIfMask(replyMarkup, 4) { it.computeSerializedSize() }
-        size += getIntIfMask(entities, 8) { it.computeSerializedSize() }
-        size += getIntIfMask(scheduleDate, 32768) { SIZE_INT32 }
-        size += getIntIfMask(quickReplyShortcutId, 131072) { SIZE_INT32 }
+        size += getIntIfMask(1, message, 2048) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, media, 16384) { it.computeSerializedSize() }
+        size += getIntIfMask(1, replyMarkup, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, entities, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, scheduleDate, 32768) { SIZE_INT32 }
+        size += getIntIfMask(1, quickReplyShortcutId, 131072) { SIZE_INT32 }
         return size
     }
 

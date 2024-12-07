@@ -54,6 +54,7 @@ class TLRequestAccountUploadWallPaper() : TLMethod<TLAbsWallPaper>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(forChat, 1)
     }
 
@@ -70,7 +71,7 @@ class TLRequestAccountUploadWallPaper() : TLMethod<TLAbsWallPaper>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        forChat = isMask(1)
+        forChat = isMask(1, 1)
         file = readTLObject<TLAbsInputFile>()
         mimeType = readString()
         settings = readTLObject<TLWallPaperSettings>(TLWallPaperSettings::class, TLWallPaperSettings.CONSTRUCTOR_ID)

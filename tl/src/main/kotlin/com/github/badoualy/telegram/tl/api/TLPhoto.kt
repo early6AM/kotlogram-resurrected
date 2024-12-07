@@ -70,6 +70,7 @@ class TLPhoto() : TLAbsPhoto() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(hasStickers, 1)
         updateFlags(videoSizes, 2)
     }
@@ -84,20 +85,20 @@ class TLPhoto() : TLAbsPhoto() {
         writeTLBytes(fileReference)
         writeInt(date)
         writeTLVector(sizes)
-        doIfMask(videoSizes, 2) { writeTLVector(it) }
+        doIfMask(1, videoSizes, 2) { writeTLVector(it) }
         writeInt(dcId)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        hasStickers = isMask(1)
+        hasStickers = isMask(1, 1)
         id = readLong()
         accessHash = readLong()
         fileReference = readTLBytes()
         date = readInt()
         sizes = readTLVector<TLAbsPhotoSize>()
-        videoSizes = readIfMask(2) { readTLVector<TLAbsVideoSize>() }
+        videoSizes = readIfMask(1, 2) { readTLVector<TLAbsVideoSize>() }
         dcId = readInt()
     }
 
@@ -111,7 +112,7 @@ class TLPhoto() : TLAbsPhoto() {
         size += computeTLBytesSerializedSize(fileReference)
         size += SIZE_INT32
         size += sizes.computeSerializedSize()
-        size += getIntIfMask(videoSizes, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, videoSizes, 2) { it.computeSerializedSize() }
         size += SIZE_INT32
         return size
     }

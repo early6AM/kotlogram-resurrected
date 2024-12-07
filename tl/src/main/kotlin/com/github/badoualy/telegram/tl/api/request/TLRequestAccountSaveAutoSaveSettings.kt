@@ -59,6 +59,7 @@ class TLRequestAccountSaveAutoSaveSettings() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(users, 1)
         updateFlags(chats, 2)
         updateFlags(broadcasts, 4)
@@ -70,17 +71,17 @@ class TLRequestAccountSaveAutoSaveSettings() : TLMethod<TLBool>() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(peer, 8) { writeTLObject(it) }
+        doIfMask(1, peer, 8) { writeTLObject(it) }
         writeTLObject(settings)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        users = isMask(1)
-        chats = isMask(2)
-        broadcasts = isMask(4)
-        peer = readIfMask(8) { readTLObject<TLAbsInputPeer>() }
+        users = isMask(1, 1)
+        chats = isMask(1, 2)
+        broadcasts = isMask(1, 4)
+        peer = readIfMask(1, 8) { readTLObject<TLAbsInputPeer>() }
         settings = readTLObject<TLAutoSaveSettings>(TLAutoSaveSettings::class, TLAutoSaveSettings.CONSTRUCTOR_ID)
     }
 
@@ -89,7 +90,7 @@ class TLRequestAccountSaveAutoSaveSettings() : TLMethod<TLBool>() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(peer, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, peer, 8) { it.computeSerializedSize() }
         size += settings.computeSerializedSize()
         return size
     }

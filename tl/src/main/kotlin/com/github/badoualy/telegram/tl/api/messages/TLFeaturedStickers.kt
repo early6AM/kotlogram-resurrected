@@ -59,6 +59,7 @@ class TLFeaturedStickers() : TLAbsFeaturedStickers() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(premium, 1)
     }
 
@@ -76,7 +77,7 @@ class TLFeaturedStickers() : TLAbsFeaturedStickers() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        premium = isMask(1)
+        premium = isMask(1, 1)
         hash = readLong()
         count = readInt()
         sets = readTLVector<TLAbsStickerSetCovered>()

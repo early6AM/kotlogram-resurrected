@@ -53,6 +53,7 @@ class TLBoostsList() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(nextOffset, 1)
     }
 
@@ -63,7 +64,7 @@ class TLBoostsList() : TLObject() {
         writeInt(_flags)
         writeInt(count)
         writeTLVector(boosts)
-        doIfMask(nextOffset, 1) { writeString(it) }
+        doIfMask(1, nextOffset, 1) { writeString(it) }
         writeTLVector(users)
     }
 
@@ -72,7 +73,7 @@ class TLBoostsList() : TLObject() {
         _flags = readInt()
         count = readInt()
         boosts = readTLVector<TLBoost>()
-        nextOffset = readIfMask(1) { readString() }
+        nextOffset = readIfMask(1, 1) { readString() }
         users = readTLVector<TLAbsUser>()
     }
 
@@ -83,7 +84,7 @@ class TLBoostsList() : TLObject() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += boosts.computeSerializedSize()
-        size += getIntIfMask(nextOffset, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, nextOffset, 1) { computeTLStringSerializedSize(it) }
         size += users.computeSerializedSize()
         return size
     }

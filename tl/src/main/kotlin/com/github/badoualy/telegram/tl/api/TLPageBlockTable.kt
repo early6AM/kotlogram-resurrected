@@ -53,6 +53,7 @@ class TLPageBlockTable() : TLAbsPageBlock() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(bordered, 1)
         updateFlags(striped, 2)
     }
@@ -69,8 +70,8 @@ class TLPageBlockTable() : TLAbsPageBlock() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        bordered = isMask(1)
-        striped = isMask(2)
+        bordered = isMask(1, 1)
+        striped = isMask(1, 2)
         title = readTLObject<TLAbsRichText>()
         rows = readTLVector<TLPageTableRow>()
     }

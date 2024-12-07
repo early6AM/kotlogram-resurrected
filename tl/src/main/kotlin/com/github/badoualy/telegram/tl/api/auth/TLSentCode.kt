@@ -49,6 +49,7 @@ class TLSentCode() : TLAbsSentCode() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(nextType, 2)
         updateFlags(timeout, 4)
     }
@@ -60,8 +61,8 @@ class TLSentCode() : TLAbsSentCode() {
         writeInt(_flags)
         writeTLObject(type)
         writeString(phoneCodeHash)
-        doIfMask(nextType, 2) { writeTLObject(it) }
-        doIfMask(timeout, 4) { writeInt(it) }
+        doIfMask(1, nextType, 2) { writeTLObject(it) }
+        doIfMask(1, timeout, 4) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -69,8 +70,8 @@ class TLSentCode() : TLAbsSentCode() {
         _flags = readInt()
         type = readTLObject<TLAbsSentCodeType>()
         phoneCodeHash = readString()
-        nextType = readIfMask(2) { readTLObject<TLAbsCodeType>() }
-        timeout = readIfMask(4) { readInt() }
+        nextType = readIfMask(1, 2) { readTLObject<TLAbsCodeType>() }
+        timeout = readIfMask(1, 4) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -80,8 +81,8 @@ class TLSentCode() : TLAbsSentCode() {
         size += SIZE_INT32
         size += type.computeSerializedSize()
         size += computeTLStringSerializedSize(phoneCodeHash)
-        size += getIntIfMask(nextType, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(timeout, 4) { SIZE_INT32 }
+        size += getIntIfMask(1, nextType, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, timeout, 4) { SIZE_INT32 }
         return size
     }
 

@@ -75,6 +75,7 @@ class TLRequestMessagesGetChatInviteImporters() : TLMethod<TLChatInviteImporters
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(requested, 1)
         updateFlags(subscriptionExpired, 8)
         updateFlags(link, 2)
@@ -87,8 +88,8 @@ class TLRequestMessagesGetChatInviteImporters() : TLMethod<TLChatInviteImporters
 
         writeInt(_flags)
         writeTLObject(peer)
-        doIfMask(link, 2) { writeString(it) }
-        doIfMask(q, 4) { writeString(it) }
+        doIfMask(1, link, 2) { writeString(it) }
+        doIfMask(1, q, 4) { writeString(it) }
         writeInt(offsetDate)
         writeTLObject(offsetUser)
         writeInt(limit)
@@ -97,11 +98,11 @@ class TLRequestMessagesGetChatInviteImporters() : TLMethod<TLChatInviteImporters
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        requested = isMask(1)
-        subscriptionExpired = isMask(8)
+        requested = isMask(1, 1)
+        subscriptionExpired = isMask(1, 8)
         peer = readTLObject<TLAbsInputPeer>()
-        link = readIfMask(2) { readString() }
-        q = readIfMask(4) { readString() }
+        link = readIfMask(1, 2) { readString() }
+        q = readIfMask(1, 4) { readString() }
         offsetDate = readInt()
         offsetUser = readTLObject<TLAbsInputUser>()
         limit = readInt()
@@ -113,8 +114,8 @@ class TLRequestMessagesGetChatInviteImporters() : TLMethod<TLChatInviteImporters
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += peer.computeSerializedSize()
-        size += getIntIfMask(link, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(q, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, link, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, q, 4) { computeTLStringSerializedSize(it) }
         size += SIZE_INT32
         size += offsetUser.computeSerializedSize()
         size += SIZE_INT32

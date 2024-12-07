@@ -65,6 +65,7 @@ class TLUpdateServiceNotification() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(popup, 1)
         updateFlags(invertMedia, 4)
         updateFlags(inboxDate, 2)
@@ -75,7 +76,7 @@ class TLUpdateServiceNotification() : TLAbsUpdate() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(inboxDate, 2) { writeInt(it) }
+        doIfMask(1, inboxDate, 2) { writeInt(it) }
         writeString(type)
         writeString(message)
         writeTLObject(media)
@@ -85,9 +86,9 @@ class TLUpdateServiceNotification() : TLAbsUpdate() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        popup = isMask(1)
-        invertMedia = isMask(4)
-        inboxDate = readIfMask(2) { readInt() }
+        popup = isMask(1, 1)
+        invertMedia = isMask(1, 4)
+        inboxDate = readIfMask(1, 2) { readInt() }
         type = readString()
         message = readString()
         media = readTLObject<TLAbsMessageMedia>()
@@ -99,7 +100,7 @@ class TLUpdateServiceNotification() : TLAbsUpdate() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(inboxDate, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, inboxDate, 2) { SIZE_INT32 }
         size += computeTLStringSerializedSize(type)
         size += computeTLStringSerializedSize(message)
         size += media.computeSerializedSize()

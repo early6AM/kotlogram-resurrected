@@ -40,6 +40,7 @@ class TLChannelAdminLogEventActionParticipantJoinByInvite() : TLAbsChannelAdminL
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(viaChatlist, 1)
     }
 
@@ -54,7 +55,7 @@ class TLChannelAdminLogEventActionParticipantJoinByInvite() : TLAbsChannelAdminL
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        viaChatlist = isMask(1)
+        viaChatlist = isMask(1, 1)
         invite = readTLObject<TLAbsExportedChatInvite>()
     }
 

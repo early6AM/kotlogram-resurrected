@@ -78,6 +78,7 @@ class TLPaymentReceiptStars() : TLAbsPaymentReceipt() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(photo, 4)
     }
 
@@ -90,7 +91,7 @@ class TLPaymentReceiptStars() : TLAbsPaymentReceipt() {
         writeLong(botId)
         writeString(title)
         writeString(description)
-        doIfMask(photo, 4) { writeTLObject(it) }
+        doIfMask(1, photo, 4) { writeTLObject(it) }
         writeTLObject(invoice)
         writeString(currency)
         writeLong(totalAmount)
@@ -105,7 +106,7 @@ class TLPaymentReceiptStars() : TLAbsPaymentReceipt() {
         botId = readLong()
         title = readString()
         description = readString()
-        photo = readIfMask(4) { readTLObject<TLAbsWebDocument>() }
+        photo = readIfMask(1, 4) { readTLObject<TLAbsWebDocument>() }
         invoice = readTLObject<TLInvoice>(TLInvoice::class, TLInvoice.CONSTRUCTOR_ID)
         currency = readString()
         totalAmount = readLong()
@@ -122,7 +123,7 @@ class TLPaymentReceiptStars() : TLAbsPaymentReceipt() {
         size += SIZE_INT64
         size += computeTLStringSerializedSize(title)
         size += computeTLStringSerializedSize(description)
-        size += getIntIfMask(photo, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, photo, 4) { it.computeSerializedSize() }
         size += invoice.computeSerializedSize()
         size += computeTLStringSerializedSize(currency)
         size += SIZE_INT64

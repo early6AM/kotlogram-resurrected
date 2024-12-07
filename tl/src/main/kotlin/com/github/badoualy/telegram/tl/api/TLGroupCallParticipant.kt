@@ -122,6 +122,7 @@ class TLGroupCallParticipant() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(muted, 1)
         updateFlags(left, 2)
         updateFlags(canSelfUnmute, 4)
@@ -147,37 +148,37 @@ class TLGroupCallParticipant() : TLObject() {
         writeInt(_flags)
         writeTLObject(peer)
         writeInt(date)
-        doIfMask(activeDate, 8) { writeInt(it) }
+        doIfMask(1, activeDate, 8) { writeInt(it) }
         writeInt(source)
-        doIfMask(volume, 128) { writeInt(it) }
-        doIfMask(about, 2048) { writeString(it) }
-        doIfMask(raiseHandRating, 8192) { writeLong(it) }
-        doIfMask(video, 64) { writeTLObject(it) }
-        doIfMask(presentation, 16384) { writeTLObject(it) }
+        doIfMask(1, volume, 128) { writeInt(it) }
+        doIfMask(1, about, 2048) { writeString(it) }
+        doIfMask(1, raiseHandRating, 8192) { writeLong(it) }
+        doIfMask(1, video, 64) { writeTLObject(it) }
+        doIfMask(1, presentation, 16384) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        muted = isMask(1)
-        left = isMask(2)
-        canSelfUnmute = isMask(4)
-        justJoined = isMask(16)
-        versioned = isMask(32)
-        min = isMask(256)
-        mutedByYou = isMask(512)
-        volumeByAdmin = isMask(1024)
-        self = isMask(4096)
-        videoJoined = isMask(32768)
+        muted = isMask(1, 1)
+        left = isMask(1, 2)
+        canSelfUnmute = isMask(1, 4)
+        justJoined = isMask(1, 16)
+        versioned = isMask(1, 32)
+        min = isMask(1, 256)
+        mutedByYou = isMask(1, 512)
+        volumeByAdmin = isMask(1, 1024)
+        self = isMask(1, 4096)
+        videoJoined = isMask(1, 32768)
         peer = readTLObject<TLAbsPeer>()
         date = readInt()
-        activeDate = readIfMask(8) { readInt() }
+        activeDate = readIfMask(1, 8) { readInt() }
         source = readInt()
-        volume = readIfMask(128) { readInt() }
-        about = readIfMask(2048) { readString() }
-        raiseHandRating = readIfMask(8192) { readLong() }
-        video = readIfMask(64) { readTLObject<TLGroupCallParticipantVideo>(TLGroupCallParticipantVideo::class, TLGroupCallParticipantVideo.CONSTRUCTOR_ID) }
-        presentation = readIfMask(16384) { readTLObject<TLGroupCallParticipantVideo>(TLGroupCallParticipantVideo::class, TLGroupCallParticipantVideo.CONSTRUCTOR_ID) }
+        volume = readIfMask(1, 128) { readInt() }
+        about = readIfMask(1, 2048) { readString() }
+        raiseHandRating = readIfMask(1, 8192) { readLong() }
+        video = readIfMask(1, 64) { readTLObject<TLGroupCallParticipantVideo>(TLGroupCallParticipantVideo::class, TLGroupCallParticipantVideo.CONSTRUCTOR_ID) }
+        presentation = readIfMask(1, 16384) { readTLObject<TLGroupCallParticipantVideo>(TLGroupCallParticipantVideo::class, TLGroupCallParticipantVideo.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -187,13 +188,13 @@ class TLGroupCallParticipant() : TLObject() {
         size += SIZE_INT32
         size += peer.computeSerializedSize()
         size += SIZE_INT32
-        size += getIntIfMask(activeDate, 8) { SIZE_INT32 }
+        size += getIntIfMask(1, activeDate, 8) { SIZE_INT32 }
         size += SIZE_INT32
-        size += getIntIfMask(volume, 128) { SIZE_INT32 }
-        size += getIntIfMask(about, 2048) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(raiseHandRating, 8192) { SIZE_INT64 }
-        size += getIntIfMask(video, 64) { it.computeSerializedSize() }
-        size += getIntIfMask(presentation, 16384) { it.computeSerializedSize() }
+        size += getIntIfMask(1, volume, 128) { SIZE_INT32 }
+        size += getIntIfMask(1, about, 2048) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, raiseHandRating, 8192) { SIZE_INT64 }
+        size += getIntIfMask(1, video, 64) { it.computeSerializedSize() }
+        size += getIntIfMask(1, presentation, 16384) { it.computeSerializedSize() }
         return size
     }
 

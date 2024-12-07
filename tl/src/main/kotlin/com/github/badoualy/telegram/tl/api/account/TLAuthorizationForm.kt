@@ -59,6 +59,7 @@ class TLAuthorizationForm() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(privacyPolicyUrl, 1)
     }
 
@@ -71,7 +72,7 @@ class TLAuthorizationForm() : TLObject() {
         writeTLVector(values)
         writeTLVector(errors)
         writeTLVector(users)
-        doIfMask(privacyPolicyUrl, 1) { writeString(it) }
+        doIfMask(1, privacyPolicyUrl, 1) { writeString(it) }
     }
 
     @Throws(IOException::class)
@@ -81,7 +82,7 @@ class TLAuthorizationForm() : TLObject() {
         values = readTLVector<TLSecureValue>()
         errors = readTLVector<TLAbsSecureValueError>()
         users = readTLVector<TLAbsUser>()
-        privacyPolicyUrl = readIfMask(1) { readString() }
+        privacyPolicyUrl = readIfMask(1, 1) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -93,7 +94,7 @@ class TLAuthorizationForm() : TLObject() {
         size += values.computeSerializedSize()
         size += errors.computeSerializedSize()
         size += users.computeSerializedSize()
-        size += getIntIfMask(privacyPolicyUrl, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, privacyPolicyUrl, 1) { computeTLStringSerializedSize(it) }
         return size
     }
 

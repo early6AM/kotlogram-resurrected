@@ -45,6 +45,7 @@ class TLMediaAreaGeoPoint() : TLAbsMediaArea() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(address, 1)
     }
 
@@ -55,7 +56,7 @@ class TLMediaAreaGeoPoint() : TLAbsMediaArea() {
         writeInt(_flags)
         writeTLObject(coordinates)
         writeTLObject(geo)
-        doIfMask(address, 1) { writeTLObject(it) }
+        doIfMask(1, address, 1) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
@@ -63,7 +64,7 @@ class TLMediaAreaGeoPoint() : TLAbsMediaArea() {
         _flags = readInt()
         coordinates = readTLObject<TLMediaAreaCoordinates>(TLMediaAreaCoordinates::class, TLMediaAreaCoordinates.CONSTRUCTOR_ID)
         geo = readTLObject<TLAbsGeoPoint>()
-        address = readIfMask(1) { readTLObject<TLGeoPointAddress>(TLGeoPointAddress::class, TLGeoPointAddress.CONSTRUCTOR_ID) }
+        address = readIfMask(1, 1) { readTLObject<TLGeoPointAddress>(TLGeoPointAddress::class, TLGeoPointAddress.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -73,7 +74,7 @@ class TLMediaAreaGeoPoint() : TLAbsMediaArea() {
         size += SIZE_INT32
         size += coordinates.computeSerializedSize()
         size += geo.computeSerializedSize()
-        size += getIntIfMask(address, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, address, 1) { it.computeSerializedSize() }
         return size
     }
 

@@ -115,6 +115,7 @@ class TLGroupCall() : TLAbsGroupCall() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(joinMuted, 2)
         updateFlags(canChangeJoinMuted, 4)
         updateFlags(joinDateAsc, 64)
@@ -138,11 +139,11 @@ class TLGroupCall() : TLAbsGroupCall() {
         writeLong(id)
         writeLong(accessHash)
         writeInt(participantsCount)
-        doIfMask(title, 8) { writeString(it) }
-        doIfMask(streamDcId, 16) { writeInt(it) }
-        doIfMask(recordStartDate, 32) { writeInt(it) }
-        doIfMask(scheduleDate, 128) { writeInt(it) }
-        doIfMask(unmutedVideoCount, 1024) { writeInt(it) }
+        doIfMask(1, title, 8) { writeString(it) }
+        doIfMask(1, streamDcId, 16) { writeInt(it) }
+        doIfMask(1, recordStartDate, 32) { writeInt(it) }
+        doIfMask(1, scheduleDate, 128) { writeInt(it) }
+        doIfMask(1, unmutedVideoCount, 1024) { writeInt(it) }
         writeInt(unmutedVideoLimit)
         writeInt(version)
     }
@@ -150,22 +151,22 @@ class TLGroupCall() : TLAbsGroupCall() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        joinMuted = isMask(2)
-        canChangeJoinMuted = isMask(4)
-        joinDateAsc = isMask(64)
-        scheduleStartSubscribed = isMask(256)
-        canStartVideo = isMask(512)
-        recordVideoActive = isMask(2048)
-        rtmpStream = isMask(4096)
-        listenersHidden = isMask(8192)
+        joinMuted = isMask(1, 2)
+        canChangeJoinMuted = isMask(1, 4)
+        joinDateAsc = isMask(1, 64)
+        scheduleStartSubscribed = isMask(1, 256)
+        canStartVideo = isMask(1, 512)
+        recordVideoActive = isMask(1, 2048)
+        rtmpStream = isMask(1, 4096)
+        listenersHidden = isMask(1, 8192)
         id = readLong()
         accessHash = readLong()
         participantsCount = readInt()
-        title = readIfMask(8) { readString() }
-        streamDcId = readIfMask(16) { readInt() }
-        recordStartDate = readIfMask(32) { readInt() }
-        scheduleDate = readIfMask(128) { readInt() }
-        unmutedVideoCount = readIfMask(1024) { readInt() }
+        title = readIfMask(1, 8) { readString() }
+        streamDcId = readIfMask(1, 16) { readInt() }
+        recordStartDate = readIfMask(1, 32) { readInt() }
+        scheduleDate = readIfMask(1, 128) { readInt() }
+        unmutedVideoCount = readIfMask(1, 1024) { readInt() }
         unmutedVideoLimit = readInt()
         version = readInt()
     }
@@ -178,11 +179,11 @@ class TLGroupCall() : TLAbsGroupCall() {
         size += SIZE_INT64
         size += SIZE_INT64
         size += SIZE_INT32
-        size += getIntIfMask(title, 8) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(streamDcId, 16) { SIZE_INT32 }
-        size += getIntIfMask(recordStartDate, 32) { SIZE_INT32 }
-        size += getIntIfMask(scheduleDate, 128) { SIZE_INT32 }
-        size += getIntIfMask(unmutedVideoCount, 1024) { SIZE_INT32 }
+        size += getIntIfMask(1, title, 8) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, streamDcId, 16) { SIZE_INT32 }
+        size += getIntIfMask(1, recordStartDate, 32) { SIZE_INT32 }
+        size += getIntIfMask(1, scheduleDate, 128) { SIZE_INT32 }
+        size += getIntIfMask(1, unmutedVideoCount, 1024) { SIZE_INT32 }
         size += SIZE_INT32
         size += SIZE_INT32
         return size

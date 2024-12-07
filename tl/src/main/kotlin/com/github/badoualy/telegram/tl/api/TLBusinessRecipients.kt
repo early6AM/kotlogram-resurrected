@@ -65,6 +65,7 @@ class TLBusinessRecipients() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(existingChats, 1)
         updateFlags(newChats, 2)
         updateFlags(contacts, 4)
@@ -78,18 +79,18 @@ class TLBusinessRecipients() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(users, 16) { writeTLVector(it) }
+        doIfMask(1, users, 16) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        existingChats = isMask(1)
-        newChats = isMask(2)
-        contacts = isMask(4)
-        nonContacts = isMask(8)
-        excludeSelected = isMask(32)
-        users = readIfMask(16) { readTLLongVector() }
+        existingChats = isMask(1, 1)
+        newChats = isMask(1, 2)
+        contacts = isMask(1, 4)
+        nonContacts = isMask(1, 8)
+        excludeSelected = isMask(1, 32)
+        users = readIfMask(1, 16) { readTLLongVector() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -97,7 +98,7 @@ class TLBusinessRecipients() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(users, 16) { it.computeSerializedSize() }
+        size += getIntIfMask(1, users, 16) { it.computeSerializedSize() }
         return size
     }
 

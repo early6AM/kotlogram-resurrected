@@ -72,6 +72,7 @@ class TLChannelMessages() : TLAbsMessages() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(inexact, 2)
         updateFlags(offsetIdOffset, 4)
     }
@@ -83,7 +84,7 @@ class TLChannelMessages() : TLAbsMessages() {
         writeInt(_flags)
         writeInt(pts)
         writeInt(count)
-        doIfMask(offsetIdOffset, 4) { writeInt(it) }
+        doIfMask(1, offsetIdOffset, 4) { writeInt(it) }
         writeTLVector(messages)
         writeTLVector(topics)
         writeTLVector(chats)
@@ -93,10 +94,10 @@ class TLChannelMessages() : TLAbsMessages() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        inexact = isMask(2)
+        inexact = isMask(1, 2)
         pts = readInt()
         count = readInt()
-        offsetIdOffset = readIfMask(4) { readInt() }
+        offsetIdOffset = readIfMask(1, 4) { readInt() }
         messages = readTLVector<TLAbsMessage>()
         topics = readTLVector<TLAbsForumTopic>()
         chats = readTLVector<TLAbsChat>()
@@ -110,7 +111,7 @@ class TLChannelMessages() : TLAbsMessages() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(offsetIdOffset, 4) { SIZE_INT32 }
+        size += getIntIfMask(1, offsetIdOffset, 4) { SIZE_INT32 }
         size += messages.computeSerializedSize()
         size += topics.computeSerializedSize()
         size += chats.computeSerializedSize()

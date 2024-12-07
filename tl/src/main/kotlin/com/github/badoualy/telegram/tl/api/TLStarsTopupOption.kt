@@ -57,6 +57,7 @@ class TLStarsTopupOption() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(extended, 2)
         updateFlags(storeProduct, 1)
     }
@@ -67,7 +68,7 @@ class TLStarsTopupOption() : TLObject() {
 
         writeInt(_flags)
         writeLong(stars)
-        doIfMask(storeProduct, 1) { writeString(it) }
+        doIfMask(1, storeProduct, 1) { writeString(it) }
         writeString(currency)
         writeLong(amount)
     }
@@ -75,9 +76,9 @@ class TLStarsTopupOption() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        extended = isMask(2)
+        extended = isMask(1, 2)
         stars = readLong()
-        storeProduct = readIfMask(1) { readString() }
+        storeProduct = readIfMask(1, 1) { readString() }
         currency = readString()
         amount = readLong()
     }
@@ -88,7 +89,7 @@ class TLStarsTopupOption() : TLObject() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT64
-        size += getIntIfMask(storeProduct, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, storeProduct, 1) { computeTLStringSerializedSize(it) }
         size += computeTLStringSerializedSize(currency)
         size += SIZE_INT64
         return size

@@ -48,6 +48,7 @@ class TLRequestMessagesSetBotShippingResults() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(error, 1)
         updateFlags(shippingOptions, 2)
     }
@@ -58,16 +59,16 @@ class TLRequestMessagesSetBotShippingResults() : TLMethod<TLBool>() {
 
         writeInt(_flags)
         writeLong(queryId)
-        doIfMask(error, 1) { writeString(it) }
-        doIfMask(shippingOptions, 2) { writeTLVector(it) }
+        doIfMask(1, error, 1) { writeString(it) }
+        doIfMask(1, shippingOptions, 2) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         queryId = readLong()
-        error = readIfMask(1) { readString() }
-        shippingOptions = readIfMask(2) { readTLVector<TLShippingOption>() }
+        error = readIfMask(1, 1) { readString() }
+        shippingOptions = readIfMask(1, 2) { readTLVector<TLShippingOption>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -76,8 +77,8 @@ class TLRequestMessagesSetBotShippingResults() : TLMethod<TLBool>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT64
-        size += getIntIfMask(error, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(shippingOptions, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, error, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, shippingOptions, 2) { it.computeSerializedSize() }
         return size
     }
 

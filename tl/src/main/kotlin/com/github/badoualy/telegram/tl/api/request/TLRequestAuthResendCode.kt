@@ -45,6 +45,7 @@ class TLRequestAuthResendCode() : TLMethod<TLAbsSentCode>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(reason, 1)
     }
 
@@ -55,7 +56,7 @@ class TLRequestAuthResendCode() : TLMethod<TLAbsSentCode>() {
         writeInt(_flags)
         writeString(phoneNumber)
         writeString(phoneCodeHash)
-        doIfMask(reason, 1) { writeString(it) }
+        doIfMask(1, reason, 1) { writeString(it) }
     }
 
     @Throws(IOException::class)
@@ -63,7 +64,7 @@ class TLRequestAuthResendCode() : TLMethod<TLAbsSentCode>() {
         _flags = readInt()
         phoneNumber = readString()
         phoneCodeHash = readString()
-        reason = readIfMask(1) { readString() }
+        reason = readIfMask(1, 1) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -73,7 +74,7 @@ class TLRequestAuthResendCode() : TLMethod<TLAbsSentCode>() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(phoneNumber)
         size += computeTLStringSerializedSize(phoneCodeHash)
-        size += getIntIfMask(reason, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, reason, 1) { computeTLStringSerializedSize(it) }
         return size
     }
 

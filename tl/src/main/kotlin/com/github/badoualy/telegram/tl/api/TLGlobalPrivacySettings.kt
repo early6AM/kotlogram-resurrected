@@ -60,6 +60,7 @@ class TLGlobalPrivacySettings() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(archiveAndMuteNewNoncontactPeers, 1)
         updateFlags(keepArchivedUnmuted, 2)
         updateFlags(keepArchivedFolders, 4)
@@ -77,11 +78,11 @@ class TLGlobalPrivacySettings() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        archiveAndMuteNewNoncontactPeers = isMask(1)
-        keepArchivedUnmuted = isMask(2)
-        keepArchivedFolders = isMask(4)
-        hideReadMarks = isMask(8)
-        newNoncontactPeersRequirePremium = isMask(16)
+        archiveAndMuteNewNoncontactPeers = isMask(1, 1)
+        keepArchivedUnmuted = isMask(1, 2)
+        keepArchivedFolders = isMask(1, 4)
+        hideReadMarks = isMask(1, 8)
+        newNoncontactPeersRequirePremium = isMask(1, 16)
     }
 
     override fun computeSerializedSize(): Int {

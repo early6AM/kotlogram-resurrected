@@ -37,6 +37,7 @@ class TLRequestSmsjobsUpdateSettings() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(allowInternational, 1)
     }
 
@@ -50,7 +51,7 @@ class TLRequestSmsjobsUpdateSettings() : TLMethod<TLBool>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        allowInternational = isMask(1)
+        allowInternational = isMask(1, 1)
     }
 
     override fun computeSerializedSize(): Int {

@@ -42,6 +42,7 @@ class TLSavedInfo() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(hasSavedCredentials, 2)
         updateFlags(savedInfo, 1)
     }
@@ -51,14 +52,14 @@ class TLSavedInfo() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(savedInfo, 1) { writeTLObject(it) }
+        doIfMask(1, savedInfo, 1) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        hasSavedCredentials = isMask(2)
-        savedInfo = readIfMask(1) { readTLObject<TLPaymentRequestedInfo>(TLPaymentRequestedInfo::class, TLPaymentRequestedInfo.CONSTRUCTOR_ID) }
+        hasSavedCredentials = isMask(1, 2)
+        savedInfo = readIfMask(1, 1) { readTLObject<TLPaymentRequestedInfo>(TLPaymentRequestedInfo::class, TLPaymentRequestedInfo.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -66,7 +67,7 @@ class TLSavedInfo() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(savedInfo, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, savedInfo, 1) { it.computeSerializedSize() }
         return size
     }
 

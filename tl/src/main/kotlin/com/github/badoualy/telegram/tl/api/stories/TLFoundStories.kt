@@ -58,6 +58,7 @@ class TLFoundStories() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(nextOffset, 1)
     }
 
@@ -68,7 +69,7 @@ class TLFoundStories() : TLObject() {
         writeInt(_flags)
         writeInt(count)
         writeTLVector(stories)
-        doIfMask(nextOffset, 1) { writeString(it) }
+        doIfMask(1, nextOffset, 1) { writeString(it) }
         writeTLVector(chats)
         writeTLVector(users)
     }
@@ -78,7 +79,7 @@ class TLFoundStories() : TLObject() {
         _flags = readInt()
         count = readInt()
         stories = readTLVector<TLFoundStory>()
-        nextOffset = readIfMask(1) { readString() }
+        nextOffset = readIfMask(1, 1) { readString() }
         chats = readTLVector<TLAbsChat>()
         users = readTLVector<TLAbsUser>()
     }
@@ -90,7 +91,7 @@ class TLFoundStories() : TLObject() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += stories.computeSerializedSize()
-        size += getIntIfMask(nextOffset, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, nextOffset, 1) { computeTLStringSerializedSize(it) }
         size += chats.computeSerializedSize()
         size += users.computeSerializedSize()
         return size

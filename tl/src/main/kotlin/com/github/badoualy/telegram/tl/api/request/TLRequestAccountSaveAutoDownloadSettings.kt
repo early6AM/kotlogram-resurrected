@@ -49,6 +49,7 @@ class TLRequestAccountSaveAutoDownloadSettings() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(low, 1)
         updateFlags(high, 2)
     }
@@ -64,8 +65,8 @@ class TLRequestAccountSaveAutoDownloadSettings() : TLMethod<TLBool>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        low = isMask(1)
-        high = isMask(2)
+        low = isMask(1, 1)
+        high = isMask(1, 2)
         settings = readTLObject<TLAutoDownloadSettings>(TLAutoDownloadSettings::class, TLAutoDownloadSettings.CONSTRUCTOR_ID)
     }
 

@@ -82,6 +82,7 @@ class TLLangPackLanguage() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(official, 1)
         updateFlags(rtl, 4)
         updateFlags(beta, 8)
@@ -96,7 +97,7 @@ class TLLangPackLanguage() : TLObject() {
         writeString(name)
         writeString(nativeName)
         writeString(langCode)
-        doIfMask(baseLangCode, 2) { writeString(it) }
+        doIfMask(1, baseLangCode, 2) { writeString(it) }
         writeString(pluralCode)
         writeInt(stringsCount)
         writeInt(translatedCount)
@@ -106,13 +107,13 @@ class TLLangPackLanguage() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        official = isMask(1)
-        rtl = isMask(4)
-        beta = isMask(8)
+        official = isMask(1, 1)
+        rtl = isMask(1, 4)
+        beta = isMask(1, 8)
         name = readString()
         nativeName = readString()
         langCode = readString()
-        baseLangCode = readIfMask(2) { readString() }
+        baseLangCode = readIfMask(1, 2) { readString() }
         pluralCode = readString()
         stringsCount = readInt()
         translatedCount = readInt()
@@ -127,7 +128,7 @@ class TLLangPackLanguage() : TLObject() {
         size += computeTLStringSerializedSize(name)
         size += computeTLStringSerializedSize(nativeName)
         size += computeTLStringSerializedSize(langCode)
-        size += getIntIfMask(baseLangCode, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, baseLangCode, 2) { computeTLStringSerializedSize(it) }
         size += computeTLStringSerializedSize(pluralCode)
         size += SIZE_INT32
         size += SIZE_INT32

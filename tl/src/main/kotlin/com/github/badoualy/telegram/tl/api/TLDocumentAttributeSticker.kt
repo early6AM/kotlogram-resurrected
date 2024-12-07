@@ -51,6 +51,7 @@ class TLDocumentAttributeSticker() : TLAbsDocumentAttribute() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(mask, 2)
         updateFlags(maskCoords, 1)
     }
@@ -62,16 +63,16 @@ class TLDocumentAttributeSticker() : TLAbsDocumentAttribute() {
         writeInt(_flags)
         writeString(alt)
         writeTLObject(stickerset)
-        doIfMask(maskCoords, 1) { writeTLObject(it) }
+        doIfMask(1, maskCoords, 1) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        mask = isMask(2)
+        mask = isMask(1, 2)
         alt = readString()
         stickerset = readTLObject<TLAbsInputStickerSet>()
-        maskCoords = readIfMask(1) { readTLObject<TLMaskCoords>(TLMaskCoords::class, TLMaskCoords.CONSTRUCTOR_ID) }
+        maskCoords = readIfMask(1, 1) { readTLObject<TLMaskCoords>(TLMaskCoords::class, TLMaskCoords.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -81,7 +82,7 @@ class TLDocumentAttributeSticker() : TLAbsDocumentAttribute() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(alt)
         size += stickerset.computeSerializedSize()
-        size += getIntIfMask(maskCoords, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, maskCoords, 1) { it.computeSerializedSize() }
         return size
     }
 

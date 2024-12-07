@@ -38,6 +38,7 @@ class TLUpdateDialogFilter() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(filter, 1)
     }
 
@@ -47,14 +48,14 @@ class TLUpdateDialogFilter() : TLAbsUpdate() {
 
         writeInt(_flags)
         writeInt(id)
-        doIfMask(filter, 1) { writeTLObject(it) }
+        doIfMask(1, filter, 1) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         id = readInt()
-        filter = readIfMask(1) { readTLObject<TLAbsDialogFilter>() }
+        filter = readIfMask(1, 1) { readTLObject<TLAbsDialogFilter>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -63,7 +64,7 @@ class TLUpdateDialogFilter() : TLAbsUpdate() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(filter, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, filter, 1) { it.computeSerializedSize() }
         return size
     }
 

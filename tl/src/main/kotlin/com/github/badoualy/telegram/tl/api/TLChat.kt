@@ -101,6 +101,7 @@ class TLChat() : TLAbsChat() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(creator, 1)
         updateFlags(left, 4)
         updateFlags(deactivated, 32)
@@ -123,29 +124,29 @@ class TLChat() : TLAbsChat() {
         writeInt(participantsCount)
         writeInt(date)
         writeInt(version)
-        doIfMask(migratedTo, 64) { writeTLObject(it) }
-        doIfMask(adminRights, 16384) { writeTLObject(it) }
-        doIfMask(defaultBannedRights, 262144) { writeTLObject(it) }
+        doIfMask(1, migratedTo, 64) { writeTLObject(it) }
+        doIfMask(1, adminRights, 16384) { writeTLObject(it) }
+        doIfMask(1, defaultBannedRights, 262144) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        creator = isMask(1)
-        left = isMask(4)
-        deactivated = isMask(32)
-        callActive = isMask(8388608)
-        callNotEmpty = isMask(16777216)
-        noforwards = isMask(33554432)
+        creator = isMask(1, 1)
+        left = isMask(1, 4)
+        deactivated = isMask(1, 32)
+        callActive = isMask(1, 8388608)
+        callNotEmpty = isMask(1, 16777216)
+        noforwards = isMask(1, 33554432)
         id = readLong()
         title = readString()
         photo = readTLObject<TLAbsChatPhoto>()
         participantsCount = readInt()
         date = readInt()
         version = readInt()
-        migratedTo = readIfMask(64) { readTLObject<TLAbsInputChannel>() }
-        adminRights = readIfMask(16384) { readTLObject<TLChatAdminRights>(TLChatAdminRights::class, TLChatAdminRights.CONSTRUCTOR_ID) }
-        defaultBannedRights = readIfMask(262144) { readTLObject<TLChatBannedRights>(TLChatBannedRights::class, TLChatBannedRights.CONSTRUCTOR_ID) }
+        migratedTo = readIfMask(1, 64) { readTLObject<TLAbsInputChannel>() }
+        adminRights = readIfMask(1, 16384) { readTLObject<TLChatAdminRights>(TLChatAdminRights::class, TLChatAdminRights.CONSTRUCTOR_ID) }
+        defaultBannedRights = readIfMask(1, 262144) { readTLObject<TLChatBannedRights>(TLChatBannedRights::class, TLChatBannedRights.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -159,9 +160,9 @@ class TLChat() : TLAbsChat() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(migratedTo, 64) { it.computeSerializedSize() }
-        size += getIntIfMask(adminRights, 16384) { it.computeSerializedSize() }
-        size += getIntIfMask(defaultBannedRights, 262144) { it.computeSerializedSize() }
+        size += getIntIfMask(1, migratedTo, 64) { it.computeSerializedSize() }
+        size += getIntIfMask(1, adminRights, 16384) { it.computeSerializedSize() }
+        size += getIntIfMask(1, defaultBannedRights, 262144) { it.computeSerializedSize() }
         return size
     }
 

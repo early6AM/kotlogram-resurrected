@@ -57,6 +57,7 @@ class TLCountry() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(hidden, 1)
         updateFlags(name, 2)
     }
@@ -68,17 +69,17 @@ class TLCountry() : TLObject() {
         writeInt(_flags)
         writeString(iso2)
         writeString(defaultName)
-        doIfMask(name, 2) { writeString(it) }
+        doIfMask(1, name, 2) { writeString(it) }
         writeTLVector(countryCodes)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        hidden = isMask(1)
+        hidden = isMask(1, 1)
         iso2 = readString()
         defaultName = readString()
-        name = readIfMask(2) { readString() }
+        name = readIfMask(1, 2) { readString() }
         countryCodes = readTLVector<TLCountryCode>()
     }
 
@@ -89,7 +90,7 @@ class TLCountry() : TLObject() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(iso2)
         size += computeTLStringSerializedSize(defaultName)
-        size += getIntIfMask(name, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, name, 2) { computeTLStringSerializedSize(it) }
         size += countryCodes.computeSerializedSize()
         return size
     }

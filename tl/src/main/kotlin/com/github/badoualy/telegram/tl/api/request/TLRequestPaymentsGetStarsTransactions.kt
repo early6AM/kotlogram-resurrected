@@ -66,6 +66,7 @@ class TLRequestPaymentsGetStarsTransactions() : TLMethod<TLStarsStatus>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(inbound, 1)
         updateFlags(outbound, 2)
         updateFlags(ascending, 4)
@@ -84,9 +85,9 @@ class TLRequestPaymentsGetStarsTransactions() : TLMethod<TLStarsStatus>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        inbound = isMask(1)
-        outbound = isMask(2)
-        ascending = isMask(4)
+        inbound = isMask(1, 1)
+        outbound = isMask(1, 2)
+        ascending = isMask(1, 4)
         peer = readTLObject<TLAbsInputPeer>()
         offset = readString()
         limit = readInt()

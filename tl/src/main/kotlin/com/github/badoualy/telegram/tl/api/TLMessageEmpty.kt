@@ -38,6 +38,7 @@ class TLMessageEmpty() : TLAbsMessage() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(peerId, 1)
     }
 
@@ -47,14 +48,14 @@ class TLMessageEmpty() : TLAbsMessage() {
 
         writeInt(_flags)
         writeInt(id)
-        doIfMask(peerId, 1) { writeTLObject(it) }
+        doIfMask(1, peerId, 1) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         id = readInt()
-        peerId = readIfMask(1) { readTLObject<TLAbsPeer>() }
+        peerId = readIfMask(1, 1) { readTLObject<TLAbsPeer>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -63,7 +64,7 @@ class TLMessageEmpty() : TLAbsMessage() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(peerId, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, peerId, 1) { it.computeSerializedSize() }
         return size
     }
 

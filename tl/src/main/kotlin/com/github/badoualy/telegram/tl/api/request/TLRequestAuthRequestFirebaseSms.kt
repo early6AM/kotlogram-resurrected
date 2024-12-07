@@ -53,6 +53,7 @@ class TLRequestAuthRequestFirebaseSms() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(safetyNetToken, 1)
         updateFlags(playIntegrityToken, 4)
         updateFlags(iosPushSecret, 2)
@@ -65,9 +66,9 @@ class TLRequestAuthRequestFirebaseSms() : TLMethod<TLBool>() {
         writeInt(_flags)
         writeString(phoneNumber)
         writeString(phoneCodeHash)
-        doIfMask(safetyNetToken, 1) { writeString(it) }
-        doIfMask(playIntegrityToken, 4) { writeString(it) }
-        doIfMask(iosPushSecret, 2) { writeString(it) }
+        doIfMask(1, safetyNetToken, 1) { writeString(it) }
+        doIfMask(1, playIntegrityToken, 4) { writeString(it) }
+        doIfMask(1, iosPushSecret, 2) { writeString(it) }
     }
 
     @Throws(IOException::class)
@@ -75,9 +76,9 @@ class TLRequestAuthRequestFirebaseSms() : TLMethod<TLBool>() {
         _flags = readInt()
         phoneNumber = readString()
         phoneCodeHash = readString()
-        safetyNetToken = readIfMask(1) { readString() }
-        playIntegrityToken = readIfMask(4) { readString() }
-        iosPushSecret = readIfMask(2) { readString() }
+        safetyNetToken = readIfMask(1, 1) { readString() }
+        playIntegrityToken = readIfMask(1, 4) { readString() }
+        iosPushSecret = readIfMask(1, 2) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -87,9 +88,9 @@ class TLRequestAuthRequestFirebaseSms() : TLMethod<TLBool>() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(phoneNumber)
         size += computeTLStringSerializedSize(phoneCodeHash)
-        size += getIntIfMask(safetyNetToken, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(playIntegrityToken, 4) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(iosPushSecret, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, safetyNetToken, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, playIntegrityToken, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, iosPushSecret, 2) { computeTLStringSerializedSize(it) }
         return size
     }
 

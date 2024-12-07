@@ -57,11 +57,12 @@ class TLRequestPhoneToggleGroupCallRecord() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(start, 1)
         updateFlags(video, 4)
         updateFlags(title, 2)
         // If field is not serialized force it to false
-        if (videoPortrait != null && !isMask(4)) videoPortrait = null
+        if (videoPortrait != null && !isMask(1, 4)) videoPortrait = null
     }
 
     @Throws(IOException::class)
@@ -70,18 +71,18 @@ class TLRequestPhoneToggleGroupCallRecord() : TLMethod<TLAbsUpdates>() {
 
         writeInt(_flags)
         writeTLObject(call)
-        doIfMask(title, 2) { writeString(it) }
-        doIfMask(videoPortrait, 4) { writeBoolean(it) }
+        doIfMask(1, title, 2) { writeString(it) }
+        doIfMask(1, videoPortrait, 4) { writeBoolean(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        start = isMask(1)
-        video = isMask(4)
+        start = isMask(1, 1)
+        video = isMask(1, 4)
         call = readTLObject<TLInputGroupCall>(TLInputGroupCall::class, TLInputGroupCall.CONSTRUCTOR_ID)
-        title = readIfMask(2) { readString() }
-        videoPortrait = readIfMask(4) { readBoolean() }
+        title = readIfMask(1, 2) { readString() }
+        videoPortrait = readIfMask(1, 4) { readBoolean() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -90,8 +91,8 @@ class TLRequestPhoneToggleGroupCallRecord() : TLMethod<TLAbsUpdates>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += call.computeSerializedSize()
-        size += getIntIfMask(title, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(videoPortrait, 4) { SIZE_BOOLEAN }
+        size += getIntIfMask(1, title, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, videoPortrait, 4) { SIZE_BOOLEAN }
         return size
     }
 

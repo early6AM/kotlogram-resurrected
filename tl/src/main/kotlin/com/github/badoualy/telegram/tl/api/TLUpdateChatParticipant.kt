@@ -66,6 +66,7 @@ class TLUpdateChatParticipant() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(prevParticipant, 1)
         updateFlags(newParticipant, 2)
         updateFlags(invite, 4)
@@ -80,9 +81,9 @@ class TLUpdateChatParticipant() : TLAbsUpdate() {
         writeInt(date)
         writeLong(actorId)
         writeLong(userId)
-        doIfMask(prevParticipant, 1) { writeTLObject(it) }
-        doIfMask(newParticipant, 2) { writeTLObject(it) }
-        doIfMask(invite, 4) { writeTLObject(it) }
+        doIfMask(1, prevParticipant, 1) { writeTLObject(it) }
+        doIfMask(1, newParticipant, 2) { writeTLObject(it) }
+        doIfMask(1, invite, 4) { writeTLObject(it) }
         writeInt(qts)
     }
 
@@ -93,9 +94,9 @@ class TLUpdateChatParticipant() : TLAbsUpdate() {
         date = readInt()
         actorId = readLong()
         userId = readLong()
-        prevParticipant = readIfMask(1) { readTLObject<TLAbsChatParticipant>() }
-        newParticipant = readIfMask(2) { readTLObject<TLAbsChatParticipant>() }
-        invite = readIfMask(4) { readTLObject<TLAbsExportedChatInvite>() }
+        prevParticipant = readIfMask(1, 1) { readTLObject<TLAbsChatParticipant>() }
+        newParticipant = readIfMask(1, 2) { readTLObject<TLAbsChatParticipant>() }
+        invite = readIfMask(1, 4) { readTLObject<TLAbsExportedChatInvite>() }
         qts = readInt()
     }
 
@@ -108,9 +109,9 @@ class TLUpdateChatParticipant() : TLAbsUpdate() {
         size += SIZE_INT32
         size += SIZE_INT64
         size += SIZE_INT64
-        size += getIntIfMask(prevParticipant, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(newParticipant, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(invite, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, prevParticipant, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, newParticipant, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, invite, 4) { it.computeSerializedSize() }
         size += SIZE_INT32
         return size
     }

@@ -65,6 +65,7 @@ class TLRequestMessagesEditExportedChatInvite() : TLMethod<TLAbsExportedChatInvi
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(revoked, 4)
         updateFlags(expireDate, 1)
         updateFlags(usageLimit, 2)
@@ -79,22 +80,22 @@ class TLRequestMessagesEditExportedChatInvite() : TLMethod<TLAbsExportedChatInvi
         writeInt(_flags)
         writeTLObject(peer)
         writeString(link)
-        doIfMask(expireDate, 1) { writeInt(it) }
-        doIfMask(usageLimit, 2) { writeInt(it) }
-        doIfMask(requestNeeded, 8) { writeBoolean(it) }
-        doIfMask(title, 16) { writeString(it) }
+        doIfMask(1, expireDate, 1) { writeInt(it) }
+        doIfMask(1, usageLimit, 2) { writeInt(it) }
+        doIfMask(1, requestNeeded, 8) { writeBoolean(it) }
+        doIfMask(1, title, 16) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        revoked = isMask(4)
+        revoked = isMask(1, 4)
         peer = readTLObject<TLAbsInputPeer>()
         link = readString()
-        expireDate = readIfMask(1) { readInt() }
-        usageLimit = readIfMask(2) { readInt() }
-        requestNeeded = readIfMask(8) { readBoolean() }
-        title = readIfMask(16) { readString() }
+        expireDate = readIfMask(1, 1) { readInt() }
+        usageLimit = readIfMask(1, 2) { readInt() }
+        requestNeeded = readIfMask(1, 8) { readBoolean() }
+        title = readIfMask(1, 16) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -104,10 +105,10 @@ class TLRequestMessagesEditExportedChatInvite() : TLMethod<TLAbsExportedChatInvi
         size += SIZE_INT32
         size += peer.computeSerializedSize()
         size += computeTLStringSerializedSize(link)
-        size += getIntIfMask(expireDate, 1) { SIZE_INT32 }
-        size += getIntIfMask(usageLimit, 2) { SIZE_INT32 }
-        size += getIntIfMask(requestNeeded, 8) { SIZE_BOOLEAN }
-        size += getIntIfMask(title, 16) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, expireDate, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, usageLimit, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, requestNeeded, 8) { SIZE_BOOLEAN }
+        size += getIntIfMask(1, title, 16) { computeTLStringSerializedSize(it) }
         return size
     }
 

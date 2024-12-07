@@ -49,6 +49,7 @@ class TLUpdateMessageReactions() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(topMsgId, 1)
     }
 
@@ -59,7 +60,7 @@ class TLUpdateMessageReactions() : TLAbsUpdate() {
         writeInt(_flags)
         writeTLObject(peer)
         writeInt(msgId)
-        doIfMask(topMsgId, 1) { writeInt(it) }
+        doIfMask(1, topMsgId, 1) { writeInt(it) }
         writeTLObject(reactions)
     }
 
@@ -68,7 +69,7 @@ class TLUpdateMessageReactions() : TLAbsUpdate() {
         _flags = readInt()
         peer = readTLObject<TLAbsPeer>()
         msgId = readInt()
-        topMsgId = readIfMask(1) { readInt() }
+        topMsgId = readIfMask(1, 1) { readInt() }
         reactions = readTLObject<TLMessageReactions>(TLMessageReactions::class, TLMessageReactions.CONSTRUCTOR_ID)
     }
 
@@ -79,7 +80,7 @@ class TLUpdateMessageReactions() : TLAbsUpdate() {
         size += SIZE_INT32
         size += peer.computeSerializedSize()
         size += SIZE_INT32
-        size += getIntIfMask(topMsgId, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, topMsgId, 1) { SIZE_INT32 }
         size += reactions.computeSerializedSize()
         return size
     }

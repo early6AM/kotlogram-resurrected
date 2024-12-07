@@ -68,6 +68,7 @@ class TLRequestPhoneEditGroupCallParticipant() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(muted, 1)
         updateFlags(volume, 2)
         updateFlags(raiseHand, 4)
@@ -83,12 +84,12 @@ class TLRequestPhoneEditGroupCallParticipant() : TLMethod<TLAbsUpdates>() {
         writeInt(_flags)
         writeTLObject(call)
         writeTLObject(participant)
-        doIfMask(muted, 1) { writeBoolean(it) }
-        doIfMask(volume, 2) { writeInt(it) }
-        doIfMask(raiseHand, 4) { writeBoolean(it) }
-        doIfMask(videoStopped, 8) { writeBoolean(it) }
-        doIfMask(videoPaused, 16) { writeBoolean(it) }
-        doIfMask(presentationPaused, 32) { writeBoolean(it) }
+        doIfMask(1, muted, 1) { writeBoolean(it) }
+        doIfMask(1, volume, 2) { writeInt(it) }
+        doIfMask(1, raiseHand, 4) { writeBoolean(it) }
+        doIfMask(1, videoStopped, 8) { writeBoolean(it) }
+        doIfMask(1, videoPaused, 16) { writeBoolean(it) }
+        doIfMask(1, presentationPaused, 32) { writeBoolean(it) }
     }
 
     @Throws(IOException::class)
@@ -96,12 +97,12 @@ class TLRequestPhoneEditGroupCallParticipant() : TLMethod<TLAbsUpdates>() {
         _flags = readInt()
         call = readTLObject<TLInputGroupCall>(TLInputGroupCall::class, TLInputGroupCall.CONSTRUCTOR_ID)
         participant = readTLObject<TLAbsInputPeer>()
-        muted = readIfMask(1) { readBoolean() }
-        volume = readIfMask(2) { readInt() }
-        raiseHand = readIfMask(4) { readBoolean() }
-        videoStopped = readIfMask(8) { readBoolean() }
-        videoPaused = readIfMask(16) { readBoolean() }
-        presentationPaused = readIfMask(32) { readBoolean() }
+        muted = readIfMask(1, 1) { readBoolean() }
+        volume = readIfMask(1, 2) { readInt() }
+        raiseHand = readIfMask(1, 4) { readBoolean() }
+        videoStopped = readIfMask(1, 8) { readBoolean() }
+        videoPaused = readIfMask(1, 16) { readBoolean() }
+        presentationPaused = readIfMask(1, 32) { readBoolean() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -111,12 +112,12 @@ class TLRequestPhoneEditGroupCallParticipant() : TLMethod<TLAbsUpdates>() {
         size += SIZE_INT32
         size += call.computeSerializedSize()
         size += participant.computeSerializedSize()
-        size += getIntIfMask(muted, 1) { SIZE_BOOLEAN }
-        size += getIntIfMask(volume, 2) { SIZE_INT32 }
-        size += getIntIfMask(raiseHand, 4) { SIZE_BOOLEAN }
-        size += getIntIfMask(videoStopped, 8) { SIZE_BOOLEAN }
-        size += getIntIfMask(videoPaused, 16) { SIZE_BOOLEAN }
-        size += getIntIfMask(presentationPaused, 32) { SIZE_BOOLEAN }
+        size += getIntIfMask(1, muted, 1) { SIZE_BOOLEAN }
+        size += getIntIfMask(1, volume, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, raiseHand, 4) { SIZE_BOOLEAN }
+        size += getIntIfMask(1, videoStopped, 8) { SIZE_BOOLEAN }
+        size += getIntIfMask(1, videoPaused, 16) { SIZE_BOOLEAN }
+        size += getIntIfMask(1, presentationPaused, 32) { SIZE_BOOLEAN }
         return size
     }
 

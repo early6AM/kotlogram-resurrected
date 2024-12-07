@@ -69,6 +69,7 @@ class TLPhoneConnectionWebrtc() : TLAbsPhoneConnection() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(turn, 1)
         updateFlags(stun, 2)
     }
@@ -89,8 +90,8 @@ class TLPhoneConnectionWebrtc() : TLAbsPhoneConnection() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        turn = isMask(1)
-        stun = isMask(2)
+        turn = isMask(1, 1)
+        stun = isMask(1, 2)
         id = readLong()
         ip = readString()
         ipv6 = readString()

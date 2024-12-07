@@ -84,6 +84,7 @@ class TLTheme() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(creator, 1)
         updateFlags(default, 2)
         updateFlags(forChat, 32)
@@ -102,26 +103,26 @@ class TLTheme() : TLObject() {
         writeLong(accessHash)
         writeString(slug)
         writeString(title)
-        doIfMask(document, 4) { writeTLObject(it) }
-        doIfMask(settings, 8) { writeTLVector(it) }
-        doIfMask(emoticon, 64) { writeString(it) }
-        doIfMask(installsCount, 16) { writeInt(it) }
+        doIfMask(1, document, 4) { writeTLObject(it) }
+        doIfMask(1, settings, 8) { writeTLVector(it) }
+        doIfMask(1, emoticon, 64) { writeString(it) }
+        doIfMask(1, installsCount, 16) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        creator = isMask(1)
-        default = isMask(2)
-        forChat = isMask(32)
+        creator = isMask(1, 1)
+        default = isMask(1, 2)
+        forChat = isMask(1, 32)
         id = readLong()
         accessHash = readLong()
         slug = readString()
         title = readString()
-        document = readIfMask(4) { readTLObject<TLAbsDocument>() }
-        settings = readIfMask(8) { readTLVector<TLThemeSettings>() }
-        emoticon = readIfMask(64) { readString() }
-        installsCount = readIfMask(16) { readInt() }
+        document = readIfMask(1, 4) { readTLObject<TLAbsDocument>() }
+        settings = readIfMask(1, 8) { readTLVector<TLThemeSettings>() }
+        emoticon = readIfMask(1, 64) { readString() }
+        installsCount = readIfMask(1, 16) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -133,10 +134,10 @@ class TLTheme() : TLObject() {
         size += SIZE_INT64
         size += computeTLStringSerializedSize(slug)
         size += computeTLStringSerializedSize(title)
-        size += getIntIfMask(document, 4) { it.computeSerializedSize() }
-        size += getIntIfMask(settings, 8) { it.computeSerializedSize() }
-        size += getIntIfMask(emoticon, 64) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(installsCount, 16) { SIZE_INT32 }
+        size += getIntIfMask(1, document, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, settings, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, emoticon, 64) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, installsCount, 16) { SIZE_INT32 }
         return size
     }
 

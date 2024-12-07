@@ -58,6 +58,7 @@ class TLUpdateBotInlineQuery() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(geo, 1)
         updateFlags(peerType, 2)
     }
@@ -70,8 +71,8 @@ class TLUpdateBotInlineQuery() : TLAbsUpdate() {
         writeLong(queryId)
         writeLong(userId)
         writeString(query)
-        doIfMask(geo, 1) { writeTLObject(it) }
-        doIfMask(peerType, 2) { writeTLObject(it) }
+        doIfMask(1, geo, 1) { writeTLObject(it) }
+        doIfMask(1, peerType, 2) { writeTLObject(it) }
         writeString(offset)
     }
 
@@ -81,8 +82,8 @@ class TLUpdateBotInlineQuery() : TLAbsUpdate() {
         queryId = readLong()
         userId = readLong()
         query = readString()
-        geo = readIfMask(1) { readTLObject<TLAbsGeoPoint>() }
-        peerType = readIfMask(2) { readTLObject<TLAbsInlineQueryPeerType>() }
+        geo = readIfMask(1, 1) { readTLObject<TLAbsGeoPoint>() }
+        peerType = readIfMask(1, 2) { readTLObject<TLAbsInlineQueryPeerType>() }
         offset = readString()
     }
 
@@ -94,8 +95,8 @@ class TLUpdateBotInlineQuery() : TLAbsUpdate() {
         size += SIZE_INT64
         size += SIZE_INT64
         size += computeTLStringSerializedSize(query)
-        size += getIntIfMask(geo, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(peerType, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, geo, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, peerType, 2) { it.computeSerializedSize() }
         size += computeTLStringSerializedSize(offset)
         return size
     }

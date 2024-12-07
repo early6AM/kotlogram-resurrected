@@ -60,6 +60,7 @@ class TLRequestMessagesSendEncryptedFile() : TLMethod<TLAbsSentEncryptedMessage>
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(silent, 1)
     }
 
@@ -77,7 +78,7 @@ class TLRequestMessagesSendEncryptedFile() : TLMethod<TLAbsSentEncryptedMessage>
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        silent = isMask(1)
+        silent = isMask(1, 1)
         peer = readTLObject<TLInputEncryptedChat>(TLInputEncryptedChat::class, TLInputEncryptedChat.CONSTRUCTOR_ID)
         randomId = readLong()
         data = readTLBytes()

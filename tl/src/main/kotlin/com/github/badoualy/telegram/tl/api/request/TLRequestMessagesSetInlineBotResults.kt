@@ -73,6 +73,7 @@ class TLRequestMessagesSetInlineBotResults() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(gallery, 1)
         updateFlags(_private, 2)
         updateFlags(nextOffset, 4)
@@ -88,22 +89,22 @@ class TLRequestMessagesSetInlineBotResults() : TLMethod<TLBool>() {
         writeLong(queryId)
         writeTLVector(results)
         writeInt(cacheTime)
-        doIfMask(nextOffset, 4) { writeString(it) }
-        doIfMask(switchPm, 8) { writeTLObject(it) }
-        doIfMask(switchWebview, 16) { writeTLObject(it) }
+        doIfMask(1, nextOffset, 4) { writeString(it) }
+        doIfMask(1, switchPm, 8) { writeTLObject(it) }
+        doIfMask(1, switchWebview, 16) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        gallery = isMask(1)
-        _private = isMask(2)
+        gallery = isMask(1, 1)
+        _private = isMask(1, 2)
         queryId = readLong()
         results = readTLVector<TLAbsInputBotInlineResult>()
         cacheTime = readInt()
-        nextOffset = readIfMask(4) { readString() }
-        switchPm = readIfMask(8) { readTLObject<TLInlineBotSwitchPM>(TLInlineBotSwitchPM::class, TLInlineBotSwitchPM.CONSTRUCTOR_ID) }
-        switchWebview = readIfMask(16) { readTLObject<TLInlineBotWebView>(TLInlineBotWebView::class, TLInlineBotWebView.CONSTRUCTOR_ID) }
+        nextOffset = readIfMask(1, 4) { readString() }
+        switchPm = readIfMask(1, 8) { readTLObject<TLInlineBotSwitchPM>(TLInlineBotSwitchPM::class, TLInlineBotSwitchPM.CONSTRUCTOR_ID) }
+        switchWebview = readIfMask(1, 16) { readTLObject<TLInlineBotWebView>(TLInlineBotWebView::class, TLInlineBotWebView.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -114,9 +115,9 @@ class TLRequestMessagesSetInlineBotResults() : TLMethod<TLBool>() {
         size += SIZE_INT64
         size += results.computeSerializedSize()
         size += SIZE_INT32
-        size += getIntIfMask(nextOffset, 4) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(switchPm, 8) { it.computeSerializedSize() }
-        size += getIntIfMask(switchWebview, 16) { it.computeSerializedSize() }
+        size += getIntIfMask(1, nextOffset, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, switchPm, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, switchWebview, 16) { it.computeSerializedSize() }
         return size
     }
 

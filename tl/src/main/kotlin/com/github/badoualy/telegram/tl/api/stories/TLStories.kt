@@ -59,6 +59,7 @@ class TLStories() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(pinnedToTop, 1)
     }
 
@@ -69,7 +70,7 @@ class TLStories() : TLObject() {
         writeInt(_flags)
         writeInt(count)
         writeTLVector(stories)
-        doIfMask(pinnedToTop, 1) { writeTLVector(it) }
+        doIfMask(1, pinnedToTop, 1) { writeTLVector(it) }
         writeTLVector(chats)
         writeTLVector(users)
     }
@@ -79,7 +80,7 @@ class TLStories() : TLObject() {
         _flags = readInt()
         count = readInt()
         stories = readTLVector<TLAbsStoryItem>()
-        pinnedToTop = readIfMask(1) { readTLIntVector() }
+        pinnedToTop = readIfMask(1, 1) { readTLIntVector() }
         chats = readTLVector<TLAbsChat>()
         users = readTLVector<TLAbsUser>()
     }
@@ -91,7 +92,7 @@ class TLStories() : TLObject() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += stories.computeSerializedSize()
-        size += getIntIfMask(pinnedToTop, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, pinnedToTop, 1) { it.computeSerializedSize() }
         size += chats.computeSerializedSize()
         size += users.computeSerializedSize()
         return size

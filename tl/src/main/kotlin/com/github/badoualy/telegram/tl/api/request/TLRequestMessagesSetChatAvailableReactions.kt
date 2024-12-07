@@ -49,6 +49,7 @@ class TLRequestMessagesSetChatAvailableReactions() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(reactionsLimit, 1)
     }
 
@@ -59,7 +60,7 @@ class TLRequestMessagesSetChatAvailableReactions() : TLMethod<TLAbsUpdates>() {
         writeInt(_flags)
         writeTLObject(peer)
         writeTLObject(availableReactions)
-        doIfMask(reactionsLimit, 1) { writeInt(it) }
+        doIfMask(1, reactionsLimit, 1) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -67,7 +68,7 @@ class TLRequestMessagesSetChatAvailableReactions() : TLMethod<TLAbsUpdates>() {
         _flags = readInt()
         peer = readTLObject<TLAbsInputPeer>()
         availableReactions = readTLObject<TLAbsChatReactions>()
-        reactionsLimit = readIfMask(1) { readInt() }
+        reactionsLimit = readIfMask(1, 1) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -77,7 +78,7 @@ class TLRequestMessagesSetChatAvailableReactions() : TLMethod<TLAbsUpdates>() {
         size += SIZE_INT32
         size += peer.computeSerializedSize()
         size += availableReactions.computeSerializedSize()
-        size += getIntIfMask(reactionsLimit, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, reactionsLimit, 1) { SIZE_INT32 }
         return size
     }
 

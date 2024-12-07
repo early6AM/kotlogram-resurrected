@@ -53,6 +53,7 @@ class TLInputBotInlineMessageMediaGeo() : TLAbsInputBotInlineMessage() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(heading, 1)
         updateFlags(period, 2)
         updateFlags(proximityNotificationRadius, 8)
@@ -65,20 +66,20 @@ class TLInputBotInlineMessageMediaGeo() : TLAbsInputBotInlineMessage() {
 
         writeInt(_flags)
         writeTLObject(geoPoint)
-        doIfMask(heading, 1) { writeInt(it) }
-        doIfMask(period, 2) { writeInt(it) }
-        doIfMask(proximityNotificationRadius, 8) { writeInt(it) }
-        doIfMask(replyMarkup, 4) { writeTLObject(it) }
+        doIfMask(1, heading, 1) { writeInt(it) }
+        doIfMask(1, period, 2) { writeInt(it) }
+        doIfMask(1, proximityNotificationRadius, 8) { writeInt(it) }
+        doIfMask(1, replyMarkup, 4) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         geoPoint = readTLObject<TLAbsInputGeoPoint>()
-        heading = readIfMask(1) { readInt() }
-        period = readIfMask(2) { readInt() }
-        proximityNotificationRadius = readIfMask(8) { readInt() }
-        replyMarkup = readIfMask(4) { readTLObject<TLAbsReplyMarkup>() }
+        heading = readIfMask(1, 1) { readInt() }
+        period = readIfMask(1, 2) { readInt() }
+        proximityNotificationRadius = readIfMask(1, 8) { readInt() }
+        replyMarkup = readIfMask(1, 4) { readTLObject<TLAbsReplyMarkup>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -87,10 +88,10 @@ class TLInputBotInlineMessageMediaGeo() : TLAbsInputBotInlineMessage() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += geoPoint.computeSerializedSize()
-        size += getIntIfMask(heading, 1) { SIZE_INT32 }
-        size += getIntIfMask(period, 2) { SIZE_INT32 }
-        size += getIntIfMask(proximityNotificationRadius, 8) { SIZE_INT32 }
-        size += getIntIfMask(replyMarkup, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, heading, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, period, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, proximityNotificationRadius, 8) { SIZE_INT32 }
+        size += getIntIfMask(1, replyMarkup, 4) { it.computeSerializedSize() }
         return size
     }
 

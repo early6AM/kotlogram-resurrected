@@ -49,6 +49,7 @@ class TLDeepLinkInfo() : TLAbsDeepLinkInfo() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(updateApp, 1)
         updateFlags(entities, 2)
     }
@@ -59,15 +60,15 @@ class TLDeepLinkInfo() : TLAbsDeepLinkInfo() {
 
         writeInt(_flags)
         writeString(message)
-        doIfMask(entities, 2) { writeTLVector(it) }
+        doIfMask(1, entities, 2) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        updateApp = isMask(1)
+        updateApp = isMask(1, 1)
         message = readString()
-        entities = readIfMask(2) { readTLVector<TLAbsMessageEntity>() }
+        entities = readIfMask(1, 2) { readTLVector<TLAbsMessageEntity>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -76,7 +77,7 @@ class TLDeepLinkInfo() : TLAbsDeepLinkInfo() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += computeTLStringSerializedSize(message)
-        size += getIntIfMask(entities, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, entities, 2) { it.computeSerializedSize() }
         return size
     }
 

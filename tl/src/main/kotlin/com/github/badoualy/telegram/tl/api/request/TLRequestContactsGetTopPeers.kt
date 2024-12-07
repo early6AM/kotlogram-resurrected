@@ -92,6 +92,7 @@ class TLRequestContactsGetTopPeers() : TLMethod<TLAbsTopPeers>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(correspondents, 1)
         updateFlags(botsPm, 2)
         updateFlags(botsInline, 4)
@@ -116,15 +117,15 @@ class TLRequestContactsGetTopPeers() : TLMethod<TLAbsTopPeers>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        correspondents = isMask(1)
-        botsPm = isMask(2)
-        botsInline = isMask(4)
-        phoneCalls = isMask(8)
-        forwardUsers = isMask(16)
-        forwardChats = isMask(32)
-        groups = isMask(1024)
-        channels = isMask(32768)
-        botsApp = isMask(65536)
+        correspondents = isMask(1, 1)
+        botsPm = isMask(1, 2)
+        botsInline = isMask(1, 4)
+        phoneCalls = isMask(1, 8)
+        forwardUsers = isMask(1, 16)
+        forwardChats = isMask(1, 32)
+        groups = isMask(1, 1024)
+        channels = isMask(1, 32768)
+        botsApp = isMask(1, 65536)
         offset = readInt()
         limit = readInt()
         hash = readLong()

@@ -45,6 +45,7 @@ class TLRequestStatsGetBroadcastRevenueStats() : TLMethod<TLBroadcastRevenueStat
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(dark, 1)
     }
 
@@ -59,7 +60,7 @@ class TLRequestStatsGetBroadcastRevenueStats() : TLMethod<TLBroadcastRevenueStat
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        dark = isMask(1)
+        dark = isMask(1, 1)
         channel = readTLObject<TLAbsInputChannel>()
     }
 

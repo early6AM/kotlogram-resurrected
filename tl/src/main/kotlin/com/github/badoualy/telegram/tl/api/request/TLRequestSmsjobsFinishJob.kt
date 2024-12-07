@@ -38,6 +38,7 @@ class TLRequestSmsjobsFinishJob() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(error, 1)
     }
 
@@ -47,14 +48,14 @@ class TLRequestSmsjobsFinishJob() : TLMethod<TLBool>() {
 
         writeInt(_flags)
         writeString(jobId)
-        doIfMask(error, 1) { writeString(it) }
+        doIfMask(1, error, 1) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         jobId = readString()
-        error = readIfMask(1) { readString() }
+        error = readIfMask(1, 1) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -63,7 +64,7 @@ class TLRequestSmsjobsFinishJob() : TLMethod<TLBool>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += computeTLStringSerializedSize(jobId)
-        size += getIntIfMask(error, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, error, 1) { computeTLStringSerializedSize(it) }
         return size
     }
 

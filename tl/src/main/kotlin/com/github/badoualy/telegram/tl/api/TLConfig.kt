@@ -229,6 +229,7 @@ class TLConfig() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(defaultP2pContacts, 8)
         updateFlags(preloadFeaturedStickers, 16)
         updateFlags(revokePmInbox, 64)
@@ -275,35 +276,35 @@ class TLConfig() : TLObject() {
         writeInt(ratingEDecay)
         writeInt(stickersRecentLimit)
         writeInt(channelsReadMediaPeriod)
-        doIfMask(tmpSessions, 1) { writeInt(it) }
+        doIfMask(1, tmpSessions, 1) { writeInt(it) }
         writeInt(callReceiveTimeoutMs)
         writeInt(callRingTimeoutMs)
         writeInt(callConnectTimeoutMs)
         writeInt(callPacketTimeoutMs)
         writeString(meUrlPrefix)
-        doIfMask(autoupdateUrlPrefix, 128) { writeString(it) }
-        doIfMask(gifSearchUsername, 512) { writeString(it) }
-        doIfMask(venueSearchUsername, 1024) { writeString(it) }
-        doIfMask(imgSearchUsername, 2048) { writeString(it) }
-        doIfMask(staticMapsProvider, 4096) { writeString(it) }
+        doIfMask(1, autoupdateUrlPrefix, 128) { writeString(it) }
+        doIfMask(1, gifSearchUsername, 512) { writeString(it) }
+        doIfMask(1, venueSearchUsername, 1024) { writeString(it) }
+        doIfMask(1, imgSearchUsername, 2048) { writeString(it) }
+        doIfMask(1, staticMapsProvider, 4096) { writeString(it) }
         writeInt(captionLengthMax)
         writeInt(messageLengthMax)
         writeInt(webfileDcId)
-        doIfMask(suggestedLangCode, 4) { writeString(it) }
-        doIfMask(langPackVersion, 4) { writeInt(it) }
-        doIfMask(baseLangPackVersion, 4) { writeInt(it) }
-        doIfMask(reactionsDefault, 32768) { writeTLObject(it) }
-        doIfMask(autologinToken, 65536) { writeString(it) }
+        doIfMask(1, suggestedLangCode, 4) { writeString(it) }
+        doIfMask(1, langPackVersion, 4) { writeInt(it) }
+        doIfMask(1, baseLangPackVersion, 4) { writeInt(it) }
+        doIfMask(1, reactionsDefault, 32768) { writeTLObject(it) }
+        doIfMask(1, autologinToken, 65536) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        defaultP2pContacts = isMask(8)
-        preloadFeaturedStickers = isMask(16)
-        revokePmInbox = isMask(64)
-        blockedMode = isMask(256)
-        forceTryIpv6 = isMask(16384)
+        defaultP2pContacts = isMask(1, 8)
+        preloadFeaturedStickers = isMask(1, 16)
+        revokePmInbox = isMask(1, 64)
+        blockedMode = isMask(1, 256)
+        forceTryIpv6 = isMask(1, 16384)
         date = readInt()
         expires = readInt()
         testMode = readBoolean()
@@ -327,25 +328,25 @@ class TLConfig() : TLObject() {
         ratingEDecay = readInt()
         stickersRecentLimit = readInt()
         channelsReadMediaPeriod = readInt()
-        tmpSessions = readIfMask(1) { readInt() }
+        tmpSessions = readIfMask(1, 1) { readInt() }
         callReceiveTimeoutMs = readInt()
         callRingTimeoutMs = readInt()
         callConnectTimeoutMs = readInt()
         callPacketTimeoutMs = readInt()
         meUrlPrefix = readString()
-        autoupdateUrlPrefix = readIfMask(128) { readString() }
-        gifSearchUsername = readIfMask(512) { readString() }
-        venueSearchUsername = readIfMask(1024) { readString() }
-        imgSearchUsername = readIfMask(2048) { readString() }
-        staticMapsProvider = readIfMask(4096) { readString() }
+        autoupdateUrlPrefix = readIfMask(1, 128) { readString() }
+        gifSearchUsername = readIfMask(1, 512) { readString() }
+        venueSearchUsername = readIfMask(1, 1024) { readString() }
+        imgSearchUsername = readIfMask(1, 2048) { readString() }
+        staticMapsProvider = readIfMask(1, 4096) { readString() }
         captionLengthMax = readInt()
         messageLengthMax = readInt()
         webfileDcId = readInt()
-        suggestedLangCode = readIfMask(4) { readString() }
-        langPackVersion = readIfMask(4) { readInt() }
-        baseLangPackVersion = readIfMask(4) { readInt() }
-        reactionsDefault = readIfMask(32768) { readTLObject<TLAbsReaction>() }
-        autologinToken = readIfMask(65536) { readString() }
+        suggestedLangCode = readIfMask(1, 4) { readString() }
+        langPackVersion = readIfMask(1, 4) { readInt() }
+        baseLangPackVersion = readIfMask(1, 4) { readInt() }
+        reactionsDefault = readIfMask(1, 32768) { readTLObject<TLAbsReaction>() }
+        autologinToken = readIfMask(1, 65536) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -376,25 +377,25 @@ class TLConfig() : TLObject() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(tmpSessions, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, tmpSessions, 1) { SIZE_INT32 }
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
         size += computeTLStringSerializedSize(meUrlPrefix)
-        size += getIntIfMask(autoupdateUrlPrefix, 128) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(gifSearchUsername, 512) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(venueSearchUsername, 1024) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(imgSearchUsername, 2048) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(staticMapsProvider, 4096) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, autoupdateUrlPrefix, 128) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, gifSearchUsername, 512) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, venueSearchUsername, 1024) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, imgSearchUsername, 2048) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, staticMapsProvider, 4096) { computeTLStringSerializedSize(it) }
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(suggestedLangCode, 4) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(langPackVersion, 4) { SIZE_INT32 }
-        size += getIntIfMask(baseLangPackVersion, 4) { SIZE_INT32 }
-        size += getIntIfMask(reactionsDefault, 32768) { it.computeSerializedSize() }
-        size += getIntIfMask(autologinToken, 65536) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, suggestedLangCode, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, langPackVersion, 4) { SIZE_INT32 }
+        size += getIntIfMask(1, baseLangPackVersion, 4) { SIZE_INT32 }
+        size += getIntIfMask(1, reactionsDefault, 32768) { it.computeSerializedSize() }
+        size += getIntIfMask(1, autologinToken, 65536) { computeTLStringSerializedSize(it) }
         return size
     }
 

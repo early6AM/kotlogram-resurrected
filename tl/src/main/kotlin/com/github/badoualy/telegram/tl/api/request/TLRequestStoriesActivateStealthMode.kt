@@ -41,6 +41,7 @@ class TLRequestStoriesActivateStealthMode() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(past, 1)
         updateFlags(future, 2)
     }
@@ -55,8 +56,8 @@ class TLRequestStoriesActivateStealthMode() : TLMethod<TLAbsUpdates>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        past = isMask(1)
-        future = isMask(2)
+        past = isMask(1, 1)
+        future = isMask(1, 2)
     }
 
     override fun computeSerializedSize(): Int {

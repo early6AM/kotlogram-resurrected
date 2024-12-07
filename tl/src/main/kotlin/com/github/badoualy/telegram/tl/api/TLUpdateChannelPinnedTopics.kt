@@ -40,6 +40,7 @@ class TLUpdateChannelPinnedTopics() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(order, 1)
     }
 
@@ -49,14 +50,14 @@ class TLUpdateChannelPinnedTopics() : TLAbsUpdate() {
 
         writeInt(_flags)
         writeLong(channelId)
-        doIfMask(order, 1) { writeTLVector(it) }
+        doIfMask(1, order, 1) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         channelId = readLong()
-        order = readIfMask(1) { readTLIntVector() }
+        order = readIfMask(1, 1) { readTLIntVector() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -65,7 +66,7 @@ class TLUpdateChannelPinnedTopics() : TLAbsUpdate() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT64
-        size += getIntIfMask(order, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, order, 1) { it.computeSerializedSize() }
         return size
     }
 

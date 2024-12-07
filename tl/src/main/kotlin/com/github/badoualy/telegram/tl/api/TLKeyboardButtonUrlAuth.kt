@@ -49,6 +49,7 @@ class TLKeyboardButtonUrlAuth() : TLAbsKeyboardButton() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(fwdText, 1)
     }
 
@@ -58,7 +59,7 @@ class TLKeyboardButtonUrlAuth() : TLAbsKeyboardButton() {
 
         writeInt(_flags)
         writeString(text)
-        doIfMask(fwdText, 1) { writeString(it) }
+        doIfMask(1, fwdText, 1) { writeString(it) }
         writeString(url)
         writeInt(buttonId)
     }
@@ -67,7 +68,7 @@ class TLKeyboardButtonUrlAuth() : TLAbsKeyboardButton() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         text = readString()
-        fwdText = readIfMask(1) { readString() }
+        fwdText = readIfMask(1, 1) { readString() }
         url = readString()
         buttonId = readInt()
     }
@@ -78,7 +79,7 @@ class TLKeyboardButtonUrlAuth() : TLAbsKeyboardButton() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += computeTLStringSerializedSize(text)
-        size += getIntIfMask(fwdText, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, fwdText, 1) { computeTLStringSerializedSize(it) }
         size += computeTLStringSerializedSize(url)
         size += SIZE_INT32
         return size

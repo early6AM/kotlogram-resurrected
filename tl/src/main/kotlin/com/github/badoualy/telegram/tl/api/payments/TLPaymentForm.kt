@@ -109,6 +109,7 @@ class TLPaymentForm() : TLAbsPaymentForm() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(canSaveCredentials, 4)
         updateFlags(passwordMissing, 8)
         updateFlags(photo, 32)
@@ -128,36 +129,36 @@ class TLPaymentForm() : TLAbsPaymentForm() {
         writeLong(botId)
         writeString(title)
         writeString(description)
-        doIfMask(photo, 32) { writeTLObject(it) }
+        doIfMask(1, photo, 32) { writeTLObject(it) }
         writeTLObject(invoice)
         writeLong(providerId)
         writeString(url)
-        doIfMask(nativeProvider, 16) { writeString(it) }
-        doIfMask(nativeParams, 16) { writeTLObject(it) }
-        doIfMask(additionalMethods, 64) { writeTLVector(it) }
-        doIfMask(savedInfo, 1) { writeTLObject(it) }
-        doIfMask(savedCredentials, 2) { writeTLVector(it) }
+        doIfMask(1, nativeProvider, 16) { writeString(it) }
+        doIfMask(1, nativeParams, 16) { writeTLObject(it) }
+        doIfMask(1, additionalMethods, 64) { writeTLVector(it) }
+        doIfMask(1, savedInfo, 1) { writeTLObject(it) }
+        doIfMask(1, savedCredentials, 2) { writeTLVector(it) }
         writeTLVector(users)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        canSaveCredentials = isMask(4)
-        passwordMissing = isMask(8)
+        canSaveCredentials = isMask(1, 4)
+        passwordMissing = isMask(1, 8)
         formId = readLong()
         botId = readLong()
         title = readString()
         description = readString()
-        photo = readIfMask(32) { readTLObject<TLAbsWebDocument>() }
+        photo = readIfMask(1, 32) { readTLObject<TLAbsWebDocument>() }
         invoice = readTLObject<TLInvoice>(TLInvoice::class, TLInvoice.CONSTRUCTOR_ID)
         providerId = readLong()
         url = readString()
-        nativeProvider = readIfMask(16) { readString() }
-        nativeParams = readIfMask(16) { readTLObject<TLDataJSON>(TLDataJSON::class, TLDataJSON.CONSTRUCTOR_ID) }
-        additionalMethods = readIfMask(64) { readTLVector<TLPaymentFormMethod>() }
-        savedInfo = readIfMask(1) { readTLObject<TLPaymentRequestedInfo>(TLPaymentRequestedInfo::class, TLPaymentRequestedInfo.CONSTRUCTOR_ID) }
-        savedCredentials = readIfMask(2) { readTLVector<TLPaymentSavedCredentialsCard>() }
+        nativeProvider = readIfMask(1, 16) { readString() }
+        nativeParams = readIfMask(1, 16) { readTLObject<TLDataJSON>(TLDataJSON::class, TLDataJSON.CONSTRUCTOR_ID) }
+        additionalMethods = readIfMask(1, 64) { readTLVector<TLPaymentFormMethod>() }
+        savedInfo = readIfMask(1, 1) { readTLObject<TLPaymentRequestedInfo>(TLPaymentRequestedInfo::class, TLPaymentRequestedInfo.CONSTRUCTOR_ID) }
+        savedCredentials = readIfMask(1, 2) { readTLVector<TLPaymentSavedCredentialsCard>() }
         users = readTLVector<TLAbsUser>()
     }
 
@@ -170,15 +171,15 @@ class TLPaymentForm() : TLAbsPaymentForm() {
         size += SIZE_INT64
         size += computeTLStringSerializedSize(title)
         size += computeTLStringSerializedSize(description)
-        size += getIntIfMask(photo, 32) { it.computeSerializedSize() }
+        size += getIntIfMask(1, photo, 32) { it.computeSerializedSize() }
         size += invoice.computeSerializedSize()
         size += SIZE_INT64
         size += computeTLStringSerializedSize(url)
-        size += getIntIfMask(nativeProvider, 16) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(nativeParams, 16) { it.computeSerializedSize() }
-        size += getIntIfMask(additionalMethods, 64) { it.computeSerializedSize() }
-        size += getIntIfMask(savedInfo, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(savedCredentials, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, nativeProvider, 16) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, nativeParams, 16) { it.computeSerializedSize() }
+        size += getIntIfMask(1, additionalMethods, 64) { it.computeSerializedSize() }
+        size += getIntIfMask(1, savedInfo, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, savedCredentials, 2) { it.computeSerializedSize() }
         size += users.computeSerializedSize()
         return size
     }

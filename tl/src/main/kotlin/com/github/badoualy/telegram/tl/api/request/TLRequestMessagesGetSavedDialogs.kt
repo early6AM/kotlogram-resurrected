@@ -62,6 +62,7 @@ class TLRequestMessagesGetSavedDialogs() : TLMethod<TLAbsSavedDialogs>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(excludePinned, 1)
     }
 
@@ -80,7 +81,7 @@ class TLRequestMessagesGetSavedDialogs() : TLMethod<TLAbsSavedDialogs>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        excludePinned = isMask(1)
+        excludePinned = isMask(1, 1)
         offsetDate = readInt()
         offsetId = readInt()
         offsetPeer = readTLObject<TLAbsInputPeer>()

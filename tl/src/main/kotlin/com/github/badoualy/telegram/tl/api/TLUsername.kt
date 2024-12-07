@@ -49,6 +49,7 @@ class TLUsername() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(editable, 1)
         updateFlags(active, 2)
     }
@@ -64,8 +65,8 @@ class TLUsername() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        editable = isMask(1)
-        active = isMask(2)
+        editable = isMask(1, 1)
+        active = isMask(1, 2)
         username = readString()
     }
 

@@ -50,6 +50,7 @@ class TLUpdateReadMessagesContents() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(date, 1)
     }
 
@@ -61,7 +62,7 @@ class TLUpdateReadMessagesContents() : TLAbsUpdate() {
         writeTLVector(messages)
         writeInt(pts)
         writeInt(ptsCount)
-        doIfMask(date, 1) { writeInt(it) }
+        doIfMask(1, date, 1) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -70,7 +71,7 @@ class TLUpdateReadMessagesContents() : TLAbsUpdate() {
         messages = readTLIntVector()
         pts = readInt()
         ptsCount = readInt()
-        date = readIfMask(1) { readInt() }
+        date = readIfMask(1, 1) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -81,7 +82,7 @@ class TLUpdateReadMessagesContents() : TLAbsUpdate() {
         size += messages.computeSerializedSize()
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(date, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, date, 1) { SIZE_INT32 }
         return size
     }
 

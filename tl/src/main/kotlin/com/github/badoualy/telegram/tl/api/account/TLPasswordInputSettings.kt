@@ -57,6 +57,7 @@ class TLPasswordInputSettings() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(newAlgo, 1)
         updateFlags(newPasswordHash, 1)
         updateFlags(hint, 1)
@@ -69,21 +70,21 @@ class TLPasswordInputSettings() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(newAlgo, 1) { writeTLObject(it) }
-        doIfMask(newPasswordHash, 1) { writeTLBytes(it) }
-        doIfMask(hint, 1) { writeString(it) }
-        doIfMask(email, 2) { writeString(it) }
-        doIfMask(newSecureSettings, 4) { writeTLObject(it) }
+        doIfMask(1, newAlgo, 1) { writeTLObject(it) }
+        doIfMask(1, newPasswordHash, 1) { writeTLBytes(it) }
+        doIfMask(1, hint, 1) { writeString(it) }
+        doIfMask(1, email, 2) { writeString(it) }
+        doIfMask(1, newSecureSettings, 4) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        newAlgo = readIfMask(1) { readTLObject<TLAbsPasswordKdfAlgo>() }
-        newPasswordHash = readIfMask(1) { readTLBytes() }
-        hint = readIfMask(1) { readString() }
-        email = readIfMask(2) { readString() }
-        newSecureSettings = readIfMask(4) { readTLObject<TLSecureSecretSettings>(TLSecureSecretSettings::class, TLSecureSecretSettings.CONSTRUCTOR_ID) }
+        newAlgo = readIfMask(1, 1) { readTLObject<TLAbsPasswordKdfAlgo>() }
+        newPasswordHash = readIfMask(1, 1) { readTLBytes() }
+        hint = readIfMask(1, 1) { readString() }
+        email = readIfMask(1, 2) { readString() }
+        newSecureSettings = readIfMask(1, 4) { readTLObject<TLSecureSecretSettings>(TLSecureSecretSettings::class, TLSecureSecretSettings.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -91,11 +92,11 @@ class TLPasswordInputSettings() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(newAlgo, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(newPasswordHash, 1) { computeTLBytesSerializedSize(it) }
-        size += getIntIfMask(hint, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(email, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(newSecureSettings, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, newAlgo, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, newPasswordHash, 1) { computeTLBytesSerializedSize(it) }
+        size += getIntIfMask(1, hint, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, email, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, newSecureSettings, 4) { it.computeSerializedSize() }
         return size
     }
 

@@ -38,6 +38,7 @@ class TLRequestPeerTypeUser() : TLAbsRequestPeerType() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(bot, 1)
         updateFlags(premium, 2)
     }
@@ -47,15 +48,15 @@ class TLRequestPeerTypeUser() : TLAbsRequestPeerType() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(bot, 1) { writeBoolean(it) }
-        doIfMask(premium, 2) { writeBoolean(it) }
+        doIfMask(1, bot, 1) { writeBoolean(it) }
+        doIfMask(1, premium, 2) { writeBoolean(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        bot = readIfMask(1) { readBoolean() }
-        premium = readIfMask(2) { readBoolean() }
+        bot = readIfMask(1, 1) { readBoolean() }
+        premium = readIfMask(1, 2) { readBoolean() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -63,8 +64,8 @@ class TLRequestPeerTypeUser() : TLAbsRequestPeerType() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(bot, 1) { SIZE_BOOLEAN }
-        size += getIntIfMask(premium, 2) { SIZE_BOOLEAN }
+        size += getIntIfMask(1, bot, 1) { SIZE_BOOLEAN }
+        size += getIntIfMask(1, premium, 2) { SIZE_BOOLEAN }
         return size
     }
 

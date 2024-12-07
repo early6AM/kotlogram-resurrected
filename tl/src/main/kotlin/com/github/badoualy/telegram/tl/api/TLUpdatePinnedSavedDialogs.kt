@@ -36,6 +36,7 @@ class TLUpdatePinnedSavedDialogs() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(order, 1)
     }
 
@@ -44,13 +45,13 @@ class TLUpdatePinnedSavedDialogs() : TLAbsUpdate() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(order, 1) { writeTLVector(it) }
+        doIfMask(1, order, 1) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        order = readIfMask(1) { readTLVector<TLAbsDialogPeer>() }
+        order = readIfMask(1, 1) { readTLVector<TLAbsDialogPeer>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -58,7 +59,7 @@ class TLUpdatePinnedSavedDialogs() : TLAbsUpdate() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(order, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, order, 1) { it.computeSerializedSize() }
         return size
     }
 

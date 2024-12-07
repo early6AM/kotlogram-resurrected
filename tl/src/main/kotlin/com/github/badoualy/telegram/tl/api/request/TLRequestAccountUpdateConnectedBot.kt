@@ -55,6 +55,7 @@ class TLRequestAccountUpdateConnectedBot() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(canReply, 1)
         updateFlags(deleted, 2)
     }
@@ -71,8 +72,8 @@ class TLRequestAccountUpdateConnectedBot() : TLMethod<TLAbsUpdates>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        canReply = isMask(1)
-        deleted = isMask(2)
+        canReply = isMask(1, 1)
+        deleted = isMask(1, 2)
         bot = readTLObject<TLAbsInputUser>()
         recipients = readTLObject<TLInputBusinessBotRecipients>(TLInputBusinessBotRecipients::class, TLInputBusinessBotRecipients.CONSTRUCTOR_ID)
     }

@@ -41,6 +41,7 @@ class TLRequestPaymentsClearSavedInfo() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(credentials, 1)
         updateFlags(info, 2)
     }
@@ -55,8 +56,8 @@ class TLRequestPaymentsClearSavedInfo() : TLMethod<TLBool>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        credentials = isMask(1)
-        info = isMask(2)
+        credentials = isMask(1, 1)
+        info = isMask(1, 2)
     }
 
     override fun computeSerializedSize(): Int {

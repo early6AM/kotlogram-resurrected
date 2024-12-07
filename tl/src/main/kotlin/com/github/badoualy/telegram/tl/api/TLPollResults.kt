@@ -61,6 +61,7 @@ class TLPollResults() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(min, 1)
         updateFlags(results, 2)
         updateFlags(totalVoters, 4)
@@ -74,22 +75,22 @@ class TLPollResults() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(results, 2) { writeTLVector(it) }
-        doIfMask(totalVoters, 4) { writeInt(it) }
-        doIfMask(recentVoters, 8) { writeTLVector(it) }
-        doIfMask(solution, 16) { writeString(it) }
-        doIfMask(solutionEntities, 16) { writeTLVector(it) }
+        doIfMask(1, results, 2) { writeTLVector(it) }
+        doIfMask(1, totalVoters, 4) { writeInt(it) }
+        doIfMask(1, recentVoters, 8) { writeTLVector(it) }
+        doIfMask(1, solution, 16) { writeString(it) }
+        doIfMask(1, solutionEntities, 16) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        min = isMask(1)
-        results = readIfMask(2) { readTLVector<TLPollAnswerVoters>() }
-        totalVoters = readIfMask(4) { readInt() }
-        recentVoters = readIfMask(8) { readTLVector<TLAbsPeer>() }
-        solution = readIfMask(16) { readString() }
-        solutionEntities = readIfMask(16) { readTLVector<TLAbsMessageEntity>() }
+        min = isMask(1, 1)
+        results = readIfMask(1, 2) { readTLVector<TLPollAnswerVoters>() }
+        totalVoters = readIfMask(1, 4) { readInt() }
+        recentVoters = readIfMask(1, 8) { readTLVector<TLAbsPeer>() }
+        solution = readIfMask(1, 16) { readString() }
+        solutionEntities = readIfMask(1, 16) { readTLVector<TLAbsMessageEntity>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -97,11 +98,11 @@ class TLPollResults() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(results, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(totalVoters, 4) { SIZE_INT32 }
-        size += getIntIfMask(recentVoters, 8) { it.computeSerializedSize() }
-        size += getIntIfMask(solution, 16) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(solutionEntities, 16) { it.computeSerializedSize() }
+        size += getIntIfMask(1, results, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, totalVoters, 4) { SIZE_INT32 }
+        size += getIntIfMask(1, recentVoters, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, solution, 16) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, solutionEntities, 16) { it.computeSerializedSize() }
         return size
     }
 

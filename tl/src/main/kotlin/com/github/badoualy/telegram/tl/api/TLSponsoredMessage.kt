@@ -87,6 +87,7 @@ class TLSponsoredMessage() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(recommended, 32)
         updateFlags(canReport, 4096)
         updateFlags(entities, 2)
@@ -105,29 +106,29 @@ class TLSponsoredMessage() : TLObject() {
         writeString(url)
         writeString(title)
         writeString(message)
-        doIfMask(entities, 2) { writeTLVector(it) }
-        doIfMask(photo, 64) { writeTLObject(it) }
-        doIfMask(color, 8192) { writeTLObject(it) }
+        doIfMask(1, entities, 2) { writeTLVector(it) }
+        doIfMask(1, photo, 64) { writeTLObject(it) }
+        doIfMask(1, color, 8192) { writeTLObject(it) }
         writeString(buttonText)
-        doIfMask(sponsorInfo, 128) { writeString(it) }
-        doIfMask(additionalInfo, 256) { writeString(it) }
+        doIfMask(1, sponsorInfo, 128) { writeString(it) }
+        doIfMask(1, additionalInfo, 256) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        recommended = isMask(32)
-        canReport = isMask(4096)
+        recommended = isMask(1, 32)
+        canReport = isMask(1, 4096)
         randomId = readTLBytes()
         url = readString()
         title = readString()
         message = readString()
-        entities = readIfMask(2) { readTLVector<TLAbsMessageEntity>() }
-        photo = readIfMask(64) { readTLObject<TLAbsPhoto>() }
-        color = readIfMask(8192) { readTLObject<TLPeerColor>(TLPeerColor::class, TLPeerColor.CONSTRUCTOR_ID) }
+        entities = readIfMask(1, 2) { readTLVector<TLAbsMessageEntity>() }
+        photo = readIfMask(1, 64) { readTLObject<TLAbsPhoto>() }
+        color = readIfMask(1, 8192) { readTLObject<TLPeerColor>(TLPeerColor::class, TLPeerColor.CONSTRUCTOR_ID) }
         buttonText = readString()
-        sponsorInfo = readIfMask(128) { readString() }
-        additionalInfo = readIfMask(256) { readString() }
+        sponsorInfo = readIfMask(1, 128) { readString() }
+        additionalInfo = readIfMask(1, 256) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -139,12 +140,12 @@ class TLSponsoredMessage() : TLObject() {
         size += computeTLStringSerializedSize(url)
         size += computeTLStringSerializedSize(title)
         size += computeTLStringSerializedSize(message)
-        size += getIntIfMask(entities, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(photo, 64) { it.computeSerializedSize() }
-        size += getIntIfMask(color, 8192) { it.computeSerializedSize() }
+        size += getIntIfMask(1, entities, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, photo, 64) { it.computeSerializedSize() }
+        size += getIntIfMask(1, color, 8192) { it.computeSerializedSize() }
         size += computeTLStringSerializedSize(buttonText)
-        size += getIntIfMask(sponsorInfo, 128) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(additionalInfo, 256) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, sponsorInfo, 128) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, additionalInfo, 256) { computeTLStringSerializedSize(it) }
         return size
     }
 

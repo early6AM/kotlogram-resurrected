@@ -70,6 +70,7 @@ class TLPremiumSubscriptionOption() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(current, 2)
         updateFlags(canPurchaseUpgrade, 4)
         updateFlags(transaction, 8)
@@ -81,25 +82,25 @@ class TLPremiumSubscriptionOption() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(transaction, 8) { writeString(it) }
+        doIfMask(1, transaction, 8) { writeString(it) }
         writeInt(months)
         writeString(currency)
         writeLong(amount)
         writeString(botUrl)
-        doIfMask(storeProduct, 1) { writeString(it) }
+        doIfMask(1, storeProduct, 1) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        current = isMask(2)
-        canPurchaseUpgrade = isMask(4)
-        transaction = readIfMask(8) { readString() }
+        current = isMask(1, 2)
+        canPurchaseUpgrade = isMask(1, 4)
+        transaction = readIfMask(1, 8) { readString() }
         months = readInt()
         currency = readString()
         amount = readLong()
         botUrl = readString()
-        storeProduct = readIfMask(1) { readString() }
+        storeProduct = readIfMask(1, 1) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -107,12 +108,12 @@ class TLPremiumSubscriptionOption() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(transaction, 8) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, transaction, 8) { computeTLStringSerializedSize(it) }
         size += SIZE_INT32
         size += computeTLStringSerializedSize(currency)
         size += SIZE_INT64
         size += computeTLStringSerializedSize(botUrl)
-        size += getIntIfMask(storeProduct, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, storeProduct, 1) { computeTLStringSerializedSize(it) }
         return size
     }
 

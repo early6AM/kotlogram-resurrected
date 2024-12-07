@@ -51,6 +51,7 @@ class TLInputStorePaymentPremiumGiftCode() : TLAbsInputStorePaymentPurpose() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(boostPeer, 1)
     }
 
@@ -60,7 +61,7 @@ class TLInputStorePaymentPremiumGiftCode() : TLAbsInputStorePaymentPurpose() {
 
         writeInt(_flags)
         writeTLVector(users)
-        doIfMask(boostPeer, 1) { writeTLObject(it) }
+        doIfMask(1, boostPeer, 1) { writeTLObject(it) }
         writeString(currency)
         writeLong(amount)
     }
@@ -69,7 +70,7 @@ class TLInputStorePaymentPremiumGiftCode() : TLAbsInputStorePaymentPurpose() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         users = readTLVector<TLAbsInputUser>()
-        boostPeer = readIfMask(1) { readTLObject<TLAbsInputPeer>() }
+        boostPeer = readIfMask(1, 1) { readTLObject<TLAbsInputPeer>() }
         currency = readString()
         amount = readLong()
     }
@@ -80,7 +81,7 @@ class TLInputStorePaymentPremiumGiftCode() : TLAbsInputStorePaymentPurpose() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += users.computeSerializedSize()
-        size += getIntIfMask(boostPeer, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, boostPeer, 1) { it.computeSerializedSize() }
         size += computeTLStringSerializedSize(currency)
         size += SIZE_INT64
         return size

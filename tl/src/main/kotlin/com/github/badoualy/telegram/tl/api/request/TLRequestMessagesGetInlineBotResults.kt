@@ -61,6 +61,7 @@ class TLRequestMessagesGetInlineBotResults() : TLMethod<TLBotResults>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(geoPoint, 1)
     }
 
@@ -71,7 +72,7 @@ class TLRequestMessagesGetInlineBotResults() : TLMethod<TLBotResults>() {
         writeInt(_flags)
         writeTLObject(bot)
         writeTLObject(peer)
-        doIfMask(geoPoint, 1) { writeTLObject(it) }
+        doIfMask(1, geoPoint, 1) { writeTLObject(it) }
         writeString(query)
         writeString(offset)
     }
@@ -81,7 +82,7 @@ class TLRequestMessagesGetInlineBotResults() : TLMethod<TLBotResults>() {
         _flags = readInt()
         bot = readTLObject<TLAbsInputUser>()
         peer = readTLObject<TLAbsInputPeer>()
-        geoPoint = readIfMask(1) { readTLObject<TLAbsInputGeoPoint>() }
+        geoPoint = readIfMask(1, 1) { readTLObject<TLAbsInputGeoPoint>() }
         query = readString()
         offset = readString()
     }
@@ -93,7 +94,7 @@ class TLRequestMessagesGetInlineBotResults() : TLMethod<TLBotResults>() {
         size += SIZE_INT32
         size += bot.computeSerializedSize()
         size += peer.computeSerializedSize()
-        size += getIntIfMask(geoPoint, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, geoPoint, 1) { it.computeSerializedSize() }
         size += computeTLStringSerializedSize(query)
         size += computeTLStringSerializedSize(offset)
         return size

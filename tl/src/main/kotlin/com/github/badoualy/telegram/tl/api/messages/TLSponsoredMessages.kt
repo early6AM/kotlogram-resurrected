@@ -53,6 +53,7 @@ class TLSponsoredMessages() : TLAbsSponsoredMessages() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(postsBetween, 1)
     }
 
@@ -61,7 +62,7 @@ class TLSponsoredMessages() : TLAbsSponsoredMessages() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(postsBetween, 1) { writeInt(it) }
+        doIfMask(1, postsBetween, 1) { writeInt(it) }
         writeTLVector(messages)
         writeTLVector(chats)
         writeTLVector(users)
@@ -70,7 +71,7 @@ class TLSponsoredMessages() : TLAbsSponsoredMessages() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        postsBetween = readIfMask(1) { readInt() }
+        postsBetween = readIfMask(1, 1) { readInt() }
         messages = readTLVector<TLSponsoredMessage>()
         chats = readTLVector<TLAbsChat>()
         users = readTLVector<TLAbsUser>()
@@ -81,7 +82,7 @@ class TLSponsoredMessages() : TLAbsSponsoredMessages() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(postsBetween, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, postsBetween, 1) { SIZE_INT32 }
         size += messages.computeSerializedSize()
         size += chats.computeSerializedSize()
         size += users.computeSerializedSize()

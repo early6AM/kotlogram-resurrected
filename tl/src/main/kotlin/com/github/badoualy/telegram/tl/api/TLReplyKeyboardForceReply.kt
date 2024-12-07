@@ -48,6 +48,7 @@ class TLReplyKeyboardForceReply() : TLAbsReplyMarkup() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(singleUse, 2)
         updateFlags(selective, 4)
         updateFlags(placeholder, 8)
@@ -58,15 +59,15 @@ class TLReplyKeyboardForceReply() : TLAbsReplyMarkup() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(placeholder, 8) { writeString(it) }
+        doIfMask(1, placeholder, 8) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        singleUse = isMask(2)
-        selective = isMask(4)
-        placeholder = readIfMask(8) { readString() }
+        singleUse = isMask(1, 2)
+        selective = isMask(1, 4)
+        placeholder = readIfMask(1, 8) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -74,7 +75,7 @@ class TLReplyKeyboardForceReply() : TLAbsReplyMarkup() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(placeholder, 8) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, placeholder, 8) { computeTLStringSerializedSize(it) }
         return size
     }
 

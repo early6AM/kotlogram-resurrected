@@ -100,6 +100,7 @@ class TLRequestMessagesSearch() : TLMethod<TLAbsMessages>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(fromId, 1)
         updateFlags(savedPeerId, 4)
         updateFlags(savedReaction, 8)
@@ -113,10 +114,10 @@ class TLRequestMessagesSearch() : TLMethod<TLAbsMessages>() {
         writeInt(_flags)
         writeTLObject(peer)
         writeString(q)
-        doIfMask(fromId, 1) { writeTLObject(it) }
-        doIfMask(savedPeerId, 4) { writeTLObject(it) }
-        doIfMask(savedReaction, 8) { writeTLVector(it) }
-        doIfMask(topMsgId, 2) { writeInt(it) }
+        doIfMask(1, fromId, 1) { writeTLObject(it) }
+        doIfMask(1, savedPeerId, 4) { writeTLObject(it) }
+        doIfMask(1, savedReaction, 8) { writeTLVector(it) }
+        doIfMask(1, topMsgId, 2) { writeInt(it) }
         writeTLObject(filter)
         writeInt(minDate)
         writeInt(maxDate)
@@ -133,10 +134,10 @@ class TLRequestMessagesSearch() : TLMethod<TLAbsMessages>() {
         _flags = readInt()
         peer = readTLObject<TLAbsInputPeer>()
         q = readString()
-        fromId = readIfMask(1) { readTLObject<TLAbsInputPeer>() }
-        savedPeerId = readIfMask(4) { readTLObject<TLAbsInputPeer>() }
-        savedReaction = readIfMask(8) { readTLVector<TLAbsReaction>() }
-        topMsgId = readIfMask(2) { readInt() }
+        fromId = readIfMask(1, 1) { readTLObject<TLAbsInputPeer>() }
+        savedPeerId = readIfMask(1, 4) { readTLObject<TLAbsInputPeer>() }
+        savedReaction = readIfMask(1, 8) { readTLVector<TLAbsReaction>() }
+        topMsgId = readIfMask(1, 2) { readInt() }
         filter = readTLObject<TLAbsMessagesFilter>()
         minDate = readInt()
         maxDate = readInt()
@@ -155,10 +156,10 @@ class TLRequestMessagesSearch() : TLMethod<TLAbsMessages>() {
         size += SIZE_INT32
         size += peer.computeSerializedSize()
         size += computeTLStringSerializedSize(q)
-        size += getIntIfMask(fromId, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(savedPeerId, 4) { it.computeSerializedSize() }
-        size += getIntIfMask(savedReaction, 8) { it.computeSerializedSize() }
-        size += getIntIfMask(topMsgId, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, fromId, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, savedPeerId, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, savedReaction, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, topMsgId, 2) { SIZE_INT32 }
         size += filter.computeSerializedSize()
         size += SIZE_INT32
         size += SIZE_INT32

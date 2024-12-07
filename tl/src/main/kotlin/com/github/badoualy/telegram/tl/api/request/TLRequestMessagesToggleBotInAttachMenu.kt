@@ -49,6 +49,7 @@ class TLRequestMessagesToggleBotInAttachMenu() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(writeAllowed, 1)
     }
 
@@ -64,7 +65,7 @@ class TLRequestMessagesToggleBotInAttachMenu() : TLMethod<TLBool>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        writeAllowed = isMask(1)
+        writeAllowed = isMask(1, 1)
         bot = readTLObject<TLAbsInputUser>()
         enabled = readBoolean()
     }

@@ -65,6 +65,7 @@ class TLBotInlineResult() : TLAbsBotInlineResult() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(title, 2)
         updateFlags(description, 4)
         updateFlags(url, 8)
@@ -79,11 +80,11 @@ class TLBotInlineResult() : TLAbsBotInlineResult() {
         writeInt(_flags)
         writeString(id)
         writeString(type)
-        doIfMask(title, 2) { writeString(it) }
-        doIfMask(description, 4) { writeString(it) }
-        doIfMask(url, 8) { writeString(it) }
-        doIfMask(thumb, 16) { writeTLObject(it) }
-        doIfMask(content, 32) { writeTLObject(it) }
+        doIfMask(1, title, 2) { writeString(it) }
+        doIfMask(1, description, 4) { writeString(it) }
+        doIfMask(1, url, 8) { writeString(it) }
+        doIfMask(1, thumb, 16) { writeTLObject(it) }
+        doIfMask(1, content, 32) { writeTLObject(it) }
         writeTLObject(sendMessage)
     }
 
@@ -92,11 +93,11 @@ class TLBotInlineResult() : TLAbsBotInlineResult() {
         _flags = readInt()
         id = readString()
         type = readString()
-        title = readIfMask(2) { readString() }
-        description = readIfMask(4) { readString() }
-        url = readIfMask(8) { readString() }
-        thumb = readIfMask(16) { readTLObject<TLAbsWebDocument>() }
-        content = readIfMask(32) { readTLObject<TLAbsWebDocument>() }
+        title = readIfMask(1, 2) { readString() }
+        description = readIfMask(1, 4) { readString() }
+        url = readIfMask(1, 8) { readString() }
+        thumb = readIfMask(1, 16) { readTLObject<TLAbsWebDocument>() }
+        content = readIfMask(1, 32) { readTLObject<TLAbsWebDocument>() }
         sendMessage = readTLObject<TLAbsBotInlineMessage>()
     }
 
@@ -107,11 +108,11 @@ class TLBotInlineResult() : TLAbsBotInlineResult() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(id)
         size += computeTLStringSerializedSize(type)
-        size += getIntIfMask(title, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(description, 4) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(url, 8) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(thumb, 16) { it.computeSerializedSize() }
-        size += getIntIfMask(content, 32) { it.computeSerializedSize() }
+        size += getIntIfMask(1, title, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, description, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, url, 8) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, thumb, 16) { it.computeSerializedSize() }
+        size += getIntIfMask(1, content, 32) { it.computeSerializedSize() }
         size += sendMessage.computeSerializedSize()
         return size
     }

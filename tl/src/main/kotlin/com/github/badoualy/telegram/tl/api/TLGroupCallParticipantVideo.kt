@@ -53,6 +53,7 @@ class TLGroupCallParticipantVideo() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(paused, 1)
         updateFlags(audioSource, 2)
     }
@@ -64,16 +65,16 @@ class TLGroupCallParticipantVideo() : TLObject() {
         writeInt(_flags)
         writeString(endpoint)
         writeTLVector(sourceGroups)
-        doIfMask(audioSource, 2) { writeInt(it) }
+        doIfMask(1, audioSource, 2) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        paused = isMask(1)
+        paused = isMask(1, 1)
         endpoint = readString()
         sourceGroups = readTLVector<TLGroupCallParticipantVideoSourceGroup>()
-        audioSource = readIfMask(2) { readInt() }
+        audioSource = readIfMask(1, 2) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -83,7 +84,7 @@ class TLGroupCallParticipantVideo() : TLObject() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(endpoint)
         size += sourceGroups.computeSerializedSize()
-        size += getIntIfMask(audioSource, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, audioSource, 2) { SIZE_INT32 }
         return size
     }
 

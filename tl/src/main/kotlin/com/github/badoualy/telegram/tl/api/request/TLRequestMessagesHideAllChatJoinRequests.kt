@@ -49,6 +49,7 @@ class TLRequestMessagesHideAllChatJoinRequests() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(approved, 1)
         updateFlags(link, 2)
     }
@@ -59,15 +60,15 @@ class TLRequestMessagesHideAllChatJoinRequests() : TLMethod<TLAbsUpdates>() {
 
         writeInt(_flags)
         writeTLObject(peer)
-        doIfMask(link, 2) { writeString(it) }
+        doIfMask(1, link, 2) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        approved = isMask(1)
+        approved = isMask(1, 1)
         peer = readTLObject<TLAbsInputPeer>()
-        link = readIfMask(2) { readString() }
+        link = readIfMask(1, 2) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -76,7 +77,7 @@ class TLRequestMessagesHideAllChatJoinRequests() : TLMethod<TLAbsUpdates>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += peer.computeSerializedSize()
-        size += getIntIfMask(link, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, link, 2) { computeTLStringSerializedSize(it) }
         return size
     }
 

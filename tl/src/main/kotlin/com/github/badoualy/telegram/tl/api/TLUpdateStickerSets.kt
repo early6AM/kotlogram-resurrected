@@ -41,6 +41,7 @@ class TLUpdateStickerSets() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(masks, 1)
         updateFlags(emojis, 2)
     }
@@ -55,8 +56,8 @@ class TLUpdateStickerSets() : TLAbsUpdate() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        masks = isMask(1)
-        emojis = isMask(2)
+        masks = isMask(1, 1)
+        emojis = isMask(1, 2)
     }
 
     override fun computeSerializedSize(): Int {

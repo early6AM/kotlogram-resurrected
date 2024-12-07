@@ -48,6 +48,7 @@ class TLRequestStoriesGetAllStories() : TLMethod<TLAbsAllStories>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(next, 2)
         updateFlags(hidden, 4)
         updateFlags(state, 1)
@@ -58,15 +59,15 @@ class TLRequestStoriesGetAllStories() : TLMethod<TLAbsAllStories>() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(state, 1) { writeString(it) }
+        doIfMask(1, state, 1) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        next = isMask(2)
-        hidden = isMask(4)
-        state = readIfMask(1) { readString() }
+        next = isMask(1, 2)
+        hidden = isMask(1, 4)
+        state = readIfMask(1, 1) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -74,7 +75,7 @@ class TLRequestStoriesGetAllStories() : TLMethod<TLAbsAllStories>() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(state, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, state, 1) { computeTLStringSerializedSize(it) }
         return size
     }
 

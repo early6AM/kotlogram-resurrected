@@ -39,6 +39,7 @@ class TLWebPageAttributeTheme() : TLAbsWebPageAttribute() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(documents, 1)
         updateFlags(settings, 2)
     }
@@ -48,15 +49,15 @@ class TLWebPageAttributeTheme() : TLAbsWebPageAttribute() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(documents, 1) { writeTLVector(it) }
-        doIfMask(settings, 2) { writeTLObject(it) }
+        doIfMask(1, documents, 1) { writeTLVector(it) }
+        doIfMask(1, settings, 2) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        documents = readIfMask(1) { readTLVector<TLAbsDocument>() }
-        settings = readIfMask(2) { readTLObject<TLThemeSettings>(TLThemeSettings::class, TLThemeSettings.CONSTRUCTOR_ID) }
+        documents = readIfMask(1, 1) { readTLVector<TLAbsDocument>() }
+        settings = readIfMask(1, 2) { readTLObject<TLThemeSettings>(TLThemeSettings::class, TLThemeSettings.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -64,8 +65,8 @@ class TLWebPageAttributeTheme() : TLAbsWebPageAttribute() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(documents, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(settings, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, documents, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, settings, 2) { it.computeSerializedSize() }
         return size
     }
 

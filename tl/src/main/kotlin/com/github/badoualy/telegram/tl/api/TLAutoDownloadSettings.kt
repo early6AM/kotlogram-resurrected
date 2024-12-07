@@ -85,6 +85,7 @@ class TLAutoDownloadSettings() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(disabled, 1)
         updateFlags(videoPreloadLarge, 2)
         updateFlags(audioPreloadNext, 4)
@@ -108,11 +109,11 @@ class TLAutoDownloadSettings() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        disabled = isMask(1)
-        videoPreloadLarge = isMask(2)
-        audioPreloadNext = isMask(4)
-        phonecallsLessData = isMask(8)
-        storiesPreload = isMask(16)
+        disabled = isMask(1, 1)
+        videoPreloadLarge = isMask(1, 2)
+        audioPreloadNext = isMask(1, 4)
+        phonecallsLessData = isMask(1, 8)
+        storiesPreload = isMask(1, 16)
         photoSizeMax = readInt()
         videoSizeMax = readLong()
         fileSizeMax = readLong()

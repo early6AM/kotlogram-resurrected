@@ -68,6 +68,7 @@ class TLPhoneCallWaiting() : TLAbsPhoneCall() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(video, 64)
         updateFlags(receiveDate, 1)
     }
@@ -83,20 +84,20 @@ class TLPhoneCallWaiting() : TLAbsPhoneCall() {
         writeLong(adminId)
         writeLong(participantId)
         writeTLObject(protocol)
-        doIfMask(receiveDate, 1) { writeInt(it) }
+        doIfMask(1, receiveDate, 1) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        video = isMask(64)
+        video = isMask(1, 64)
         id = readLong()
         accessHash = readLong()
         date = readInt()
         adminId = readLong()
         participantId = readLong()
         protocol = readTLObject<TLPhoneCallProtocol>(TLPhoneCallProtocol::class, TLPhoneCallProtocol.CONSTRUCTOR_ID)
-        receiveDate = readIfMask(1) { readInt() }
+        receiveDate = readIfMask(1, 1) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -110,7 +111,7 @@ class TLPhoneCallWaiting() : TLAbsPhoneCall() {
         size += SIZE_INT64
         size += SIZE_INT64
         size += protocol.computeSerializedSize()
-        size += getIntIfMask(receiveDate, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, receiveDate, 1) { SIZE_INT32 }
         return size
     }
 

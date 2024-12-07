@@ -68,6 +68,7 @@ class TLAllStories() : TLAbsAllStories() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(hasMore, 1)
     }
 
@@ -87,7 +88,7 @@ class TLAllStories() : TLAbsAllStories() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        hasMore = isMask(1)
+        hasMore = isMask(1, 1)
         count = readInt()
         state = readString()
         peerStories = readTLVector<TLPeerStories>()

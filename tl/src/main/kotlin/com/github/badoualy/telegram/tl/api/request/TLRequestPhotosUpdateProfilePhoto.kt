@@ -53,6 +53,7 @@ class TLRequestPhotosUpdateProfilePhoto() : TLMethod<TLPhoto>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(fallback, 1)
         updateFlags(bot, 2)
     }
@@ -62,15 +63,15 @@ class TLRequestPhotosUpdateProfilePhoto() : TLMethod<TLPhoto>() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(bot, 2) { writeTLObject(it) }
+        doIfMask(1, bot, 2) { writeTLObject(it) }
         writeTLObject(id)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        fallback = isMask(1)
-        bot = readIfMask(2) { readTLObject<TLAbsInputUser>() }
+        fallback = isMask(1, 1)
+        bot = readIfMask(1, 2) { readTLObject<TLAbsInputUser>() }
         id = readTLObject<TLAbsInputPhoto>()
     }
 
@@ -79,7 +80,7 @@ class TLRequestPhotosUpdateProfilePhoto() : TLMethod<TLPhoto>() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(bot, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, bot, 2) { it.computeSerializedSize() }
         size += id.computeSerializedSize()
         return size
     }

@@ -54,6 +54,7 @@ class TLInputGroupCallStream() : TLAbsInputFileLocation() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(videoChannel, 1)
         updateFlags(videoQuality, 1)
     }
@@ -66,8 +67,8 @@ class TLInputGroupCallStream() : TLAbsInputFileLocation() {
         writeTLObject(call)
         writeLong(timeMs)
         writeInt(scale)
-        doIfMask(videoChannel, 1) { writeInt(it) }
-        doIfMask(videoQuality, 1) { writeInt(it) }
+        doIfMask(1, videoChannel, 1) { writeInt(it) }
+        doIfMask(1, videoQuality, 1) { writeInt(it) }
     }
 
     @Throws(IOException::class)
@@ -76,8 +77,8 @@ class TLInputGroupCallStream() : TLAbsInputFileLocation() {
         call = readTLObject<TLInputGroupCall>(TLInputGroupCall::class, TLInputGroupCall.CONSTRUCTOR_ID)
         timeMs = readLong()
         scale = readInt()
-        videoChannel = readIfMask(1) { readInt() }
-        videoQuality = readIfMask(1) { readInt() }
+        videoChannel = readIfMask(1, 1) { readInt() }
+        videoQuality = readIfMask(1, 1) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -88,8 +89,8 @@ class TLInputGroupCallStream() : TLAbsInputFileLocation() {
         size += call.computeSerializedSize()
         size += SIZE_INT64
         size += SIZE_INT32
-        size += getIntIfMask(videoChannel, 1) { SIZE_INT32 }
-        size += getIntIfMask(videoQuality, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, videoChannel, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, videoQuality, 1) { SIZE_INT32 }
         return size
     }
 

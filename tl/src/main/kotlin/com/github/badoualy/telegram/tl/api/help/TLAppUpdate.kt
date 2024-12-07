@@ -70,6 +70,7 @@ class TLAppUpdate() : TLAbsAppUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(canNotSkip, 1)
         updateFlags(document, 2)
         updateFlags(url, 4)
@@ -85,22 +86,22 @@ class TLAppUpdate() : TLAbsAppUpdate() {
         writeString(version)
         writeString(text)
         writeTLVector(entities)
-        doIfMask(document, 2) { writeTLObject(it) }
-        doIfMask(url, 4) { writeString(it) }
-        doIfMask(sticker, 8) { writeTLObject(it) }
+        doIfMask(1, document, 2) { writeTLObject(it) }
+        doIfMask(1, url, 4) { writeString(it) }
+        doIfMask(1, sticker, 8) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        canNotSkip = isMask(1)
+        canNotSkip = isMask(1, 1)
         id = readInt()
         version = readString()
         text = readString()
         entities = readTLVector<TLAbsMessageEntity>()
-        document = readIfMask(2) { readTLObject<TLAbsDocument>() }
-        url = readIfMask(4) { readString() }
-        sticker = readIfMask(8) { readTLObject<TLAbsDocument>() }
+        document = readIfMask(1, 2) { readTLObject<TLAbsDocument>() }
+        url = readIfMask(1, 4) { readString() }
+        sticker = readIfMask(1, 8) { readTLObject<TLAbsDocument>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -112,9 +113,9 @@ class TLAppUpdate() : TLAbsAppUpdate() {
         size += computeTLStringSerializedSize(version)
         size += computeTLStringSerializedSize(text)
         size += entities.computeSerializedSize()
-        size += getIntIfMask(document, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(url, 4) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(sticker, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, document, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, url, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, sticker, 8) { it.computeSerializedSize() }
         return size
     }
 

@@ -60,6 +60,7 @@ class TLPeerColorOption() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(hidden, 1)
         updateFlags(colors, 2)
         updateFlags(darkColors, 4)
@@ -73,21 +74,21 @@ class TLPeerColorOption() : TLObject() {
 
         writeInt(_flags)
         writeInt(colorId)
-        doIfMask(colors, 2) { writeTLObject(it) }
-        doIfMask(darkColors, 4) { writeTLObject(it) }
-        doIfMask(channelMinLevel, 8) { writeInt(it) }
-        doIfMask(groupMinLevel, 16) { writeInt(it) }
+        doIfMask(1, colors, 2) { writeTLObject(it) }
+        doIfMask(1, darkColors, 4) { writeTLObject(it) }
+        doIfMask(1, channelMinLevel, 8) { writeInt(it) }
+        doIfMask(1, groupMinLevel, 16) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        hidden = isMask(1)
+        hidden = isMask(1, 1)
         colorId = readInt()
-        colors = readIfMask(2) { readTLObject<TLAbsPeerColorSet>() }
-        darkColors = readIfMask(4) { readTLObject<TLAbsPeerColorSet>() }
-        channelMinLevel = readIfMask(8) { readInt() }
-        groupMinLevel = readIfMask(16) { readInt() }
+        colors = readIfMask(1, 2) { readTLObject<TLAbsPeerColorSet>() }
+        darkColors = readIfMask(1, 4) { readTLObject<TLAbsPeerColorSet>() }
+        channelMinLevel = readIfMask(1, 8) { readInt() }
+        groupMinLevel = readIfMask(1, 16) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -96,10 +97,10 @@ class TLPeerColorOption() : TLObject() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(colors, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(darkColors, 4) { it.computeSerializedSize() }
-        size += getIntIfMask(channelMinLevel, 8) { SIZE_INT32 }
-        size += getIntIfMask(groupMinLevel, 16) { SIZE_INT32 }
+        size += getIntIfMask(1, colors, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, darkColors, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, channelMinLevel, 8) { SIZE_INT32 }
+        size += getIntIfMask(1, groupMinLevel, 16) { SIZE_INT32 }
         return size
     }
 

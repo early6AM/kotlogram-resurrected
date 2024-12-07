@@ -57,6 +57,7 @@ class TLStoryView() : TLAbsStoryView() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(blocked, 1)
         updateFlags(blockedMyStoriesFrom, 2)
         updateFlags(reaction, 4)
@@ -69,17 +70,17 @@ class TLStoryView() : TLAbsStoryView() {
         writeInt(_flags)
         writeLong(userId)
         writeInt(date)
-        doIfMask(reaction, 4) { writeTLObject(it) }
+        doIfMask(1, reaction, 4) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        blocked = isMask(1)
-        blockedMyStoriesFrom = isMask(2)
+        blocked = isMask(1, 1)
+        blockedMyStoriesFrom = isMask(1, 2)
         userId = readLong()
         date = readInt()
-        reaction = readIfMask(4) { readTLObject<TLAbsReaction>() }
+        reaction = readIfMask(1, 4) { readTLObject<TLAbsReaction>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -89,7 +90,7 @@ class TLStoryView() : TLAbsStoryView() {
         size += SIZE_INT32
         size += SIZE_INT64
         size += SIZE_INT32
-        size += getIntIfMask(reaction, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, reaction, 4) { it.computeSerializedSize() }
         return size
     }
 

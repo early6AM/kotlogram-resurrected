@@ -65,6 +65,7 @@ class TLBroadcastRevenueTransactionWithdrawal() : TLAbsBroadcastRevenueTransacti
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(pending, 1)
         updateFlags(failed, 4)
         updateFlags(transactionDate, 2)
@@ -79,20 +80,20 @@ class TLBroadcastRevenueTransactionWithdrawal() : TLAbsBroadcastRevenueTransacti
         writeLong(amount)
         writeInt(date)
         writeString(provider)
-        doIfMask(transactionDate, 2) { writeInt(it) }
-        doIfMask(transactionUrl, 2) { writeString(it) }
+        doIfMask(1, transactionDate, 2) { writeInt(it) }
+        doIfMask(1, transactionUrl, 2) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        pending = isMask(1)
-        failed = isMask(4)
+        pending = isMask(1, 1)
+        failed = isMask(1, 4)
         amount = readLong()
         date = readInt()
         provider = readString()
-        transactionDate = readIfMask(2) { readInt() }
-        transactionUrl = readIfMask(2) { readString() }
+        transactionDate = readIfMask(1, 2) { readInt() }
+        transactionUrl = readIfMask(1, 2) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -103,8 +104,8 @@ class TLBroadcastRevenueTransactionWithdrawal() : TLAbsBroadcastRevenueTransacti
         size += SIZE_INT64
         size += SIZE_INT32
         size += computeTLStringSerializedSize(provider)
-        size += getIntIfMask(transactionDate, 2) { SIZE_INT32 }
-        size += getIntIfMask(transactionUrl, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, transactionDate, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, transactionUrl, 2) { computeTLStringSerializedSize(it) }
         return size
     }
 

@@ -56,7 +56,7 @@ class TLSponsoredWebPage() : TLObject() {
         writeInt(_flags)
         writeString(url)
         writeString(siteName)
-        doIfMask(photo, 1) { writeTLObject(it) }
+        doIfMask(1, photo, 1) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
@@ -64,7 +64,7 @@ class TLSponsoredWebPage() : TLObject() {
         _flags = readInt()
         url = readString()
         siteName = readString()
-        photo = readIfMask(1) { readTLObject<TLAbsPhoto>() }
+        photo = readIfMask(1, 1) { readTLObject<TLAbsPhoto>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -74,7 +74,7 @@ class TLSponsoredWebPage() : TLObject() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(url)
         size += computeTLStringSerializedSize(siteName)
-        size += getIntIfMask(photo, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, photo, 1) { it.computeSerializedSize() }
         return size
     }
 

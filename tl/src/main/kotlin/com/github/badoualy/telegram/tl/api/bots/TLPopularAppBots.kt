@@ -41,6 +41,7 @@ class TLPopularAppBots() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(nextOffset, 1)
     }
 
@@ -49,14 +50,14 @@ class TLPopularAppBots() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(nextOffset, 1) { writeString(it) }
+        doIfMask(1, nextOffset, 1) { writeString(it) }
         writeTLVector(users)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        nextOffset = readIfMask(1) { readString() }
+        nextOffset = readIfMask(1, 1) { readString() }
         users = readTLVector<TLAbsUser>()
     }
 
@@ -65,7 +66,7 @@ class TLPopularAppBots() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(nextOffset, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, nextOffset, 1) { computeTLStringSerializedSize(it) }
         size += users.computeSerializedSize()
         return size
     }

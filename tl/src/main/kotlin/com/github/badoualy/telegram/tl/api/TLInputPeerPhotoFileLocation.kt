@@ -48,6 +48,7 @@ class TLInputPeerPhotoFileLocation() : TLAbsInputFileLocation() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(big, 1)
     }
 
@@ -63,7 +64,7 @@ class TLInputPeerPhotoFileLocation() : TLAbsInputFileLocation() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        big = isMask(1)
+        big = isMask(1, 1)
         peer = readTLObject<TLAbsInputPeer>()
         photoId = readLong()
     }

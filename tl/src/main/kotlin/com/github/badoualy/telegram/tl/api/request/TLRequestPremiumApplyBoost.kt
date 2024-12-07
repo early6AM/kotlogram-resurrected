@@ -44,6 +44,7 @@ class TLRequestPremiumApplyBoost() : TLMethod<TLMyBoosts>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(slots, 1)
     }
 
@@ -52,14 +53,14 @@ class TLRequestPremiumApplyBoost() : TLMethod<TLMyBoosts>() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(slots, 1) { writeTLVector(it) }
+        doIfMask(1, slots, 1) { writeTLVector(it) }
         writeTLObject(peer)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        slots = readIfMask(1) { readTLIntVector() }
+        slots = readIfMask(1, 1) { readTLIntVector() }
         peer = readTLObject<TLAbsInputPeer>()
     }
 
@@ -68,7 +69,7 @@ class TLRequestPremiumApplyBoost() : TLMethod<TLMyBoosts>() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(slots, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, slots, 1) { it.computeSerializedSize() }
         size += peer.computeSerializedSize()
         return size
     }

@@ -62,6 +62,7 @@ class TLStoryViews() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(hasViewers, 2)
         updateFlags(forwardsCount, 4)
         updateFlags(reactions, 8)
@@ -75,21 +76,21 @@ class TLStoryViews() : TLObject() {
 
         writeInt(_flags)
         writeInt(viewsCount)
-        doIfMask(forwardsCount, 4) { writeInt(it) }
-        doIfMask(reactions, 8) { writeTLVector(it) }
-        doIfMask(reactionsCount, 16) { writeInt(it) }
-        doIfMask(recentViewers, 1) { writeTLVector(it) }
+        doIfMask(1, forwardsCount, 4) { writeInt(it) }
+        doIfMask(1, reactions, 8) { writeTLVector(it) }
+        doIfMask(1, reactionsCount, 16) { writeInt(it) }
+        doIfMask(1, recentViewers, 1) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        hasViewers = isMask(2)
+        hasViewers = isMask(1, 2)
         viewsCount = readInt()
-        forwardsCount = readIfMask(4) { readInt() }
-        reactions = readIfMask(8) { readTLVector<TLReactionCount>() }
-        reactionsCount = readIfMask(16) { readInt() }
-        recentViewers = readIfMask(1) { readTLLongVector() }
+        forwardsCount = readIfMask(1, 4) { readInt() }
+        reactions = readIfMask(1, 8) { readTLVector<TLReactionCount>() }
+        reactionsCount = readIfMask(1, 16) { readInt() }
+        recentViewers = readIfMask(1, 1) { readTLLongVector() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -98,10 +99,10 @@ class TLStoryViews() : TLObject() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(forwardsCount, 4) { SIZE_INT32 }
-        size += getIntIfMask(reactions, 8) { it.computeSerializedSize() }
-        size += getIntIfMask(reactionsCount, 16) { SIZE_INT32 }
-        size += getIntIfMask(recentViewers, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, forwardsCount, 4) { SIZE_INT32 }
+        size += getIntIfMask(1, reactions, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, reactionsCount, 16) { SIZE_INT32 }
+        size += getIntIfMask(1, recentViewers, 1) { it.computeSerializedSize() }
         return size
     }
 

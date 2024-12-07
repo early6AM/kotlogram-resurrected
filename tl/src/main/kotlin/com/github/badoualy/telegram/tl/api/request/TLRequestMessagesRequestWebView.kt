@@ -90,6 +90,7 @@ class TLRequestMessagesRequestWebView() : TLMethod<TLWebViewResultUrl>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(fromBotMenu, 16)
         updateFlags(silent, 32)
         updateFlags(compact, 128)
@@ -107,28 +108,28 @@ class TLRequestMessagesRequestWebView() : TLMethod<TLWebViewResultUrl>() {
         writeInt(_flags)
         writeTLObject(peer)
         writeTLObject(bot)
-        doIfMask(url, 2) { writeString(it) }
-        doIfMask(startParam, 8) { writeString(it) }
-        doIfMask(themeParams, 4) { writeTLObject(it) }
+        doIfMask(1, url, 2) { writeString(it) }
+        doIfMask(1, startParam, 8) { writeString(it) }
+        doIfMask(1, themeParams, 4) { writeTLObject(it) }
         writeString(platform)
-        doIfMask(replyTo, 1) { writeTLObject(it) }
-        doIfMask(sendAs, 8192) { writeTLObject(it) }
+        doIfMask(1, replyTo, 1) { writeTLObject(it) }
+        doIfMask(1, sendAs, 8192) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        fromBotMenu = isMask(16)
-        silent = isMask(32)
-        compact = isMask(128)
+        fromBotMenu = isMask(1, 16)
+        silent = isMask(1, 32)
+        compact = isMask(1, 128)
         peer = readTLObject<TLAbsInputPeer>()
         bot = readTLObject<TLAbsInputUser>()
-        url = readIfMask(2) { readString() }
-        startParam = readIfMask(8) { readString() }
-        themeParams = readIfMask(4) { readTLObject<TLDataJSON>(TLDataJSON::class, TLDataJSON.CONSTRUCTOR_ID) }
+        url = readIfMask(1, 2) { readString() }
+        startParam = readIfMask(1, 8) { readString() }
+        themeParams = readIfMask(1, 4) { readTLObject<TLDataJSON>(TLDataJSON::class, TLDataJSON.CONSTRUCTOR_ID) }
         platform = readString()
-        replyTo = readIfMask(1) { readTLObject<TLAbsInputReplyTo>() }
-        sendAs = readIfMask(8192) { readTLObject<TLAbsInputPeer>() }
+        replyTo = readIfMask(1, 1) { readTLObject<TLAbsInputReplyTo>() }
+        sendAs = readIfMask(1, 8192) { readTLObject<TLAbsInputPeer>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -138,12 +139,12 @@ class TLRequestMessagesRequestWebView() : TLMethod<TLWebViewResultUrl>() {
         size += SIZE_INT32
         size += peer.computeSerializedSize()
         size += bot.computeSerializedSize()
-        size += getIntIfMask(url, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(startParam, 8) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(themeParams, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, url, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, startParam, 8) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, themeParams, 4) { it.computeSerializedSize() }
         size += computeTLStringSerializedSize(platform)
-        size += getIntIfMask(replyTo, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(sendAs, 8192) { it.computeSerializedSize() }
+        size += getIntIfMask(1, replyTo, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, sendAs, 8192) { it.computeSerializedSize() }
         return size
     }
 

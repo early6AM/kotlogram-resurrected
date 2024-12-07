@@ -54,6 +54,7 @@ class TLMyBoost() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(peer, 1)
         updateFlags(cooldownUntilDate, 2)
     }
@@ -64,20 +65,20 @@ class TLMyBoost() : TLObject() {
 
         writeInt(_flags)
         writeInt(slot)
-        doIfMask(peer, 1) { writeTLObject(it) }
+        doIfMask(1, peer, 1) { writeTLObject(it) }
         writeInt(date)
         writeInt(expires)
-        doIfMask(cooldownUntilDate, 2) { writeInt(it) }
+        doIfMask(1, cooldownUntilDate, 2) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         slot = readInt()
-        peer = readIfMask(1) { readTLObject<TLAbsPeer>() }
+        peer = readIfMask(1, 1) { readTLObject<TLAbsPeer>() }
         date = readInt()
         expires = readInt()
-        cooldownUntilDate = readIfMask(2) { readInt() }
+        cooldownUntilDate = readIfMask(1, 2) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -86,10 +87,10 @@ class TLMyBoost() : TLObject() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(peer, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, peer, 1) { it.computeSerializedSize() }
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(cooldownUntilDate, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, cooldownUntilDate, 2) { SIZE_INT32 }
         return size
     }
 

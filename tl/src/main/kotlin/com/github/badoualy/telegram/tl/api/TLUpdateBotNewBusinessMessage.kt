@@ -49,6 +49,7 @@ class TLUpdateBotNewBusinessMessage() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(replyToMessage, 1)
     }
 
@@ -59,7 +60,7 @@ class TLUpdateBotNewBusinessMessage() : TLAbsUpdate() {
         writeInt(_flags)
         writeString(connectionId)
         writeTLObject(message)
-        doIfMask(replyToMessage, 1) { writeTLObject(it) }
+        doIfMask(1, replyToMessage, 1) { writeTLObject(it) }
         writeInt(qts)
     }
 
@@ -68,7 +69,7 @@ class TLUpdateBotNewBusinessMessage() : TLAbsUpdate() {
         _flags = readInt()
         connectionId = readString()
         message = readTLObject<TLAbsMessage>()
-        replyToMessage = readIfMask(1) { readTLObject<TLAbsMessage>() }
+        replyToMessage = readIfMask(1, 1) { readTLObject<TLAbsMessage>() }
         qts = readInt()
     }
 
@@ -79,7 +80,7 @@ class TLUpdateBotNewBusinessMessage() : TLAbsUpdate() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(connectionId)
         size += message.computeSerializedSize()
-        size += getIntIfMask(replyToMessage, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, replyToMessage, 1) { it.computeSerializedSize() }
         size += SIZE_INT32
         return size
     }

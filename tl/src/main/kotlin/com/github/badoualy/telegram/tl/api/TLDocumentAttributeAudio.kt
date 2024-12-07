@@ -56,6 +56,7 @@ class TLDocumentAttributeAudio() : TLAbsDocumentAttribute() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(voice, 1024)
         updateFlags(title, 1)
         updateFlags(performer, 2)
@@ -68,19 +69,19 @@ class TLDocumentAttributeAudio() : TLAbsDocumentAttribute() {
 
         writeInt(_flags)
         writeInt(duration)
-        doIfMask(title, 1) { writeString(it) }
-        doIfMask(performer, 2) { writeString(it) }
-        doIfMask(waveform, 4) { writeTLBytes(it) }
+        doIfMask(1, title, 1) { writeString(it) }
+        doIfMask(1, performer, 2) { writeString(it) }
+        doIfMask(1, waveform, 4) { writeTLBytes(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        voice = isMask(1024)
+        voice = isMask(1, 1024)
         duration = readInt()
-        title = readIfMask(1) { readString() }
-        performer = readIfMask(2) { readString() }
-        waveform = readIfMask(4) { readTLBytes() }
+        title = readIfMask(1, 1) { readString() }
+        performer = readIfMask(1, 2) { readString() }
+        waveform = readIfMask(1, 4) { readTLBytes() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -89,9 +90,9 @@ class TLDocumentAttributeAudio() : TLAbsDocumentAttribute() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(title, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(performer, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(waveform, 4) { computeTLBytesSerializedSize(it) }
+        size += getIntIfMask(1, title, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, performer, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, waveform, 4) { computeTLBytesSerializedSize(it) }
         return size
     }
 

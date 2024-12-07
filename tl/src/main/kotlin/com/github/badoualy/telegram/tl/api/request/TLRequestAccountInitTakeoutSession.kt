@@ -72,6 +72,7 @@ class TLRequestAccountInitTakeoutSession() : TLMethod<TLTakeout>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(contacts, 1)
         updateFlags(messageUsers, 2)
         updateFlags(messageChats, 4)
@@ -81,7 +82,7 @@ class TLRequestAccountInitTakeoutSession() : TLMethod<TLTakeout>() {
         updateFlags(fileMaxSize, 32)
 
         // Following parameters might be forced to true by another field that updated the flags
-        files = isMask(32)
+        files = isMask(1, 32)
     }
 
     @Throws(IOException::class)
@@ -89,19 +90,19 @@ class TLRequestAccountInitTakeoutSession() : TLMethod<TLTakeout>() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(fileMaxSize, 32) { writeLong(it) }
+        doIfMask(1, fileMaxSize, 32) { writeLong(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        contacts = isMask(1)
-        messageUsers = isMask(2)
-        messageChats = isMask(4)
-        messageMegagroups = isMask(8)
-        messageChannels = isMask(16)
-        files = isMask(32)
-        fileMaxSize = readIfMask(32) { readLong() }
+        contacts = isMask(1, 1)
+        messageUsers = isMask(1, 2)
+        messageChats = isMask(1, 4)
+        messageMegagroups = isMask(1, 8)
+        messageChannels = isMask(1, 16)
+        files = isMask(1, 32)
+        fileMaxSize = readIfMask(1, 32) { readLong() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -109,7 +110,7 @@ class TLRequestAccountInitTakeoutSession() : TLMethod<TLTakeout>() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(fileMaxSize, 32) { SIZE_INT64 }
+        size += getIntIfMask(1, fileMaxSize, 32) { SIZE_INT64 }
         return size
     }
 

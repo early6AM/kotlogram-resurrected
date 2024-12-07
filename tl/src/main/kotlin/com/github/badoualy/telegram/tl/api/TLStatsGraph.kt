@@ -38,6 +38,7 @@ class TLStatsGraph() : TLAbsStatsGraph() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(zoomToken, 1)
     }
 
@@ -47,14 +48,14 @@ class TLStatsGraph() : TLAbsStatsGraph() {
 
         writeInt(_flags)
         writeTLObject(json)
-        doIfMask(zoomToken, 1) { writeString(it) }
+        doIfMask(1, zoomToken, 1) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         json = readTLObject<TLDataJSON>(TLDataJSON::class, TLDataJSON.CONSTRUCTOR_ID)
-        zoomToken = readIfMask(1) { readString() }
+        zoomToken = readIfMask(1, 1) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -63,7 +64,7 @@ class TLStatsGraph() : TLAbsStatsGraph() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += json.computeSerializedSize()
-        size += getIntIfMask(zoomToken, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, zoomToken, 1) { computeTLStringSerializedSize(it) }
         return size
     }
 

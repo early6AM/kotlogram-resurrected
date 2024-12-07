@@ -57,6 +57,7 @@ class TLChatlistInvite() : TLAbsChatlistInvite() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(emoticon, 1)
     }
 
@@ -66,7 +67,7 @@ class TLChatlistInvite() : TLAbsChatlistInvite() {
 
         writeInt(_flags)
         writeString(title)
-        doIfMask(emoticon, 1) { writeString(it) }
+        doIfMask(1, emoticon, 1) { writeString(it) }
         writeTLVector(peers)
         writeTLVector(chats)
         writeTLVector(users)
@@ -76,7 +77,7 @@ class TLChatlistInvite() : TLAbsChatlistInvite() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         title = readString()
-        emoticon = readIfMask(1) { readString() }
+        emoticon = readIfMask(1, 1) { readString() }
         peers = readTLVector<TLAbsPeer>()
         chats = readTLVector<TLAbsChat>()
         users = readTLVector<TLAbsUser>()
@@ -88,7 +89,7 @@ class TLChatlistInvite() : TLAbsChatlistInvite() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += computeTLStringSerializedSize(title)
-        size += getIntIfMask(emoticon, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, emoticon, 1) { computeTLStringSerializedSize(it) }
         size += peers.computeSerializedSize()
         size += chats.computeSerializedSize()
         size += users.computeSerializedSize()

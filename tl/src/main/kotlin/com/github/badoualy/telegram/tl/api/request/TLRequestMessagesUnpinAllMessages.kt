@@ -43,6 +43,7 @@ class TLRequestMessagesUnpinAllMessages() : TLMethod<TLAffectedHistory>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(topMsgId, 1)
     }
 
@@ -52,14 +53,14 @@ class TLRequestMessagesUnpinAllMessages() : TLMethod<TLAffectedHistory>() {
 
         writeInt(_flags)
         writeTLObject(peer)
-        doIfMask(topMsgId, 1) { writeInt(it) }
+        doIfMask(1, topMsgId, 1) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         peer = readTLObject<TLAbsInputPeer>()
-        topMsgId = readIfMask(1) { readInt() }
+        topMsgId = readIfMask(1, 1) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -68,7 +69,7 @@ class TLRequestMessagesUnpinAllMessages() : TLMethod<TLAffectedHistory>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += peer.computeSerializedSize()
-        size += getIntIfMask(topMsgId, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, topMsgId, 1) { SIZE_INT32 }
         return size
     }
 

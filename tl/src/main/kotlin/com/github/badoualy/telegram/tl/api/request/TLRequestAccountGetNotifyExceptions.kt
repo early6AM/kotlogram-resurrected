@@ -49,6 +49,7 @@ class TLRequestAccountGetNotifyExceptions() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(compareSound, 2)
         updateFlags(compareStories, 4)
         updateFlags(peer, 1)
@@ -59,15 +60,15 @@ class TLRequestAccountGetNotifyExceptions() : TLMethod<TLAbsUpdates>() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(peer, 1) { writeTLObject(it) }
+        doIfMask(1, peer, 1) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        compareSound = isMask(2)
-        compareStories = isMask(4)
-        peer = readIfMask(1) { readTLObject<TLAbsInputNotifyPeer>() }
+        compareSound = isMask(1, 2)
+        compareStories = isMask(1, 4)
+        peer = readIfMask(1, 1) { readTLObject<TLAbsInputNotifyPeer>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -75,7 +76,7 @@ class TLRequestAccountGetNotifyExceptions() : TLMethod<TLAbsUpdates>() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(peer, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, peer, 1) { it.computeSerializedSize() }
         return size
     }
 

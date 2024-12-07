@@ -51,6 +51,7 @@ class TLMessageMediaStory() : TLAbsMessageMedia() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(viaMention, 2)
         updateFlags(story, 1)
     }
@@ -62,16 +63,16 @@ class TLMessageMediaStory() : TLAbsMessageMedia() {
         writeInt(_flags)
         writeTLObject(peer)
         writeInt(id)
-        doIfMask(story, 1) { writeTLObject(it) }
+        doIfMask(1, story, 1) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        viaMention = isMask(2)
+        viaMention = isMask(1, 2)
         peer = readTLObject<TLAbsPeer>()
         id = readInt()
-        story = readIfMask(1) { readTLObject<TLAbsStoryItem>() }
+        story = readIfMask(1, 1) { readTLObject<TLAbsStoryItem>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -81,7 +82,7 @@ class TLMessageMediaStory() : TLAbsMessageMedia() {
         size += SIZE_INT32
         size += peer.computeSerializedSize()
         size += SIZE_INT32
-        size += getIntIfMask(story, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, story, 1) { it.computeSerializedSize() }
         return size
     }
 

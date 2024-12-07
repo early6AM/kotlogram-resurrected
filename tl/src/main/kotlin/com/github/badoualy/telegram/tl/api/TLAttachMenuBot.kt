@@ -83,6 +83,7 @@ class TLAttachMenuBot() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(inactive, 1)
         updateFlags(hasSettings, 2)
         updateFlags(requestWriteAccess, 4)
@@ -92,7 +93,7 @@ class TLAttachMenuBot() : TLObject() {
         updateFlags(peerTypes, 8)
 
         // Following parameters might be forced to true by another field that updated the flags
-        showInAttachMenu = isMask(8)
+        showInAttachMenu = isMask(1, 8)
     }
 
     @Throws(IOException::class)
@@ -102,22 +103,22 @@ class TLAttachMenuBot() : TLObject() {
         writeInt(_flags)
         writeLong(botId)
         writeString(shortName)
-        doIfMask(peerTypes, 8) { writeTLVector(it) }
+        doIfMask(1, peerTypes, 8) { writeTLVector(it) }
         writeTLVector(icons)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        inactive = isMask(1)
-        hasSettings = isMask(2)
-        requestWriteAccess = isMask(4)
-        showInAttachMenu = isMask(8)
-        showInSideMenu = isMask(16)
-        sideMenuDisclaimerNeeded = isMask(32)
+        inactive = isMask(1, 1)
+        hasSettings = isMask(1, 2)
+        requestWriteAccess = isMask(1, 4)
+        showInAttachMenu = isMask(1, 8)
+        showInSideMenu = isMask(1, 16)
+        sideMenuDisclaimerNeeded = isMask(1, 32)
         botId = readLong()
         shortName = readString()
-        peerTypes = readIfMask(8) { readTLVector<TLAbsAttachMenuPeerType>() }
+        peerTypes = readIfMask(1, 8) { readTLVector<TLAbsAttachMenuPeerType>() }
         icons = readTLVector<TLAttachMenuBotIcon>()
     }
 
@@ -128,7 +129,7 @@ class TLAttachMenuBot() : TLObject() {
         size += SIZE_INT32
         size += SIZE_INT64
         size += computeTLStringSerializedSize(shortName)
-        size += getIntIfMask(peerTypes, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, peerTypes, 8) { it.computeSerializedSize() }
         size += icons.computeSerializedSize()
         return size
     }

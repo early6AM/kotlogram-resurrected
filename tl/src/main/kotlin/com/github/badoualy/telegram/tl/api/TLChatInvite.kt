@@ -99,6 +99,7 @@ class TLChatInvite() : TLAbsChatInvite() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(channel, 1)
         updateFlags(broadcast, 2)
         updateFlags(_public, 4)
@@ -117,29 +118,29 @@ class TLChatInvite() : TLAbsChatInvite() {
 
         writeInt(_flags)
         writeString(title)
-        doIfMask(about, 32) { writeString(it) }
+        doIfMask(1, about, 32) { writeString(it) }
         writeTLObject(photo)
         writeInt(participantsCount)
-        doIfMask(participants, 16) { writeTLVector(it) }
+        doIfMask(1, participants, 16) { writeTLVector(it) }
         writeInt(color)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        channel = isMask(1)
-        broadcast = isMask(2)
-        _public = isMask(4)
-        megagroup = isMask(8)
-        requestNeeded = isMask(64)
-        verified = isMask(128)
-        scam = isMask(256)
-        fake = isMask(512)
+        channel = isMask(1, 1)
+        broadcast = isMask(1, 2)
+        _public = isMask(1, 4)
+        megagroup = isMask(1, 8)
+        requestNeeded = isMask(1, 64)
+        verified = isMask(1, 128)
+        scam = isMask(1, 256)
+        fake = isMask(1, 512)
         title = readString()
-        about = readIfMask(32) { readString() }
+        about = readIfMask(1, 32) { readString() }
         photo = readTLObject<TLAbsPhoto>()
         participantsCount = readInt()
-        participants = readIfMask(16) { readTLVector<TLAbsUser>() }
+        participants = readIfMask(1, 16) { readTLVector<TLAbsUser>() }
         color = readInt()
     }
 
@@ -149,10 +150,10 @@ class TLChatInvite() : TLAbsChatInvite() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += computeTLStringSerializedSize(title)
-        size += getIntIfMask(about, 32) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, about, 32) { computeTLStringSerializedSize(it) }
         size += photo.computeSerializedSize()
         size += SIZE_INT32
-        size += getIntIfMask(participants, 16) { it.computeSerializedSize() }
+        size += getIntIfMask(1, participants, 16) { it.computeSerializedSize() }
         size += SIZE_INT32
         return size
     }

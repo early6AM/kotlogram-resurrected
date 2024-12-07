@@ -37,6 +37,7 @@ class TLRequestAccountSetContentSettings() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(sensitiveEnabled, 1)
     }
 
@@ -50,7 +51,7 @@ class TLRequestAccountSetContentSettings() : TLMethod<TLBool>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        sensitiveEnabled = isMask(1)
+        sensitiveEnabled = isMask(1, 1)
     }
 
     override fun computeSerializedSize(): Int {

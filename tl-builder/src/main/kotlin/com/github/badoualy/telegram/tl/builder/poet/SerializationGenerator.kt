@@ -9,7 +9,7 @@ internal fun serializeParameter(fieldName: String, fieldTlType: TLType): String 
     is TLTypeFlag -> "writeInt($fieldName)"
     is TLTypeFlag2 -> "writeInt($fieldName)"
     is TLTypeConditional -> {
-        "doIfMask($fieldName, ${fieldTlType.pow2Value()}) " +
+        "doIfMask(${fieldTlType.version}, $fieldName, ${fieldTlType.pow2Value()}) " +
                 "{ ${serializeParameter("it", fieldTlType.realType)} }"
     }
     is TLTypeGeneric -> "writeTLVector($fieldName)"
@@ -35,9 +35,10 @@ internal fun deserializeParameter(fieldTlType: TLType, fieldType: TypeName): Str
         val realType = fieldTlType.realType
 
         if (realType.isTrueFalseFlag()) {
-            "isMask(${fieldTlType.pow2Value()})"
+            val conditional: TLTypeConditional = fieldTlType
+            "isMask(${conditional.version}, ${conditional.pow2Value()})"
         } else {
-            "readIfMask(${fieldTlType.pow2Value()}) " +
+            "readIfMask(${fieldTlType.version}, ${fieldTlType.pow2Value()}) " +
                     "{ ${deserializeParameter(realType, fieldType)} }"
         }
     }
@@ -76,7 +77,7 @@ internal fun computeSizeParameter(fieldName: String, fieldTlType: TLType): Strin
     is TLTypeFlag -> "SIZE_INT32"
     is TLTypeFlag2 -> "SIZE_INT32"
     is TLTypeConditional -> {
-        "getIntIfMask($fieldName, ${fieldTlType.pow2Value()}) " +
+        "getIntIfMask(${fieldTlType.version}, $fieldName, ${fieldTlType.pow2Value()}) " +
                 "{ ${computeSizeParameter("it", fieldTlType.realType)} }"
     }
     is TLTypeGeneric -> "$fieldName.computeSerializedSize()"

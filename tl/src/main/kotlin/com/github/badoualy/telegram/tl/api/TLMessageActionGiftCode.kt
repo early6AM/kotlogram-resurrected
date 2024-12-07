@@ -73,6 +73,7 @@ class TLMessageActionGiftCode() : TLAbsMessageAction() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(viaGiveaway, 1)
         updateFlags(unclaimed, 4)
         updateFlags(boostPeer, 2)
@@ -82,7 +83,7 @@ class TLMessageActionGiftCode() : TLAbsMessageAction() {
         updateFlags(cryptoAmount, 8)
 
         // Following parameters might be forced to true by another field that updated the flags
-        unclaimed = isMask(4)
+        unclaimed = isMask(1, 4)
     }
 
     @Throws(IOException::class)
@@ -90,27 +91,27 @@ class TLMessageActionGiftCode() : TLAbsMessageAction() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(boostPeer, 2) { writeTLObject(it) }
+        doIfMask(1, boostPeer, 2) { writeTLObject(it) }
         writeInt(months)
         writeString(slug)
-        doIfMask(currency, 4) { writeString(it) }
-        doIfMask(amount, 4) { writeLong(it) }
-        doIfMask(cryptoCurrency, 8) { writeString(it) }
-        doIfMask(cryptoAmount, 8) { writeLong(it) }
+        doIfMask(1, currency, 4) { writeString(it) }
+        doIfMask(1, amount, 4) { writeLong(it) }
+        doIfMask(1, cryptoCurrency, 8) { writeString(it) }
+        doIfMask(1, cryptoAmount, 8) { writeLong(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        viaGiveaway = isMask(1)
-        unclaimed = isMask(4)
-        boostPeer = readIfMask(2) { readTLObject<TLAbsPeer>() }
+        viaGiveaway = isMask(1, 1)
+        unclaimed = isMask(1, 4)
+        boostPeer = readIfMask(1, 2) { readTLObject<TLAbsPeer>() }
         months = readInt()
         slug = readString()
-        currency = readIfMask(4) { readString() }
-        amount = readIfMask(4) { readLong() }
-        cryptoCurrency = readIfMask(8) { readString() }
-        cryptoAmount = readIfMask(8) { readLong() }
+        currency = readIfMask(1, 4) { readString() }
+        amount = readIfMask(1, 4) { readLong() }
+        cryptoCurrency = readIfMask(1, 8) { readString() }
+        cryptoAmount = readIfMask(1, 8) { readLong() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -118,13 +119,13 @@ class TLMessageActionGiftCode() : TLAbsMessageAction() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(boostPeer, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, boostPeer, 2) { it.computeSerializedSize() }
         size += SIZE_INT32
         size += computeTLStringSerializedSize(slug)
-        size += getIntIfMask(currency, 4) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(amount, 4) { SIZE_INT64 }
-        size += getIntIfMask(cryptoCurrency, 8) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(cryptoAmount, 8) { SIZE_INT64 }
+        size += getIntIfMask(1, currency, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, amount, 4) { SIZE_INT64 }
+        size += getIntIfMask(1, cryptoCurrency, 8) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, cryptoAmount, 8) { SIZE_INT64 }
         return size
     }
 

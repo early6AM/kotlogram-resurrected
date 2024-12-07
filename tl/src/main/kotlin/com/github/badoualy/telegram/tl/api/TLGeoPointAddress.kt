@@ -50,6 +50,7 @@ class TLGeoPointAddress() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(state, 1)
         updateFlags(city, 2)
         updateFlags(street, 4)
@@ -61,18 +62,18 @@ class TLGeoPointAddress() : TLObject() {
 
         writeInt(_flags)
         writeString(countryIso2)
-        doIfMask(state, 1) { writeString(it) }
-        doIfMask(city, 2) { writeString(it) }
-        doIfMask(street, 4) { writeString(it) }
+        doIfMask(1, state, 1) { writeString(it) }
+        doIfMask(1, city, 2) { writeString(it) }
+        doIfMask(1, street, 4) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         countryIso2 = readString()
-        state = readIfMask(1) { readString() }
-        city = readIfMask(2) { readString() }
-        street = readIfMask(4) { readString() }
+        state = readIfMask(1, 1) { readString() }
+        city = readIfMask(1, 2) { readString() }
+        street = readIfMask(1, 4) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -81,9 +82,9 @@ class TLGeoPointAddress() : TLObject() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += computeTLStringSerializedSize(countryIso2)
-        size += getIntIfMask(state, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(city, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(street, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, state, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, city, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, street, 4) { computeTLStringSerializedSize(it) }
         return size
     }
 

@@ -45,6 +45,7 @@ class TLWebPageAttributeStory() : TLAbsWebPageAttribute() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(story, 1)
     }
 
@@ -55,7 +56,7 @@ class TLWebPageAttributeStory() : TLAbsWebPageAttribute() {
         writeInt(_flags)
         writeTLObject(peer)
         writeInt(id)
-        doIfMask(story, 1) { writeTLObject(it) }
+        doIfMask(1, story, 1) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
@@ -63,7 +64,7 @@ class TLWebPageAttributeStory() : TLAbsWebPageAttribute() {
         _flags = readInt()
         peer = readTLObject<TLAbsPeer>()
         id = readInt()
-        story = readIfMask(1) { readTLObject<TLAbsStoryItem>() }
+        story = readIfMask(1, 1) { readTLObject<TLAbsStoryItem>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -73,7 +74,7 @@ class TLWebPageAttributeStory() : TLAbsWebPageAttribute() {
         size += SIZE_INT32
         size += peer.computeSerializedSize()
         size += SIZE_INT32
-        size += getIntIfMask(story, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, story, 1) { it.computeSerializedSize() }
         return size
     }
 

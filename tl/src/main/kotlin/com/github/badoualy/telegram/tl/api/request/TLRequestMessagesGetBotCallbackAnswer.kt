@@ -62,6 +62,7 @@ class TLRequestMessagesGetBotCallbackAnswer() : TLMethod<TLBotCallbackAnswer>() 
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(game, 2)
         updateFlags(data, 1)
         updateFlags(password, 4)
@@ -74,18 +75,18 @@ class TLRequestMessagesGetBotCallbackAnswer() : TLMethod<TLBotCallbackAnswer>() 
         writeInt(_flags)
         writeTLObject(peer)
         writeInt(msgId)
-        doIfMask(data, 1) { writeTLBytes(it) }
-        doIfMask(password, 4) { writeTLObject(it) }
+        doIfMask(1, data, 1) { writeTLBytes(it) }
+        doIfMask(1, password, 4) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        game = isMask(2)
+        game = isMask(1, 2)
         peer = readTLObject<TLAbsInputPeer>()
         msgId = readInt()
-        data = readIfMask(1) { readTLBytes() }
-        password = readIfMask(4) { readTLObject<TLAbsInputCheckPasswordSRP>() }
+        data = readIfMask(1, 1) { readTLBytes() }
+        password = readIfMask(1, 4) { readTLObject<TLAbsInputCheckPasswordSRP>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -95,8 +96,8 @@ class TLRequestMessagesGetBotCallbackAnswer() : TLMethod<TLBotCallbackAnswer>() 
         size += SIZE_INT32
         size += peer.computeSerializedSize()
         size += SIZE_INT32
-        size += getIntIfMask(data, 1) { computeTLBytesSerializedSize(it) }
-        size += getIntIfMask(password, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, data, 1) { computeTLBytesSerializedSize(it) }
+        size += getIntIfMask(1, password, 4) { it.computeSerializedSize() }
         return size
     }
 

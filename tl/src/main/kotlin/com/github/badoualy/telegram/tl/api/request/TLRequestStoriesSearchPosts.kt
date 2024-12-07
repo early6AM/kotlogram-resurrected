@@ -53,6 +53,7 @@ class TLRequestStoriesSearchPosts() : TLMethod<TLFoundStories>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(hashtag, 1)
         updateFlags(area, 2)
     }
@@ -62,8 +63,8 @@ class TLRequestStoriesSearchPosts() : TLMethod<TLFoundStories>() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(hashtag, 1) { writeString(it) }
-        doIfMask(area, 2) { writeTLObject(it) }
+        doIfMask(1, hashtag, 1) { writeString(it) }
+        doIfMask(1, area, 2) { writeTLObject(it) }
         writeString(offset)
         writeInt(limit)
     }
@@ -71,8 +72,8 @@ class TLRequestStoriesSearchPosts() : TLMethod<TLFoundStories>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        hashtag = readIfMask(1) { readString() }
-        area = readIfMask(2) { readTLObject<TLAbsMediaArea>() }
+        hashtag = readIfMask(1, 1) { readString() }
+        area = readIfMask(1, 2) { readTLObject<TLAbsMediaArea>() }
         offset = readString()
         limit = readInt()
     }
@@ -82,8 +83,8 @@ class TLRequestStoriesSearchPosts() : TLMethod<TLFoundStories>() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(hashtag, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(area, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, hashtag, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, area, 2) { it.computeSerializedSize() }
         size += computeTLStringSerializedSize(offset)
         size += SIZE_INT32
         return size

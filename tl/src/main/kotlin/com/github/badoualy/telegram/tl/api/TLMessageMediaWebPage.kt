@@ -58,6 +58,7 @@ class TLMessageMediaWebPage() : TLAbsMessageMedia() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(forceLargeMedia, 1)
         updateFlags(forceSmallMedia, 2)
         updateFlags(manual, 8)
@@ -75,10 +76,10 @@ class TLMessageMediaWebPage() : TLAbsMessageMedia() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        forceLargeMedia = isMask(1)
-        forceSmallMedia = isMask(2)
-        manual = isMask(8)
-        safe = isMask(16)
+        forceLargeMedia = isMask(1, 1)
+        forceSmallMedia = isMask(1, 2)
+        manual = isMask(1, 8)
+        safe = isMask(1, 16)
         webpage = readTLObject<TLAbsWebPage>()
     }
 

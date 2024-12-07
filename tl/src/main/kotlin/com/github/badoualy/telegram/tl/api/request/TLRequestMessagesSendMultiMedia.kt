@@ -99,6 +99,7 @@ class TLRequestMessagesSendMultiMedia() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(silent, 32)
         updateFlags(background, 64)
         updateFlags(clearDraft, 128)
@@ -118,30 +119,30 @@ class TLRequestMessagesSendMultiMedia() : TLMethod<TLAbsUpdates>() {
 
         writeInt(_flags)
         writeTLObject(peer)
-        doIfMask(replyTo, 1) { writeTLObject(it) }
+        doIfMask(1, replyTo, 1) { writeTLObject(it) }
         writeTLVector(multiMedia)
-        doIfMask(scheduleDate, 1024) { writeInt(it) }
-        doIfMask(sendAs, 8192) { writeTLObject(it) }
-        doIfMask(quickReplyShortcut, 131072) { writeTLObject(it) }
-        doIfMask(effect, 262144) { writeLong(it) }
+        doIfMask(1, scheduleDate, 1024) { writeInt(it) }
+        doIfMask(1, sendAs, 8192) { writeTLObject(it) }
+        doIfMask(1, quickReplyShortcut, 131072) { writeTLObject(it) }
+        doIfMask(1, effect, 262144) { writeLong(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        silent = isMask(32)
-        background = isMask(64)
-        clearDraft = isMask(128)
-        noforwards = isMask(16384)
-        updateStickersetsOrder = isMask(32768)
-        invertMedia = isMask(65536)
+        silent = isMask(1, 32)
+        background = isMask(1, 64)
+        clearDraft = isMask(1, 128)
+        noforwards = isMask(1, 16384)
+        updateStickersetsOrder = isMask(1, 32768)
+        invertMedia = isMask(1, 65536)
         peer = readTLObject<TLAbsInputPeer>()
-        replyTo = readIfMask(1) { readTLObject<TLAbsInputReplyTo>() }
+        replyTo = readIfMask(1, 1) { readTLObject<TLAbsInputReplyTo>() }
         multiMedia = readTLVector<TLInputSingleMedia>()
-        scheduleDate = readIfMask(1024) { readInt() }
-        sendAs = readIfMask(8192) { readTLObject<TLAbsInputPeer>() }
-        quickReplyShortcut = readIfMask(131072) { readTLObject<TLAbsInputQuickReplyShortcut>() }
-        effect = readIfMask(262144) { readLong() }
+        scheduleDate = readIfMask(1, 1024) { readInt() }
+        sendAs = readIfMask(1, 8192) { readTLObject<TLAbsInputPeer>() }
+        quickReplyShortcut = readIfMask(1, 131072) { readTLObject<TLAbsInputQuickReplyShortcut>() }
+        effect = readIfMask(1, 262144) { readLong() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -150,12 +151,12 @@ class TLRequestMessagesSendMultiMedia() : TLMethod<TLAbsUpdates>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += peer.computeSerializedSize()
-        size += getIntIfMask(replyTo, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, replyTo, 1) { it.computeSerializedSize() }
         size += multiMedia.computeSerializedSize()
-        size += getIntIfMask(scheduleDate, 1024) { SIZE_INT32 }
-        size += getIntIfMask(sendAs, 8192) { it.computeSerializedSize() }
-        size += getIntIfMask(quickReplyShortcut, 131072) { it.computeSerializedSize() }
-        size += getIntIfMask(effect, 262144) { SIZE_INT64 }
+        size += getIntIfMask(1, scheduleDate, 1024) { SIZE_INT32 }
+        size += getIntIfMask(1, sendAs, 8192) { it.computeSerializedSize() }
+        size += getIntIfMask(1, quickReplyShortcut, 131072) { it.computeSerializedSize() }
+        size += getIntIfMask(1, effect, 262144) { SIZE_INT64 }
         return size
     }
 

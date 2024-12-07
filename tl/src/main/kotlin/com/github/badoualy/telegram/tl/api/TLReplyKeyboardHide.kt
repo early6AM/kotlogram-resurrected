@@ -37,6 +37,7 @@ class TLReplyKeyboardHide() : TLAbsReplyMarkup() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(selective, 4)
     }
 
@@ -50,7 +51,7 @@ class TLReplyKeyboardHide() : TLAbsReplyMarkup() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        selective = isMask(4)
+        selective = isMask(1, 4)
     }
 
     override fun computeSerializedSize(): Int {

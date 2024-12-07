@@ -110,6 +110,7 @@ class TLChatAdminRights() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(changeInfo, 1)
         updateFlags(postMessages, 2)
         updateFlags(editMessages, 4)
@@ -137,21 +138,21 @@ class TLChatAdminRights() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        changeInfo = isMask(1)
-        postMessages = isMask(2)
-        editMessages = isMask(4)
-        deleteMessages = isMask(8)
-        banUsers = isMask(16)
-        inviteUsers = isMask(32)
-        pinMessages = isMask(128)
-        addAdmins = isMask(512)
-        anonymous = isMask(1024)
-        manageCall = isMask(2048)
-        other = isMask(4096)
-        manageTopics = isMask(8192)
-        postStories = isMask(16384)
-        editStories = isMask(32768)
-        deleteStories = isMask(65536)
+        changeInfo = isMask(1, 1)
+        postMessages = isMask(1, 2)
+        editMessages = isMask(1, 4)
+        deleteMessages = isMask(1, 8)
+        banUsers = isMask(1, 16)
+        inviteUsers = isMask(1, 32)
+        pinMessages = isMask(1, 128)
+        addAdmins = isMask(1, 512)
+        anonymous = isMask(1, 1024)
+        manageCall = isMask(1, 2048)
+        other = isMask(1, 4096)
+        manageTopics = isMask(1, 8192)
+        postStories = isMask(1, 16384)
+        editStories = isMask(1, 32768)
+        deleteStories = isMask(1, 65536)
     }
 
     override fun computeSerializedSize(): Int {

@@ -40,6 +40,7 @@ class TLEncryptedChatDiscarded() : TLAbsEncryptedChat() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(historyDeleted, 1)
     }
 
@@ -54,7 +55,7 @@ class TLEncryptedChatDiscarded() : TLAbsEncryptedChat() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        historyDeleted = isMask(1)
+        historyDeleted = isMask(1, 1)
         id = readInt()
     }
 

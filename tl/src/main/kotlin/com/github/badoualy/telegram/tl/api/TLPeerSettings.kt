@@ -111,6 +111,7 @@ class TLPeerSettings() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(reportSpam, 1)
         updateFlags(addContact, 2)
         updateFlags(blockContact, 4)
@@ -134,32 +135,32 @@ class TLPeerSettings() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(geoDistance, 64) { writeInt(it) }
-        doIfMask(requestChatTitle, 512) { writeString(it) }
-        doIfMask(requestChatDate, 512) { writeInt(it) }
-        doIfMask(businessBotId, 8192) { writeLong(it) }
-        doIfMask(businessBotManageUrl, 8192) { writeString(it) }
+        doIfMask(1, geoDistance, 64) { writeInt(it) }
+        doIfMask(1, requestChatTitle, 512) { writeString(it) }
+        doIfMask(1, requestChatDate, 512) { writeInt(it) }
+        doIfMask(1, businessBotId, 8192) { writeLong(it) }
+        doIfMask(1, businessBotManageUrl, 8192) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        reportSpam = isMask(1)
-        addContact = isMask(2)
-        blockContact = isMask(4)
-        shareContact = isMask(8)
-        needContactsException = isMask(16)
-        reportGeo = isMask(32)
-        autoarchived = isMask(128)
-        inviteMembers = isMask(256)
-        requestChatBroadcast = isMask(1024)
-        businessBotPaused = isMask(2048)
-        businessBotCanReply = isMask(4096)
-        geoDistance = readIfMask(64) { readInt() }
-        requestChatTitle = readIfMask(512) { readString() }
-        requestChatDate = readIfMask(512) { readInt() }
-        businessBotId = readIfMask(8192) { readLong() }
-        businessBotManageUrl = readIfMask(8192) { readString() }
+        reportSpam = isMask(1, 1)
+        addContact = isMask(1, 2)
+        blockContact = isMask(1, 4)
+        shareContact = isMask(1, 8)
+        needContactsException = isMask(1, 16)
+        reportGeo = isMask(1, 32)
+        autoarchived = isMask(1, 128)
+        inviteMembers = isMask(1, 256)
+        requestChatBroadcast = isMask(1, 1024)
+        businessBotPaused = isMask(1, 2048)
+        businessBotCanReply = isMask(1, 4096)
+        geoDistance = readIfMask(1, 64) { readInt() }
+        requestChatTitle = readIfMask(1, 512) { readString() }
+        requestChatDate = readIfMask(1, 512) { readInt() }
+        businessBotId = readIfMask(1, 8192) { readLong() }
+        businessBotManageUrl = readIfMask(1, 8192) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -167,11 +168,11 @@ class TLPeerSettings() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(geoDistance, 64) { SIZE_INT32 }
-        size += getIntIfMask(requestChatTitle, 512) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(requestChatDate, 512) { SIZE_INT32 }
-        size += getIntIfMask(businessBotId, 8192) { SIZE_INT64 }
-        size += getIntIfMask(businessBotManageUrl, 8192) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, geoDistance, 64) { SIZE_INT32 }
+        size += getIntIfMask(1, requestChatTitle, 512) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, requestChatDate, 512) { SIZE_INT32 }
+        size += getIntIfMask(1, businessBotId, 8192) { SIZE_INT64 }
+        size += getIntIfMask(1, businessBotManageUrl, 8192) { computeTLStringSerializedSize(it) }
         return size
     }
 

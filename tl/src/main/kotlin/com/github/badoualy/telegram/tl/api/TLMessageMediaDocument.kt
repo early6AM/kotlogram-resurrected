@@ -71,6 +71,7 @@ class TLMessageMediaDocument() : TLAbsMessageMedia() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(nopremium, 8)
         updateFlags(spoiler, 16)
         updateFlags(video, 64)
@@ -86,22 +87,22 @@ class TLMessageMediaDocument() : TLAbsMessageMedia() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(document, 1) { writeTLObject(it) }
-        doIfMask(altDocument, 32) { writeTLObject(it) }
-        doIfMask(ttlSeconds, 4) { writeInt(it) }
+        doIfMask(1, document, 1) { writeTLObject(it) }
+        doIfMask(1, altDocument, 32) { writeTLObject(it) }
+        doIfMask(1, ttlSeconds, 4) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        nopremium = isMask(8)
-        spoiler = isMask(16)
-        video = isMask(64)
-        round = isMask(128)
-        voice = isMask(256)
-        document = readIfMask(1) { readTLObject<TLAbsDocument>() }
-        altDocument = readIfMask(32) { readTLObject<TLAbsDocument>() }
-        ttlSeconds = readIfMask(4) { readInt() }
+        nopremium = isMask(1, 8)
+        spoiler = isMask(1, 16)
+        video = isMask(1, 64)
+        round = isMask(1, 128)
+        voice = isMask(1, 256)
+        document = readIfMask(1, 1) { readTLObject<TLAbsDocument>() }
+        altDocument = readIfMask(1, 32) { readTLObject<TLAbsDocument>() }
+        ttlSeconds = readIfMask(1, 4) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -109,9 +110,9 @@ class TLMessageMediaDocument() : TLAbsMessageMedia() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(document, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(altDocument, 32) { it.computeSerializedSize() }
-        size += getIntIfMask(ttlSeconds, 4) { SIZE_INT32 }
+        size += getIntIfMask(1, document, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, altDocument, 32) { it.computeSerializedSize() }
+        size += getIntIfMask(1, ttlSeconds, 4) { SIZE_INT32 }
         return size
     }
 

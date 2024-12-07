@@ -52,6 +52,7 @@ class TLDocumentAttributeCustomEmoji() : TLAbsDocumentAttribute() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(free, 1)
         updateFlags(textColor, 2)
     }
@@ -68,8 +69,8 @@ class TLDocumentAttributeCustomEmoji() : TLAbsDocumentAttribute() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        free = isMask(1)
-        textColor = isMask(2)
+        free = isMask(1, 1)
+        textColor = isMask(1, 2)
         alt = readString()
         stickerset = readTLObject<TLAbsInputStickerSet>()
     }

@@ -58,6 +58,7 @@ class TLPhoneCallProtocol() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(udpP2p, 1)
         updateFlags(udpReflector, 2)
     }
@@ -75,8 +76,8 @@ class TLPhoneCallProtocol() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        udpP2p = isMask(1)
-        udpReflector = isMask(2)
+        udpP2p = isMask(1, 1)
+        udpReflector = isMask(1, 2)
         minLayer = readInt()
         maxLayer = readInt()
         libraryVersions = readTLStringVector()

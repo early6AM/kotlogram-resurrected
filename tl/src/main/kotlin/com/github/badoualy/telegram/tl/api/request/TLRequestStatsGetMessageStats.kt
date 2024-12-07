@@ -52,6 +52,7 @@ class TLRequestStatsGetMessageStats() : TLMethod<TLMessageStats>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(dark, 1)
     }
 
@@ -67,7 +68,7 @@ class TLRequestStatsGetMessageStats() : TLMethod<TLMessageStats>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        dark = isMask(1)
+        dark = isMask(1, 1)
         channel = readTLObject<TLAbsInputChannel>()
         msgId = readInt()
     }

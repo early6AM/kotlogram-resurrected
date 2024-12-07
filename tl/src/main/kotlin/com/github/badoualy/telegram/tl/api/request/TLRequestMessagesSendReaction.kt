@@ -60,6 +60,7 @@ class TLRequestMessagesSendReaction() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(big, 2)
         updateFlags(addToRecent, 4)
         updateFlags(reaction, 1)
@@ -72,17 +73,17 @@ class TLRequestMessagesSendReaction() : TLMethod<TLAbsUpdates>() {
         writeInt(_flags)
         writeTLObject(peer)
         writeInt(msgId)
-        doIfMask(reaction, 1) { writeTLVector(it) }
+        doIfMask(1, reaction, 1) { writeTLVector(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        big = isMask(2)
-        addToRecent = isMask(4)
+        big = isMask(1, 2)
+        addToRecent = isMask(1, 4)
         peer = readTLObject<TLAbsInputPeer>()
         msgId = readInt()
-        reaction = readIfMask(1) { readTLVector<TLAbsReaction>() }
+        reaction = readIfMask(1, 1) { readTLVector<TLAbsReaction>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -92,7 +93,7 @@ class TLRequestMessagesSendReaction() : TLMethod<TLAbsUpdates>() {
         size += SIZE_INT32
         size += peer.computeSerializedSize()
         size += SIZE_INT32
-        size += getIntIfMask(reaction, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, reaction, 1) { it.computeSerializedSize() }
         return size
     }
 

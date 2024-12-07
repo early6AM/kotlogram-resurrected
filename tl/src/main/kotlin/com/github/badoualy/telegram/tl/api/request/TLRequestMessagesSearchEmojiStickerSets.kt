@@ -48,6 +48,7 @@ class TLRequestMessagesSearchEmojiStickerSets() : TLMethod<TLAbsFoundStickerSets
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(excludeFeatured, 1)
     }
 
@@ -63,7 +64,7 @@ class TLRequestMessagesSearchEmojiStickerSets() : TLMethod<TLAbsFoundStickerSets
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        excludeFeatured = isMask(1)
+        excludeFeatured = isMask(1, 1)
         q = readString()
         hash = readLong()
     }

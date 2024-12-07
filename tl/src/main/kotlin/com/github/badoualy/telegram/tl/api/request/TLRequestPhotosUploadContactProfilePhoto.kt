@@ -72,6 +72,7 @@ class TLRequestPhotosUploadContactProfilePhoto() : TLMethod<TLPhoto>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(suggest, 8)
         updateFlags(save, 16)
         updateFlags(file, 1)
@@ -86,22 +87,22 @@ class TLRequestPhotosUploadContactProfilePhoto() : TLMethod<TLPhoto>() {
 
         writeInt(_flags)
         writeTLObject(userId)
-        doIfMask(file, 1) { writeTLObject(it) }
-        doIfMask(video, 2) { writeTLObject(it) }
-        doIfMask(videoStartTs, 4) { writeDouble(it) }
-        doIfMask(videoEmojiMarkup, 32) { writeTLObject(it) }
+        doIfMask(1, file, 1) { writeTLObject(it) }
+        doIfMask(1, video, 2) { writeTLObject(it) }
+        doIfMask(1, videoStartTs, 4) { writeDouble(it) }
+        doIfMask(1, videoEmojiMarkup, 32) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        suggest = isMask(8)
-        save = isMask(16)
+        suggest = isMask(1, 8)
+        save = isMask(1, 16)
         userId = readTLObject<TLAbsInputUser>()
-        file = readIfMask(1) { readTLObject<TLAbsInputFile>() }
-        video = readIfMask(2) { readTLObject<TLAbsInputFile>() }
-        videoStartTs = readIfMask(4) { readDouble() }
-        videoEmojiMarkup = readIfMask(32) { readTLObject<TLAbsVideoSize>() }
+        file = readIfMask(1, 1) { readTLObject<TLAbsInputFile>() }
+        video = readIfMask(1, 2) { readTLObject<TLAbsInputFile>() }
+        videoStartTs = readIfMask(1, 4) { readDouble() }
+        videoEmojiMarkup = readIfMask(1, 32) { readTLObject<TLAbsVideoSize>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -110,10 +111,10 @@ class TLRequestPhotosUploadContactProfilePhoto() : TLMethod<TLPhoto>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += userId.computeSerializedSize()
-        size += getIntIfMask(file, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(video, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(videoStartTs, 4) { SIZE_DOUBLE }
-        size += getIntIfMask(videoEmojiMarkup, 32) { it.computeSerializedSize() }
+        size += getIntIfMask(1, file, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, video, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, videoStartTs, 4) { SIZE_DOUBLE }
+        size += getIntIfMask(1, videoEmojiMarkup, 32) { it.computeSerializedSize() }
         return size
     }
 

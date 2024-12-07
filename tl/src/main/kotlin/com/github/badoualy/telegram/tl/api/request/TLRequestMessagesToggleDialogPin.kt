@@ -42,6 +42,7 @@ class TLRequestMessagesToggleDialogPin() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(pinned, 1)
     }
 
@@ -56,7 +57,7 @@ class TLRequestMessagesToggleDialogPin() : TLMethod<TLBool>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        pinned = isMask(1)
+        pinned = isMask(1, 1)
         peer = readTLObject<TLAbsInputDialogPeer>()
     }
 

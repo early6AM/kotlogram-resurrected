@@ -38,6 +38,7 @@ class TLKeyboardButtonRequestPoll() : TLAbsKeyboardButton() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(quiz, 1)
     }
 
@@ -46,14 +47,14 @@ class TLKeyboardButtonRequestPoll() : TLAbsKeyboardButton() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(quiz, 1) { writeBoolean(it) }
+        doIfMask(1, quiz, 1) { writeBoolean(it) }
         writeString(text)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        quiz = readIfMask(1) { readBoolean() }
+        quiz = readIfMask(1, 1) { readBoolean() }
         text = readString()
     }
 
@@ -62,7 +63,7 @@ class TLKeyboardButtonRequestPoll() : TLAbsKeyboardButton() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(quiz, 1) { SIZE_BOOLEAN }
+        size += getIntIfMask(1, quiz, 1) { SIZE_BOOLEAN }
         size += computeTLStringSerializedSize(text)
         return size
     }

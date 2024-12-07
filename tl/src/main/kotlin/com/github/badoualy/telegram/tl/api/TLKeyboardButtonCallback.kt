@@ -48,6 +48,7 @@ class TLKeyboardButtonCallback() : TLAbsKeyboardButton() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(requiresPassword, 1)
     }
 
@@ -63,7 +64,7 @@ class TLKeyboardButtonCallback() : TLAbsKeyboardButton() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        requiresPassword = isMask(1)
+        requiresPassword = isMask(1, 1)
         text = readString()
         data = readTLBytes()
     }

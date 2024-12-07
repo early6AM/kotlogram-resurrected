@@ -47,6 +47,7 @@ class TLUrlAuthResultRequest() : TLAbsUrlAuthResult() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(requestWriteAccess, 1)
     }
 
@@ -62,7 +63,7 @@ class TLUrlAuthResultRequest() : TLAbsUrlAuthResult() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        requestWriteAccess = isMask(1)
+        requestWriteAccess = isMask(1, 1)
         bot = readTLObject<TLAbsUser>()
         domain = readString()
     }

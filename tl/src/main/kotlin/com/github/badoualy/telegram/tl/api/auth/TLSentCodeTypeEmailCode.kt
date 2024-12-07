@@ -60,6 +60,7 @@ class TLSentCodeTypeEmailCode() : TLAbsSentCodeType() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(appleSigninAllowed, 1)
         updateFlags(googleSigninAllowed, 2)
         updateFlags(resetAvailablePeriod, 8)
@@ -73,19 +74,19 @@ class TLSentCodeTypeEmailCode() : TLAbsSentCodeType() {
         writeInt(_flags)
         writeString(emailPattern)
         writeInt(length)
-        doIfMask(resetAvailablePeriod, 8) { writeInt(it) }
-        doIfMask(resetPendingDate, 16) { writeInt(it) }
+        doIfMask(1, resetAvailablePeriod, 8) { writeInt(it) }
+        doIfMask(1, resetPendingDate, 16) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        appleSigninAllowed = isMask(1)
-        googleSigninAllowed = isMask(2)
+        appleSigninAllowed = isMask(1, 1)
+        googleSigninAllowed = isMask(1, 2)
         emailPattern = readString()
         length = readInt()
-        resetAvailablePeriod = readIfMask(8) { readInt() }
-        resetPendingDate = readIfMask(16) { readInt() }
+        resetAvailablePeriod = readIfMask(1, 8) { readInt() }
+        resetPendingDate = readIfMask(1, 16) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -95,8 +96,8 @@ class TLSentCodeTypeEmailCode() : TLAbsSentCodeType() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(emailPattern)
         size += SIZE_INT32
-        size += getIntIfMask(resetAvailablePeriod, 8) { SIZE_INT32 }
-        size += getIntIfMask(resetPendingDate, 16) { SIZE_INT32 }
+        size += getIntIfMask(1, resetAvailablePeriod, 8) { SIZE_INT32 }
+        size += getIntIfMask(1, resetPendingDate, 16) { SIZE_INT32 }
         return size
     }
 

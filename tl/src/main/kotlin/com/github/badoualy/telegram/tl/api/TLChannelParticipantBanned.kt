@@ -56,6 +56,7 @@ class TLChannelParticipantBanned() : TLAbsChannelParticipant() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(left, 1)
     }
 
@@ -73,7 +74,7 @@ class TLChannelParticipantBanned() : TLAbsChannelParticipant() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        left = isMask(1)
+        left = isMask(1, 1)
         peer = readTLObject<TLAbsPeer>()
         kickedBy = readLong()
         date = readInt()

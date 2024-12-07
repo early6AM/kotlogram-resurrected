@@ -52,6 +52,7 @@ class TLRequestStickersChangeSticker() : TLMethod<TLAbsStickerSet>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(emoji, 1)
         updateFlags(maskCoords, 2)
         updateFlags(keywords, 4)
@@ -63,18 +64,18 @@ class TLRequestStickersChangeSticker() : TLMethod<TLAbsStickerSet>() {
 
         writeInt(_flags)
         writeTLObject(sticker)
-        doIfMask(emoji, 1) { writeString(it) }
-        doIfMask(maskCoords, 2) { writeTLObject(it) }
-        doIfMask(keywords, 4) { writeString(it) }
+        doIfMask(1, emoji, 1) { writeString(it) }
+        doIfMask(1, maskCoords, 2) { writeTLObject(it) }
+        doIfMask(1, keywords, 4) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         sticker = readTLObject<TLAbsInputDocument>()
-        emoji = readIfMask(1) { readString() }
-        maskCoords = readIfMask(2) { readTLObject<TLMaskCoords>(TLMaskCoords::class, TLMaskCoords.CONSTRUCTOR_ID) }
-        keywords = readIfMask(4) { readString() }
+        emoji = readIfMask(1, 1) { readString() }
+        maskCoords = readIfMask(1, 2) { readTLObject<TLMaskCoords>(TLMaskCoords::class, TLMaskCoords.CONSTRUCTOR_ID) }
+        keywords = readIfMask(1, 4) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -83,9 +84,9 @@ class TLRequestStickersChangeSticker() : TLMethod<TLAbsStickerSet>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += sticker.computeSerializedSize()
-        size += getIntIfMask(emoji, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(maskCoords, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(keywords, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, emoji, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, maskCoords, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, keywords, 4) { computeTLStringSerializedSize(it) }
         return size
     }
 

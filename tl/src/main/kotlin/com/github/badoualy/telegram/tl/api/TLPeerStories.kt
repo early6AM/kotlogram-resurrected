@@ -47,6 +47,7 @@ class TLPeerStories() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(maxReadId, 1)
     }
 
@@ -56,7 +57,7 @@ class TLPeerStories() : TLObject() {
 
         writeInt(_flags)
         writeTLObject(peer)
-        doIfMask(maxReadId, 1) { writeInt(it) }
+        doIfMask(1, maxReadId, 1) { writeInt(it) }
         writeTLVector(stories)
     }
 
@@ -64,7 +65,7 @@ class TLPeerStories() : TLObject() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         peer = readTLObject<TLAbsPeer>()
-        maxReadId = readIfMask(1) { readInt() }
+        maxReadId = readIfMask(1, 1) { readInt() }
         stories = readTLVector<TLAbsStoryItem>()
     }
 
@@ -74,7 +75,7 @@ class TLPeerStories() : TLObject() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += peer.computeSerializedSize()
-        size += getIntIfMask(maxReadId, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, maxReadId, 1) { SIZE_INT32 }
         size += stories.computeSerializedSize()
         return size
     }

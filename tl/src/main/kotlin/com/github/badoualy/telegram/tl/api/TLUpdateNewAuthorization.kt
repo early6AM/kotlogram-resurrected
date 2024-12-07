@@ -56,13 +56,14 @@ class TLUpdateNewAuthorization() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(unconfirmed, 1)
         updateFlags(date, 1)
         updateFlags(device, 1)
         updateFlags(location, 1)
 
         // Following parameters might be forced to true by another field that updated the flags
-        unconfirmed = isMask(1)
+        unconfirmed = isMask(1, 1)
     }
 
     @Throws(IOException::class)
@@ -71,19 +72,19 @@ class TLUpdateNewAuthorization() : TLAbsUpdate() {
 
         writeInt(_flags)
         writeLong(hash)
-        doIfMask(date, 1) { writeInt(it) }
-        doIfMask(device, 1) { writeString(it) }
-        doIfMask(location, 1) { writeString(it) }
+        doIfMask(1, date, 1) { writeInt(it) }
+        doIfMask(1, device, 1) { writeString(it) }
+        doIfMask(1, location, 1) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        unconfirmed = isMask(1)
+        unconfirmed = isMask(1, 1)
         hash = readLong()
-        date = readIfMask(1) { readInt() }
-        device = readIfMask(1) { readString() }
-        location = readIfMask(1) { readString() }
+        date = readIfMask(1, 1) { readInt() }
+        device = readIfMask(1, 1) { readString() }
+        location = readIfMask(1, 1) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -92,9 +93,9 @@ class TLUpdateNewAuthorization() : TLAbsUpdate() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT64
-        size += getIntIfMask(date, 1) { SIZE_INT32 }
-        size += getIntIfMask(device, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(location, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, date, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, device, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, location, 1) { computeTLStringSerializedSize(it) }
         return size
     }
 

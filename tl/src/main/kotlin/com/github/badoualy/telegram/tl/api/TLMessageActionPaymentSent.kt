@@ -57,6 +57,7 @@ class TLMessageActionPaymentSent() : TLAbsMessageAction() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(recurringInit, 4)
         updateFlags(recurringUsed, 8)
         updateFlags(invoiceSlug, 1)
@@ -69,17 +70,17 @@ class TLMessageActionPaymentSent() : TLAbsMessageAction() {
         writeInt(_flags)
         writeString(currency)
         writeLong(totalAmount)
-        doIfMask(invoiceSlug, 1) { writeString(it) }
+        doIfMask(1, invoiceSlug, 1) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        recurringInit = isMask(4)
-        recurringUsed = isMask(8)
+        recurringInit = isMask(1, 4)
+        recurringUsed = isMask(1, 8)
         currency = readString()
         totalAmount = readLong()
-        invoiceSlug = readIfMask(1) { readString() }
+        invoiceSlug = readIfMask(1, 1) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -89,7 +90,7 @@ class TLMessageActionPaymentSent() : TLAbsMessageAction() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(currency)
         size += SIZE_INT64
-        size += getIntIfMask(invoiceSlug, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, invoiceSlug, 1) { computeTLStringSerializedSize(it) }
         return size
     }
 

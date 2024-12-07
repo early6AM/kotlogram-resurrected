@@ -67,6 +67,7 @@ class TLMessagesSlice() : TLAbsMessages() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(inexact, 2)
         updateFlags(nextRate, 1)
         updateFlags(offsetIdOffset, 4)
@@ -78,8 +79,8 @@ class TLMessagesSlice() : TLAbsMessages() {
 
         writeInt(_flags)
         writeInt(count)
-        doIfMask(nextRate, 1) { writeInt(it) }
-        doIfMask(offsetIdOffset, 4) { writeInt(it) }
+        doIfMask(1, nextRate, 1) { writeInt(it) }
+        doIfMask(1, offsetIdOffset, 4) { writeInt(it) }
         writeTLVector(messages)
         writeTLVector(chats)
         writeTLVector(users)
@@ -88,10 +89,10 @@ class TLMessagesSlice() : TLAbsMessages() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        inexact = isMask(2)
+        inexact = isMask(1, 2)
         count = readInt()
-        nextRate = readIfMask(1) { readInt() }
-        offsetIdOffset = readIfMask(4) { readInt() }
+        nextRate = readIfMask(1, 1) { readInt() }
+        offsetIdOffset = readIfMask(1, 4) { readInt() }
         messages = readTLVector<TLAbsMessage>()
         chats = readTLVector<TLAbsChat>()
         users = readTLVector<TLAbsUser>()
@@ -103,8 +104,8 @@ class TLMessagesSlice() : TLAbsMessages() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(nextRate, 1) { SIZE_INT32 }
-        size += getIntIfMask(offsetIdOffset, 4) { SIZE_INT32 }
+        size += getIntIfMask(1, nextRate, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, offsetIdOffset, 4) { SIZE_INT32 }
         size += messages.computeSerializedSize()
         size += chats.computeSerializedSize()
         size += users.computeSerializedSize()

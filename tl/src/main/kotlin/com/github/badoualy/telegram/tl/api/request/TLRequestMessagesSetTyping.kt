@@ -49,6 +49,7 @@ class TLRequestMessagesSetTyping() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(topMsgId, 1)
     }
 
@@ -58,7 +59,7 @@ class TLRequestMessagesSetTyping() : TLMethod<TLBool>() {
 
         writeInt(_flags)
         writeTLObject(peer)
-        doIfMask(topMsgId, 1) { writeInt(it) }
+        doIfMask(1, topMsgId, 1) { writeInt(it) }
         writeTLObject(action)
     }
 
@@ -66,7 +67,7 @@ class TLRequestMessagesSetTyping() : TLMethod<TLBool>() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         peer = readTLObject<TLAbsInputPeer>()
-        topMsgId = readIfMask(1) { readInt() }
+        topMsgId = readIfMask(1, 1) { readInt() }
         action = readTLObject<TLAbsSendMessageAction>()
     }
 
@@ -76,7 +77,7 @@ class TLRequestMessagesSetTyping() : TLMethod<TLBool>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += peer.computeSerializedSize()
-        size += getIntIfMask(topMsgId, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, topMsgId, 1) { SIZE_INT32 }
         size += action.computeSerializedSize()
         return size
     }

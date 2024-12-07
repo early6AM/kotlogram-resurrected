@@ -49,6 +49,7 @@ class TLRequestMessagesUploadMedia() : TLMethod<TLAbsMessageMedia>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(businessConnectionId, 1)
     }
 
@@ -57,7 +58,7 @@ class TLRequestMessagesUploadMedia() : TLMethod<TLAbsMessageMedia>() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(businessConnectionId, 1) { writeString(it) }
+        doIfMask(1, businessConnectionId, 1) { writeString(it) }
         writeTLObject(peer)
         writeTLObject(media)
     }
@@ -65,7 +66,7 @@ class TLRequestMessagesUploadMedia() : TLMethod<TLAbsMessageMedia>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        businessConnectionId = readIfMask(1) { readString() }
+        businessConnectionId = readIfMask(1, 1) { readString() }
         peer = readTLObject<TLAbsInputPeer>()
         media = readTLObject<TLAbsInputMedia>()
     }
@@ -75,7 +76,7 @@ class TLRequestMessagesUploadMedia() : TLMethod<TLAbsMessageMedia>() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(businessConnectionId, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, businessConnectionId, 1) { computeTLStringSerializedSize(it) }
         size += peer.computeSerializedSize()
         size += media.computeSerializedSize()
         return size

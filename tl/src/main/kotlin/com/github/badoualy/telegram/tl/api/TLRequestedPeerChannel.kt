@@ -50,6 +50,7 @@ class TLRequestedPeerChannel() : TLAbsRequestedPeer() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(title, 1)
         updateFlags(username, 2)
         updateFlags(photo, 4)
@@ -61,18 +62,18 @@ class TLRequestedPeerChannel() : TLAbsRequestedPeer() {
 
         writeInt(_flags)
         writeLong(channelId)
-        doIfMask(title, 1) { writeString(it) }
-        doIfMask(username, 2) { writeString(it) }
-        doIfMask(photo, 4) { writeTLObject(it) }
+        doIfMask(1, title, 1) { writeString(it) }
+        doIfMask(1, username, 2) { writeString(it) }
+        doIfMask(1, photo, 4) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         channelId = readLong()
-        title = readIfMask(1) { readString() }
-        username = readIfMask(2) { readString() }
-        photo = readIfMask(4) { readTLObject<TLAbsPhoto>() }
+        title = readIfMask(1, 1) { readString() }
+        username = readIfMask(1, 2) { readString() }
+        photo = readIfMask(1, 4) { readTLObject<TLAbsPhoto>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -81,9 +82,9 @@ class TLRequestedPeerChannel() : TLAbsRequestedPeer() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT64
-        size += getIntIfMask(title, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(username, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(photo, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, title, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, username, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, photo, 4) { it.computeSerializedSize() }
         return size
     }
 

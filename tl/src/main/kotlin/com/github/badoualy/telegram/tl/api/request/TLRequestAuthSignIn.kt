@@ -50,6 +50,7 @@ class TLRequestAuthSignIn() : TLMethod<TLAbsAuthorization>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(phoneCode, 1)
         updateFlags(emailVerification, 2)
     }
@@ -61,8 +62,8 @@ class TLRequestAuthSignIn() : TLMethod<TLAbsAuthorization>() {
         writeInt(_flags)
         writeString(phoneNumber)
         writeString(phoneCodeHash)
-        doIfMask(phoneCode, 1) { writeString(it) }
-        doIfMask(emailVerification, 2) { writeTLObject(it) }
+        doIfMask(1, phoneCode, 1) { writeString(it) }
+        doIfMask(1, emailVerification, 2) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
@@ -70,8 +71,8 @@ class TLRequestAuthSignIn() : TLMethod<TLAbsAuthorization>() {
         _flags = readInt()
         phoneNumber = readString()
         phoneCodeHash = readString()
-        phoneCode = readIfMask(1) { readString() }
-        emailVerification = readIfMask(2) { readTLObject<TLAbsEmailVerification>() }
+        phoneCode = readIfMask(1, 1) { readString() }
+        emailVerification = readIfMask(1, 2) { readTLObject<TLAbsEmailVerification>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -81,8 +82,8 @@ class TLRequestAuthSignIn() : TLMethod<TLAbsAuthorization>() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(phoneNumber)
         size += computeTLStringSerializedSize(phoneCodeHash)
-        size += getIntIfMask(phoneCode, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(emailVerification, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, phoneCode, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, emailVerification, 2) { it.computeSerializedSize() }
         return size
     }
 

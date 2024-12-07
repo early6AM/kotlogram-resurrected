@@ -37,6 +37,7 @@ class TLLoggedOut() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(futureAuthToken, 1)
     }
 
@@ -45,13 +46,13 @@ class TLLoggedOut() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(futureAuthToken, 1) { writeTLBytes(it) }
+        doIfMask(1, futureAuthToken, 1) { writeTLBytes(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        futureAuthToken = readIfMask(1) { readTLBytes() }
+        futureAuthToken = readIfMask(1, 1) { readTLBytes() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -59,7 +60,7 @@ class TLLoggedOut() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(futureAuthToken, 1) { computeTLBytesSerializedSize(it) }
+        size += getIntIfMask(1, futureAuthToken, 1) { computeTLBytesSerializedSize(it) }
         return size
     }
 

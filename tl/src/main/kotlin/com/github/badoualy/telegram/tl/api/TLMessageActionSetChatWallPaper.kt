@@ -48,6 +48,7 @@ class TLMessageActionSetChatWallPaper() : TLAbsMessageAction() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(same, 1)
         updateFlags(forBoth, 2)
     }
@@ -63,8 +64,8 @@ class TLMessageActionSetChatWallPaper() : TLAbsMessageAction() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        same = isMask(1)
-        forBoth = isMask(2)
+        same = isMask(1, 1)
+        forBoth = isMask(1, 2)
         wallpaper = readTLObject<TLAbsWallPaper>()
     }
 

@@ -70,6 +70,7 @@ class TLRequestChannelsGetAdminLog() : TLMethod<TLAdminLogResults>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(eventsFilter, 1)
         updateFlags(admins, 2)
     }
@@ -81,8 +82,8 @@ class TLRequestChannelsGetAdminLog() : TLMethod<TLAdminLogResults>() {
         writeInt(_flags)
         writeTLObject(channel)
         writeString(q)
-        doIfMask(eventsFilter, 1) { writeTLObject(it) }
-        doIfMask(admins, 2) { writeTLVector(it) }
+        doIfMask(1, eventsFilter, 1) { writeTLObject(it) }
+        doIfMask(1, admins, 2) { writeTLVector(it) }
         writeLong(maxId)
         writeLong(minId)
         writeInt(limit)
@@ -93,8 +94,8 @@ class TLRequestChannelsGetAdminLog() : TLMethod<TLAdminLogResults>() {
         _flags = readInt()
         channel = readTLObject<TLAbsInputChannel>()
         q = readString()
-        eventsFilter = readIfMask(1) { readTLObject<TLChannelAdminLogEventsFilter>(TLChannelAdminLogEventsFilter::class, TLChannelAdminLogEventsFilter.CONSTRUCTOR_ID) }
-        admins = readIfMask(2) { readTLVector<TLAbsInputUser>() }
+        eventsFilter = readIfMask(1, 1) { readTLObject<TLChannelAdminLogEventsFilter>(TLChannelAdminLogEventsFilter::class, TLChannelAdminLogEventsFilter.CONSTRUCTOR_ID) }
+        admins = readIfMask(1, 2) { readTLVector<TLAbsInputUser>() }
         maxId = readLong()
         minId = readLong()
         limit = readInt()
@@ -107,8 +108,8 @@ class TLRequestChannelsGetAdminLog() : TLMethod<TLAdminLogResults>() {
         size += SIZE_INT32
         size += channel.computeSerializedSize()
         size += computeTLStringSerializedSize(q)
-        size += getIntIfMask(eventsFilter, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(admins, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, eventsFilter, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, admins, 2) { it.computeSerializedSize() }
         size += SIZE_INT64
         size += SIZE_INT64
         size += SIZE_INT32

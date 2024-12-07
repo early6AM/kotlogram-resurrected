@@ -35,6 +35,7 @@ class TLDraftMessageEmpty() : TLAbsDraftMessage() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(date, 1)
     }
 
@@ -43,13 +44,13 @@ class TLDraftMessageEmpty() : TLAbsDraftMessage() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(date, 1) { writeInt(it) }
+        doIfMask(1, date, 1) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        date = readIfMask(1) { readInt() }
+        date = readIfMask(1, 1) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -57,7 +58,7 @@ class TLDraftMessageEmpty() : TLAbsDraftMessage() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(date, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, date, 1) { SIZE_INT32 }
         return size
     }
 

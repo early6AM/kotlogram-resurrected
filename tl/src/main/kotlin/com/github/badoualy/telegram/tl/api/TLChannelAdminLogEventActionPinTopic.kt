@@ -38,6 +38,7 @@ class TLChannelAdminLogEventActionPinTopic() : TLAbsChannelAdminLogEventAction()
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(prevTopic, 1)
         updateFlags(newTopic, 2)
     }
@@ -47,15 +48,15 @@ class TLChannelAdminLogEventActionPinTopic() : TLAbsChannelAdminLogEventAction()
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(prevTopic, 1) { writeTLObject(it) }
-        doIfMask(newTopic, 2) { writeTLObject(it) }
+        doIfMask(1, prevTopic, 1) { writeTLObject(it) }
+        doIfMask(1, newTopic, 2) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        prevTopic = readIfMask(1) { readTLObject<TLAbsForumTopic>() }
-        newTopic = readIfMask(2) { readTLObject<TLAbsForumTopic>() }
+        prevTopic = readIfMask(1, 1) { readTLObject<TLAbsForumTopic>() }
+        newTopic = readIfMask(1, 2) { readTLObject<TLAbsForumTopic>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -63,8 +64,8 @@ class TLChannelAdminLogEventActionPinTopic() : TLAbsChannelAdminLogEventAction()
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(prevTopic, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(newTopic, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, prevTopic, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, newTopic, 2) { it.computeSerializedSize() }
         return size
     }
 

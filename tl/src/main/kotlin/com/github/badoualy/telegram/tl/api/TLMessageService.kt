@@ -92,6 +92,7 @@ class TLMessageService() : TLAbsMessage() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(out, 2)
         updateFlags(mentioned, 16)
         updateFlags(mediaUnread, 32)
@@ -109,30 +110,30 @@ class TLMessageService() : TLAbsMessage() {
 
         writeInt(_flags)
         writeInt(id)
-        doIfMask(fromId, 256) { writeTLObject(it) }
+        doIfMask(1, fromId, 256) { writeTLObject(it) }
         writeTLObject(peerId)
-        doIfMask(replyTo, 8) { writeTLObject(it) }
+        doIfMask(1, replyTo, 8) { writeTLObject(it) }
         writeInt(date)
         writeTLObject(action)
-        doIfMask(ttlPeriod, 33554432) { writeInt(it) }
+        doIfMask(1, ttlPeriod, 33554432) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        out = isMask(2)
-        mentioned = isMask(16)
-        mediaUnread = isMask(32)
-        silent = isMask(8192)
-        post = isMask(16384)
-        legacy = isMask(524288)
+        out = isMask(1, 2)
+        mentioned = isMask(1, 16)
+        mediaUnread = isMask(1, 32)
+        silent = isMask(1, 8192)
+        post = isMask(1, 16384)
+        legacy = isMask(1, 524288)
         id = readInt()
-        fromId = readIfMask(256) { readTLObject<TLAbsPeer>() }
+        fromId = readIfMask(1, 256) { readTLObject<TLAbsPeer>() }
         peerId = readTLObject<TLAbsPeer>()
-        replyTo = readIfMask(8) { readTLObject<TLAbsMessageReplyHeader>() }
+        replyTo = readIfMask(1, 8) { readTLObject<TLAbsMessageReplyHeader>() }
         date = readInt()
         action = readTLObject<TLAbsMessageAction>()
-        ttlPeriod = readIfMask(33554432) { readInt() }
+        ttlPeriod = readIfMask(1, 33554432) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -141,12 +142,12 @@ class TLMessageService() : TLAbsMessage() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(fromId, 256) { it.computeSerializedSize() }
+        size += getIntIfMask(1, fromId, 256) { it.computeSerializedSize() }
         size += peerId.computeSerializedSize()
-        size += getIntIfMask(replyTo, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, replyTo, 8) { it.computeSerializedSize() }
         size += SIZE_INT32
         size += action.computeSerializedSize()
-        size += getIntIfMask(ttlPeriod, 33554432) { SIZE_INT32 }
+        size += getIntIfMask(1, ttlPeriod, 33554432) { SIZE_INT32 }
         return size
     }
 

@@ -82,6 +82,7 @@ class TLMessageReplyHeader() : TLAbsMessageReplyHeader() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(replyToScheduled, 4)
         updateFlags(forumTopic, 8)
         updateFlags(quote, 512)
@@ -100,30 +101,30 @@ class TLMessageReplyHeader() : TLAbsMessageReplyHeader() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(replyToMsgId, 16) { writeInt(it) }
-        doIfMask(replyToPeerId, 1) { writeTLObject(it) }
-        doIfMask(replyFrom, 32) { writeTLObject(it) }
-        doIfMask(replyMedia, 256) { writeTLObject(it) }
-        doIfMask(replyToTopId, 2) { writeInt(it) }
-        doIfMask(quoteText, 64) { writeString(it) }
-        doIfMask(quoteEntities, 128) { writeTLVector(it) }
-        doIfMask(quoteOffset, 1024) { writeInt(it) }
+        doIfMask(1, replyToMsgId, 16) { writeInt(it) }
+        doIfMask(1, replyToPeerId, 1) { writeTLObject(it) }
+        doIfMask(1, replyFrom, 32) { writeTLObject(it) }
+        doIfMask(1, replyMedia, 256) { writeTLObject(it) }
+        doIfMask(1, replyToTopId, 2) { writeInt(it) }
+        doIfMask(1, quoteText, 64) { writeString(it) }
+        doIfMask(1, quoteEntities, 128) { writeTLVector(it) }
+        doIfMask(1, quoteOffset, 1024) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        replyToScheduled = isMask(4)
-        forumTopic = isMask(8)
-        quote = isMask(512)
-        replyToMsgId = readIfMask(16) { readInt() }
-        replyToPeerId = readIfMask(1) { readTLObject<TLAbsPeer>() }
-        replyFrom = readIfMask(32) { readTLObject<TLMessageFwdHeader>(TLMessageFwdHeader::class, TLMessageFwdHeader.CONSTRUCTOR_ID) }
-        replyMedia = readIfMask(256) { readTLObject<TLAbsMessageMedia>() }
-        replyToTopId = readIfMask(2) { readInt() }
-        quoteText = readIfMask(64) { readString() }
-        quoteEntities = readIfMask(128) { readTLVector<TLAbsMessageEntity>() }
-        quoteOffset = readIfMask(1024) { readInt() }
+        replyToScheduled = isMask(1, 4)
+        forumTopic = isMask(1, 8)
+        quote = isMask(1, 512)
+        replyToMsgId = readIfMask(1, 16) { readInt() }
+        replyToPeerId = readIfMask(1, 1) { readTLObject<TLAbsPeer>() }
+        replyFrom = readIfMask(1, 32) { readTLObject<TLMessageFwdHeader>(TLMessageFwdHeader::class, TLMessageFwdHeader.CONSTRUCTOR_ID) }
+        replyMedia = readIfMask(1, 256) { readTLObject<TLAbsMessageMedia>() }
+        replyToTopId = readIfMask(1, 2) { readInt() }
+        quoteText = readIfMask(1, 64) { readString() }
+        quoteEntities = readIfMask(1, 128) { readTLVector<TLAbsMessageEntity>() }
+        quoteOffset = readIfMask(1, 1024) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -131,14 +132,14 @@ class TLMessageReplyHeader() : TLAbsMessageReplyHeader() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(replyToMsgId, 16) { SIZE_INT32 }
-        size += getIntIfMask(replyToPeerId, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(replyFrom, 32) { it.computeSerializedSize() }
-        size += getIntIfMask(replyMedia, 256) { it.computeSerializedSize() }
-        size += getIntIfMask(replyToTopId, 2) { SIZE_INT32 }
-        size += getIntIfMask(quoteText, 64) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(quoteEntities, 128) { it.computeSerializedSize() }
-        size += getIntIfMask(quoteOffset, 1024) { SIZE_INT32 }
+        size += getIntIfMask(1, replyToMsgId, 16) { SIZE_INT32 }
+        size += getIntIfMask(1, replyToPeerId, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, replyFrom, 32) { it.computeSerializedSize() }
+        size += getIntIfMask(1, replyMedia, 256) { it.computeSerializedSize() }
+        size += getIntIfMask(1, replyToTopId, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, quoteText, 64) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, quoteEntities, 128) { it.computeSerializedSize() }
+        size += getIntIfMask(1, quoteOffset, 1024) { SIZE_INT32 }
         return size
     }
 

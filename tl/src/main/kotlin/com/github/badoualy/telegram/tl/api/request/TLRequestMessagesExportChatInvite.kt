@@ -62,6 +62,7 @@ class TLRequestMessagesExportChatInvite() : TLMethod<TLAbsExportedChatInvite>() 
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(legacyRevokePermanent, 4)
         updateFlags(requestNeeded, 8)
         updateFlags(expireDate, 1)
@@ -75,20 +76,20 @@ class TLRequestMessagesExportChatInvite() : TLMethod<TLAbsExportedChatInvite>() 
 
         writeInt(_flags)
         writeTLObject(peer)
-        doIfMask(expireDate, 1) { writeInt(it) }
-        doIfMask(usageLimit, 2) { writeInt(it) }
-        doIfMask(title, 16) { writeString(it) }
+        doIfMask(1, expireDate, 1) { writeInt(it) }
+        doIfMask(1, usageLimit, 2) { writeInt(it) }
+        doIfMask(1, title, 16) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        legacyRevokePermanent = isMask(4)
-        requestNeeded = isMask(8)
+        legacyRevokePermanent = isMask(1, 4)
+        requestNeeded = isMask(1, 8)
         peer = readTLObject<TLAbsInputPeer>()
-        expireDate = readIfMask(1) { readInt() }
-        usageLimit = readIfMask(2) { readInt() }
-        title = readIfMask(16) { readString() }
+        expireDate = readIfMask(1, 1) { readInt() }
+        usageLimit = readIfMask(1, 2) { readInt() }
+        title = readIfMask(1, 16) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -97,9 +98,9 @@ class TLRequestMessagesExportChatInvite() : TLMethod<TLAbsExportedChatInvite>() 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += peer.computeSerializedSize()
-        size += getIntIfMask(expireDate, 1) { SIZE_INT32 }
-        size += getIntIfMask(usageLimit, 2) { SIZE_INT32 }
-        size += getIntIfMask(title, 16) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, expireDate, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, usageLimit, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, title, 16) { computeTLStringSerializedSize(it) }
         return size
     }
 

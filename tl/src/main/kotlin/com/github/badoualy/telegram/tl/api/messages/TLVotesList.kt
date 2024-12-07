@@ -58,6 +58,7 @@ class TLVotesList() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(nextOffset, 1)
     }
 
@@ -70,7 +71,7 @@ class TLVotesList() : TLObject() {
         writeTLVector(votes)
         writeTLVector(chats)
         writeTLVector(users)
-        doIfMask(nextOffset, 1) { writeString(it) }
+        doIfMask(1, nextOffset, 1) { writeString(it) }
     }
 
     @Throws(IOException::class)
@@ -80,7 +81,7 @@ class TLVotesList() : TLObject() {
         votes = readTLVector<TLAbsMessagePeerVote>()
         chats = readTLVector<TLAbsChat>()
         users = readTLVector<TLAbsUser>()
-        nextOffset = readIfMask(1) { readString() }
+        nextOffset = readIfMask(1, 1) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -92,7 +93,7 @@ class TLVotesList() : TLObject() {
         size += votes.computeSerializedSize()
         size += chats.computeSerializedSize()
         size += users.computeSerializedSize()
-        size += getIntIfMask(nextOffset, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, nextOffset, 1) { computeTLStringSerializedSize(it) }
         return size
     }
 

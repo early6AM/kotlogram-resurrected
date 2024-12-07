@@ -49,6 +49,7 @@ class TLRequestChannelsDeleteHistory() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(forEveryone, 1)
     }
 
@@ -64,7 +65,7 @@ class TLRequestChannelsDeleteHistory() : TLMethod<TLAbsUpdates>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        forEveryone = isMask(1)
+        forEveryone = isMask(1, 1)
         channel = readTLObject<TLAbsInputChannel>()
         maxId = readInt()
     }

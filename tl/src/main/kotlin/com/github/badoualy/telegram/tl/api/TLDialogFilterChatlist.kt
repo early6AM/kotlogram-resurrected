@@ -64,6 +64,7 @@ class TLDialogFilterChatlist() : TLAbsDialogFilter() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(hasMyInvites, 67108864)
         updateFlags(emoticon, 33554432)
         updateFlags(color, 134217728)
@@ -76,8 +77,8 @@ class TLDialogFilterChatlist() : TLAbsDialogFilter() {
         writeInt(_flags)
         writeInt(id)
         writeString(title)
-        doIfMask(emoticon, 33554432) { writeString(it) }
-        doIfMask(color, 134217728) { writeInt(it) }
+        doIfMask(1, emoticon, 33554432) { writeString(it) }
+        doIfMask(1, color, 134217728) { writeInt(it) }
         writeTLVector(pinnedPeers)
         writeTLVector(includePeers)
     }
@@ -85,11 +86,11 @@ class TLDialogFilterChatlist() : TLAbsDialogFilter() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        hasMyInvites = isMask(67108864)
+        hasMyInvites = isMask(1, 67108864)
         id = readInt()
         title = readString()
-        emoticon = readIfMask(33554432) { readString() }
-        color = readIfMask(134217728) { readInt() }
+        emoticon = readIfMask(1, 33554432) { readString() }
+        color = readIfMask(1, 134217728) { readInt() }
         pinnedPeers = readTLVector<TLAbsInputPeer>()
         includePeers = readTLVector<TLAbsInputPeer>()
     }
@@ -101,8 +102,8 @@ class TLDialogFilterChatlist() : TLAbsDialogFilter() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += computeTLStringSerializedSize(title)
-        size += getIntIfMask(emoticon, 33554432) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(color, 134217728) { SIZE_INT32 }
+        size += getIntIfMask(1, emoticon, 33554432) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, color, 134217728) { SIZE_INT32 }
         size += pinnedPeers.computeSerializedSize()
         size += includePeers.computeSerializedSize()
         return size

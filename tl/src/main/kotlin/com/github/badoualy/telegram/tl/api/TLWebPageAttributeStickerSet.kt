@@ -49,6 +49,7 @@ class TLWebPageAttributeStickerSet() : TLAbsWebPageAttribute() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(emojis, 1)
         updateFlags(textColor, 2)
     }
@@ -64,8 +65,8 @@ class TLWebPageAttributeStickerSet() : TLAbsWebPageAttribute() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        emojis = isMask(1)
-        textColor = isMask(2)
+        emojis = isMask(1, 1)
+        textColor = isMask(1, 2)
         stickers = readTLVector<TLAbsDocument>()
     }
 

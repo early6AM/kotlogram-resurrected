@@ -70,6 +70,7 @@ class TLInputMediaInvoice() : TLAbsInputMedia() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(photo, 1)
         updateFlags(provider, 8)
         updateFlags(startParam, 2)
@@ -83,13 +84,13 @@ class TLInputMediaInvoice() : TLAbsInputMedia() {
         writeInt(_flags)
         writeString(title)
         writeString(description)
-        doIfMask(photo, 1) { writeTLObject(it) }
+        doIfMask(1, photo, 1) { writeTLObject(it) }
         writeTLObject(invoice)
         writeTLBytes(payload)
-        doIfMask(provider, 8) { writeString(it) }
+        doIfMask(1, provider, 8) { writeString(it) }
         writeTLObject(providerData)
-        doIfMask(startParam, 2) { writeString(it) }
-        doIfMask(extendedMedia, 4) { writeTLObject(it) }
+        doIfMask(1, startParam, 2) { writeString(it) }
+        doIfMask(1, extendedMedia, 4) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
@@ -97,13 +98,13 @@ class TLInputMediaInvoice() : TLAbsInputMedia() {
         _flags = readInt()
         title = readString()
         description = readString()
-        photo = readIfMask(1) { readTLObject<TLInputWebDocument>(TLInputWebDocument::class, TLInputWebDocument.CONSTRUCTOR_ID) }
+        photo = readIfMask(1, 1) { readTLObject<TLInputWebDocument>(TLInputWebDocument::class, TLInputWebDocument.CONSTRUCTOR_ID) }
         invoice = readTLObject<TLInvoice>(TLInvoice::class, TLInvoice.CONSTRUCTOR_ID)
         payload = readTLBytes()
-        provider = readIfMask(8) { readString() }
+        provider = readIfMask(1, 8) { readString() }
         providerData = readTLObject<TLDataJSON>(TLDataJSON::class, TLDataJSON.CONSTRUCTOR_ID)
-        startParam = readIfMask(2) { readString() }
-        extendedMedia = readIfMask(4) { readTLObject<TLAbsInputMedia>() }
+        startParam = readIfMask(1, 2) { readString() }
+        extendedMedia = readIfMask(1, 4) { readTLObject<TLAbsInputMedia>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -113,13 +114,13 @@ class TLInputMediaInvoice() : TLAbsInputMedia() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(title)
         size += computeTLStringSerializedSize(description)
-        size += getIntIfMask(photo, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, photo, 1) { it.computeSerializedSize() }
         size += invoice.computeSerializedSize()
         size += computeTLBytesSerializedSize(payload)
-        size += getIntIfMask(provider, 8) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, provider, 8) { computeTLStringSerializedSize(it) }
         size += providerData.computeSerializedSize()
-        size += getIntIfMask(startParam, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(extendedMedia, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, startParam, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, extendedMedia, 4) { it.computeSerializedSize() }
         return size
     }
 

@@ -46,6 +46,7 @@ class TLChannelParticipantCreator() : TLAbsChannelParticipant() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(rank, 1)
     }
 
@@ -56,7 +57,7 @@ class TLChannelParticipantCreator() : TLAbsChannelParticipant() {
         writeInt(_flags)
         writeLong(userId)
         writeTLObject(adminRights)
-        doIfMask(rank, 1) { writeString(it) }
+        doIfMask(1, rank, 1) { writeString(it) }
     }
 
     @Throws(IOException::class)
@@ -64,7 +65,7 @@ class TLChannelParticipantCreator() : TLAbsChannelParticipant() {
         _flags = readInt()
         userId = readLong()
         adminRights = readTLObject<TLChatAdminRights>(TLChatAdminRights::class, TLChatAdminRights.CONSTRUCTOR_ID)
-        rank = readIfMask(1) { readString() }
+        rank = readIfMask(1, 1) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -74,7 +75,7 @@ class TLChannelParticipantCreator() : TLAbsChannelParticipant() {
         size += SIZE_INT32
         size += SIZE_INT64
         size += adminRights.computeSerializedSize()
-        size += getIntIfMask(rank, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, rank, 1) { computeTLStringSerializedSize(it) }
         return size
     }
 

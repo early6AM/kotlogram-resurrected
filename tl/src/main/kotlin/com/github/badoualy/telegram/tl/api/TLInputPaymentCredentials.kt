@@ -40,6 +40,7 @@ class TLInputPaymentCredentials() : TLAbsInputPaymentCredentials() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(save, 1)
     }
 
@@ -54,7 +55,7 @@ class TLInputPaymentCredentials() : TLAbsInputPaymentCredentials() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        save = isMask(1)
+        save = isMask(1, 1)
         data = readTLObject<TLDataJSON>(TLDataJSON::class, TLDataJSON.CONSTRUCTOR_ID)
     }
 

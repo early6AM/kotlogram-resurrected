@@ -58,6 +58,7 @@ class TLInputReplyToMessage() : TLAbsInputReplyTo() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(topMsgId, 1)
         updateFlags(replyToPeerId, 2)
         updateFlags(quoteText, 4)
@@ -71,22 +72,22 @@ class TLInputReplyToMessage() : TLAbsInputReplyTo() {
 
         writeInt(_flags)
         writeInt(replyToMsgId)
-        doIfMask(topMsgId, 1) { writeInt(it) }
-        doIfMask(replyToPeerId, 2) { writeTLObject(it) }
-        doIfMask(quoteText, 4) { writeString(it) }
-        doIfMask(quoteEntities, 8) { writeTLVector(it) }
-        doIfMask(quoteOffset, 16) { writeInt(it) }
+        doIfMask(1, topMsgId, 1) { writeInt(it) }
+        doIfMask(1, replyToPeerId, 2) { writeTLObject(it) }
+        doIfMask(1, quoteText, 4) { writeString(it) }
+        doIfMask(1, quoteEntities, 8) { writeTLVector(it) }
+        doIfMask(1, quoteOffset, 16) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         replyToMsgId = readInt()
-        topMsgId = readIfMask(1) { readInt() }
-        replyToPeerId = readIfMask(2) { readTLObject<TLAbsInputPeer>() }
-        quoteText = readIfMask(4) { readString() }
-        quoteEntities = readIfMask(8) { readTLVector<TLAbsMessageEntity>() }
-        quoteOffset = readIfMask(16) { readInt() }
+        topMsgId = readIfMask(1, 1) { readInt() }
+        replyToPeerId = readIfMask(1, 2) { readTLObject<TLAbsInputPeer>() }
+        quoteText = readIfMask(1, 4) { readString() }
+        quoteEntities = readIfMask(1, 8) { readTLVector<TLAbsMessageEntity>() }
+        quoteOffset = readIfMask(1, 16) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -95,11 +96,11 @@ class TLInputReplyToMessage() : TLAbsInputReplyTo() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(topMsgId, 1) { SIZE_INT32 }
-        size += getIntIfMask(replyToPeerId, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(quoteText, 4) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(quoteEntities, 8) { it.computeSerializedSize() }
-        size += getIntIfMask(quoteOffset, 16) { SIZE_INT32 }
+        size += getIntIfMask(1, topMsgId, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, replyToPeerId, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, quoteText, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, quoteEntities, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, quoteOffset, 16) { SIZE_INT32 }
         return size
     }
 

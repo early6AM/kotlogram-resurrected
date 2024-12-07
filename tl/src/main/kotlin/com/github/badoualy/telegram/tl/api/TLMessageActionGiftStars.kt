@@ -58,6 +58,7 @@ class TLMessageActionGiftStars() : TLAbsMessageAction() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(cryptoCurrency, 1)
         updateFlags(cryptoAmount, 1)
         updateFlags(transactionId, 2)
@@ -71,9 +72,9 @@ class TLMessageActionGiftStars() : TLAbsMessageAction() {
         writeString(currency)
         writeLong(amount)
         writeLong(stars)
-        doIfMask(cryptoCurrency, 1) { writeString(it) }
-        doIfMask(cryptoAmount, 1) { writeLong(it) }
-        doIfMask(transactionId, 2) { writeString(it) }
+        doIfMask(1, cryptoCurrency, 1) { writeString(it) }
+        doIfMask(1, cryptoAmount, 1) { writeLong(it) }
+        doIfMask(1, transactionId, 2) { writeString(it) }
     }
 
     @Throws(IOException::class)
@@ -82,9 +83,9 @@ class TLMessageActionGiftStars() : TLAbsMessageAction() {
         currency = readString()
         amount = readLong()
         stars = readLong()
-        cryptoCurrency = readIfMask(1) { readString() }
-        cryptoAmount = readIfMask(1) { readLong() }
-        transactionId = readIfMask(2) { readString() }
+        cryptoCurrency = readIfMask(1, 1) { readString() }
+        cryptoAmount = readIfMask(1, 1) { readLong() }
+        transactionId = readIfMask(1, 2) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -95,9 +96,9 @@ class TLMessageActionGiftStars() : TLAbsMessageAction() {
         size += computeTLStringSerializedSize(currency)
         size += SIZE_INT64
         size += SIZE_INT64
-        size += getIntIfMask(cryptoCurrency, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(cryptoAmount, 1) { SIZE_INT64 }
-        size += getIntIfMask(transactionId, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, cryptoCurrency, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, cryptoAmount, 1) { SIZE_INT64 }
+        size += getIntIfMask(1, transactionId, 2) { computeTLStringSerializedSize(it) }
         return size
     }
 

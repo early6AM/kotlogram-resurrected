@@ -41,6 +41,7 @@ class TLInputStorePaymentPremiumSubscription() : TLAbsInputStorePaymentPurpose()
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(restore, 1)
         updateFlags(upgrade, 2)
     }
@@ -55,8 +56,8 @@ class TLInputStorePaymentPremiumSubscription() : TLAbsInputStorePaymentPurpose()
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        restore = isMask(1)
-        upgrade = isMask(2)
+        restore = isMask(1, 1)
+        upgrade = isMask(1, 2)
     }
 
     override fun computeSerializedSize(): Int {

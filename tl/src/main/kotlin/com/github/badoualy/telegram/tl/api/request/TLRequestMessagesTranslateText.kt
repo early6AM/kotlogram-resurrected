@@ -56,6 +56,7 @@ class TLRequestMessagesTranslateText() : TLMethod<TLTranslateResult>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(peer, 1)
         updateFlags(id, 1)
         updateFlags(text, 2)
@@ -66,18 +67,18 @@ class TLRequestMessagesTranslateText() : TLMethod<TLTranslateResult>() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(peer, 1) { writeTLObject(it) }
-        doIfMask(id, 1) { writeTLVector(it) }
-        doIfMask(text, 2) { writeTLVector(it) }
+        doIfMask(1, peer, 1) { writeTLObject(it) }
+        doIfMask(1, id, 1) { writeTLVector(it) }
+        doIfMask(1, text, 2) { writeTLVector(it) }
         writeString(toLang)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        peer = readIfMask(1) { readTLObject<TLAbsInputPeer>() }
-        id = readIfMask(1) { readTLIntVector() }
-        text = readIfMask(2) { readTLVector<TLTextWithEntities>() }
+        peer = readIfMask(1, 1) { readTLObject<TLAbsInputPeer>() }
+        id = readIfMask(1, 1) { readTLIntVector() }
+        text = readIfMask(1, 2) { readTLVector<TLTextWithEntities>() }
         toLang = readString()
     }
 
@@ -86,9 +87,9 @@ class TLRequestMessagesTranslateText() : TLMethod<TLTranslateResult>() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(peer, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(id, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(text, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, peer, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, id, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, text, 2) { it.computeSerializedSize() }
         size += computeTLStringSerializedSize(toLang)
         return size
     }

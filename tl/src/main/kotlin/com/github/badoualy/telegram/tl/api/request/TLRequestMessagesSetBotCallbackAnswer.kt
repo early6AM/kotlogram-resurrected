@@ -56,6 +56,7 @@ class TLRequestMessagesSetBotCallbackAnswer() : TLMethod<TLBool>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(alert, 2)
         updateFlags(message, 1)
         updateFlags(url, 4)
@@ -67,18 +68,18 @@ class TLRequestMessagesSetBotCallbackAnswer() : TLMethod<TLBool>() {
 
         writeInt(_flags)
         writeLong(queryId)
-        doIfMask(message, 1) { writeString(it) }
-        doIfMask(url, 4) { writeString(it) }
+        doIfMask(1, message, 1) { writeString(it) }
+        doIfMask(1, url, 4) { writeString(it) }
         writeInt(cacheTime)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        alert = isMask(2)
+        alert = isMask(1, 2)
         queryId = readLong()
-        message = readIfMask(1) { readString() }
-        url = readIfMask(4) { readString() }
+        message = readIfMask(1, 1) { readString() }
+        url = readIfMask(1, 4) { readString() }
         cacheTime = readInt()
     }
 
@@ -88,8 +89,8 @@ class TLRequestMessagesSetBotCallbackAnswer() : TLMethod<TLBool>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT64
-        size += getIntIfMask(message, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(url, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, message, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, url, 4) { computeTLStringSerializedSize(it) }
         size += SIZE_INT32
         return size
     }

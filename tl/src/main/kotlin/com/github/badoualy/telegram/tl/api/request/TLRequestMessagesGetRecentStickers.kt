@@ -41,6 +41,7 @@ class TLRequestMessagesGetRecentStickers() : TLMethod<TLAbsRecentStickers>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(attached, 1)
     }
 
@@ -55,7 +56,7 @@ class TLRequestMessagesGetRecentStickers() : TLMethod<TLAbsRecentStickers>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        attached = isMask(1)
+        attached = isMask(1, 1)
         hash = readLong()
     }
 

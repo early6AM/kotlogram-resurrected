@@ -78,6 +78,7 @@ class TLRequestStickersCreateStickerSet() : TLMethod<TLAbsStickerSet>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(masks, 1)
         updateFlags(emojis, 32)
         updateFlags(textColor, 64)
@@ -93,23 +94,23 @@ class TLRequestStickersCreateStickerSet() : TLMethod<TLAbsStickerSet>() {
         writeTLObject(userId)
         writeString(title)
         writeString(shortName)
-        doIfMask(thumb, 4) { writeTLObject(it) }
+        doIfMask(1, thumb, 4) { writeTLObject(it) }
         writeTLVector(stickers)
-        doIfMask(software, 8) { writeString(it) }
+        doIfMask(1, software, 8) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        masks = isMask(1)
-        emojis = isMask(32)
-        textColor = isMask(64)
+        masks = isMask(1, 1)
+        emojis = isMask(1, 32)
+        textColor = isMask(1, 64)
         userId = readTLObject<TLAbsInputUser>()
         title = readString()
         shortName = readString()
-        thumb = readIfMask(4) { readTLObject<TLAbsInputDocument>() }
+        thumb = readIfMask(1, 4) { readTLObject<TLAbsInputDocument>() }
         stickers = readTLVector<TLInputStickerSetItem>()
-        software = readIfMask(8) { readString() }
+        software = readIfMask(1, 8) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -120,9 +121,9 @@ class TLRequestStickersCreateStickerSet() : TLMethod<TLAbsStickerSet>() {
         size += userId.computeSerializedSize()
         size += computeTLStringSerializedSize(title)
         size += computeTLStringSerializedSize(shortName)
-        size += getIntIfMask(thumb, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, thumb, 4) { it.computeSerializedSize() }
         size += stickers.computeSerializedSize()
-        size += getIntIfMask(software, 8) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, software, 8) { computeTLStringSerializedSize(it) }
         return size
     }
 

@@ -97,6 +97,7 @@ class TLDialog() : TLAbsDialog() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(pinned, 4)
         updateFlags(unreadMark, 8)
         updateFlags(viewForumAsMessages, 64)
@@ -119,18 +120,18 @@ class TLDialog() : TLAbsDialog() {
         writeInt(unreadMentionsCount)
         writeInt(unreadReactionsCount)
         writeTLObject(notifySettings)
-        doIfMask(pts, 1) { writeInt(it) }
-        doIfMask(draft, 2) { writeTLObject(it) }
-        doIfMask(folderId, 16) { writeInt(it) }
-        doIfMask(ttlPeriod, 32) { writeInt(it) }
+        doIfMask(1, pts, 1) { writeInt(it) }
+        doIfMask(1, draft, 2) { writeTLObject(it) }
+        doIfMask(1, folderId, 16) { writeInt(it) }
+        doIfMask(1, ttlPeriod, 32) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        pinned = isMask(4)
-        unreadMark = isMask(8)
-        viewForumAsMessages = isMask(64)
+        pinned = isMask(1, 4)
+        unreadMark = isMask(1, 8)
+        viewForumAsMessages = isMask(1, 64)
         peer = readTLObject<TLAbsPeer>()
         topMessage = readInt()
         readInboxMaxId = readInt()
@@ -139,10 +140,10 @@ class TLDialog() : TLAbsDialog() {
         unreadMentionsCount = readInt()
         unreadReactionsCount = readInt()
         notifySettings = readTLObject<TLPeerNotifySettings>(TLPeerNotifySettings::class, TLPeerNotifySettings.CONSTRUCTOR_ID)
-        pts = readIfMask(1) { readInt() }
-        draft = readIfMask(2) { readTLObject<TLAbsDraftMessage>() }
-        folderId = readIfMask(16) { readInt() }
-        ttlPeriod = readIfMask(32) { readInt() }
+        pts = readIfMask(1, 1) { readInt() }
+        draft = readIfMask(1, 2) { readTLObject<TLAbsDraftMessage>() }
+        folderId = readIfMask(1, 16) { readInt() }
+        ttlPeriod = readIfMask(1, 32) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -158,10 +159,10 @@ class TLDialog() : TLAbsDialog() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += notifySettings.computeSerializedSize()
-        size += getIntIfMask(pts, 1) { SIZE_INT32 }
-        size += getIntIfMask(draft, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(folderId, 16) { SIZE_INT32 }
-        size += getIntIfMask(ttlPeriod, 32) { SIZE_INT32 }
+        size += getIntIfMask(1, pts, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, draft, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, folderId, 16) { SIZE_INT32 }
+        size += getIntIfMask(1, ttlPeriod, 32) { SIZE_INT32 }
         return size
     }
 

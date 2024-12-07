@@ -40,6 +40,7 @@ class TLUpdateGroupCallConnection() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(presentation, 1)
     }
 
@@ -54,7 +55,7 @@ class TLUpdateGroupCallConnection() : TLAbsUpdate() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        presentation = isMask(1)
+        presentation = isMask(1, 1)
         params = readTLObject<TLDataJSON>(TLDataJSON::class, TLDataJSON.CONSTRUCTOR_ID)
     }
 

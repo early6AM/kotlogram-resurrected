@@ -62,6 +62,7 @@ class TLPhoneCallDiscarded() : TLAbsPhoneCall() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(needRating, 4)
         updateFlags(needDebug, 8)
         updateFlags(video, 64)
@@ -75,19 +76,19 @@ class TLPhoneCallDiscarded() : TLAbsPhoneCall() {
 
         writeInt(_flags)
         writeLong(id)
-        doIfMask(reason, 1) { writeTLObject(it) }
-        doIfMask(duration, 2) { writeInt(it) }
+        doIfMask(1, reason, 1) { writeTLObject(it) }
+        doIfMask(1, duration, 2) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        needRating = isMask(4)
-        needDebug = isMask(8)
-        video = isMask(64)
+        needRating = isMask(1, 4)
+        needDebug = isMask(1, 8)
+        video = isMask(1, 64)
         id = readLong()
-        reason = readIfMask(1) { readTLObject<TLAbsPhoneCallDiscardReason>() }
-        duration = readIfMask(2) { readInt() }
+        reason = readIfMask(1, 1) { readTLObject<TLAbsPhoneCallDiscardReason>() }
+        duration = readIfMask(1, 2) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -96,8 +97,8 @@ class TLPhoneCallDiscarded() : TLAbsPhoneCall() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += SIZE_INT64
-        size += getIntIfMask(reason, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(duration, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, reason, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, duration, 2) { SIZE_INT32 }
         return size
     }
 

@@ -38,6 +38,7 @@ class TLUpdatePeerHistoryTTL() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(ttlPeriod, 1)
     }
 
@@ -47,14 +48,14 @@ class TLUpdatePeerHistoryTTL() : TLAbsUpdate() {
 
         writeInt(_flags)
         writeTLObject(peer)
-        doIfMask(ttlPeriod, 1) { writeInt(it) }
+        doIfMask(1, ttlPeriod, 1) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         peer = readTLObject<TLAbsPeer>()
-        ttlPeriod = readIfMask(1) { readInt() }
+        ttlPeriod = readIfMask(1, 1) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -63,7 +64,7 @@ class TLUpdatePeerHistoryTTL() : TLAbsUpdate() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += peer.computeSerializedSize()
-        size += getIntIfMask(ttlPeriod, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, ttlPeriod, 1) { SIZE_INT32 }
         return size
     }
 

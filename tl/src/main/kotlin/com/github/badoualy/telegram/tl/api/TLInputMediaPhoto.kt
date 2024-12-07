@@ -47,6 +47,7 @@ class TLInputMediaPhoto() : TLAbsInputMedia() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(spoiler, 2)
         updateFlags(ttlSeconds, 1)
     }
@@ -57,15 +58,15 @@ class TLInputMediaPhoto() : TLAbsInputMedia() {
 
         writeInt(_flags)
         writeTLObject(id)
-        doIfMask(ttlSeconds, 1) { writeInt(it) }
+        doIfMask(1, ttlSeconds, 1) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        spoiler = isMask(2)
+        spoiler = isMask(1, 2)
         id = readTLObject<TLAbsInputPhoto>()
-        ttlSeconds = readIfMask(1) { readInt() }
+        ttlSeconds = readIfMask(1, 1) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -74,7 +75,7 @@ class TLInputMediaPhoto() : TLAbsInputMedia() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += id.computeSerializedSize()
-        size += getIntIfMask(ttlSeconds, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, ttlSeconds, 1) { SIZE_INT32 }
         return size
     }
 

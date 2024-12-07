@@ -61,6 +61,7 @@ class TLLangPackStringPluralized() : TLAbsLangPackString() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(zeroValue, 1)
         updateFlags(oneValue, 2)
         updateFlags(twoValue, 4)
@@ -74,11 +75,11 @@ class TLLangPackStringPluralized() : TLAbsLangPackString() {
 
         writeInt(_flags)
         writeString(key)
-        doIfMask(zeroValue, 1) { writeString(it) }
-        doIfMask(oneValue, 2) { writeString(it) }
-        doIfMask(twoValue, 4) { writeString(it) }
-        doIfMask(fewValue, 8) { writeString(it) }
-        doIfMask(manyValue, 16) { writeString(it) }
+        doIfMask(1, zeroValue, 1) { writeString(it) }
+        doIfMask(1, oneValue, 2) { writeString(it) }
+        doIfMask(1, twoValue, 4) { writeString(it) }
+        doIfMask(1, fewValue, 8) { writeString(it) }
+        doIfMask(1, manyValue, 16) { writeString(it) }
         writeString(otherValue)
     }
 
@@ -86,11 +87,11 @@ class TLLangPackStringPluralized() : TLAbsLangPackString() {
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
         key = readString()
-        zeroValue = readIfMask(1) { readString() }
-        oneValue = readIfMask(2) { readString() }
-        twoValue = readIfMask(4) { readString() }
-        fewValue = readIfMask(8) { readString() }
-        manyValue = readIfMask(16) { readString() }
+        zeroValue = readIfMask(1, 1) { readString() }
+        oneValue = readIfMask(1, 2) { readString() }
+        twoValue = readIfMask(1, 4) { readString() }
+        fewValue = readIfMask(1, 8) { readString() }
+        manyValue = readIfMask(1, 16) { readString() }
         otherValue = readString()
     }
 
@@ -100,11 +101,11 @@ class TLLangPackStringPluralized() : TLAbsLangPackString() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += computeTLStringSerializedSize(key)
-        size += getIntIfMask(zeroValue, 1) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(oneValue, 2) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(twoValue, 4) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(fewValue, 8) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(manyValue, 16) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, zeroValue, 1) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, oneValue, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, twoValue, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, fewValue, 8) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, manyValue, 16) { computeTLStringSerializedSize(it) }
         size += computeTLStringSerializedSize(otherValue)
         return size
     }

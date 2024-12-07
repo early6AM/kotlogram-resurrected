@@ -39,6 +39,7 @@ class TLStoriesStealthMode() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(activeUntilDate, 1)
         updateFlags(cooldownUntilDate, 2)
     }
@@ -48,15 +49,15 @@ class TLStoriesStealthMode() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(activeUntilDate, 1) { writeInt(it) }
-        doIfMask(cooldownUntilDate, 2) { writeInt(it) }
+        doIfMask(1, activeUntilDate, 1) { writeInt(it) }
+        doIfMask(1, cooldownUntilDate, 2) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        activeUntilDate = readIfMask(1) { readInt() }
-        cooldownUntilDate = readIfMask(2) { readInt() }
+        activeUntilDate = readIfMask(1, 1) { readInt() }
+        cooldownUntilDate = readIfMask(1, 2) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -64,8 +65,8 @@ class TLStoriesStealthMode() : TLObject() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(activeUntilDate, 1) { SIZE_INT32 }
-        size += getIntIfMask(cooldownUntilDate, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, activeUntilDate, 1) { SIZE_INT32 }
+        size += getIntIfMask(1, cooldownUntilDate, 2) { SIZE_INT32 }
         return size
     }
 

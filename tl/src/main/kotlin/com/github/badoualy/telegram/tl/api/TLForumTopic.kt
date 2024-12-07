@@ -116,6 +116,7 @@ class TLForumTopic() : TLAbsForumTopic() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(my, 2)
         updateFlags(closed, 4)
         updateFlags(pinned, 8)
@@ -134,7 +135,7 @@ class TLForumTopic() : TLAbsForumTopic() {
         writeInt(date)
         writeString(title)
         writeInt(iconColor)
-        doIfMask(iconEmojiId, 1) { writeLong(it) }
+        doIfMask(1, iconEmojiId, 1) { writeLong(it) }
         writeInt(topMessage)
         writeInt(readInboxMaxId)
         writeInt(readOutboxMaxId)
@@ -143,22 +144,22 @@ class TLForumTopic() : TLAbsForumTopic() {
         writeInt(unreadReactionsCount)
         writeTLObject(fromId)
         writeTLObject(notifySettings)
-        doIfMask(draft, 16) { writeTLObject(it) }
+        doIfMask(1, draft, 16) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        my = isMask(2)
-        closed = isMask(4)
-        pinned = isMask(8)
-        short = isMask(32)
-        hidden = isMask(64)
+        my = isMask(1, 2)
+        closed = isMask(1, 4)
+        pinned = isMask(1, 8)
+        short = isMask(1, 32)
+        hidden = isMask(1, 64)
         id = readInt()
         date = readInt()
         title = readString()
         iconColor = readInt()
-        iconEmojiId = readIfMask(1) { readLong() }
+        iconEmojiId = readIfMask(1, 1) { readLong() }
         topMessage = readInt()
         readInboxMaxId = readInt()
         readOutboxMaxId = readInt()
@@ -167,7 +168,7 @@ class TLForumTopic() : TLAbsForumTopic() {
         unreadReactionsCount = readInt()
         fromId = readTLObject<TLAbsPeer>()
         notifySettings = readTLObject<TLPeerNotifySettings>(TLPeerNotifySettings::class, TLPeerNotifySettings.CONSTRUCTOR_ID)
-        draft = readIfMask(16) { readTLObject<TLAbsDraftMessage>() }
+        draft = readIfMask(1, 16) { readTLObject<TLAbsDraftMessage>() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -179,7 +180,7 @@ class TLForumTopic() : TLAbsForumTopic() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(title)
         size += SIZE_INT32
-        size += getIntIfMask(iconEmojiId, 1) { SIZE_INT64 }
+        size += getIntIfMask(1, iconEmojiId, 1) { SIZE_INT64 }
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
@@ -188,7 +189,7 @@ class TLForumTopic() : TLAbsForumTopic() {
         size += SIZE_INT32
         size += fromId.computeSerializedSize()
         size += notifySettings.computeSerializedSize()
-        size += getIntIfMask(draft, 16) { it.computeSerializedSize() }
+        size += getIntIfMask(1, draft, 16) { it.computeSerializedSize() }
         return size
     }
 

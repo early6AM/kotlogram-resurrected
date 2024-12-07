@@ -74,6 +74,7 @@ class TLRequestStoriesGetStoryViewsList() : TLMethod<TLStoryViewsList>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(justContacts, 1)
         updateFlags(reactionsFirst, 4)
         updateFlags(forwardsFirst, 8)
@@ -86,7 +87,7 @@ class TLRequestStoriesGetStoryViewsList() : TLMethod<TLStoryViewsList>() {
 
         writeInt(_flags)
         writeTLObject(peer)
-        doIfMask(q, 2) { writeString(it) }
+        doIfMask(1, q, 2) { writeString(it) }
         writeInt(id)
         writeString(offset)
         writeInt(limit)
@@ -95,11 +96,11 @@ class TLRequestStoriesGetStoryViewsList() : TLMethod<TLStoryViewsList>() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        justContacts = isMask(1)
-        reactionsFirst = isMask(4)
-        forwardsFirst = isMask(8)
+        justContacts = isMask(1, 1)
+        reactionsFirst = isMask(1, 4)
+        forwardsFirst = isMask(1, 8)
         peer = readTLObject<TLAbsInputPeer>()
-        q = readIfMask(2) { readString() }
+        q = readIfMask(1, 2) { readString() }
         id = readInt()
         offset = readString()
         limit = readInt()
@@ -111,7 +112,7 @@ class TLRequestStoriesGetStoryViewsList() : TLMethod<TLStoryViewsList>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += peer.computeSerializedSize()
-        size += getIntIfMask(q, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, q, 2) { computeTLStringSerializedSize(it) }
         size += SIZE_INT32
         size += computeTLStringSerializedSize(offset)
         size += SIZE_INT32

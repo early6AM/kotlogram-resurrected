@@ -42,6 +42,7 @@ class TLContentSettings() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(sensitiveEnabled, 1)
         updateFlags(sensitiveCanChange, 2)
     }
@@ -56,8 +57,8 @@ class TLContentSettings() : TLObject() {
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        sensitiveEnabled = isMask(1)
-        sensitiveCanChange = isMask(2)
+        sensitiveEnabled = isMask(1, 1)
+        sensitiveCanChange = isMask(1, 2)
     }
 
     override fun computeSerializedSize(): Int {

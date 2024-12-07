@@ -104,6 +104,7 @@ class TLUpdateShortChatMessage() : TLAbsUpdates() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(out, 2)
         updateFlags(mentioned, 16)
         updateFlags(mediaUnread, 32)
@@ -127,20 +128,20 @@ class TLUpdateShortChatMessage() : TLAbsUpdates() {
         writeInt(pts)
         writeInt(ptsCount)
         writeInt(date)
-        doIfMask(fwdFrom, 4) { writeTLObject(it) }
-        doIfMask(viaBotId, 2048) { writeLong(it) }
-        doIfMask(replyTo, 8) { writeTLObject(it) }
-        doIfMask(entities, 128) { writeTLVector(it) }
-        doIfMask(ttlPeriod, 33554432) { writeInt(it) }
+        doIfMask(1, fwdFrom, 4) { writeTLObject(it) }
+        doIfMask(1, viaBotId, 2048) { writeLong(it) }
+        doIfMask(1, replyTo, 8) { writeTLObject(it) }
+        doIfMask(1, entities, 128) { writeTLVector(it) }
+        doIfMask(1, ttlPeriod, 33554432) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        out = isMask(2)
-        mentioned = isMask(16)
-        mediaUnread = isMask(32)
-        silent = isMask(8192)
+        out = isMask(1, 2)
+        mentioned = isMask(1, 16)
+        mediaUnread = isMask(1, 32)
+        silent = isMask(1, 8192)
         id = readInt()
         fromId = readLong()
         chatId = readLong()
@@ -148,11 +149,11 @@ class TLUpdateShortChatMessage() : TLAbsUpdates() {
         pts = readInt()
         ptsCount = readInt()
         date = readInt()
-        fwdFrom = readIfMask(4) { readTLObject<TLMessageFwdHeader>(TLMessageFwdHeader::class, TLMessageFwdHeader.CONSTRUCTOR_ID) }
-        viaBotId = readIfMask(2048) { readLong() }
-        replyTo = readIfMask(8) { readTLObject<TLAbsMessageReplyHeader>() }
-        entities = readIfMask(128) { readTLVector<TLAbsMessageEntity>() }
-        ttlPeriod = readIfMask(33554432) { readInt() }
+        fwdFrom = readIfMask(1, 4) { readTLObject<TLMessageFwdHeader>(TLMessageFwdHeader::class, TLMessageFwdHeader.CONSTRUCTOR_ID) }
+        viaBotId = readIfMask(1, 2048) { readLong() }
+        replyTo = readIfMask(1, 8) { readTLObject<TLAbsMessageReplyHeader>() }
+        entities = readIfMask(1, 128) { readTLVector<TLAbsMessageEntity>() }
+        ttlPeriod = readIfMask(1, 33554432) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -167,11 +168,11 @@ class TLUpdateShortChatMessage() : TLAbsUpdates() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(fwdFrom, 4) { it.computeSerializedSize() }
-        size += getIntIfMask(viaBotId, 2048) { SIZE_INT64 }
-        size += getIntIfMask(replyTo, 8) { it.computeSerializedSize() }
-        size += getIntIfMask(entities, 128) { it.computeSerializedSize() }
-        size += getIntIfMask(ttlPeriod, 33554432) { SIZE_INT32 }
+        size += getIntIfMask(1, fwdFrom, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, viaBotId, 2048) { SIZE_INT64 }
+        size += getIntIfMask(1, replyTo, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, entities, 128) { it.computeSerializedSize() }
+        size += getIntIfMask(1, ttlPeriod, 33554432) { SIZE_INT32 }
         return size
     }
 

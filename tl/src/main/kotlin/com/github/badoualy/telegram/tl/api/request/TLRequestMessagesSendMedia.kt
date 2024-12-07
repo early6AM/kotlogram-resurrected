@@ -118,6 +118,7 @@ class TLRequestMessagesSendMedia() : TLMethod<TLAbsUpdates>() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(silent, 32)
         updateFlags(background, 64)
         updateFlags(clearDraft, 128)
@@ -139,38 +140,38 @@ class TLRequestMessagesSendMedia() : TLMethod<TLAbsUpdates>() {
 
         writeInt(_flags)
         writeTLObject(peer)
-        doIfMask(replyTo, 1) { writeTLObject(it) }
+        doIfMask(1, replyTo, 1) { writeTLObject(it) }
         writeTLObject(media)
         writeString(message)
         writeLong(randomId)
-        doIfMask(replyMarkup, 4) { writeTLObject(it) }
-        doIfMask(entities, 8) { writeTLVector(it) }
-        doIfMask(scheduleDate, 1024) { writeInt(it) }
-        doIfMask(sendAs, 8192) { writeTLObject(it) }
-        doIfMask(quickReplyShortcut, 131072) { writeTLObject(it) }
-        doIfMask(effect, 262144) { writeLong(it) }
+        doIfMask(1, replyMarkup, 4) { writeTLObject(it) }
+        doIfMask(1, entities, 8) { writeTLVector(it) }
+        doIfMask(1, scheduleDate, 1024) { writeInt(it) }
+        doIfMask(1, sendAs, 8192) { writeTLObject(it) }
+        doIfMask(1, quickReplyShortcut, 131072) { writeTLObject(it) }
+        doIfMask(1, effect, 262144) { writeLong(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        silent = isMask(32)
-        background = isMask(64)
-        clearDraft = isMask(128)
-        noforwards = isMask(16384)
-        updateStickersetsOrder = isMask(32768)
-        invertMedia = isMask(65536)
+        silent = isMask(1, 32)
+        background = isMask(1, 64)
+        clearDraft = isMask(1, 128)
+        noforwards = isMask(1, 16384)
+        updateStickersetsOrder = isMask(1, 32768)
+        invertMedia = isMask(1, 65536)
         peer = readTLObject<TLAbsInputPeer>()
-        replyTo = readIfMask(1) { readTLObject<TLAbsInputReplyTo>() }
+        replyTo = readIfMask(1, 1) { readTLObject<TLAbsInputReplyTo>() }
         media = readTLObject<TLAbsInputMedia>()
         message = readString()
         randomId = readLong()
-        replyMarkup = readIfMask(4) { readTLObject<TLAbsReplyMarkup>() }
-        entities = readIfMask(8) { readTLVector<TLAbsMessageEntity>() }
-        scheduleDate = readIfMask(1024) { readInt() }
-        sendAs = readIfMask(8192) { readTLObject<TLAbsInputPeer>() }
-        quickReplyShortcut = readIfMask(131072) { readTLObject<TLAbsInputQuickReplyShortcut>() }
-        effect = readIfMask(262144) { readLong() }
+        replyMarkup = readIfMask(1, 4) { readTLObject<TLAbsReplyMarkup>() }
+        entities = readIfMask(1, 8) { readTLVector<TLAbsMessageEntity>() }
+        scheduleDate = readIfMask(1, 1024) { readInt() }
+        sendAs = readIfMask(1, 8192) { readTLObject<TLAbsInputPeer>() }
+        quickReplyShortcut = readIfMask(1, 131072) { readTLObject<TLAbsInputQuickReplyShortcut>() }
+        effect = readIfMask(1, 262144) { readLong() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -179,16 +180,16 @@ class TLRequestMessagesSendMedia() : TLMethod<TLAbsUpdates>() {
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
         size += peer.computeSerializedSize()
-        size += getIntIfMask(replyTo, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, replyTo, 1) { it.computeSerializedSize() }
         size += media.computeSerializedSize()
         size += computeTLStringSerializedSize(message)
         size += SIZE_INT64
-        size += getIntIfMask(replyMarkup, 4) { it.computeSerializedSize() }
-        size += getIntIfMask(entities, 8) { it.computeSerializedSize() }
-        size += getIntIfMask(scheduleDate, 1024) { SIZE_INT32 }
-        size += getIntIfMask(sendAs, 8192) { it.computeSerializedSize() }
-        size += getIntIfMask(quickReplyShortcut, 131072) { it.computeSerializedSize() }
-        size += getIntIfMask(effect, 262144) { SIZE_INT64 }
+        size += getIntIfMask(1, replyMarkup, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, entities, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, scheduleDate, 1024) { SIZE_INT32 }
+        size += getIntIfMask(1, sendAs, 8192) { it.computeSerializedSize() }
+        size += getIntIfMask(1, quickReplyShortcut, 131072) { it.computeSerializedSize() }
+        size += getIntIfMask(1, effect, 262144) { SIZE_INT64 }
         return size
     }
 

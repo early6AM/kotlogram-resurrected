@@ -61,6 +61,7 @@ class TLBotInlineMediaResult() : TLAbsBotInlineResult() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(photo, 1)
         updateFlags(document, 2)
         updateFlags(title, 4)
@@ -74,10 +75,10 @@ class TLBotInlineMediaResult() : TLAbsBotInlineResult() {
         writeInt(_flags)
         writeString(id)
         writeString(type)
-        doIfMask(photo, 1) { writeTLObject(it) }
-        doIfMask(document, 2) { writeTLObject(it) }
-        doIfMask(title, 4) { writeString(it) }
-        doIfMask(description, 8) { writeString(it) }
+        doIfMask(1, photo, 1) { writeTLObject(it) }
+        doIfMask(1, document, 2) { writeTLObject(it) }
+        doIfMask(1, title, 4) { writeString(it) }
+        doIfMask(1, description, 8) { writeString(it) }
         writeTLObject(sendMessage)
     }
 
@@ -86,10 +87,10 @@ class TLBotInlineMediaResult() : TLAbsBotInlineResult() {
         _flags = readInt()
         id = readString()
         type = readString()
-        photo = readIfMask(1) { readTLObject<TLAbsPhoto>() }
-        document = readIfMask(2) { readTLObject<TLAbsDocument>() }
-        title = readIfMask(4) { readString() }
-        description = readIfMask(8) { readString() }
+        photo = readIfMask(1, 1) { readTLObject<TLAbsPhoto>() }
+        document = readIfMask(1, 2) { readTLObject<TLAbsDocument>() }
+        title = readIfMask(1, 4) { readString() }
+        description = readIfMask(1, 8) { readString() }
         sendMessage = readTLObject<TLAbsBotInlineMessage>()
     }
 
@@ -100,10 +101,10 @@ class TLBotInlineMediaResult() : TLAbsBotInlineResult() {
         size += SIZE_INT32
         size += computeTLStringSerializedSize(id)
         size += computeTLStringSerializedSize(type)
-        size += getIntIfMask(photo, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(document, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(title, 4) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(description, 8) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, photo, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(1, document, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, title, 4) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, description, 8) { computeTLStringSerializedSize(it) }
         size += sendMessage.computeSerializedSize()
         return size
     }

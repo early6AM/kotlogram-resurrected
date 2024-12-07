@@ -86,6 +86,7 @@ class TLChatInviteExported() : TLAbsExportedChatInvite() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(revoked, 1)
         updateFlags(permanent, 32)
         updateFlags(requestNeeded, 64)
@@ -105,29 +106,29 @@ class TLChatInviteExported() : TLAbsExportedChatInvite() {
         writeString(link)
         writeLong(adminId)
         writeInt(date)
-        doIfMask(startDate, 16) { writeInt(it) }
-        doIfMask(expireDate, 2) { writeInt(it) }
-        doIfMask(usageLimit, 4) { writeInt(it) }
-        doIfMask(usage, 8) { writeInt(it) }
-        doIfMask(requested, 128) { writeInt(it) }
-        doIfMask(title, 256) { writeString(it) }
+        doIfMask(1, startDate, 16) { writeInt(it) }
+        doIfMask(1, expireDate, 2) { writeInt(it) }
+        doIfMask(1, usageLimit, 4) { writeInt(it) }
+        doIfMask(1, usage, 8) { writeInt(it) }
+        doIfMask(1, requested, 128) { writeInt(it) }
+        doIfMask(1, title, 256) { writeString(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        revoked = isMask(1)
-        permanent = isMask(32)
-        requestNeeded = isMask(64)
+        revoked = isMask(1, 1)
+        permanent = isMask(1, 32)
+        requestNeeded = isMask(1, 64)
         link = readString()
         adminId = readLong()
         date = readInt()
-        startDate = readIfMask(16) { readInt() }
-        expireDate = readIfMask(2) { readInt() }
-        usageLimit = readIfMask(4) { readInt() }
-        usage = readIfMask(8) { readInt() }
-        requested = readIfMask(128) { readInt() }
-        title = readIfMask(256) { readString() }
+        startDate = readIfMask(1, 16) { readInt() }
+        expireDate = readIfMask(1, 2) { readInt() }
+        usageLimit = readIfMask(1, 4) { readInt() }
+        usage = readIfMask(1, 8) { readInt() }
+        requested = readIfMask(1, 128) { readInt() }
+        title = readIfMask(1, 256) { readString() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -138,12 +139,12 @@ class TLChatInviteExported() : TLAbsExportedChatInvite() {
         size += computeTLStringSerializedSize(link)
         size += SIZE_INT64
         size += SIZE_INT32
-        size += getIntIfMask(startDate, 16) { SIZE_INT32 }
-        size += getIntIfMask(expireDate, 2) { SIZE_INT32 }
-        size += getIntIfMask(usageLimit, 4) { SIZE_INT32 }
-        size += getIntIfMask(usage, 8) { SIZE_INT32 }
-        size += getIntIfMask(requested, 128) { SIZE_INT32 }
-        size += getIntIfMask(title, 256) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, startDate, 16) { SIZE_INT32 }
+        size += getIntIfMask(1, expireDate, 2) { SIZE_INT32 }
+        size += getIntIfMask(1, usageLimit, 4) { SIZE_INT32 }
+        size += getIntIfMask(1, usage, 8) { SIZE_INT32 }
+        size += getIntIfMask(1, requested, 128) { SIZE_INT32 }
+        size += getIntIfMask(1, title, 256) { computeTLStringSerializedSize(it) }
         return size
     }
 

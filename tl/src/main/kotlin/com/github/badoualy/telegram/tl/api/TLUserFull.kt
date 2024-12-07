@@ -66,8 +66,6 @@ class TLUserFull() : TLObject() {
     @Transient
     var readDatesPrivate: Boolean = false
 
-    var _flags2: Int = 0
-
     @Transient
     var sponsoredEnabled: Boolean = false
 
@@ -143,7 +141,6 @@ class TLUserFull() : TLObject() {
             wallpaperOverridden: Boolean,
             contactRequirePremium: Boolean,
             readDatesPrivate: Boolean,
-            _flags2: Int,
             sponsoredEnabled: Boolean,
             id: Long,
             about: String?,
@@ -186,7 +183,6 @@ class TLUserFull() : TLObject() {
         this.wallpaperOverridden = wallpaperOverridden
         this.contactRequirePremium = contactRequirePremium
         this.readDatesPrivate = readDatesPrivate
-        this._flags2 = _flags2
         this.sponsoredEnabled = sponsoredEnabled
         this.id = id
         this.about = about
@@ -219,6 +215,7 @@ class TLUserFull() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(blocked, 1)
         updateFlags(phoneCallsAvailable, 16)
         updateFlags(phoneCallsPrivate, 32)
@@ -258,11 +255,11 @@ class TLUserFull() : TLObject() {
         updateFlags(personalChannelMessage, 64)
 
         // Following parameters might be forced to true by another field that updated the flags
-        blocked = isMask(1)
-        phoneCallsAvailable = isMask(16)
-        phoneCallsPrivate = isMask(32)
-        canPinMessage = isMask(128)
-        sponsoredEnabled = isMask(128)
+        blocked = isMask(1, 1)
+        phoneCallsAvailable = isMask(1, 16)
+        phoneCallsPrivate = isMask(1, 32)
+        canPinMessage = isMask(1, 128)
+        sponsoredEnabled = isMask(2, 128)
     }
 
     @Throws(IOException::class)
@@ -272,79 +269,79 @@ class TLUserFull() : TLObject() {
         writeInt(_flags)
         writeInt(_flags2)
         writeLong(id)
-        doIfMask(about, 2) { writeString(it) }
+        doIfMask(1, about, 2) { writeString(it) }
         writeTLObject(settings)
-        doIfMask(personalPhoto, 2097152) { writeTLObject(it) }
-        doIfMask(profilePhoto, 4) { writeTLObject(it) }
-        doIfMask(fallbackPhoto, 4194304) { writeTLObject(it) }
+        doIfMask(1, personalPhoto, 2097152) { writeTLObject(it) }
+        doIfMask(1, profilePhoto, 4) { writeTLObject(it) }
+        doIfMask(1, fallbackPhoto, 4194304) { writeTLObject(it) }
         writeTLObject(notifySettings)
-        doIfMask(botInfo, 8) { writeTLObject(it) }
-        doIfMask(pinnedMsgId, 64) { writeInt(it) }
+        doIfMask(1, botInfo, 8) { writeTLObject(it) }
+        doIfMask(1, pinnedMsgId, 64) { writeInt(it) }
         writeInt(commonChatsCount)
-        doIfMask(folderId, 2048) { writeInt(it) }
-        doIfMask(ttlPeriod, 16384) { writeInt(it) }
-        doIfMask(themeEmoticon, 32768) { writeString(it) }
-        doIfMask(privateForwardName, 65536) { writeString(it) }
-        doIfMask(botGroupAdminRights, 131072) { writeTLObject(it) }
-        doIfMask(botBroadcastAdminRights, 262144) { writeTLObject(it) }
-        doIfMask(premiumGifts, 524288) { writeTLVector(it) }
-        doIfMask(wallpaper, 16777216) { writeTLObject(it) }
-        doIfMask(stories, 33554432) { writeTLObject(it) }
-        doIfMask(businessWorkHours, 1) { writeTLObject(it) }
-        doIfMask(businessLocation, 2) { writeTLObject(it) }
-        doIfMask(businessGreetingMessage, 4) { writeTLObject(it) }
-        doIfMask(businessAwayMessage, 8) { writeTLObject(it) }
-        doIfMask(businessIntro, 16) { writeTLObject(it) }
-        doIfMask(birthday, 32) { writeTLObject(it) }
-        doIfMask(personalChannelId, 64) { writeLong(it) }
-        doIfMask(personalChannelMessage, 64) { writeInt(it) }
+        doIfMask(1, folderId, 2048) { writeInt(it) }
+        doIfMask(1, ttlPeriod, 16384) { writeInt(it) }
+        doIfMask(1, themeEmoticon, 32768) { writeString(it) }
+        doIfMask(1, privateForwardName, 65536) { writeString(it) }
+        doIfMask(1, botGroupAdminRights, 131072) { writeTLObject(it) }
+        doIfMask(1, botBroadcastAdminRights, 262144) { writeTLObject(it) }
+        doIfMask(1, premiumGifts, 524288) { writeTLVector(it) }
+        doIfMask(1, wallpaper, 16777216) { writeTLObject(it) }
+        doIfMask(1, stories, 33554432) { writeTLObject(it) }
+        doIfMask(2, businessWorkHours, 1) { writeTLObject(it) }
+        doIfMask(2, businessLocation, 2) { writeTLObject(it) }
+        doIfMask(2, businessGreetingMessage, 4) { writeTLObject(it) }
+        doIfMask(2, businessAwayMessage, 8) { writeTLObject(it) }
+        doIfMask(2, businessIntro, 16) { writeTLObject(it) }
+        doIfMask(2, birthday, 32) { writeTLObject(it) }
+        doIfMask(2, personalChannelId, 64) { writeLong(it) }
+        doIfMask(2, personalChannelMessage, 64) { writeInt(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        blocked = isMask(1)
-        phoneCallsAvailable = isMask(16)
-        phoneCallsPrivate = isMask(32)
-        canPinMessage = isMask(128)
-        hasScheduled = isMask(4096)
-        videoCallsAvailable = isMask(8192)
-        voiceMessagesForbidden = isMask(1048576)
-        translationsDisabled = isMask(8388608)
-        storiesPinnedAvailable = isMask(67108864)
-        blockedMyStoriesFrom = isMask(134217728)
-        wallpaperOverridden = isMask(268435456)
-        contactRequirePremium = isMask(536870912)
-        readDatesPrivate = isMask(1073741824)
+        blocked = isMask(1, 1)
+        phoneCallsAvailable = isMask(1, 16)
+        phoneCallsPrivate = isMask(1, 32)
+        canPinMessage = isMask(1, 128)
+        hasScheduled = isMask(1, 4096)
+        videoCallsAvailable = isMask(1, 8192)
+        voiceMessagesForbidden = isMask(1, 1048576)
+        translationsDisabled = isMask(1, 8388608)
+        storiesPinnedAvailable = isMask(1, 67108864)
+        blockedMyStoriesFrom = isMask(1, 134217728)
+        wallpaperOverridden = isMask(1, 268435456)
+        contactRequirePremium = isMask(1, 536870912)
+        readDatesPrivate = isMask(1, 1073741824)
         _flags2 = readInt()
-        sponsoredEnabled = isMask(128)
+        sponsoredEnabled = isMask(2, 128)
         id = readLong()
-        about = readIfMask(2) { readString() }
+        about = readIfMask(1, 2) { readString() }
         settings = readTLObject<TLPeerSettings>(TLPeerSettings::class, TLPeerSettings.CONSTRUCTOR_ID)
-        personalPhoto = readIfMask(2097152) { readTLObject<TLAbsPhoto>() }
-        profilePhoto = readIfMask(4) { readTLObject<TLAbsPhoto>() }
-        fallbackPhoto = readIfMask(4194304) { readTLObject<TLAbsPhoto>() }
+        personalPhoto = readIfMask(1, 2097152) { readTLObject<TLAbsPhoto>() }
+        profilePhoto = readIfMask(1, 4) { readTLObject<TLAbsPhoto>() }
+        fallbackPhoto = readIfMask(1, 4194304) { readTLObject<TLAbsPhoto>() }
         notifySettings = readTLObject<TLPeerNotifySettings>(TLPeerNotifySettings::class, TLPeerNotifySettings.CONSTRUCTOR_ID)
-        botInfo = readIfMask(8) { readTLObject<TLBotInfo>(TLBotInfo::class, TLBotInfo.CONSTRUCTOR_ID) }
-        pinnedMsgId = readIfMask(64) { readInt() }
+        botInfo = readIfMask(1, 8) { readTLObject<TLBotInfo>(TLBotInfo::class, TLBotInfo.CONSTRUCTOR_ID) }
+        pinnedMsgId = readIfMask(1, 64) { readInt() }
         commonChatsCount = readInt()
-        folderId = readIfMask(2048) { readInt() }
-        ttlPeriod = readIfMask(16384) { readInt() }
-        themeEmoticon = readIfMask(32768) { readString() }
-        privateForwardName = readIfMask(65536) { readString() }
-        botGroupAdminRights = readIfMask(131072) { readTLObject<TLChatAdminRights>(TLChatAdminRights::class, TLChatAdminRights.CONSTRUCTOR_ID) }
-        botBroadcastAdminRights = readIfMask(262144) { readTLObject<TLChatAdminRights>(TLChatAdminRights::class, TLChatAdminRights.CONSTRUCTOR_ID) }
-        premiumGifts = readIfMask(524288) { readTLVector<TLPremiumGiftOption>() }
-        wallpaper = readIfMask(16777216) { readTLObject<TLAbsWallPaper>() }
-        stories = readIfMask(33554432) { readTLObject<TLPeerStories>(TLPeerStories::class, TLPeerStories.CONSTRUCTOR_ID) }
-        businessWorkHours = readIfMask(1) { readTLObject<TLBusinessWorkHours>(TLBusinessWorkHours::class, TLBusinessWorkHours.CONSTRUCTOR_ID) }
-        businessLocation = readIfMask(2) { readTLObject<TLBusinessLocation>(TLBusinessLocation::class, TLBusinessLocation.CONSTRUCTOR_ID) }
-        businessGreetingMessage = readIfMask(4) { readTLObject<TLBusinessGreetingMessage>(TLBusinessGreetingMessage::class, TLBusinessGreetingMessage.CONSTRUCTOR_ID) }
-        businessAwayMessage = readIfMask(8) { readTLObject<TLBusinessAwayMessage>(TLBusinessAwayMessage::class, TLBusinessAwayMessage.CONSTRUCTOR_ID) }
-        businessIntro = readIfMask(16) { readTLObject<TLBusinessIntro>(TLBusinessIntro::class, TLBusinessIntro.CONSTRUCTOR_ID) }
-        birthday = readIfMask(32) { readTLObject<TLBirthday>(TLBirthday::class, TLBirthday.CONSTRUCTOR_ID) }
-        personalChannelId = readIfMask(64) { readLong() }
-        personalChannelMessage = readIfMask(64) { readInt() }
+        folderId = readIfMask(1, 2048) { readInt() }
+        ttlPeriod = readIfMask(1, 16384) { readInt() }
+        themeEmoticon = readIfMask(1, 32768) { readString() }
+        privateForwardName = readIfMask(1, 65536) { readString() }
+        botGroupAdminRights = readIfMask(1, 131072) { readTLObject<TLChatAdminRights>(TLChatAdminRights::class, TLChatAdminRights.CONSTRUCTOR_ID) }
+        botBroadcastAdminRights = readIfMask(1, 262144) { readTLObject<TLChatAdminRights>(TLChatAdminRights::class, TLChatAdminRights.CONSTRUCTOR_ID) }
+        premiumGifts = readIfMask(1, 524288) { readTLVector<TLPremiumGiftOption>() }
+        wallpaper = readIfMask(1, 16777216) { readTLObject<TLAbsWallPaper>() }
+        stories = readIfMask(1, 33554432) { readTLObject<TLPeerStories>(TLPeerStories::class, TLPeerStories.CONSTRUCTOR_ID) }
+        businessWorkHours = readIfMask(2, 1) { readTLObject<TLBusinessWorkHours>(TLBusinessWorkHours::class, TLBusinessWorkHours.CONSTRUCTOR_ID) }
+        businessLocation = readIfMask(2, 2) { readTLObject<TLBusinessLocation>(TLBusinessLocation::class, TLBusinessLocation.CONSTRUCTOR_ID) }
+        businessGreetingMessage = readIfMask(2, 4) { readTLObject<TLBusinessGreetingMessage>(TLBusinessGreetingMessage::class, TLBusinessGreetingMessage.CONSTRUCTOR_ID) }
+        businessAwayMessage = readIfMask(2, 8) { readTLObject<TLBusinessAwayMessage>(TLBusinessAwayMessage::class, TLBusinessAwayMessage.CONSTRUCTOR_ID) }
+        businessIntro = readIfMask(2, 16) { readTLObject<TLBusinessIntro>(TLBusinessIntro::class, TLBusinessIntro.CONSTRUCTOR_ID) }
+        birthday = readIfMask(2, 32) { readTLObject<TLBirthday>(TLBirthday::class, TLBirthday.CONSTRUCTOR_ID) }
+        personalChannelId = readIfMask(2, 64) { readLong() }
+        personalChannelMessage = readIfMask(2, 64) { readInt() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -354,32 +351,32 @@ class TLUserFull() : TLObject() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT64
-        size += getIntIfMask(about, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, about, 2) { computeTLStringSerializedSize(it) }
         size += settings.computeSerializedSize()
-        size += getIntIfMask(personalPhoto, 2097152) { it.computeSerializedSize() }
-        size += getIntIfMask(profilePhoto, 4) { it.computeSerializedSize() }
-        size += getIntIfMask(fallbackPhoto, 4194304) { it.computeSerializedSize() }
+        size += getIntIfMask(1, personalPhoto, 2097152) { it.computeSerializedSize() }
+        size += getIntIfMask(1, profilePhoto, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, fallbackPhoto, 4194304) { it.computeSerializedSize() }
         size += notifySettings.computeSerializedSize()
-        size += getIntIfMask(botInfo, 8) { it.computeSerializedSize() }
-        size += getIntIfMask(pinnedMsgId, 64) { SIZE_INT32 }
+        size += getIntIfMask(1, botInfo, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(1, pinnedMsgId, 64) { SIZE_INT32 }
         size += SIZE_INT32
-        size += getIntIfMask(folderId, 2048) { SIZE_INT32 }
-        size += getIntIfMask(ttlPeriod, 16384) { SIZE_INT32 }
-        size += getIntIfMask(themeEmoticon, 32768) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(privateForwardName, 65536) { computeTLStringSerializedSize(it) }
-        size += getIntIfMask(botGroupAdminRights, 131072) { it.computeSerializedSize() }
-        size += getIntIfMask(botBroadcastAdminRights, 262144) { it.computeSerializedSize() }
-        size += getIntIfMask(premiumGifts, 524288) { it.computeSerializedSize() }
-        size += getIntIfMask(wallpaper, 16777216) { it.computeSerializedSize() }
-        size += getIntIfMask(stories, 33554432) { it.computeSerializedSize() }
-        size += getIntIfMask(businessWorkHours, 1) { it.computeSerializedSize() }
-        size += getIntIfMask(businessLocation, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(businessGreetingMessage, 4) { it.computeSerializedSize() }
-        size += getIntIfMask(businessAwayMessage, 8) { it.computeSerializedSize() }
-        size += getIntIfMask(businessIntro, 16) { it.computeSerializedSize() }
-        size += getIntIfMask(birthday, 32) { it.computeSerializedSize() }
-        size += getIntIfMask(personalChannelId, 64) { SIZE_INT64 }
-        size += getIntIfMask(personalChannelMessage, 64) { SIZE_INT32 }
+        size += getIntIfMask(1, folderId, 2048) { SIZE_INT32 }
+        size += getIntIfMask(1, ttlPeriod, 16384) { SIZE_INT32 }
+        size += getIntIfMask(1, themeEmoticon, 32768) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, privateForwardName, 65536) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, botGroupAdminRights, 131072) { it.computeSerializedSize() }
+        size += getIntIfMask(1, botBroadcastAdminRights, 262144) { it.computeSerializedSize() }
+        size += getIntIfMask(1, premiumGifts, 524288) { it.computeSerializedSize() }
+        size += getIntIfMask(1, wallpaper, 16777216) { it.computeSerializedSize() }
+        size += getIntIfMask(1, stories, 33554432) { it.computeSerializedSize() }
+        size += getIntIfMask(2, businessWorkHours, 1) { it.computeSerializedSize() }
+        size += getIntIfMask(2, businessLocation, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(2, businessGreetingMessage, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(2, businessAwayMessage, 8) { it.computeSerializedSize() }
+        size += getIntIfMask(2, businessIntro, 16) { it.computeSerializedSize() }
+        size += getIntIfMask(2, birthday, 32) { it.computeSerializedSize() }
+        size += getIntIfMask(2, personalChannelId, 64) { SIZE_INT64 }
+        size += getIntIfMask(2, personalChannelMessage, 64) { SIZE_INT32 }
         return size
     }
 

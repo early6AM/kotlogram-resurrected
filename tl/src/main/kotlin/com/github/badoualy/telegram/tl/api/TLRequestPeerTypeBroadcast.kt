@@ -51,6 +51,7 @@ class TLRequestPeerTypeBroadcast() : TLAbsRequestPeerType() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(creator, 1)
         updateFlags(hasUsername, 8)
         updateFlags(userAdminRights, 2)
@@ -62,18 +63,18 @@ class TLRequestPeerTypeBroadcast() : TLAbsRequestPeerType() {
         computeFlags()
 
         writeInt(_flags)
-        doIfMask(hasUsername, 8) { writeBoolean(it) }
-        doIfMask(userAdminRights, 2) { writeTLObject(it) }
-        doIfMask(botAdminRights, 4) { writeTLObject(it) }
+        doIfMask(1, hasUsername, 8) { writeBoolean(it) }
+        doIfMask(1, userAdminRights, 2) { writeTLObject(it) }
+        doIfMask(1, botAdminRights, 4) { writeTLObject(it) }
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        creator = isMask(1)
-        hasUsername = readIfMask(8) { readBoolean() }
-        userAdminRights = readIfMask(2) { readTLObject<TLChatAdminRights>(TLChatAdminRights::class, TLChatAdminRights.CONSTRUCTOR_ID) }
-        botAdminRights = readIfMask(4) { readTLObject<TLChatAdminRights>(TLChatAdminRights::class, TLChatAdminRights.CONSTRUCTOR_ID) }
+        creator = isMask(1, 1)
+        hasUsername = readIfMask(1, 8) { readBoolean() }
+        userAdminRights = readIfMask(1, 2) { readTLObject<TLChatAdminRights>(TLChatAdminRights::class, TLChatAdminRights.CONSTRUCTOR_ID) }
+        botAdminRights = readIfMask(1, 4) { readTLObject<TLChatAdminRights>(TLChatAdminRights::class, TLChatAdminRights.CONSTRUCTOR_ID) }
     }
 
     override fun computeSerializedSize(): Int {
@@ -81,9 +82,9 @@ class TLRequestPeerTypeBroadcast() : TLAbsRequestPeerType() {
 
         var size = SIZE_CONSTRUCTOR_ID
         size += SIZE_INT32
-        size += getIntIfMask(hasUsername, 8) { SIZE_BOOLEAN }
-        size += getIntIfMask(userAdminRights, 2) { it.computeSerializedSize() }
-        size += getIntIfMask(botAdminRights, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, hasUsername, 8) { SIZE_BOOLEAN }
+        size += getIntIfMask(1, userAdminRights, 2) { it.computeSerializedSize() }
+        size += getIntIfMask(1, botAdminRights, 4) { it.computeSerializedSize() }
         return size
     }
 

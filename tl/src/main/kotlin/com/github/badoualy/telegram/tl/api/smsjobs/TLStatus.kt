@@ -68,6 +68,7 @@ class TLStatus() : TLObject() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(allowInternational, 1)
         updateFlags(lastGiftSlug, 2)
     }
@@ -82,20 +83,20 @@ class TLStatus() : TLObject() {
         writeInt(recentRemains)
         writeInt(totalSent)
         writeInt(totalSince)
-        doIfMask(lastGiftSlug, 2) { writeString(it) }
+        doIfMask(1, lastGiftSlug, 2) { writeString(it) }
         writeString(termsUrl)
     }
 
     @Throws(IOException::class)
     override fun deserializeBody(tlDeserializer: TLDeserializer) = with (tlDeserializer)  {
         _flags = readInt()
-        allowInternational = isMask(1)
+        allowInternational = isMask(1, 1)
         recentSent = readInt()
         recentSince = readInt()
         recentRemains = readInt()
         totalSent = readInt()
         totalSince = readInt()
-        lastGiftSlug = readIfMask(2) { readString() }
+        lastGiftSlug = readIfMask(1, 2) { readString() }
         termsUrl = readString()
     }
 
@@ -109,7 +110,7 @@ class TLStatus() : TLObject() {
         size += SIZE_INT32
         size += SIZE_INT32
         size += SIZE_INT32
-        size += getIntIfMask(lastGiftSlug, 2) { computeTLStringSerializedSize(it) }
+        size += getIntIfMask(1, lastGiftSlug, 2) { computeTLStringSerializedSize(it) }
         size += computeTLStringSerializedSize(termsUrl)
         return size
     }

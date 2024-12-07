@@ -63,6 +63,7 @@ class TLUpdateBusinessBotCallbackQuery() : TLAbsUpdate() {
 
     protected override fun computeFlags() {
         _flags = 0
+        _flags2 = 0
         updateFlags(replyToMessage, 4)
         updateFlags(data, 1)
     }
@@ -76,9 +77,9 @@ class TLUpdateBusinessBotCallbackQuery() : TLAbsUpdate() {
         writeLong(userId)
         writeString(connectionId)
         writeTLObject(message)
-        doIfMask(replyToMessage, 4) { writeTLObject(it) }
+        doIfMask(1, replyToMessage, 4) { writeTLObject(it) }
         writeLong(chatInstance)
-        doIfMask(data, 1) { writeTLBytes(it) }
+        doIfMask(1, data, 1) { writeTLBytes(it) }
     }
 
     @Throws(IOException::class)
@@ -88,9 +89,9 @@ class TLUpdateBusinessBotCallbackQuery() : TLAbsUpdate() {
         userId = readLong()
         connectionId = readString()
         message = readTLObject<TLAbsMessage>()
-        replyToMessage = readIfMask(4) { readTLObject<TLAbsMessage>() }
+        replyToMessage = readIfMask(1, 4) { readTLObject<TLAbsMessage>() }
         chatInstance = readLong()
-        data = readIfMask(1) { readTLBytes() }
+        data = readIfMask(1, 1) { readTLBytes() }
     }
 
     override fun computeSerializedSize(): Int {
@@ -102,9 +103,9 @@ class TLUpdateBusinessBotCallbackQuery() : TLAbsUpdate() {
         size += SIZE_INT64
         size += computeTLStringSerializedSize(connectionId)
         size += message.computeSerializedSize()
-        size += getIntIfMask(replyToMessage, 4) { it.computeSerializedSize() }
+        size += getIntIfMask(1, replyToMessage, 4) { it.computeSerializedSize() }
         size += SIZE_INT64
-        size += getIntIfMask(data, 1) { computeTLBytesSerializedSize(it) }
+        size += getIntIfMask(1, data, 1) { computeTLBytesSerializedSize(it) }
         return size
     }
 
