@@ -66,6 +66,8 @@ class TLUserFull() : TLObject() {
     @Transient
     var readDatesPrivate: Boolean = false
 
+    var _flags2: Int = 0
+
     @Transient
     var sponsoredEnabled: Boolean = false
 
@@ -141,6 +143,7 @@ class TLUserFull() : TLObject() {
             wallpaperOverridden: Boolean,
             contactRequirePremium: Boolean,
             readDatesPrivate: Boolean,
+            _flags2: Int,
             sponsoredEnabled: Boolean,
             id: Long,
             about: String?,
@@ -183,6 +186,7 @@ class TLUserFull() : TLObject() {
         this.wallpaperOverridden = wallpaperOverridden
         this.contactRequirePremium = contactRequirePremium
         this.readDatesPrivate = readDatesPrivate
+        this._flags2 = _flags2
         this.sponsoredEnabled = sponsoredEnabled
         this.id = id
         this.about = about
@@ -266,7 +270,7 @@ class TLUserFull() : TLObject() {
         computeFlags()
 
         writeInt(_flags)
-        writeInt(_flags)
+        writeInt(_flags2)
         writeLong(id)
         doIfMask(about, 2) { writeString(it) }
         writeTLObject(settings)
@@ -312,7 +316,7 @@ class TLUserFull() : TLObject() {
         wallpaperOverridden = isMask(268435456)
         contactRequirePremium = isMask(536870912)
         readDatesPrivate = isMask(1073741824)
-        _flags = readInt()
+        _flags2 = readInt()
         sponsoredEnabled = isMask(128)
         id = readLong()
         about = readIfMask(2) { readString() }
@@ -399,7 +403,7 @@ class TLUserFull() : TLObject() {
                 && wallpaperOverridden == other.wallpaperOverridden
                 && contactRequirePremium == other.contactRequirePremium
                 && readDatesPrivate == other.readDatesPrivate
-                && _flags == other._flags
+                && _flags2 == other._flags2
                 && sponsoredEnabled == other.sponsoredEnabled
                 && id == other.id
                 && about == other.about

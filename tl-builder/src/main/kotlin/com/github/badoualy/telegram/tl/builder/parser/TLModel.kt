@@ -54,14 +54,20 @@ object TLTypeFlag : TLType() {
     override val name = "#Flag"
 }
 
+object TLTypeFlag2 : TLType() {
+    override val name = "#Flag2"
+}
+
 interface ConditionalType {
+    val version: Int
     val value: Int
     val realType: TLType
 
     fun pow2Value(): Int
 }
 
-class TLTypeConditional(override val value: Int, override val realType: TLType) : TLType(), ConditionalType {
+class TLTypeConditional(override val version: Int, override val value: Int, override val realType: TLType) : TLType(),
+    ConditionalType {
     override val name = "Conditional(${realType.name})"
 
     override fun pow2Value() = Math.pow(2.toDouble(), value.toDouble()).toInt()
@@ -69,18 +75,7 @@ class TLTypeConditional(override val value: Int, override val realType: TLType) 
     // TODO: check if needed
     override fun serializable() = !realType.isTrueFalseFlag()
 
-    override fun toString() = "flag.$value?$realType"
-}
-
-class TLTypeConditional2(override val value: Int, override val realType: TLType) : TLType(), ConditionalType {
-    override val name = "Conditional2(${realType.name})"
-
-    override fun pow2Value() = Math.pow(2.toDouble(), value.toDouble()).toInt()
-
-    // TODO: check if needed
-    override fun serializable() = !realType.isTrueFalseFlag()
-
-    override fun toString() = "flag2.$value?$realType"
+    override fun toString() = "flag${version}.$value?$realType"
 }
 
 ///////////////////////////////////

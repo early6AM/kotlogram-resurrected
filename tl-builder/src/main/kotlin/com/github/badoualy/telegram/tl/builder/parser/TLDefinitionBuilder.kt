@@ -23,18 +23,38 @@ object TLDefinitionBuilder {
 
         // Create all types constructors
         val typesConstructors = typesDef.map {
+            println("types: $it")
             TLConstructor(it.name,
                           it.id,
-                          it.parameters.map { TLParameter(it.first, createType(it.second)) },
+                          it.parameters.map {
+                              val tag = it.first
+                              val typeName = it.second
+                              val flagVersion = when (tag) {
+                                  "flags" -> 1
+                                  "flags2" -> 2
+                                  else -> null
+                              }
+                              TLParameter(tag, createType(typeName, flagVersion = flagVersion))
+                          },
                           typeMap[it.type]!!)
         }
 
         // Create all methods constructors
+        println(methodsDef)
         val methodsConstructors = methodsDef.map {
             TLMethod(it.name,
                      it.id,
-                     it.parameters.map { TLParameter(it.first, createType(it.second)) },
-                     createType(it.type, false))
+                     it.parameters.map {
+                         val tag = it.first
+                         val typeName = it.second
+                         val flagVersion = when (tag) {
+                             "flags" -> 1
+                             "flags2" -> 2
+                             else -> null
+                         }
+                         TLParameter(tag, createType(typeName, flagVersion = flagVersion))
+                     },
+                     createType(it.type, isParameter = false))
         }
 
         // Create abstraction-layer with common supertype for types having multiple constructors
@@ -79,44 +99,54 @@ object TLDefinitionBuilder {
         else -> throw RuntimeException("Unsupported type $typeName for constructor/method}")
     }
 
-    private fun createType(typeName: String, isParameter: Boolean = true): TLType = when {
-        !isParameter && typeName == "X" -> TLTypeAny
-        isParameter && typeName == "!X" -> TLTypeFunctional
-        isParameter && typeName == "#" -> TLTypeFlag
-        isParameter && typeName.matches(flagRegex) -> {
-            val groups = flagRegex.matchEntire(typeName)?.groups!!
-            val maskName = groups[1]?.value
+    private fun createType(typeName: String, flagVersion: Int? = null, isParameter: Boolean = true): TLType {
+//        println("createType() typeName: $typeName isParameter: $isParameter")
+        return when {
+            !isParameter && typeName == "X" -> TLTypeAny
+            isParameter && typeName == "!X" -> TLTypeFunctional
+            isParameter && typeName == "#" && flagVersion == 1 -> TLTypeFlag
+            isParameter && typeName == "#" && flagVersion == 2 -> TLTypeFlag2
+            isParameter && typeName.matches(flagRegex) -> {
+                val groups = flagRegex.matchEntire(typeName)?.groups!!
+                val maskName = groups[1]?.value
                     ?: throw RuntimeException("Unknown error with type $typeName")
-            val value = groups[2]?.value?.toInt()
+                val flagVersion = when (maskName) {
+                    "flags" -> 1
+                    "flags2" -> 2
+                    else -> throw RuntimeException("Unknown version of flag $maskName")
+                }
+                val value = groups[2]?.value?.toInt()
                     ?: throw RuntimeException("Unknown error with type $typeName")
-            val realType = groups[3]?.value
+                val realType = groups[3]?.value
                     ?: throw RuntimeException("Unknown error with type $typeName")
-            if (maskName != "flags" && maskName != "flags2")
-                throw RuntimeException("Unsupported flag name, expected `flags` or `flags2`")
 
-            TLTypeConditional(value, createType(realType))
-        }
-        typeName.matches(genericRegex) -> {
-            val groups = genericRegex.matchEntire(typeName)?.groups!!
-            val tlName: String = groups[1]?.value
-                    ?: throw RuntimeException("Unknown error with type $typeName")
-            val genericName: String = groups[2]?.value
-                    ?: throw RuntimeException("Unknown error with type $typeName")
-            if (SupportedGenericTypes.none { it.equals(tlName, true) })
-                throw RuntimeException("Unsupported generic type $tlName")
-
-            TLTypeGeneric(tlName, arrayOf(createType(genericName)))
-        }
-        typeName.matches(rawRegex) -> {
-            when {
-                BuiltInTypes.contains(typeName) -> TLTypeRaw(typeName)
-                typeMap.containsKey(typeName) -> typeMap[typeName]!!
-                else -> throw RuntimeException("Unknown type $typeName")
+                TLTypeConditional(flagVersion, value, createType(realType))
             }
+
+            typeName.matches(genericRegex) -> {
+                val groups = genericRegex.matchEntire(typeName)?.groups!!
+                val tlName: String = groups[1]?.value
+                    ?: throw RuntimeException("Unknown error with type $typeName")
+                val genericName: String = groups[2]?.value
+                    ?: throw RuntimeException("Unknown error with type $typeName")
+                if (SupportedGenericTypes.none { it.equals(tlName, true) })
+                    throw RuntimeException("Unsupported generic type $tlName")
+
+                TLTypeGeneric(tlName, arrayOf(createType(genericName)))
+            }
+
+            typeName.matches(rawRegex) -> {
+                when {
+                    BuiltInTypes.contains(typeName) -> TLTypeRaw(typeName)
+                    typeMap.containsKey(typeName) -> typeMap[typeName]!!
+                    else -> throw RuntimeException("Unknown type $typeName")
+                }
+            }
+
+            else -> throw RuntimeException("Unsupported type $typeName for" +
+                    if (isParameter) "parameter"
+                    else "method")
         }
-        else -> throw RuntimeException("Unsupported type $typeName for" +
-                                               if (isParameter) "parameter"
-                                               else "method")
     }
 
 }

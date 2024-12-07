@@ -287,7 +287,7 @@ class TLClassGenerator(tlDefinition: TLDefinition, val config: Config) {
 
         // Compute flag for serialization
         // TODO: simplify?
-        val condParameters = parameters.filter { it.tlType is TLTypeConditional || it.tlType is TLTypeConditional2 }
+        val condParameters = parameters.filter { it.tlType is TLTypeConditional }
         if (condParameters.isNotEmpty() && id != null) {
             val computeFlagsFun = FunSpec.makeOverride("computeFlags", false)
 
@@ -350,9 +350,13 @@ class TLClassGenerator(tlDefinition: TLDefinition, val config: Config) {
             }
 
             // Build field
-            val fieldName =
-                    if (fieldTlType !is TLTypeFlag) parameter.name.lCamelCase().javaEscape()
-                    else "_flags"
+//            println("FieldTLType for $fieldType of $fieldTlType is equal to ${fieldTlType.javaClass.name}")
+//            println("Log this: ${parameter.name.lCamelCase().javaEscape()}")
+            val fieldName = when (fieldTlType) {
+                    is TLTypeFlag -> "_flags"
+                    is TLTypeFlag2 -> "_flags2"
+                    else -> parameter.name.lCamelCase().javaEscape()
+                }
             if (fieldTlType !is TLTypeFlag && (id != null || parameter.inherited)) {
                 clazz.addProperty(PropertySpec.varBuilder(fieldName, fieldType)
                                           .apply {
@@ -453,8 +457,8 @@ class TLClassGenerator(tlDefinition: TLDefinition, val config: Config) {
         is TLTypeFunctional -> ParameterizedTypeName.get(TYPE_TL_METHOD, TypeVariableName.T())
         is TLTypeAny -> TypeVariableName.T()
         is TLTypeFlag -> INT
+        is TLTypeFlag2 -> INT
         is TLTypeConditional -> getType(type.realType)
-        is TLTypeConditional2 -> getType(type.realType)
         is TLTypeGeneric -> {
             when ((type.parameters.first() as TLTypeRaw).name) {
                 "int" -> TYPE_TL_INT_VECTOR

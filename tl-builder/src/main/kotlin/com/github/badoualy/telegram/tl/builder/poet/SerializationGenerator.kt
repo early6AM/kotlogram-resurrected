@@ -7,11 +7,8 @@ import com.squareup.kotlinpoet.TypeName
 internal fun serializeParameter(fieldName: String, fieldTlType: TLType): String = when (fieldTlType) {
     is TLTypeFunctional -> "writeTLMethod($fieldName!!)"
     is TLTypeFlag -> "writeInt($fieldName)"
+    is TLTypeFlag2 -> "writeInt($fieldName)"
     is TLTypeConditional -> {
-        "doIfMask($fieldName, ${fieldTlType.pow2Value()}) " +
-                "{ ${serializeParameter("it", fieldTlType.realType)} }"
-    }
-    is TLTypeConditional2 -> {
         "doIfMask($fieldName, ${fieldTlType.pow2Value()}) " +
                 "{ ${serializeParameter("it", fieldTlType.realType)} }"
     }
@@ -33,17 +30,8 @@ internal fun serializeParameter(fieldName: String, fieldTlType: TLType): String 
 internal fun deserializeParameter(fieldTlType: TLType, fieldType: TypeName): String = when (fieldTlType) {
     is TLTypeFunctional -> "readTLMethod()"
     is TLTypeFlag -> "readInt()"
+    is TLTypeFlag2 -> "readInt()"
     is TLTypeConditional -> {
-        val realType = fieldTlType.realType
-
-        if (realType.isTrueFalseFlag()) {
-            "isMask(${fieldTlType.pow2Value()})"
-        } else {
-            "readIfMask(${fieldTlType.pow2Value()}) " +
-                    "{ ${deserializeParameter(realType, fieldType)} }"
-        }
-    }
-    is TLTypeConditional2 -> {
         val realType = fieldTlType.realType
 
         if (realType.isTrueFalseFlag()) {
@@ -86,11 +74,8 @@ internal fun deserializeParameter(fieldTlType: TLType, fieldType: TypeName): Str
 internal fun computeSizeParameter(fieldName: String, fieldTlType: TLType): String = when (fieldTlType) {
     is TLTypeFunctional -> "$fieldName!!.computeSerializedSize()"
     is TLTypeFlag -> "SIZE_INT32"
+    is TLTypeFlag2 -> "SIZE_INT32"
     is TLTypeConditional -> {
-        "getIntIfMask($fieldName, ${fieldTlType.pow2Value()}) " +
-                "{ ${computeSizeParameter("it", fieldTlType.realType)} }"
-    }
-    is TLTypeConditional2 -> {
         "getIntIfMask($fieldName, ${fieldTlType.pow2Value()}) " +
                 "{ ${computeSizeParameter("it", fieldTlType.realType)} }"
     }

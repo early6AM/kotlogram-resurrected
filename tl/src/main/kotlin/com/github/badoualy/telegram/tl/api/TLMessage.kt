@@ -59,6 +59,8 @@ class TLMessage() : TLAbsMessage() {
     @Transient
     var invertMedia: Boolean = false
 
+    var _flags2: Int = 0
+
     @Transient
     var offline: Boolean = false
 
@@ -130,6 +132,7 @@ class TLMessage() : TLAbsMessage() {
             pinned: Boolean,
             noforwards: Boolean,
             invertMedia: Boolean,
+            _flags2: Int,
             offline: Boolean,
             id: Int,
             fromId: TLAbsPeer?,
@@ -169,6 +172,7 @@ class TLMessage() : TLAbsMessage() {
         this.pinned = pinned
         this.noforwards = noforwards
         this.invertMedia = invertMedia
+        this._flags2 = _flags2
         this.offline = offline
         this.id = id
         this.fromId = fromId
@@ -245,7 +249,7 @@ class TLMessage() : TLAbsMessage() {
         computeFlags()
 
         writeInt(_flags)
-        writeInt(_flags)
+        writeInt(_flags2)
         writeInt(id)
         doIfMask(fromId, 256) { writeTLObject(it) }
         doIfMask(fromBoostsApplied, 536870912) { writeInt(it) }
@@ -288,7 +292,7 @@ class TLMessage() : TLAbsMessage() {
         pinned = isMask(16777216)
         noforwards = isMask(67108864)
         invertMedia = isMask(134217728)
-        _flags = readInt()
+        _flags2 = readInt()
         offline = isMask(2)
         id = readInt()
         fromId = readIfMask(256) { readTLObject<TLAbsPeer>() }
@@ -371,7 +375,7 @@ class TLMessage() : TLAbsMessage() {
                 && pinned == other.pinned
                 && noforwards == other.noforwards
                 && invertMedia == other.invertMedia
-                && _flags == other._flags
+                && _flags2 == other._flags2
                 && offline == other.offline
                 && id == other.id
                 && fromId == other.fromId

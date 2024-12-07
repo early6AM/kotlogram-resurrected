@@ -80,6 +80,8 @@ class TLUser() : TLAbsUser() {
     @Transient
     var attachMenuEnabled: Boolean = false
 
+    var _flags2: Int = 0
+
     @Transient
     var botCanEdit: Boolean = false
 
@@ -160,6 +162,7 @@ class TLUser() : TLAbsUser() {
             botAttachMenu: Boolean,
             premium: Boolean,
             attachMenuEnabled: Boolean,
+            _flags2: Int,
             botCanEdit: Boolean,
             closeFriend: Boolean,
             storiesHidden: Boolean,
@@ -204,6 +207,7 @@ class TLUser() : TLAbsUser() {
         this.botAttachMenu = botAttachMenu
         this.premium = premium
         this.attachMenuEnabled = attachMenuEnabled
+        this._flags2 = _flags2
         this.botCanEdit = botCanEdit
         this.closeFriend = closeFriend
         this.storiesHidden = storiesHidden
@@ -297,7 +301,7 @@ class TLUser() : TLAbsUser() {
         computeFlags()
 
         writeInt(_flags)
-        writeInt(_flags)
+        writeInt(_flags2)
         writeLong(id)
         doIfMask(accessHash, 1) { writeLong(it) }
         doIfMask(firstName, 2) { writeString(it) }
@@ -339,7 +343,7 @@ class TLUser() : TLAbsUser() {
         botAttachMenu = isMask(134217728)
         premium = isMask(268435456)
         attachMenuEnabled = isMask(536870912)
-        _flags = readInt()
+        _flags2 = readInt()
         botCanEdit = isMask(2)
         closeFriend = isMask(4)
         storiesHidden = isMask(8)
@@ -419,7 +423,7 @@ class TLUser() : TLAbsUser() {
                 && botAttachMenu == other.botAttachMenu
                 && premium == other.premium
                 && attachMenuEnabled == other.attachMenuEnabled
-                && _flags == other._flags
+                && _flags2 == other._flags2
                 && botCanEdit == other.botCanEdit
                 && closeFriend == other.closeFriend
                 && storiesHidden == other.storiesHidden

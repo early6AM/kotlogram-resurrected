@@ -52,6 +52,8 @@ class TLChannelFull() : TLAbsChatFull() {
     @Transient
     var blocked: Boolean = false
 
+    var _flags2: Int = 0
+
     @Transient
     var canDeleteChannel: Boolean = false
 
@@ -177,6 +179,7 @@ class TLChannelFull() : TLAbsChatFull() {
             hasScheduled: Boolean,
             canViewStats: Boolean,
             blocked: Boolean,
+            _flags2: Int,
             canDeleteChannel: Boolean,
             antispam: Boolean,
             participantsHidden: Boolean,
@@ -237,6 +240,7 @@ class TLChannelFull() : TLAbsChatFull() {
         this.hasScheduled = hasScheduled
         this.canViewStats = canViewStats
         this.blocked = blocked
+        this._flags2 = _flags2
         this.canDeleteChannel = canDeleteChannel
         this.antispam = antispam
         this.participantsHidden = participantsHidden
@@ -365,7 +369,7 @@ class TLChannelFull() : TLAbsChatFull() {
         computeFlags()
 
         writeInt(_flags)
-        writeInt(_flags)
+        writeInt(_flags2)
         writeLong(id)
         writeString(about)
         doIfMask(participantsCount, 1) { writeInt(it) }
@@ -420,7 +424,7 @@ class TLChannelFull() : TLAbsChatFull() {
         hasScheduled = isMask(524288)
         canViewStats = isMask(1048576)
         blocked = isMask(4194304)
-        _flags = readInt()
+        _flags2 = readInt()
         canDeleteChannel = isMask(1)
         antispam = isMask(2)
         participantsHidden = isMask(4)
@@ -539,7 +543,7 @@ class TLChannelFull() : TLAbsChatFull() {
                 && hasScheduled == other.hasScheduled
                 && canViewStats == other.canViewStats
                 && blocked == other.blocked
-                && _flags == other._flags
+                && _flags2 == other._flags2
                 && canDeleteChannel == other.canDeleteChannel
                 && antispam == other.antispam
                 && participantsHidden == other.participantsHidden

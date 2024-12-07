@@ -86,6 +86,8 @@ class TLChannel() : TLAbsChat() {
     @Transient
     var forum: Boolean = false
 
+    var _flags2: Int = 0
+
     @Transient
     var storiesHidden: Boolean = false
 
@@ -154,6 +156,7 @@ class TLChannel() : TLAbsChat() {
             joinToSend: Boolean,
             joinRequest: Boolean,
             forum: Boolean,
+            _flags2: Int,
             storiesHidden: Boolean,
             storiesHiddenMin: Boolean,
             storiesUnavailable: Boolean,
@@ -195,6 +198,7 @@ class TLChannel() : TLAbsChat() {
         this.joinToSend = joinToSend
         this.joinRequest = joinRequest
         this.forum = forum
+        this._flags2 = _flags2
         this.storiesHidden = storiesHidden
         this.storiesHiddenMin = storiesHiddenMin
         this.storiesUnavailable = storiesUnavailable
@@ -270,7 +274,7 @@ class TLChannel() : TLAbsChat() {
         computeFlags()
 
         writeInt(_flags)
-        writeInt(_flags)
+        writeInt(_flags2)
         writeLong(id)
         doIfMask(accessHash, 8192) { writeLong(it) }
         writeString(title)
@@ -313,7 +317,7 @@ class TLChannel() : TLAbsChat() {
         joinToSend = isMask(268435456)
         joinRequest = isMask(536870912)
         forum = isMask(1073741824)
-        _flags = readInt()
+        _flags2 = readInt()
         storiesHidden = isMask(2)
         storiesHiddenMin = isMask(4)
         storiesUnavailable = isMask(8)
@@ -389,7 +393,7 @@ class TLChannel() : TLAbsChat() {
                 && joinToSend == other.joinToSend
                 && joinRequest == other.joinRequest
                 && forum == other.forum
-                && _flags == other._flags
+                && _flags2 == other._flags2
                 && storiesHidden == other.storiesHidden
                 && storiesHiddenMin == other.storiesHiddenMin
                 && storiesUnavailable == other.storiesUnavailable
